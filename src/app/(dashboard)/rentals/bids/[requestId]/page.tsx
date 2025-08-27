@@ -1,0 +1,776 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams, useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCalendarAlt,
+  faSearch,
+  faFilter,
+  faDownload,
+  faEye,
+  faFlag,
+  faCheck,
+  faExpand,
+  faTruck,
+  faUser,
+  faBuilding,
+  faMapMarkerAlt,
+  faDollarSign,
+  faCheckCircle,
+  faTimesCircle,
+  faClock,
+  faPlay,
+  faSort,
+  faChevronDown,
+  faChevronUp,
+  faExternalLink,
+  faExclamationTriangle,
+  faFileExport,
+  faCalendarCheck,
+  faToggleOn,
+  faToggleOff,
+  faHandshake,
+  faSpinner,
+  faArrowLeft
+} from '@fortawesome/free-solid-svg-icons';
+import { cn } from '@/lib/utils';
+
+// Interfaces based on actual API response
+interface Bid {
+  id: string;
+  created_at: string;
+  expires_at: string;
+  updated_at: string;
+  daily_rate: string;
+  daily_rate_currency: string;
+  total_amount: string;
+  total_amount_currency: string;
+  note?: string;
+  equipment: {
+    id: string;
+    name: string;
+    description: string;
+    equipment_type: string;
+    size: string;
+    status: string;
+    image_urls: string[];
+    city: string;
+    daily_rate: string;
+    total_rentals: number;
+    total_revenue: string;
+    created_at: string;
+    updated_at: string;
+    owner: {
+      id: string;
+      full_name: string;
+    };
+  };
+  request: {
+    id: string;
+    equipment_type: string;
+    equipment_name: string;
+    status: string;
+    priority: string;
+    images: string[];
+    start_date: string;
+    end_date: string;
+    size: string;
+    max_budget: number;
+    max_budget_currency: string;
+    city: string;
+    note: string;
+    requestId: string;
+    created_at: string;
+    requester: {
+      id: string;
+      full_name: string;
+    };
+  };
+}
+
+interface ApiResponse {
+  data: Bid[];
+  page: number;
+  limit: number;
+  total: number;
+}
+
+const BidsManagement: React.FC = () => {
+  const { i18n } = useTranslation();
+  const params = useParams();
+  const router = useRouter();
+  const isRTL = i18n.language === 'ar';
+  
+  const requestId = params?.requestId as string;
+  
+  // Redirect to 404 if no requestId is provided
+  useEffect(() => {
+    if (!requestId) {
+      router.push('/404');
+    }
+  }, [requestId, router]);
+
+  // State management
+  const [bids, setBids] = useState<Bid[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [cityFilter, setCityFilter] = useState<string>('all');
+  const [equipmentTypeFilter, setEquipmentTypeFilter] = useState<string>('all');
+  const [ownerRenterFilter, setOwnerRenterFilter] = useState<string>('');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [selectedBids, setSelectedBids] = useState<string[]>([]);
+  const [showExpiringSoon, setShowExpiringSoon] = useState(false);
+  const [showHighValue, setShowHighValue] = useState(false);
+  const [sortBy, setSortBy] = useState<string>('created_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [paginationLoading, setPaginationLoading] = useState(false);
+
+  // Fetch bids from API with request filter
+  const fetchBids = async (pageNum: number = 1, append: boolean = false) => {
+    try {
+      setLoading(!append);
+      setPaginationLoading(!!append);
+      setError('');
+
+      if (!requestId) {
+        router.push('/404');
+        return;
+      }
+
+      const url = `http://localhost:3001/api/booking/bid/${requestId}?page=${pageNum}`;
+
+      const response = await fetch(url, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          router.push('/404');
+          return;
+        }
+        throw new Error('Failed to fetch bids');
+      }
+
+      const result: ApiResponse = await response.json();
+      
+      if (append) {
+        setBids(prev => [...prev, ...result.data]);
+      } else {
+        setBids(result.data);
+      }
+      
+      setPage(pageNum);
+      setTotalPages(Math.ceil(result.total / result.limit));
+    } catch (err: any) {
+      setError(err.message || 'Failed to load bids');
+      // If it's a network error or invalid request, redirect to 404
+      if (err.message.includes('Failed to fetch') || err.message.includes('Invalid')) {
+        setTimeout(() => {
+          router.push('/404');
+        }, 2000);
+      }
+    } finally {
+      setLoading(false);
+      setPaginationLoading(false);
+    }
+  };
+
+  // Load bids on component mount and when requestId changes
+  useEffect(() => {
+    if (requestId) {
+      fetchBids(1);
+    }
+  }, [requestId]);
+
+  // Load more bids
+  const handleLoadMore = async () => {
+    if (page >= totalPages) return;
+    fetchBids(page + 1, true);
+  };
+
+  // Filter functions
+  const filteredBids = bids.filter(bid => {
+    const matchesSearch = 
+      bid.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bid.request.requestId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bid.equipment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bid.equipment.owner.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bid.request.requester.full_name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'all' || bid.request.status === statusFilter;
+    const matchesCity = cityFilter === 'all' || bid.equipment.city === cityFilter;
+    const matchesEquipmentType = equipmentTypeFilter === 'all' || bid.equipment.equipment_type === equipmentTypeFilter;
+    const matchesOwnerRenter = !ownerRenterFilter || 
+      bid.equipment.owner.full_name.toLowerCase().includes(ownerRenterFilter.toLowerCase()) ||
+      bid.request.requester.full_name.toLowerCase().includes(ownerRenterFilter.toLowerCase());
+    
+    const matchesDateRange = !dateRange.start || !dateRange.end || 
+      (new Date(bid.request.start_date) >= new Date(dateRange.start) && 
+       new Date(bid.request.start_date) <= new Date(dateRange.end));
+    
+    const today = new Date();
+    const expiresAt = new Date(bid.expires_at);
+    const matchesExpiringSoon = !showExpiringSoon || 
+      (expiresAt > today && expiresAt.getTime() - today.getTime() < 24 * 60 * 60 * 1000); // Within 24 hours
+    
+    const matchesHighValue = !showHighValue || parseFloat(bid.total_amount) > 20000;
+    
+    return matchesSearch && matchesStatus && matchesCity && matchesEquipmentType && 
+           matchesOwnerRenter && matchesDateRange && matchesExpiringSoon && matchesHighValue;
+  });
+
+  // Sort functions
+  const sortedBids = [...filteredBids].sort((a, b) => {
+    let aValue: any, bValue: any;
+    
+    switch (sortBy) {
+      case 'created_at':
+        aValue = new Date(a.created_at);
+        bValue = new Date(b.created_at);
+        break;
+      case 'start_date':
+        aValue = new Date(a.request.start_date);
+        bValue = new Date(b.request.start_date);
+        break;
+      case 'total_amount':
+        aValue = parseFloat(a.total_amount);
+        bValue = parseFloat(b.total_amount);
+        break;
+      case 'daily_rate':
+        aValue = parseFloat(a.daily_rate);
+        bValue = parseFloat(b.daily_rate);
+        break;
+      case 'expires_at':
+        aValue = new Date(a.expires_at);
+        bValue = new Date(b.expires_at);
+        break;
+      default:
+        aValue = a.id;
+        bValue = b.id;
+    }
+    
+    if (sortOrder === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    } else {
+      return aValue < bValue ? 1 : -1;
+    }
+  });
+
+  // Statistics
+  const stats = {
+    total: bids.length,
+    pending: bids.filter(b => b.request.status === 'open').length,
+    accepted: bids.filter(b => b.request.status === 'fulfilled').length,
+    rejected: bids.filter(b => b.request.status === 'cancelled').length,
+    expired: bids.filter(b => {
+      const today = new Date();
+      const expiresAt = new Date(b.expires_at);
+      return expiresAt < today;
+    }).length,
+    expiringSoon: bids.filter(b => {
+      const today = new Date();
+      const expiresAt = new Date(b.expires_at);
+      return expiresAt > today && expiresAt.getTime() - today.getTime() < 24 * 60 * 60 * 1000;
+    }).length
+  };
+
+  // Helper functions
+  const getStatusBadge = (status: string) => {
+    const styles = {
+      open: 'bg-yellow-100 text-yellow-800 border border-yellow-200',
+      fulfilled: 'bg-green-100 text-green-800 border border-green-200',
+      cancelled: 'bg-red-100 text-red-800 border border-red-200',
+      expired: 'bg-gray-100 text-gray-800 border border-gray-200'
+    };
+    
+    const labels = {
+      open: isRTL ? 'قيد الانتظار' : 'Pending',
+      fulfilled: isRTL ? 'مقبول' : 'Accepted',
+      cancelled: isRTL ? 'مرفوض' : 'Rejected',
+      expired: isRTL ? 'منتهي الصلاحية' : 'Expired'
+    };
+
+    return (
+      <span className={cn('px-2 py-1 rounded-full text-xs font-medium', styles[status as keyof typeof styles])}>
+        {labels[status as keyof typeof labels]}
+      </span>
+    );
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatCurrency = (amount: string, currency: string) => {
+    return new Intl.NumberFormat(isRTL ? 'ar-SA' : 'en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 0
+    }).format(parseFloat(amount));
+  };
+
+  const handleSelectAll = () => {
+    if (selectedBids.length === sortedBids.length) {
+      setSelectedBids([]);
+    } else {
+      setSelectedBids(sortedBids.map(bid => bid.id));
+    }
+  };
+
+  const handleSelectBid = (bidId: string) => {
+    setSelectedBids(prev => 
+      prev.includes(bidId) 
+        ? prev.filter(id => id !== bidId)
+        : [...prev, bidId]
+    );
+  };
+
+  const handleBulkExport = () => {
+    console.log('Exporting bids:', selectedBids);
+  };
+
+  const handleBulkFlag = () => {
+    console.log('Flagging bids:', selectedBids);
+  };
+
+  const handleBackToRequests = () => {
+    router.push('/rentals/requests');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-awnash-primary animate-spin mb-4" />
+          <p className="text-gray-400">{isRTL ? 'جاري تحميل العروض...' : 'Loading bids...'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div>
+            <div className="flex items-center space-x-4 mb-2">
+              <button
+                onClick={handleBackToRequests}
+                className="flex items-center text-gray-400 hover:text-white transition-colors"
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
+                {isRTL ? 'العودة إلى الطلبات' : 'Back to Requests'}
+              </button>
+            </div>
+            <h1 className="text-3xl font-bold text-white">
+              {isRTL ? 'عروض الطلب' : 'Request Bids'}
+            </h1>
+            <p className="text-gray-400 mt-1">
+              {requestId 
+                ? `${isRTL ? 'عروض الطلب' : 'Bids for request'}: ${requestId}`
+                : (isRTL ? 'مراقبة وإدارة جميع العروض المقدمة على طلبات الاستئجار' : 'Monitor and manage all bids submitted for rental requests')
+              }
+            </p>
+          </div>
+          <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
+            <button className="flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
+              <FontAwesomeIcon icon={faFileExport} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
+              {isRTL ? 'تصدير' : 'Export'}
+            </button>
+            <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors">
+              <FontAwesomeIcon icon={faHandshake} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
+              {isRTL ? 'عرض جديد' : 'New Bid'}
+            </button>
+          </div>
+        </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي العروض' : 'Total Bids'}</p>
+                <p className="text-2xl font-bold text-white">{stats.total}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faHandshake} className="text-white h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{isRTL ? 'قيد الانتظار' : 'Pending'}</p>
+                <p className="text-2xl font-bold text-yellow-400">{stats.pending}</p>
+              </div>
+              <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faClock} className="text-white h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{isRTL ? 'مقبول' : 'Accepted'}</p>
+                <p className="text-2xl font-bold text-green-400">{stats.accepted}</p>
+              </div>
+              <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faCheckCircle} className="text-white h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{isRTL ? 'مرفوض' : 'Rejected'}</p>
+                <p className="text-2xl font-bold text-red-400">{stats.rejected}</p>
+              </div>
+              <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faTimesCircle} className="text-white h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{isRTL ? 'منتهي الصلاحية' : 'Expired'}</p>
+                <p className="text-2xl font-bold text-gray-400">{stats.expired}</p>
+              </div>
+              <div className="w-10 h-10 bg-gray-600 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faExclamationTriangle} className="text-white h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{isRTL ? 'ينتهي قريباً' : 'Expiring Soon'}</p>
+                <p className="text-2xl font-bold text-orange-400">{stats.expiringSoon}</p>
+              </div>
+              <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faCalendarCheck} className="text-white h-5 w-5" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Filters and Search */}
+        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            {/* Search */}
+            <div className="relative">
+              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <input
+                type="text"
+                placeholder={isRTL ? 'البحث في العروض...' : 'Search bids...'}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+              />
+            </div>
+
+            {/* Status Filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+            >
+              <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
+              <option value="open">{isRTL ? 'قيد الانتظار' : 'Pending'}</option>
+              <option value="fulfilled">{isRTL ? 'مقبول' : 'Accepted'}</option>
+              <option value="cancelled">{isRTL ? 'مرفوض' : 'Rejected'}</option>
+            </select>
+
+            {/* City Filter */}
+            <select
+              value={cityFilter}
+              onChange={(e) => setCityFilter(e.target.value)}
+              className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+            >
+              <option value="all">{isRTL ? 'جميع المدن' : 'All Cities'}</option>
+              <option value="Riyadh">Riyadh</option>
+              <option value="Kuwait City">Kuwait City</option>
+              <option value="Dubai">Dubai</option>
+              <option value="Doha">Doha</option>
+              <option value="Manama">Manama</option>
+            </select>
+
+            {/* Equipment Type Filter */}
+            <select
+              value={equipmentTypeFilter}
+              onChange={(e) => setEquipmentTypeFilter(e.target.value)}
+              className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+            >
+              <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
+              <option value="excavator">{isRTL ? 'حفارات' : 'Excavators'}</option>
+              <option value="crane">{isRTL ? 'رافعات' : 'Cranes'}</option>
+              <option value="bulldozer">{isRTL ? 'جرافات' : 'Bulldozers'}</option>
+              <option value="transport">{isRTL ? 'نقل' : 'Transport'}</option>
+              <option value="telehandler">{isRTL ? 'رافعات شوكية' : 'Telehandlers'}</option>
+            </select>
+          </div>
+
+          {/* Additional Filters */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="expiringSoon"
+                checked={showExpiringSoon}
+                onChange={(e) => setShowExpiringSoon(e.target.checked)}
+                className="rounded border-gray-600 bg-gray-700 text-awnash-primary focus:ring-awnash-primary"
+              />
+              <label htmlFor="expiringSoon" className="text-sm text-gray-300">
+                {isRTL ? 'ينتهي قريباً' : 'Expiring Soon'}
+              </label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="highValue"
+                checked={showHighValue}
+                onChange={(e) => setShowHighValue(e.target.checked)}
+                className="rounded border-gray-600 bg-gray-700 text-awnash-primary focus:ring-awnash-primary"
+              />
+              <label htmlFor="highValue" className="text-sm text-gray-300">
+                {isRTL ? 'قيمة عالية' : 'High Value'}
+              </label>
+            </div>
+
+            {/* Date Range */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="date"
+                value={dateRange.start}
+                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                className="px-3 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+              />
+              <span className="text-gray-400">-</span>
+              <input
+                type="date"
+                value={dateRange.end}
+                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                className="px-3 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bids Table */}
+        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          {/* Table Header */}
+          <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <input
+                type="checkbox"
+                checked={selectedBids.length === sortedBids.length && sortedBids.length > 0}
+                onChange={handleSelectAll}
+                className="rounded border-gray-600 bg-gray-700 text-awnash-primary focus:ring-awnash-primary"
+              />
+              <span className="text-white font-medium">
+                {selectedBids.length > 0 
+                  ? `${selectedBids.length} ${isRTL ? 'عرض محدد' : 'bids selected'}`
+                  : `${sortedBids.length} ${isRTL ? 'عرض' : 'bids'}`
+                }
+              </span>
+            </div>
+            
+            {selectedBids.length > 0 && (
+              <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
+                <button
+                  onClick={handleBulkExport}
+                  className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                >
+                  {isRTL ? 'تصدير' : 'Export'}
+                </button>
+                <button
+                  onClick={handleBulkFlag}
+                  className="px-3 py-1 bg-orange-600 text-white rounded text-sm hover:bg-orange-700 transition-colors"
+                >
+                  {isRTL ? 'وضع علامة' : 'Flag'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'عرض' : 'Bid'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'المعدة' : 'Equipment'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'المالك' : 'Owner'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'المستأجر' : 'Renter'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'التواريخ' : 'Dates'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'المبلغ' : 'Amount'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'الحالة' : 'Status'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    {isRTL ? 'إجراءات' : 'Actions'}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-gray-800 divide-y divide-gray-700">
+                {sortedBids.map((bid) => (
+                  <tr key={bid.id} className="hover:bg-gray-700 transition-colors">
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-white">{bid.id}</div>
+                        <div className="text-xs text-gray-400">{bid.request.requestId}</div>
+                        <div className="text-xs text-gray-500">{formatDate(bid.created_at)}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <img
+                          src={bid.equipment.image_urls[0] || '/api/placeholder/80/60'}
+                          alt={bid.equipment.name}
+                          className="w-10 h-10 rounded-lg object-cover mr-3"
+                          onError={(e) => {
+                            e.currentTarget.src = '/api/placeholder/80/60';
+                          }}
+                        />
+                        <div>
+                          <div className="text-sm font-medium text-white">{bid.equipment.name}</div>
+                          <div className="text-xs text-gray-400">{bid.equipment.equipment_type}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm text-white">{bid.equipment.owner.full_name}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm text-white">{bid.request.requester.full_name}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-white">{formatDate(bid.request.start_date)} - {formatDate(bid.request.end_date)}</div>
+                      <div className="text-xs text-gray-400">
+                        {isRTL ? 'ينتهي' : 'Expires'}: {formatDate(bid.expires_at)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-white">{formatCurrency(bid.total_amount, bid.total_amount_currency)}</div>
+                      <div className="text-xs text-gray-400">
+                        {formatCurrency(bid.daily_rate, bid.daily_rate_currency)}/{isRTL ? 'يوم' : 'day'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col space-y-2">
+                        {getStatusBadge(bid.request.status)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
+                        <button
+                          className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
+                          title={isRTL ? 'عرض التفاصيل' : 'View Details'}
+                        >
+                          <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
+                        </button>
+                        <button
+                          className="p-2 text-green-400 hover:text-green-300 transition-colors"
+                          title={isRTL ? 'قبول العرض' : 'Accept Bid'}
+                        >
+                          <FontAwesomeIcon icon={faCheck} className="h-4 w-4" />
+                        </button>
+                        <button
+                          className="p-2 text-orange-400 hover:text-orange-300 transition-colors"
+                          title={isRTL ? 'وضع علامة' : 'Flag'}
+                        >
+                          <FontAwesomeIcon icon={faFlag} className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {sortedBids.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <FontAwesomeIcon icon={faHandshake} className="h-12 w-12 text-gray-500 mb-4" />
+              <h3 className="text-lg font-medium text-gray-400 mb-2">
+                {isRTL ? 'لا توجد عروض' : 'No bids found'}
+              </h3>
+              <p className="text-gray-500">
+                {requestId 
+                  ? (isRTL ? 'لا توجد عروض لهذا الطلب' : 'No bids found for this request')
+                  : (isRTL ? 'لا توجد عروض تطابق المعايير المحددة' : 'No bids match the selected criteria')
+                }
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Load More Button */}
+        {page < totalPages && (
+          <div className="flex justify-center mt-6">
+            <button 
+              onClick={handleLoadMore} 
+              disabled={paginationLoading}
+              className="px-6 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors disabled:opacity-50"
+            >
+              {paginationLoading ? (
+                <>
+                  <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
+                  {isRTL ? 'جارٍ التحميل...' : 'Loading...'}
+                </>
+              ) : (
+                isRTL ? 'تحميل المزيد' : 'Load More'
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default BidsManagement; 
