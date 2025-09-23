@@ -139,3 +139,4 @@ export const NotFoundPage: React.FC<Omit<ErrorPageProps, 'statusCode'>> = (props
 export const ServerErrorPage: React.FC<Omit<ErrorPageProps, 'statusCode'>> = (props) => (
   <ErrorPage statusCode={500} {...props} />
 );
+
