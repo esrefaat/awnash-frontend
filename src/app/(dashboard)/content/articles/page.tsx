@@ -305,7 +305,7 @@ const ArticlesManagement: React.FC = () => {
             </p>
           </div>
           <Button
-            onClick={() => router.push('/content-manager/articles/new')}
+            onClick={() => router.push('/content/articles/new')}
             className="bg-awnash-primary hover:bg-awnash-primary-hover text-black rounded-2xl shadow-lg"
           >
             <FontAwesomeIcon icon={faPlus} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -650,7 +650,7 @@ const ArticlesManagement: React.FC = () => {
                 {isRTL ? 'لم يتم العثور على مقالات تطابق المرشحات المحددة' : 'No articles found matching the selected filters'}
               </p>
               <Button
-                onClick={() => router.push('/content-manager/articles/new')}
+                onClick={() => router.push('/content/articles/new')}
                 className="bg-awnash-primary hover:bg-awnash-primary-hover text-black rounded-2xl shadow-lg"
               >
                 <FontAwesomeIcon icon={faPlus} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
