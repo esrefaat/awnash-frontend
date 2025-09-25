@@ -126,6 +126,20 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
       ]
     },
     {
+      name: 'article',
+      label: 'Article Management',
+      permissions: [
+        { action: 'create', label: 'Create', description: 'Create new articles' },
+        { action: 'read', label: 'View', description: 'View article information' },
+        { action: 'update', label: 'Edit', description: 'Update article content' },
+        { action: 'delete', label: 'Delete', description: 'Delete articles' },
+        { action: 'publish', label: 'Publish', description: 'Publish articles' },
+        { action: 'approve', label: 'Approve', description: 'Approve articles for publication' },
+        { action: 'schedule', label: 'Schedule', description: 'Schedule articles for future publishing' },
+        { action: 'list', label: 'List', description: 'List all articles' }
+      ]
+    },
+    {
       name: 'analytics',
       label: 'Analytics & Reports',
       permissions: [

@@ -147,6 +147,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
         'booking:create', 'booking:read', 'booking:update', 'booking:delete', 'booking:approve',
         'equipment:create', 'equipment:read', 'equipment:update', 'equipment:delete', 'equipment:approve',
         'payment:create', 'payment:read', 'payment:update', 'payment:refund',
+        'article:create', 'article:read', 'article:update', 'article:delete', 'article:publish', 'article:approve', 'article:schedule', 'article:list',
         'dashboard:view', 'analytics:view', 'audit:view', 'reports:generate'
       ],
       booking_admin: [
@@ -157,11 +158,12 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
       content_admin: [
         'equipment:create', 'equipment:read', 'equipment:update',
         'lead:create', 'lead:read', 'lead:update', 'lead:convert',
+        'article:create', 'article:read', 'article:update', 'article:publish', 'article:schedule', 'article:list',
         'user:read', 'dashboard:view'
       ],
       support_agent: [
         'user:read', 'booking:read', 'equipment:read', 'payment:read',
-        'lead:read', 'dashboard:view'
+        'lead:read', 'article:read', 'article:list', 'dashboard:view'
       ],
       owner: [
         'equipment:create', 'equipment:read', 'equipment:update',
