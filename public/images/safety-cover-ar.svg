@@ -1,0 +1,51 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arabicSafetyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D9488;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#arabicSafetyGrad)"/>
+  
+  <!-- Equipment silhouettes -->
+  <g opacity="0.3">
+    <!-- Excavator 1 -->
+    <rect x="120" y="230" width="60" height="40" fill="black"/>
+    <rect x="180" y="240" width="80" height="15" fill="black"/>
+    <rect x="260" y="235" width="25" height="25" fill="black"/>
+    <rect x="110" y="270" width="80" height="15" fill="black"/>
+    
+    <!-- Excavator 2 -->
+    <rect x="370" y="260" width="36" height="24" fill="black"/>
+    <rect x="406" y="266" width="48" height="9" fill="black"/>
+    <rect x="454" y="263" width="15" height="15" fill="black"/>
+    <rect x="364" y="284" width="48" height="9" fill="black"/>
+    
+    <!-- Excavator 3 -->
+    <rect x="620" y="240" width="42" height="28" fill="black"/>
+    <rect x="662" y="248" width="56" height="10.5" fill="black"/>
+    <rect x="718" y="245" width="17.5" height="17.5" fill="black"/>
+    <rect x="613" y="268" width="56" height="10.5" fill="black"/>
+  </g>
+  
+  <!-- Title (Arabic) -->
+  <text x="400" y="100" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="white" text-anchor="middle">السلامة أولاً</text>
+  <text x="400" y="140" font-family="Arial, sans-serif" font-size="22" fill="white" text-anchor="middle">إرشادات تشغيل المعدات الثقيلة</text>
+  
+  <!-- Safety hard hat icon -->
+  <circle cx="400" cy="200" r="30" fill="rgba(255,255,255,0.9)"/>
+  <circle cx="400" cy="200" r="25" fill="#1E3A8A"/>
+  
+  <!-- Decorative Islamic pattern -->
+  <g stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none">
+    <polygon points="100,320 120,300 140,320 120,340"/>
+    <polygon points="200,320 220,300 240,320 220,340"/>
+    <polygon points="300,320 320,300 340,320 320,340"/>
+    <polygon points="460,320 480,300 500,320 480,340"/>
+    <polygon points="560,320 580,300 600,320 580,340"/>
+    <polygon points="660,320 680,300 700,320 680,340"/>
+  </g>
+</svg>
+

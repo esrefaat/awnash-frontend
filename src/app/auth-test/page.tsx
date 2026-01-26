@@ -12,7 +12,7 @@ export default function AuthTestPage() {
       try {
         // Test /auth/me endpoint
         console.log('Testing /auth/me endpoint...');
-        const authResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/auth/me`, {
+        const authResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/me`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -26,7 +26,7 @@ export default function AuthTestPage() {
 
           // Test permissions endpoint
           console.log('Testing /permissions endpoint...');
-          const permissionsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/permissions`, {
+          const permissionsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/permissions`, {
             method: 'GET',
             credentials: 'include',
           });

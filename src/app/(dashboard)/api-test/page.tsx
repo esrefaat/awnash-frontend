@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { userService } from '@/services/userService';
+import { usersService } from '@/services/usersService';
 import { apiService } from '@/services/api';
 
 const ApiTestPage: React.FC = () => {
@@ -11,7 +11,7 @@ const ApiTestPage: React.FC = () => {
   const testHealthCheck = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}`);
       const data = await response.json();
       setResult(`Health Check: ${JSON.stringify(data, null, 2)}`);
     } catch (error) {
@@ -23,7 +23,7 @@ const ApiTestPage: React.FC = () => {
   const testUsers = async () => {
     setLoading(true);
     try {
-      const response = await userService.getUsers();
+      const response = await usersService.getAllUsers();
       setResult(`Users API: ${JSON.stringify(response, null, 2)}`);
     } catch (error) {
       setResult(`Users API Error: ${error}`);

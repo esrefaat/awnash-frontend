@@ -175,7 +175,7 @@ const Header: React.FC = () => {
       '/equipment/all': { en: 'All Equipment', ar: 'جميع المعدات' },
       '/equipment/add': { en: 'Add Equipment', ar: 'إضافة معدة' },
       '/users/all': { en: 'All Users', ar: 'جميع المستخدمين' },
-      '/users/modern': { en: 'Modern Users', ar: 'المستخدمون المتقدمون' },
+      '/users/analytics': { en: 'User Analytics', ar: 'تحليلات المستخدمين' },
       '/users/documents': { en: 'Document Verification', ar: 'التحقق من المستندات' },
       '/users/regions': { en: 'Region Management', ar: 'إدارة المناطق' },
       '/settings/general': { en: 'General Settings', ar: 'الإعدادات العامة' },
@@ -207,6 +207,8 @@ const Header: React.FC = () => {
       i18n.changeLanguage(newLang);
       document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
       document.documentElement.lang = newLang;
+      // Ensure localStorage is updated
+      localStorage.setItem('i18nextLng', newLang);
     }
   };
 

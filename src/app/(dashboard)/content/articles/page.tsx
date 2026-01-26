@@ -31,6 +31,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/AlertDialog';
 import { cn } from '@/lib/utils';
+import { authenticatedGet } from '@/lib/apiUtils';
 
 interface Article {
   id: string;
@@ -86,7 +87,7 @@ const ArticlesManagement: React.FC = () => {
       category: ['Safety', 'Guidelines'],
       language: 'en',
       publishDate: '2024-06-01',
-      coverImage: '/images/safety-cover.jpg',
+      coverImage: '/images/safety-cover.svg',
       excerpt: 'Essential safety protocols and best practices for operating heavy construction equipment.',
       content: 'Detailed content about safety guidelines...',
       metaTitle: 'Heavy Equipment Safety Guidelines - Awnash',
@@ -108,7 +109,7 @@ const ArticlesManagement: React.FC = () => {
       category: ['السلامة', 'الإرشادات'],
       language: 'ar',
       publishDate: '2024-06-02',
-      coverImage: '/images/safety-cover-ar.jpg',
+      coverImage: '/images/safety-cover-ar.svg',
       excerpt: 'بروتوكولات السلامة الأساسية وأفضل الممارسات لتشغيل معدات البناء الثقيلة.',
       content: 'محتوى مفصل حول إرشادات السلامة...',
       metaTitle: 'إرشادات السلامة للمعدات الثقيلة - أونش',
@@ -130,7 +131,7 @@ const ArticlesManagement: React.FC = () => {
       category: ['Maintenance', 'Tips'],
       language: 'en',
       publishDate: '2024-06-15',
-      coverImage: '/images/maintenance-cover.jpg',
+      coverImage: '/images/maintenance-cover.svg',
       excerpt: 'How to maintain your heavy equipment for optimal performance and longevity.',
       content: 'Draft content about maintenance practices...',
       metaTitle: 'Heavy Equipment Maintenance Guide',
@@ -152,7 +153,7 @@ const ArticlesManagement: React.FC = () => {
       language: 'en',
       publishDate: '2024-06-20',
       scheduledDate: '2024-06-20T09:00:00',
-      coverImage: '/images/tech-cover.jpg',
+      coverImage: '/images/tech-cover.svg',
       excerpt: 'Exploring the newest technological advances in construction equipment.',
       content: 'Comprehensive overview of latest tech...',
       metaTitle: 'Latest Construction Equipment Technology',
@@ -173,7 +174,7 @@ const ArticlesManagement: React.FC = () => {
       category: ['Business', 'Tips'],
       language: 'en',
       publishDate: '2024-05-28',
-      coverImage: '/images/cost-cover.jpg',
+      coverImage: '/images/cost-cover.svg',
       excerpt: 'Smart strategies to reduce equipment rental costs without compromising quality.',
       content: 'Detailed strategies for cost optimization...',
       metaTitle: 'Cost-Effective Equipment Rental Strategies',
@@ -196,7 +197,26 @@ const ArticlesManagement: React.FC = () => {
   ];
 
   useEffect(() => {
-    setArticles(mockArticles);
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        const result = await authenticatedGet('/content/articles');
+        if (result.success && result.data) {
+          setArticles(result.data.articles || []);
+        } else {
+          // Fallback to mock data if API fails
+          setArticles(mockArticles);
+        }
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        // Fallback to mock data if API fails
+        setArticles(mockArticles);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
   }, []);
 
   const filteredArticles = articles.filter(article => {
@@ -499,9 +519,13 @@ const ArticlesManagement: React.FC = () => {
                     <tr key={article.id} className="hover:bg-gray-700 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-start gap-3">
-                          <div className="w-16 h-12 bg-gray-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <div className="w-16 h-12 bg-gray-600 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                             {article.coverImage ? (
-                              <FontAwesomeIcon icon={faImage} className="h-6 w-6 text-gray-400" />
+                              <img 
+                                src={article.coverImage} 
+                                alt={article.title}
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <FontAwesomeIcon icon={faFileAlt} className="h-6 w-6 text-gray-400" />
                             )}
@@ -579,14 +603,16 @@ const ArticlesManagement: React.FC = () => {
                             variant="outline"
                             size="sm"
                             className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-white rounded-2xl"
+                            title={isRTL ? 'معاينة المقال' : 'Preview Article'}
                           >
                             <FontAwesomeIcon icon={faEye} className="h-3 w-3" />
                           </Button>
                           <Button
-                            onClick={() => router.push(`/content-manager/articles/${article.id}/edit`)}
+                            onClick={() => router.push(`/content/articles/${article.id}/edit`)}
                             variant="outline"
                             size="sm"
                             className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-white rounded-2xl"
+                            title={isRTL ? 'تحرير المقال' : 'Edit Article'}
                           >
                             <FontAwesomeIcon icon={faEdit} className="h-3 w-3" />
                           </Button>

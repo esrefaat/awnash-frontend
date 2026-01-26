@@ -106,7 +106,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
     formData.append('alt_text', '');
     formData.append('description', '');
 
-    const response = await fetch('http://localhost:3001/api/media/upload', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/media/upload`, {
       method: 'POST',
       credentials: 'include', // Use HTTP-only cookies for authentication
       body: formData
@@ -204,7 +204,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
   };
 
   const deleteMediaFromServer = async (mediaId: string): Promise<void> => {
-    const response = await fetch(`http://localhost:3001/api/media/${mediaId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/media/${mediaId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

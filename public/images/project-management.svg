@@ -1,0 +1,80 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="projectGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F766E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#projectGrad)"/>
+  
+  <!-- Project timeline -->
+  <g stroke="rgba(255,255,255,0.6)" stroke-width="3" fill="rgba(255,255,255,0.8)">
+    <line x1="100" y1="250" x2="700" y2="250"/>
+    
+    <!-- Milestones -->
+    <circle cx="150" cy="250" r="8"/>
+    <circle cx="300" cy="250" r="8"/>
+    <circle cx="450" cy="250" r="8"/>
+    <circle cx="600" cy="250" r="8"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="80" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="white" text-anchor="middle">PROJECT MANAGEMENT</text>
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle">Efficient Construction Workflows</text>
+  
+  <!-- Timeline labels -->
+  <g fill="white" font-family="Arial, sans-serif" font-size="14" text-anchor="middle">
+    <text x="150" y="230">Planning</text>
+    <text x="150" y="280">Week 1-2</text>
+    
+    <text x="300" y="230">Execution</text>
+    <text x="300" y="280">Week 3-8</text>
+    
+    <text x="450" y="230">Monitoring</text>
+    <text x="450" y="280">Week 9-10</text>
+    
+    <text x="600" y="230">Completion</text>
+    <text x="600" y="280">Week 11-12</text>
+  </g>
+  
+  <!-- Project elements -->
+  <g fill="rgba(255,255,255,0.7)">
+    <!-- Gantt chart representation -->
+    <rect x="120" y="180" width="60" height="15" rx="7"/>
+    <rect x="200" y="180" width="120" height="15" rx="7"/>
+    <rect x="340" y="180" width="80" height="15" rx="7"/>
+    <rect x="440" y="180" width="100" height="15" rx="7"/>
+    
+    <!-- Task bars -->
+    <rect x="120" y="200" width="40" height="10" rx="5"/>
+    <rect x="180" y="200" width="80" height="10" rx="5"/>
+    <rect x="280" y="200" width="60" height="10" rx="5"/>
+    <rect x="360" y="200" width="90" height="10" rx="5"/>
+    <rect x="470" y="200" width="70" height="10" rx="5"/>
+  </g>
+  
+  <!-- Management tools -->
+  <g fill="rgba(255,255,255,0.9)" font-family="Arial, sans-serif" font-size="16">
+    <text x="50" y="340">📋 Task Management</text>
+    <text x="250" y="340">📊 Progress Tracking</text>
+    <text x="450" y="340">👥 Team Coordination</text>
+    <text x="650" y="340">📈 Performance Analytics</text>
+  </g>
+  
+  <!-- Equipment icons -->
+  <g opacity="0.4">
+    <rect x="680" y="160" width="30" height="20" fill="white"/>
+    <rect x="690" y="150" width="40" height="8" fill="white"/>
+    <rect x="730" y="155" width="12" height="12" fill="white"/>
+  </g>
+  
+  <!-- Success metrics -->
+  <g fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif" font-size="14">
+    <text x="50" y="370">✓ On-Time Delivery: 95%</text>
+    <text x="250" y="370">✓ Budget Accuracy: 98%</text>
+    <text x="450" y="370">✓ Client Satisfaction: 4.8/5</text>
+  </g>
+</svg>
+

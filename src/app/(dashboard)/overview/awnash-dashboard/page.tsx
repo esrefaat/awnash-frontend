@@ -33,6 +33,7 @@ import {
 } from 'recharts';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 // Mock data for Awnash platform
 const platformStats = {
@@ -130,6 +131,7 @@ const AwnashDashboard: React.FC = () => {
   const router = useRouter();
   const { currentLanguage } = useLanguage();
   const isRTL = currentLanguage.direction === 'rtl';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
 
   const StatCard = ({ title, titleAr, value, growth, icon, color, currency = false }: any) => (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -248,12 +250,9 @@ const AwnashDashboard: React.FC = () => {
               <XAxis dataKey="month" stroke="#666" fontSize={12} />
               <YAxis stroke="#666" fontSize={12} />
               <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                }}
+                contentStyle={contentStyle}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
               />
               <Line 
                 type="monotone" 
@@ -288,12 +287,9 @@ const AwnashDashboard: React.FC = () => {
                 ))}
               </Pie>
               <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                }}
+                contentStyle={contentStyle}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
               />
             </PieChart>
           </ResponsiveContainer>

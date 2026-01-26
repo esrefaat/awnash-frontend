@@ -46,7 +46,7 @@ export const usePermissions = (): PermissionContext => {
     const loadPermissions = async () => {
       try {
         // Use HTTP-only cookies exclusively - call backend to get user info
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/auth/me`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/me`, {
           method: 'GET',
           credentials: 'include', // Include HTTP-only cookies
         });

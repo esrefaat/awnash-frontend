@@ -16,22 +16,14 @@ import {
 import { cn } from '@/lib/utils';
 import { getCitiesForDropdown } from '@/config/cities';
 import { 
-  getEquipmentTypesForDropdown, 
-  getEquipmentSizesForDropdown, 
-  getEquipmentStatusesForDropdown 
+  getEquipmentSizesForDropdown,
+  getEquipmentStatusesForDropdown
 } from '@/config/equipment';
-import { equipmentService, Equipment } from '@/services/equipmentService';
+import { equipmentTypeService, EquipmentType } from '@/services/equipmentTypeService';
+import { equipmentService, Equipment, EquipmentFormData } from '@/services/equipmentService';
+import { usersService } from '@/services/usersService';
+import { useAuth } from '@/contexts/AuthContext';
 
-export interface EquipmentFormData {
-  name: string;
-  description: string;
-  equipment_type: string;
-  size: string;
-  city: string;
-  status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked';
-  image_urls: string[];
-  daily_rate: number;
-}
 
 interface GlobalEquipmentModalProps {
   isOpen: boolean;
@@ -53,12 +45,13 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
   const [form, setForm] = useState<EquipmentFormData>({
     name: '',
     description: '',
-    equipment_type: '',
+    equipment_type_id: '',
     size: '',
     city: '',
     status: 'active',
     image_urls: [],
-    daily_rate: 0
+    daily_rate: 0,
+    owner_id: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -66,7 +59,28 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
   const [error, setError] = useState('');
   const [uploadingImages, setUploadingImages] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [owners, setOwners] = useState<Array<{id: string, full_name: string, email?: string}>>([]);
+  const [loadingOwners, setLoadingOwners] = useState(false);
+  const [ownerSearchTerm, setOwnerSearchTerm] = useState('');
+  const [showOwnerDropdown, setShowOwnerDropdown] = useState(false);
+  const [equipmentTypes, setEquipmentTypes] = useState<EquipmentType[]>([]);
+  const [loadingEquipmentTypes, setLoadingEquipmentTypes] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const ownerDropdownRef = useRef<HTMLDivElement>(null);
+
+  
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === 'super_admin';
+
+  // Filter owners based on search term
+  const filteredOwners = owners.filter(owner => 
+    owner.full_name.toLowerCase().includes(ownerSearchTerm.toLowerCase()) ||
+    (owner.email && owner.email.toLowerCase().includes(ownerSearchTerm.toLowerCase()))
+  );
+
+  // Get selected owner display text
+  const selectedOwner = owners.find(owner => owner.id === form.owner_id);
+  const selectedOwnerText = selectedOwner ? `${selectedOwner.full_name}${selectedOwner.email ? ` (${selectedOwner.email})` : ''}` : '';
 
   // Initialize form with equipment data when editing
   useEffect(() => {
@@ -74,12 +88,13 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setForm({
         name: equipmentToEdit.name || '',
         description: equipmentToEdit.description || '',
-        equipment_type: equipmentToEdit.equipment_type || '',
+        equipment_type_id: equipmentToEdit.equipment_type_id || '',
         size: equipmentToEdit.size || '',
         city: equipmentToEdit.city || '',
         status: equipmentToEdit.status || 'active',
         image_urls: equipmentToEdit.image_urls || [],
-        daily_rate: parseFloat(equipmentToEdit.daily_rate || '0')
+        daily_rate: parseFloat(equipmentToEdit.daily_rate || '0'),
+        owner_id: equipmentToEdit.owner_id || user?.id || ''
       });
       setImagePreviews(equipmentToEdit.image_urls || []);
     } else {
@@ -87,18 +102,87 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setForm({
         name: '',
         description: '',
-        equipment_type: '',
+        equipment_type_id: '',
         size: '',
         city: '',
         status: 'active',
         image_urls: [],
-        daily_rate: 0
+        daily_rate: 0,
+        owner_id: user?.id || '' // Default to current user
       });
       setImagePreviews([]);
     }
     setError('');
     setSuccess('');
-  }, [isEditMode, equipmentToEdit, isOpen]);
+  }, [isEditMode, equipmentToEdit, isOpen, user?.id]);
+
+  // Load owners for super admin
+  useEffect(() => {
+    const loadOwners = async () => {
+      if (isSuperAdmin && isOpen) {
+        setLoadingOwners(true);
+        try {
+          const response = await usersService.getAllUsers({ role: 'owner' });
+          
+          setOwners(response.users.map((user) => ({
+            id: user.id,
+            full_name: user.full_name,
+            email: user.email || ''
+          })));
+        } catch (error) {
+          console.error('Failed to load owners:', error);
+        } finally {
+          setLoadingOwners(false);
+        }
+      }
+    };
+
+    loadOwners();
+  }, [isSuperAdmin, isOpen]);
+
+  // Load equipment types
+  useEffect(() => {
+    const loadEquipmentTypes = async () => {
+      if (isOpen) {
+        setLoadingEquipmentTypes(true);
+        try {
+          const response = await equipmentTypeService.getAll({ limit: 100 });
+          setEquipmentTypes(response.data || []);
+        } catch (error) {
+          console.error('Failed to load equipment types:', error);
+          setEquipmentTypes([]);
+        } finally {
+          setLoadingEquipmentTypes(false);
+        }
+      }
+    };
+
+    loadEquipmentTypes();
+  }, [isOpen]);
+
+  // Close owner dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ownerDropdownRef.current && !ownerDropdownRef.current.contains(event.target as Node)) {
+        setShowOwnerDropdown(false);
+      }
+    };
+
+    if (showOwnerDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showOwnerDropdown]);
+
+  // Set owner_id when user is available and form is reset
+  useEffect(() => {
+    if (user?.id && !isEditMode && form.owner_id === '') {
+      setForm(prev => ({
+        ...prev,
+        owner_id: user.id
+      }));
+    }
+  }, [user?.id, isEditMode, form.owner_id]);
 
   // Clear success message when error appears
   useEffect(() => {
@@ -118,7 +202,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:3001/api/media/upload', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/media/upload`, {
         method: 'POST',
         credentials: 'include',
         body: formData
@@ -129,7 +213,19 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       }
 
       const data = await response.json();
-      return data.url;
+      console.log('Image upload response:', data);
+      
+      // Handle different response structures
+      if (data.data && data.data.url) {
+        return data.data.url;
+      } else if (data.url) {
+        return data.url;
+      } else if (data.data && typeof data.data === 'string') {
+        return data.data;
+      } else {
+        console.error('Unexpected upload response structure:', data);
+        throw new Error('Invalid response structure from upload API');
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
@@ -150,14 +246,18 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         
-        // Create preview
-        const previewUrl = URL.createObjectURL(file);
-        newImagePreviews.push(previewUrl);
-
-        // Upload image
+        // Upload image first
         const uploadedUrl = await handleImageUpload(file);
+        console.log('Uploaded URL:', uploadedUrl);
         newImageUrls.push(uploadedUrl);
+        
+        // Use the server URL for both form data and preview
+        // This ensures consistency between what's displayed and what's submitted
+        newImagePreviews.push(uploadedUrl);
       }
+
+      console.log('All uploaded URLs:', newImageUrls);
+      console.log('All preview URLs (same as uploaded):', newImagePreviews);
 
       setForm(prev => ({
         ...prev,
@@ -180,7 +280,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       if (imageUrl.includes('/api/media/')) {
         const mediaId = imageUrl.split('/').pop();
         if (mediaId) {
-          await fetch(`http://localhost:3001/api/media/${mediaId}`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/media/${mediaId}`, {
             method: 'DELETE',
             credentials: 'include'
           });
@@ -194,10 +294,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       }));
       setImagePreviews(prev => prev.filter((_, i) => i !== index));
 
-      // Revoke object URL to free memory
-      if (previewUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(previewUrl);
-      }
+      // No need to revoke object URLs since we're using server URLs for previews now
     } catch (error) {
       console.error('Error removing image:', error);
       setError(isRTL ? 'فشل في حذف الصورة' : 'Failed to remove image');
@@ -212,11 +309,16 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setError(isRTL ? 'اسم المعدة مطلوب' : 'Equipment name is required');
       return;
     }
+
+    if (!form.owner_id) {
+      setError(isRTL ? 'يجب تحديد المالك' : 'Owner is required');
+      return;
+    }
     if (!form.description.trim()) {
       setError(isRTL ? 'وصف المعدة مطلوب' : 'Equipment description is required');
       return;
     }
-    if (!form.equipment_type) {
+    if (!form.equipment_type_id) {
       setError(isRTL ? 'نوع المعدة مطلوب' : 'Equipment type is required');
       return;
     }
@@ -233,6 +335,10 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setLoading(true);
       setError('');
       setSuccess('');
+
+      console.log('Form data being submitted:', form);
+      console.log('Image URLs in form:', form.image_urls);
+      console.log('Image previews:', imagePreviews);
 
       if (isEditMode && equipmentToEdit) {
         // Update existing equipment
@@ -303,6 +409,70 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
             {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Owner Selection (Super Admin Only) */}
+        {isSuperAdmin && (
+          <div className="md:col-span-2 relative">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {isRTL ? 'المالك' : 'Owner'} *
+            </label>
+            <div className="relative" ref={ownerDropdownRef}>
+              <Input
+                type="text"
+                value={showOwnerDropdown ? ownerSearchTerm : selectedOwnerText}
+                onChange={(e) => {
+                  setOwnerSearchTerm(e.target.value);
+                  setShowOwnerDropdown(true);
+                }}
+                onFocus={() => {
+                  setShowOwnerDropdown(true);
+                  setOwnerSearchTerm('');
+                }}
+                placeholder={isRTL ? 'ابحث عن المالك...' : 'Search for owner...'}
+                required
+                disabled={loadingOwners}
+                className="w-full"
+              />
+              
+              {showOwnerDropdown && !loadingOwners && (
+                <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  {filteredOwners.length > 0 ? (
+                    filteredOwners.map((owner) => (
+                      <div
+                        key={owner.id}
+                        className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm"
+                        onClick={() => {
+                          handleInputChange('owner_id', owner.id);
+                          setShowOwnerDropdown(false);
+                          setOwnerSearchTerm('');
+                        }}
+                      >
+                        <div className="font-medium text-gray-900 dark:text-white">
+                          {owner.full_name}
+                        </div>
+                        {owner.email && (
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {owner.email}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                      {isRTL ? 'لا توجد نتائج' : 'No results found'}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {loadingOwners && (
+              <p className="text-sm text-gray-500 mt-1">
+                {isRTL ? 'جاري تحميل المالكين...' : 'Loading owners...'}
+              </p>
+            )}
+          </div>
+        )}
+
             {/* Equipment Name */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -337,16 +507,20 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
                 {isRTL ? 'نوع المعدة' : 'Equipment Type'} *
               </label>
               <Select
-                value={form.equipment_type}
-                onChange={(e) => handleInputChange('equipment_type', e.target.value)}
+                value={form.equipment_type_id}
+                onChange={(e) => handleInputChange('equipment_type_id', e.target.value)}
                 required
               >
                 <option value="">{isRTL ? 'اختر نوع المعدة' : 'Select equipment type'}</option>
-                {getEquipmentTypesForDropdown(isRTL).map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
+                {loadingEquipmentTypes ? (
+                  <option disabled>{isRTL ? 'جاري التحميل...' : 'Loading...'}</option>
+                ) : (
+                  equipmentTypes.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {isRTL ? type.name_ar : type.name_en}
+                    </option>
+                  ))
+                )}
               </Select>
             </div>
 

@@ -20,6 +20,10 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { useAuth } from "@/contexts/AuthContext";
+import { DemoAccountsPanel } from "@/components/auth/DemoAccountsPanel";
+
+// Configuration: Show demo accounts panel based on environment variable
+const SHOW_DEMO_ACCOUNTS = process.env.NEXT_PUBLIC_SHOW_DEMO_ACCOUNTS === "true";
 
 const Login: React.FC = () => {
   const { i18n } = useTranslation();
@@ -131,20 +135,41 @@ const Login: React.FC = () => {
     }
   };
 
+  // Handle demo account selection
+  const handleDemoAccountSelect = (email: string, password: string) => {
+    setFormData((prev) => ({ ...prev, email, password }));
+    setErrors({});
+  };
+
   return (
     <div
       className={cn(
-        "min-h-screen flex items-center justify-center bg-[#F4F4F4] dark:bg-black transition-colors",
+        "min-h-screen flex items-center justify-center bg-[#F4F4F4] dark:bg-black transition-colors py-8 px-4",
         isRTL ? "font-arabic" : "font-montserrat"
       )}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <Card
+      <div
         className={cn(
-          "w-full max-w-md p-6 rounded-2xl shadow-lg space-y-4 bg-white dark:bg-[#18181b] border-0",
-          "mx-2 sm:mx-auto"
+          "flex flex-col lg:flex-row items-center lg:items-start gap-6 w-full max-w-4xl",
+          isRTL ? "lg:flex-row-reverse" : ""
         )}
       >
+        {/* Demo Accounts Panel - Left/Right side based on RTL */}
+        {SHOW_DEMO_ACCOUNTS && (
+          <DemoAccountsPanel
+            isRTL={isRTL}
+            onSelectAccount={handleDemoAccountSelect}
+          />
+        )}
+
+        {/* Login Card */}
+        <Card
+          className={cn(
+            "w-full max-w-md p-6 rounded-2xl shadow-lg space-y-4 bg-white dark:bg-[#18181b] border-0",
+            !SHOW_DEMO_ACCOUNTS && "mx-auto"
+          )}
+        >
         {/* Language Switcher */}
         <div className="flex justify-end">
           <Select
@@ -338,6 +363,7 @@ const Login: React.FC = () => {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

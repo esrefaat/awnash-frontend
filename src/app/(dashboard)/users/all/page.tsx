@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { userService } from '@/services/userService';
-import { User } from '@/types';
+import { usersService, User } from '@/services/usersService';
+import AddUserModal from '@/components/modals/AddUserModal';
 import {
   faUsers,
   faSearch,
@@ -85,45 +85,48 @@ const UsersManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const limit = 20; // Users per page
 
   // Load users from API
+  const loadUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await usersService.getAllUsers({
+        page: currentPage,
+        limit: limit,
+      });
+      setUsers(response.users);
+      setTotalPages(response.totalPages);
+      setTotalUsers(response.total);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load users');
+      console.error('Error loading users:', err);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage]);
+
   useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        setLoading(true);
-        const response = await userService.getUsers();
-        
-        // Handle the actual API response structure
-        const responseData = response as any; // Cast to handle actual API structure
-        
-        if (responseData && responseData.users && Array.isArray(responseData.users)) {
-          setUsers(responseData.users);
-          setError(null);
-        } else if (responseData && responseData.data && responseData.data.data && Array.isArray(responseData.data.data)) {
-          // Fallback for expected API structure
-          setUsers(responseData.data.data);
-          setError(null);
-        } else {
-          // Fallback to empty array if response structure is unexpected
-          setUsers([]);
-          setError('Unexpected response structure from API');
-          console.error('Unexpected response structure:', responseData);
-        }
-      } catch (err) {
-        setError('Failed to load users');
-        console.error('Error loading users:', err);
-        setUsers([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadUsers();
-  }, []);
+  }, [loadUsers]);
 
-  // Helper function to get user display name
-  const getUserDisplayName = (user: User) => {
-    return `${user.firstName} ${user.lastName}`.trim();
+  // Handle user added
+  const handleUserAdded = (newUser: User) => {
+    loadUsers(); // Refresh the list
+    setShowAddUserModal(false);
+  };
+
+  // Handle edit user
+  const handleEditUser = (user: User) => {
+    // For now, open profile with details tab
+    setSelectedUser(user);
+    setActiveTab('details');
   };
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -133,7 +136,7 @@ const UsersManagement: React.FC = () => {
   const [sortField, setSortField] = useState<string>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState('bookings');
+  const [activeTab, setActiveTab] = useState('details');
 
   // Mock data for selected user
   const [userBookings] = useState<UserBooking[]>([
@@ -220,15 +223,19 @@ const UsersManagement: React.FC = () => {
   // Filtering and sorting
   const filteredUsers = useMemo(() => {
     let filtered = users.filter(user => {
-      const matchesSearch = (`${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           user.email.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesSearch = (user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           user.mobile_number?.includes(searchTerm));
       
       const matchesRole = roleFilter === 'all' || user.role === roleFilter;
       
-      const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+      // Map status filter to is_active
+      const matchesStatus = statusFilter === 'all' || 
+        (statusFilter === 'active' && user.is_active) ||
+        (statusFilter === 'inactive' && !user.is_active);
       
       const matchesActivity = activityFilter === 'all' || 
-        (activityFilter === 'recent' && user.lastLogin && new Date(user.lastLogin) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+        (activityFilter === 'recent' && user.last_login && new Date(user.last_login) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
       
       return matchesSearch && matchesRole && matchesStatus && matchesActivity;
     });
@@ -272,28 +279,32 @@ const UsersManagement: React.FC = () => {
   };
 
   const getRoleBadge = (role: string) => {
-    if (role === 'owner') {
+    const roleConfig: Record<string, { bg: string; text: string; labelEn: string; labelAr: string }> = {
+      owner: { bg: 'bg-yellow-500', text: 'text-black', labelEn: 'Owner', labelAr: 'مالك' },
+      requester: { bg: 'bg-blue-500', text: 'text-white', labelEn: 'Requester', labelAr: 'طالب' },
+      renter: { bg: 'bg-blue-500', text: 'text-white', labelEn: 'Renter', labelAr: 'مستأجر' },
+      hybrid: { bg: 'bg-purple-500', text: 'text-white', labelEn: 'Hybrid', labelAr: 'هجين' },
+      super_admin: { bg: 'bg-red-500', text: 'text-white', labelEn: 'Super Admin', labelAr: 'مشرف عام' },
+      booking_admin: { bg: 'bg-green-500', text: 'text-white', labelEn: 'Booking Admin', labelAr: 'مشرف حجوزات' },
+      content_admin: { bg: 'bg-teal-500', text: 'text-white', labelEn: 'Content Admin', labelAr: 'مشرف محتوى' },
+      support_agent: { bg: 'bg-orange-500', text: 'text-white', labelEn: 'Support', labelAr: 'دعم' },
+      admin: { bg: 'bg-green-500', text: 'text-white', labelEn: 'Admin', labelAr: 'مشرف' },
+    };
+
+    const config = roleConfig[role?.toLowerCase()];
+    if (!config) {
       return (
-        <span className="px-2 py-1 bg-yellow-500 text-black text-xs rounded-full font-medium">
-          {isRTL ? 'مالك المعدات' : 'Owner'}
+        <span className="px-2 py-1 bg-gray-500 text-white text-xs rounded-full font-medium">
+          {role || 'Unknown'}
         </span>
       );
     }
-    if (role === 'renter') {
-      return (
-        <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded-full font-medium">
-          {isRTL ? 'مستأجر' : 'Renter'}
-        </span>
-      );
-    }
-    if (role === 'admin') {
-      return (
-        <span className="px-2 py-1 bg-green-500 text-white text-xs rounded-full font-medium">
-          {isRTL ? 'مشرف' : 'Admin'}
-        </span>
-      );
-    }
-    return null;
+
+    return (
+      <span className={cn("px-2 py-1 text-xs rounded-full font-medium", config.bg, config.text)}>
+        {isRTL ? config.labelAr : config.labelEn}
+      </span>
+    );
   };
 
   const getStatusBadge = (status: string) => {
@@ -341,15 +352,34 @@ const UsersManagement: React.FC = () => {
 
   return (
     <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Export Button - Move to top of content */}
+      {/* Header with Add User and Export Buttons */}
       <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex justify-end mb-6">
-          <button className="flex items-center gap-2 px-4 py-2 bg-awnash-accent hover:bg-awnash-accent-hover text-white rounded-2xl transition-colors shadow-lg">
-            <FontAwesomeIcon icon={faDownload} className="h-4 w-4" />
-            <span className="text-sm font-medium">
-              {isRTL ? 'تصدير' : 'Export'}
-            </span>
-          </button>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-white">
+              {isRTL ? 'إدارة المستخدمين' : 'User Management'}
+            </h1>
+            <p className="text-gray-400 text-sm mt-1">
+              {isRTL ? `${totalUsers} مستخدم مسجل` : `${totalUsers} registered users`}
+            </p>
+          </div>
+          <div className={cn("flex items-center gap-3", isRTL && "flex-row-reverse")}>
+            <button 
+              onClick={() => setShowAddUserModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-awnash-primary hover:bg-awnash-primary/90 text-black rounded-2xl transition-colors shadow-lg font-medium"
+            >
+              <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
+              <span className="text-sm">
+                {isRTL ? 'إضافة مستخدم' : 'Add User'}
+              </span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-2xl transition-colors shadow-lg">
+              <FontAwesomeIcon icon={faDownload} className="h-4 w-4" />
+              <span className="text-sm font-medium">
+                {isRTL ? 'تصدير' : 'Export'}
+              </span>
+            </button>
+          </div>
         </div>
       
         {/* Filters and Search */}
@@ -486,8 +516,8 @@ const UsersManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-sm text-white">{user.email}</p>
-                        <p className="text-sm text-gray-400">{user.avatar}</p>
+                        <p className="text-sm text-white">{user.email || '-'}</p>
+                        <p className="text-sm text-gray-400">{user.mobile_number}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -495,17 +525,22 @@ const UsersManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        {getStatusBadge(user.status)}
+                        {getStatusBadge(user.is_active ? 'active' : 'inactive')}
+                        {user.is_verified && (
+                          <span className="block px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500 w-fit">
+                            {isRTL ? 'موثق' : 'Verified'}
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-xs text-gray-400">{formatDate(user.createdAt)}</p>
+                        <p className="text-xs text-gray-400">{formatDate(user.created_at)}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-xs text-gray-400">{formatDate(user.lastLogin || '')}</p>
+                        <p className="text-xs text-gray-400">{user.last_login ? formatDate(user.last_login) : '-'}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -517,12 +552,19 @@ const UsersManagement: React.FC = () => {
                         >
                           <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
                         </button>
-                                                 <button
-                           className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-gray-600 rounded transition-colors"
-                           title={isRTL ? 'إيقاف' : 'Suspend'}
-                         >
-                           <FontAwesomeIcon icon={faUserSlash} className="h-4 w-4" />
-                         </button>
+                        <button
+                          onClick={() => handleEditUser(user)}
+                          className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                          title={isRTL ? 'تعديل' : 'Edit'}
+                        >
+                          <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
+                        </button>
+                        <button
+                          className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-gray-600 rounded transition-colors"
+                          title={isRTL ? 'إيقاف' : 'Suspend'}
+                        >
+                          <FontAwesomeIcon icon={faUserSlash} className="h-4 w-4" />
+                        </button>
                         <button
                           className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded transition-colors"
                           title={isRTL ? 'إبلاغ' : 'Flag'}
@@ -543,17 +585,68 @@ const UsersManagement: React.FC = () => {
             </table>
           </div>
           
-          {/* Pagination would go here */}
+          {/* Pagination */}
           <div className="bg-gray-700 px-6 py-4 border-t border-gray-600">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-400">
-                {isRTL ? `عرض ${filteredUsers.length} من أصل ${users.length} مستخدم` : `Showing ${filteredUsers.length} of ${users.length} users`}
+                {isRTL 
+                  ? `عرض ${filteredUsers.length} من أصل ${totalUsers} مستخدم (صفحة ${currentPage} من ${totalPages})`
+                  : `Showing ${filteredUsers.length} of ${totalUsers} users (Page ${currentPage} of ${totalPages})`}
               </p>
               <div className="flex items-center gap-2">
-                <button className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded text-sm">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className={cn(
+                    "px-3 py-1 rounded text-sm transition-colors",
+                    currentPage === 1 
+                      ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
+                      : "bg-gray-600 hover:bg-gray-500 text-white"
+                  )}
+                >
                   {isRTL ? 'السابق' : 'Previous'}
                 </button>
-                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                
+                {/* Page numbers */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={cn(
+                          "px-3 py-1 rounded text-sm transition-colors",
+                          currentPage === pageNum
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-600 hover:bg-gray-500 text-white"
+                        )}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className={cn(
+                    "px-3 py-1 rounded text-sm transition-colors",
+                    currentPage === totalPages 
+                      ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
                   {isRTL ? 'التالي' : 'Next'}
                 </button>
               </div>
@@ -565,9 +658,9 @@ const UsersManagement: React.FC = () => {
       {/* Profile Drawer */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={cn('bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-4xl h-[90vh] overflow-hidden', isRTL ? 'font-arabic' : 'font-montserrat')}>
+          <div className={cn('bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-4xl h-[90vh] flex flex-col', isRTL ? 'font-arabic' : 'font-montserrat')}>
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-700">
+            <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-gray-700">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium">
@@ -588,9 +681,10 @@ const UsersManagement: React.FC = () => {
             </div>
 
             {/* Tabs */}
-            <div className="border-b border-gray-700">
-              <div className="flex">
+            <div className="flex-shrink-0 border-b border-gray-700">
+              <div className="flex overflow-x-auto">
                 {[
+                  { id: 'details', label: isRTL ? 'التفاصيل' : 'Details', icon: faUsers },
                   { id: 'bookings', label: isRTL ? 'الحجوزات' : 'Bookings', icon: faCalendarAlt },
                   { id: 'equipment', label: isRTL ? 'المعدات' : 'Equipment', icon: faTruck },
                   { id: 'documents', label: isRTL ? 'الوثائق' : 'Documents', icon: faFileAlt },
@@ -614,7 +708,75 @@ const UsersManagement: React.FC = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="p-6 h-full overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto">
+              {activeTab === 'details' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-white">
+                    {isRTL ? 'معلومات المستخدم' : 'User Information'}
+                  </h3>
+                  
+                  {/* User Details Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الاسم الكامل' : 'Full Name'}</p>
+                      <p className="text-white font-medium">{selectedUser.full_name || '-'}</p>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'البريد الإلكتروني' : 'Email'}</p>
+                      <p className="text-white font-medium">{selectedUser.email || '-'}</p>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'رقم الجوال' : 'Mobile Number'}</p>
+                      <p className="text-white font-medium">{selectedUser.mobile_number || '-'}</p>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الدور' : 'Role'}</p>
+                      <div className="mt-1">{getRoleBadge(selectedUser.role)}</div>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الحالة' : 'Status'}</p>
+                      <div className="flex gap-2 mt-1">
+                        {getStatusBadge(selectedUser.is_active ? 'active' : 'inactive')}
+                        {selectedUser.is_verified && (
+                          <span className="px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500">
+                            {isRTL ? 'موثق' : 'Verified'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'تاريخ التسجيل' : 'Registered'}</p>
+                      <p className="text-white font-medium">{formatDate(selectedUser.created_at)}</p>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'آخر تسجيل دخول' : 'Last Login'}</p>
+                      <p className="text-white font-medium">{selectedUser.last_login ? formatDate(selectedUser.last_login) : '-'}</p>
+                    </div>
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'المدينة' : 'City'}</p>
+                      <p className="text-white font-medium">{selectedUser.city || '-'}</p>
+                    </div>
+                  </div>
+
+                  {/* Statistics */}
+                  <div className="mt-6">
+                    <h4 className="text-md font-semibold text-white mb-4">
+                      {isRTL ? 'الإحصائيات' : 'Statistics'}
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-gray-700 rounded-lg p-4 text-center">
+                        <p className="text-2xl font-bold text-blue-400">{selectedUser.total_bookings || 0}</p>
+                        <p className="text-sm text-gray-400">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
+                      </div>
+                      <div className="bg-gray-700 rounded-lg p-4 text-center">
+                        <p className="text-2xl font-bold text-green-400">{selectedUser.total_equipment || 0}</p>
+                        <p className="text-sm text-gray-400">{isRTL ? 'المعدات' : 'Equipment'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {activeTab === 'bookings' && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-white">
@@ -727,6 +889,13 @@ const UsersManagement: React.FC = () => {
           </div>
         </div>
               )}
+
+      {/* Add User Modal */}
+      <AddUserModal
+        isOpen={showAddUserModal}
+        onClose={() => setShowAddUserModal(false)}
+        onUserAdded={handleUserAdded}
+      />
       </div>
   );
 };

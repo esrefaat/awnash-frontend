@@ -143,7 +143,7 @@ const BidsManagement: React.FC = () => {
         return;
       }
 
-      const url = `http://localhost:3001/api/booking/bid/${requestId}?page=${pageNum}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/booking/bid/${requestId}?page=${pageNum}`;
 
       const response = await fetch(url, {
         credentials: 'include',

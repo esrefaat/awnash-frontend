@@ -21,7 +21,7 @@ Create a `.env.local` file in the root directory of this project:
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_API_URL=http://localhost:3007
 ```
 
 > **Note:** You can create a `.env.local.example` file as a template and copy it to `.env.local` for easier setup.
@@ -31,7 +31,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 You can also set the environment variable when running the development server:
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:3001 npm run dev
+NEXT_PUBLIC_API_URL=http://localhost:3007 npm run dev
 ```
 
 #### Production Configuration
@@ -44,7 +44,7 @@ NEXT_PUBLIC_API_URL=https://api.yourapp.com
 
 ### Default API URL
 
-If no environment variable is set, the application will default to `http://localhost:3001` for the API base URL.
+If no environment variable is set, the application will default to `http://localhost:3007` for the API base URL.
 
 ## Getting Started
 
@@ -115,7 +115,7 @@ If you're experiencing issues connecting to the backend API:
 
 1. **Check if the backend is running:**
    - Ensure your backend API server is running on the configured port
-   - Default backend port is `3001` (http://localhost:3001)
+   - Default backend port is `3001` (http://localhost:3007)
 
 2. **Verify environment variables:**
    - Make sure `NEXT_PUBLIC_API_URL` is set correctly in your `.env.local` file

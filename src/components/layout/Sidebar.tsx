@@ -173,13 +173,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           labelAr: 'جميع المعدات',
           path: '/equipment/all'
         },
-        {
-          key: 'equipment-add',
-          icon: faPlus,
-          label: 'Add Equipment',
-          labelAr: 'إضافة معدة',
-          path: '/equipment/add'
-        },
+      {
+        key: 'equipment-add',
+        icon: faPlus,
+        label: 'Add Equipment',
+        labelAr: 'إضافة معدة',
+        path: '/equipment/add'
+      },
         {
           key: 'users-all',
           icon: faUsers,
@@ -188,11 +188,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           path: '/users/all'
         },
         {
-          key: 'users-modern',
+          key: 'users-analytics',
           icon: faUsers,
-          label: 'Modern Users',
-          labelAr: 'المستخدمون المتقدمون',
-          path: '/users/modern'
+          label: 'User Analytics',
+          labelAr: 'تحليلات المستخدمين',
+          path: '/users/analytics'
         },
         {
           key: 'users-documents',
@@ -330,6 +330,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           label: 'General Settings',
           labelAr: 'الإعدادات العامة',
           path: '/settings/general'
+        },
+        {
+          key: 'equipment-types',
+          icon: faCogs,
+          label: 'Equipment Types',
+          labelAr: 'أنواع المعدات',
+          path: '/settings/equipment-types'
         },
         {
           key: 'permissions',

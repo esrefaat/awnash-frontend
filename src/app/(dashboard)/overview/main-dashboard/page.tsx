@@ -49,6 +49,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 // Interfaces
 interface DashboardStats {
@@ -94,6 +95,7 @@ interface ExpiringDocument {
 const Dashboard: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
   
   // Mock data for the dashboard
   const [stats] = useState<DashboardStats>({
@@ -498,12 +500,9 @@ const Dashboard: React.FC = () => {
                   <XAxis dataKey="date" stroke="#9CA3AF" />
                   <YAxis stroke="#9CA3AF" />
                   <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1F2937', 
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#F3F4F6'
-                    }}
+                    contentStyle={contentStyle}
+                    labelStyle={labelStyle}
+                    itemStyle={itemStyle}
                   />
                   <Line 
                     type="monotone" 
@@ -539,12 +538,9 @@ const Dashboard: React.FC = () => {
                     ))}
                   </Pie>
                   <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1F2937', 
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#F9FAFB'
-                    }}
+                    contentStyle={contentStyle}
+                    labelStyle={labelStyle}
+                    itemStyle={itemStyle}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -578,12 +574,9 @@ const Dashboard: React.FC = () => {
                 <XAxis dataKey="city" stroke="#9CA3AF" />
                 <YAxis stroke="#9CA3AF" />
                 <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#F3F4F6'
-                  }}
+                  contentStyle={contentStyle}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                 />
                 <Bar 
                   dataKey="bookings" 

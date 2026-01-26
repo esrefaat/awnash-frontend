@@ -39,6 +39,7 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 interface Region {
   id: string;
@@ -68,6 +69,7 @@ interface RegionSummary {
 const RegionManagement: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingRegion, setEditingRegion] = useState<string | null>(null);
@@ -336,12 +338,9 @@ const RegionManagement: React.FC = () => {
                 <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} />
                 <YAxis stroke="#9CA3AF" fontSize={12} />
                 <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#F3F4F6'
-                  }}
+                  contentStyle={contentStyle}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                   formatter={(value: any, name: string) => [
                     name === 'revenue' ? formatCurrency(value) : value,
                     name === 'revenue' ? (isRTL ? 'الإيرادات' : 'Revenue') : (isRTL ? 'الحجوزات' : 'Bookings')
@@ -378,12 +377,9 @@ const RegionManagement: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#F3F4F6'
-                  }}
+                  contentStyle={contentStyle}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                   formatter={(value: any, name: string, props: any) => [
                     `${value}% (${props.payload.count} ${isRTL ? 'حجز' : 'bookings'})`,
                     name

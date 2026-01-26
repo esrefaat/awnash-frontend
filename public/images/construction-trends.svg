@@ -1,0 +1,72 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="trendsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#trendsGrad)"/>
+  
+  <!-- City skyline silhouette -->
+  <g fill="rgba(0,0,0,0.2)">
+    <rect x="50" y="250" width="40" height="150"/>
+    <rect x="100" y="200" width="50" height="200"/>
+    <rect x="160" y="230" width="35" height="170"/>
+    <rect x="200" y="180" width="45" height="220"/>
+    <rect x="250" y="220" width="40" height="180"/>
+    <rect x="300" y="190" width="55" height="210"/>
+    <rect x="370" y="240" width="30" height="160"/>
+    <rect x="410" y="210" width="40" height="190"/>
+    <rect x="460" y="170" width="50" height="230"/>
+    <rect x="520" y="200" width="45" height="200"/>
+    <rect x="580" y="180" width="40" height="220"/>
+    <rect x="630" y="220" width="35" height="180"/>
+    <rect x="680" y="190" width="50" height="210"/>
+  </g>
+  
+  <!-- Construction crane -->
+  <g stroke="rgba(255,255,255,0.6)" stroke-width="3" fill="none">
+    <line x1="400" y1="400" x2="400" y2="100"/>
+    <line x1="400" y1="120" x2="600" y2="120"/>
+    <line x1="400" y1="120" x2="350" y2="120"/>
+    <line x1="590" y1="120" x2="590" y2="140"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="60" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="white" text-anchor="middle">CONSTRUCTION TRENDS</text>
+  <text x="400" y="90" font-family="Arial, sans-serif" font-size="22" fill="white" text-anchor="middle">Future of Building &amp; Infrastructure</text>
+  
+  <!-- Trend arrows -->
+  <g stroke="white" stroke-width="2" fill="white">
+    <line x1="100" y1="350" x2="150" y2="320"/>
+    <polygon points="150,320 145,325 145,315"/>
+    
+    <line x1="200" y1="360" x2="250" y2="330"/>
+    <polygon points="250,330 245,335 245,325"/>
+    
+    <line x1="300" y1="370" x2="350" y2="340"/>
+    <polygon points="350,340 345,345 345,335"/>
+  </g>
+  
+  <!-- Innovation icons -->
+  <g fill="rgba(255,255,255,0.8)">
+    <!-- Smart building -->
+    <rect x="680" y="140" width="30" height="30" stroke="white" stroke-width="2" fill="none"/>
+    <circle cx="695" cy="155" r="3"/>
+    
+    <!-- Green energy -->
+    <circle cx="120" cy="140" r="15" stroke="white" stroke-width="2" fill="none"/>
+    <polygon points="120,130 125,140 120,150 115,140"/>
+  </g>
+  
+  <!-- Stats -->
+  <g fill="rgba(255,255,255,0.9)" font-family="Arial, sans-serif" font-size="14">
+    <text x="50" y="380">📈 Growth: +25%</text>
+    <text x="200" y="380">🏗️ Projects: 1,200+</text>
+    <text x="400" y="380">🌱 Sustainable: 85%</text>
+    <text x="600" y="380">🤖 Automated: 60%</text>
+  </g>
+</svg>
+

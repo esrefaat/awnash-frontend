@@ -1,0 +1,62 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="maintenanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#maintenanceGrad)"/>
+  
+  <!-- Main equipment -->
+  <g opacity="0.4">
+    <rect x="170" y="230" width="60" height="40" fill="black"/>
+    <rect x="230" y="240" width="80" height="15" fill="black"/>
+    <rect x="310" y="235" width="25" height="25" fill="black"/>
+    <rect x="160" y="270" width="80" height="15" fill="black"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="80" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle">MAINTENANCE</text>
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle">Best Practices &amp; Guidelines</text>
+  
+  <!-- Wrench icon -->
+  <g stroke="white" stroke-width="8" stroke-linecap="round">
+    <line x1="350" y1="180" x2="450" y2="220"/>
+    <circle cx="340" cy="170" r="8" fill="white"/>
+    <circle cx="460" cy="230" r="8" fill="white"/>
+  </g>
+  
+  <!-- Gear icon -->
+  <g fill="rgba(255,255,255,0.9)">
+    <circle cx="500" cy="180" r="25"/>
+    <polygon points="500,150 510,165 500,180 490,165" fill="#059669"/>
+    <polygon points="525,180 510,190 500,180 510,170" fill="#059669"/>
+    <polygon points="500,210 490,195 500,180 510,195" fill="#059669"/>
+    <polygon points="475,180 490,170 500,180 490,190" fill="#059669"/>
+  </g>
+  
+  <!-- Tools scattered around -->
+  <g stroke="rgba(255,255,255,0.6)" stroke-width="4" fill="rgba(255,255,255,0.6)">
+    <!-- Screwdriver -->
+    <line x1="150" y1="160" x2="200" y2="180"/>
+    <circle cx="145" cy="157" r="3"/>
+    
+    <!-- Hammer -->
+    <line x1="600" y1="170" x2="650" y2="190"/>
+    <rect x="645" y="185" width="15" height="10"/>
+    
+    <!-- Bolt -->
+    <circle cx="550" cy="280" r="6"/>
+    <circle cx="550" cy="280" r="3" fill="#059669"/>
+  </g>
+  
+  <!-- Maintenance checklist -->
+  <g fill="rgba(255,255,255,0.7)" font-family="Arial, sans-serif" font-size="14">
+    <text x="50" y="320">✓ Regular Inspection</text>
+    <text x="50" y="340">✓ Oil Changes</text>
+    <text x="50" y="360">✓ Filter Replacement</text>
+  </g>
+</svg>
+

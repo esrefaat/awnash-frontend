@@ -36,6 +36,7 @@ import {
   BarChart,
   Bar
 } from 'recharts';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 interface BookingFinancial {
   id: string;
@@ -56,6 +57,7 @@ const CommissionReports: React.FC = () => {
   const router = useRouter();
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
     start: '2024-01-01',
     end: '2024-12-31'
@@ -249,17 +251,6 @@ const CommissionReports: React.FC = () => {
     ];
   };
 
-  // Enhanced tooltip styles for dark mode
-  const tooltipStyle = {
-    backgroundColor: '#111827',
-    border: '1px solid #374151',
-    borderRadius: '8px',
-    color: '#F9FAFB',
-    fontSize: '14px',
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-    padding: '12px'
-  };
-
   const exportToCSV = () => {
     const csvData = mockBookings.map(booking => ({
       'Booking ID': booking.id,
@@ -415,18 +406,11 @@ const CommissionReports: React.FC = () => {
                   style={{ fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' }}
                 />
                 <Tooltip 
-                  contentStyle={tooltipStyle}
+                  contentStyle={contentStyle}
                   labelFormatter={formatTooltipLabel}
                   formatter={formatTooltipValue}
-                  labelStyle={{ 
-                    color: '#F9FAFB', 
-                    fontWeight: 'bold',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
-                  itemStyle={{ 
-                    color: '#F9FAFB',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                 />
                 <Line 
                   type="monotone" 
@@ -469,20 +453,13 @@ const CommissionReports: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={tooltipStyle}
+                  contentStyle={contentStyle}
                   formatter={(value: any, name: string, props: any) => [
                     `${value}% (${formatCurrency(props.payload.amount)})`,
                     name
                   ]}
-                  labelStyle={{ 
-                    color: '#F9FAFB', 
-                    fontWeight: 'bold',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
-                  itemStyle={{ 
-                    color: '#F9FAFB',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                 />
               </PieChart>
             </ResponsiveContainer>

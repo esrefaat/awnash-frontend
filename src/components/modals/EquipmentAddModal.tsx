@@ -20,17 +20,7 @@ import {
   getEquipmentSizesForDropdown, 
   getEquipmentStatusesForDropdown 
 } from '@/config/equipment';
-
-export interface EquipmentFormData {
-  name: string;
-  description: string;
-  equipment_type: string;
-  size: string;
-  city: string;
-  status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked';
-  image_urls: string[];
-  daily_rate: number;
-}
+import { Equipment, EquipmentFormData } from '@/services/equipmentService';
 
 interface EquipmentAddModalProps {
   isOpen: boolean;
@@ -123,7 +113,7 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
     formData.append('alt_text', '');
     formData.append('description', '');
 
-    const response = await fetch('http://localhost:3001/api/media/upload', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/media/upload`, {
       method: 'POST',
       credentials: 'include',
       body: formData

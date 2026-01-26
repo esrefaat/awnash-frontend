@@ -33,21 +33,12 @@ import {
   Line
 } from 'recharts';
 import { cn } from '@/lib/utils';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 const ModernDashboard: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-
-  // Enhanced tooltip styles for dark mode
-  const tooltipStyle = {
-    backgroundColor: '#111827',
-    border: '1px solid #374151',
-    borderRadius: '8px',
-    color: '#F9FAFB',
-    fontSize: '14px',
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-    padding: '12px'
-  };
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
 
   const formatTooltipValue = (value: any, name: string) => {
     if (name === 'revenue') {
@@ -257,17 +248,10 @@ const ModernDashboard: React.FC = () => {
                 style={{ fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' }}
               />
               <Tooltip 
-                contentStyle={tooltipStyle}
+                contentStyle={contentStyle}
                 formatter={formatTooltipValue}
-                labelStyle={{ 
-                  color: '#F9FAFB', 
-                  fontWeight: 'bold',
-                  fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                }}
-                itemStyle={{ 
-                  color: '#F9FAFB',
-                  fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                }}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
               />
               <Area 
                 type="monotone" 
@@ -302,28 +286,13 @@ const ModernDashboard: React.FC = () => {
                 ))}
               </Pie>
               <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#111827',
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#F9FAFB',
-                  fontSize: '14px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-                  padding: '12px'
-                }}
+                contentStyle={contentStyle}
                 formatter={(value: any, name: string) => [
                   `${value}%`,
                   name
                 ]}
-                labelStyle={{ 
-                  color: '#F9FAFB', 
-                  fontWeight: 'bold',
-                  fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                }}
-                itemStyle={{ 
-                  color: '#F9FAFB',
-                  fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                }}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -360,17 +329,10 @@ const ModernDashboard: React.FC = () => {
               style={{ fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' }}
             />
             <Tooltip 
-              contentStyle={tooltipStyle}
+              contentStyle={contentStyle}
               formatter={formatTooltipValue}
-              labelStyle={{ 
-                color: '#F9FAFB', 
-                fontWeight: 'bold',
-                fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-              }}
-              itemStyle={{ 
-                color: '#F9FAFB',
-                fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-              }}
+              labelStyle={labelStyle}
+              itemStyle={itemStyle}
             />
             <Line 
               type="monotone" 

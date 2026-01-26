@@ -10,7 +10,7 @@ const inter = Inter({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={`${inter.variable} antialiased h-full`}>
+    <div className={`${inter.variable} h-full`}>
       <ClientProviders>
         <div className="App dark h-full">
           <Component {...pageProps} />

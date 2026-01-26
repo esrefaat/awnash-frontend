@@ -36,6 +36,7 @@ import {
   faHandPointer
 } from '@fortawesome/free-solid-svg-icons';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 // Campaign interfaces
 interface CampaignLog {
@@ -88,6 +89,7 @@ interface CampaignDetail extends CampaignLog {
 const CampaignAnalytics: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
 
   // State management
   const [filters, setFilters] = useState({
@@ -582,24 +584,9 @@ const CampaignAnalytics: React.FC = () => {
               ))}
             </Pie>
             <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#111827', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB',
-                fontSize: '14px',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-                padding: '12px'
-              }}
-              labelStyle={{ 
-                color: '#F9FAFB', 
-                fontWeight: 'bold',
-                fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-              }}
-              itemStyle={{ 
-                color: '#F9FAFB',
-                fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-              }}
+              contentStyle={contentStyle}
+              labelStyle={labelStyle}
+              itemStyle={itemStyle}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -616,24 +603,9 @@ const CampaignAnalytics: React.FC = () => {
             <XAxis dataKey="date" stroke="#9CA3AF" />
             <YAxis stroke="#9CA3AF" />
             <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#111827', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB',
-                fontSize: '14px',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-                padding: '12px'
-              }}
-              labelStyle={{ 
-                color: '#F9FAFB', 
-                fontWeight: 'bold',
-                fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-              }}
-              itemStyle={{ 
-                color: '#F9FAFB',
-                fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-              }}
+              contentStyle={contentStyle}
+              labelStyle={labelStyle}
+              itemStyle={itemStyle}
             />
             <Legend />
             <Line type="monotone" dataKey="openRate" stroke="#3B82F6" name="Open Rate %" />

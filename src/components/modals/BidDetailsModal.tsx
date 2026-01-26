@@ -17,7 +17,7 @@ import {
   faClock,
   faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
-import { Bid } from '@/services/bidsService';
+import { Offer as Bid } from '@/services/offersService';
 import { formatSimpleCurrency } from '@/lib/currencyUtils';
 import { cn } from '@/lib/utils';
 

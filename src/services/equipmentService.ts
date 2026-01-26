@@ -1,14 +1,24 @@
-import { EquipmentFormData } from '@/components/modals/EquipmentAddModal';
+export interface EquipmentFormData {
+  name: string;
+  description: string;
+  equipment_type_id: string;
+  size: string;
+  city: string;
+  status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked' | 'pending' | 'rejected';
+  image_urls: string[];
+  daily_rate: number;
+  owner_id: string;
+}
 
 export interface Equipment {
   id: string;
   owner_id: string;
   name: string;
   description: string;
-  equipment_type: string;
+  equipment_type_id: string;
   size: string;
   city: string;
-  status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked';
+  status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked' | 'pending' | 'rejected';
   image_urls: string[];
   is_available: boolean;
   total_rentals: number;
@@ -16,10 +26,23 @@ export interface Equipment {
   daily_rate: string;
   created_at: string;
   updated_at: string;
+  owner?: {
+    id: string;
+    full_name: string;
+    email: string;
+  };
+  equipment_type?: {
+    id: string;
+    name_en: string;
+    name_ar: string;
+    name_ur?: string;
+  };
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
+
 export class EquipmentService {
-  private baseUrl = 'http://localhost:3001/api';
+  private baseUrl = API_BASE_URL;
 
   async createEquipment(data: EquipmentFormData): Promise<Equipment> {
     const response = await fetch(`${this.baseUrl}/equipment`, {
@@ -156,6 +179,12 @@ export class EquipmentService {
         throw new Error('Equipment not found. It may have been deleted or moved.');
       } else if (response.status === 401) {
         throw new Error('You are not authorized to perform this action. Please log in again.');
+      } else if (response.status === 400) {
+        // Handle validation errors
+        const message = Array.isArray(errorData.message) 
+          ? errorData.message.join(', ') 
+          : errorData.message;
+        throw new Error(`Validation failed: ${message || 'Invalid data provided'}`);
       } else {
         throw new Error(errorData.message || 'Failed to update equipment');
       }

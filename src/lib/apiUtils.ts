@@ -5,24 +5,34 @@
  * across all API calls in the application.
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
 
 /**
  * Creates a fetch configuration with proper authentication headers
- * Uses HTTP-only cookies via credentials: 'include'
+ * Uses both HTTP-only cookies and Bearer token for authentication
  */
 export const createAuthenticatedFetchConfig = (
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   body?: any,
   additionalHeaders?: Record<string, string>
 ): RequestInit => {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
+  };
+
+  // Add Bearer token if available in localStorage
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
+
   const config: RequestInit = {
     method,
     credentials: 'include', // Use HTTP-only cookies for authentication
-    headers: {
-      'Content-Type': 'application/json',
-      ...additionalHeaders,
-    },
+    headers,
   };
 
   if (body && method !== 'GET') {
@@ -82,6 +92,14 @@ export const authenticatedPut = async <T>(endpoint: string, data: any): Promise<
 };
 
 /**
+ * Helper for PATCH requests with authentication
+ */
+export const authenticatedPatch = async <T>(endpoint: string, data: any): Promise<T> => {
+  const config = createAuthenticatedFetchConfig('PATCH', data);
+  return authenticatedFetch<T>(endpoint, config);
+};
+
+/**
  * Helper for DELETE requests with authentication
  */
 export const authenticatedDelete = async <T>(endpoint: string): Promise<T> => {
@@ -96,9 +114,20 @@ export const authenticatedFileUpload = async <T>(
   endpoint: string,
   formData: FormData
 ): Promise<T> => {
+  const headers: Record<string, string> = {};
+
+  // Add Bearer token if available in localStorage
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
+
   const config: RequestInit = {
     method: 'POST',
     credentials: 'include',
+    headers,
     body: formData,
     // Don't set Content-Type for FormData, let the browser set it with boundary
   };

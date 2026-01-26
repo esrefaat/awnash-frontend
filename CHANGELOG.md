@@ -63,8 +63,8 @@
 - **NEW**: API utility functions for authenticated requests
 
 ### 📝 API Documentation
-- **NEW**: Swagger documentation available at `http://localhost:3001/api/docs`
-- **NEW**: OpenAPI JSON spec at `http://localhost:3001/api/docs-json`
+- **NEW**: Swagger documentation available at `http://localhost:3007/api/docs`
+- **NEW**: OpenAPI JSON spec at `http://localhost:3007/api/docs-json`
 
 ### 🔄 Navigation Updates
 - **UPDATED**: Articles list page navigation to include "New Article" button

@@ -1,31 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// Mock database (in a real app, this would be in a database)
-let mockArticles: any[] = [
-  {
-    id: '1',
-    title: 'Safety Guidelines for Heavy Equipment Operation',
-    slug: 'safety-guidelines-heavy-equipment-operation',
-    author: 'Ahmad Al-Rashid',
-    authorId: 'admin1',
-    status: 'published',
-    category: ['Safety', 'Guidelines'],
-    language: 'en',
-    publishDate: '2024-06-01',
-    coverImage: '/images/safety-cover.jpg',
-    excerpt: 'Essential safety protocols and best practices for operating heavy construction equipment.',
-    content: '<p>Detailed content about safety guidelines...</p>',
-    metaTitle: 'Heavy Equipment Safety Guidelines - Awnash',
-    metaDescription: 'Learn essential safety protocols for heavy equipment operation. Complete guide for construction professionals.',
-    ogImage: '/images/safety-og.jpg',
-    viewCount: 1250,
-    shareCount: 89,
-    createdAt: '2024-05-25',
-    updatedAt: '2024-06-01',
-    featured: true,
-    tags: ['safety', 'equipment', 'guidelines']
-  }
-];
+import { mockArticles } from '@/data/mockArticles';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -127,8 +101,8 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date().toISOString()
     };
 
-    // Add to mock database
-    mockArticles.unshift(newArticle);
+    // Add to mock database (in a real app, this would be saved to the database)
+    (mockArticles as any[]).unshift(newArticle);
 
     return NextResponse.json({
       success: true,

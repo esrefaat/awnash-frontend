@@ -92,7 +92,7 @@ export const BidModal: React.FC<BidModalProps> = ({
       } else if (equipmentId) {
         payload.equipment_id = equipmentId;
       }
-      const res = await fetch('http://localhost:3001/api/booking/bid', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/booking/bid`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

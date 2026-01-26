@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 interface Equipment {
   id: string;
@@ -69,6 +70,7 @@ interface Equipment {
 const AllEquipmentListing: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -386,17 +388,6 @@ const AllEquipmentListing: React.FC = () => {
     revenue: equipment.revenue,
     rentals: equipment.rentals
   })).sort((a, b) => b.revenue - a.revenue).slice(0, 6);
-
-  // Enhanced tooltip styles for dark mode
-  const tooltipStyle = {
-    backgroundColor: '#111827',
-    border: '1px solid #374151',
-    borderRadius: '8px',
-    color: '#F9FAFB',
-    fontSize: '14px',
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-    padding: '12px'
-  };
 
   const formatTooltipValue = (value: any, name: string) => {
     if (name === 'revenue') {
@@ -964,17 +955,10 @@ const AllEquipmentListing: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={tooltipStyle}
+                  contentStyle={contentStyle}
                   formatter={formatTooltipValue}
-                  labelStyle={{ 
-                    color: '#F9FAFB', 
-                    fontWeight: 'bold',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
-                  itemStyle={{ 
-                    color: '#F9FAFB',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -1015,17 +999,10 @@ const AllEquipmentListing: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={tooltipStyle}
+                  contentStyle={contentStyle}
                   formatter={formatTooltipValue}
-                  labelStyle={{ 
-                    color: '#F9FAFB', 
-                    fontWeight: 'bold',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
-                  itemStyle={{ 
-                    color: '#F9FAFB',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -1056,17 +1033,10 @@ const AllEquipmentListing: React.FC = () => {
                 <XAxis dataKey="city" stroke="#9CA3AF" fontSize={12} />
                 <YAxis stroke="#9CA3AF" fontSize={12} />
                 <Tooltip 
-                  contentStyle={tooltipStyle}
+                  contentStyle={contentStyle}
                   formatter={formatTooltipValue}
-                  labelStyle={{ 
-                    color: '#F9FAFB', 
-                    fontWeight: 'bold',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
-                  itemStyle={{ 
-                    color: '#F9FAFB',
-                    fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                  }}
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                 />
                 <Bar 
                   dataKey="revenue" 
@@ -1091,17 +1061,10 @@ const AllEquipmentListing: React.FC = () => {
               <XAxis dataKey="name" stroke="#9CA3AF" />
               <YAxis stroke="#9CA3AF" />
               <Tooltip 
-                contentStyle={tooltipStyle}
+                contentStyle={contentStyle}
                 formatter={formatTooltipValue}
-                labelStyle={{ 
-                  color: '#F9FAFB', 
-                  fontWeight: 'bold',
-                  fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                }}
-                itemStyle={{ 
-                  color: '#F9FAFB',
-                  fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-montserrat)' 
-                }}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
               />
               <Bar 
                 dataKey="revenue" 

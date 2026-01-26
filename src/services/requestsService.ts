@@ -49,12 +49,14 @@ export interface CreateRequestData {
   note: string;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
+
 class RequestsService {
-  private baseUrl = 'http://localhost:3001';
+  private baseUrl = API_BASE_URL;
 
   async getRequests(): Promise<RentalRequest[]> {
     try {
-      const url = `${this.baseUrl}/api/booking/request`;
+      const url = `${this.baseUrl}/booking/request`;
       
       console.log('Fetching requests from:', url);
       
@@ -98,7 +100,7 @@ class RequestsService {
 
   async createRequest(requestData: CreateRequestData): Promise<RentalRequest> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/booking/request`, {
+      const response = await fetch(`${this.baseUrl}/booking/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -122,7 +124,7 @@ class RequestsService {
 
   async updateRequest(requestId: string, requestData: Partial<CreateRequestData>): Promise<RentalRequest> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/booking/request/${requestId}`, {
+      const response = await fetch(`${this.baseUrl}/booking/request/${requestId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -146,7 +148,7 @@ class RequestsService {
 
   async deleteRequest(requestId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/booking/request/${requestId}`, {
+      const response = await fetch(`${this.baseUrl}/booking/request/${requestId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -165,7 +167,7 @@ class RequestsService {
     try {
       console.log('Fetching request by ID:', requestId);
       
-      const response = await fetch(`${this.baseUrl}/api/booking/request/${requestId}`, {
+      const response = await fetch(`${this.baseUrl}/booking/request/${requestId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

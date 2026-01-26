@@ -24,18 +24,19 @@ import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
 import RichTextEditor from '@/components/ui/RichTextEditor';
 import { cn } from '@/lib/utils';
-import { authenticatedPost } from '@/lib/apiUtils';
+import { authenticatedPost, authenticatedFileUpload } from '@/lib/apiUtils';
 
 interface ArticleFormData {
   title: string;
   subtitle: string;
   category: string[];
   coverImage: File | null;
+  coverImageUrl?: string;
   imageCaption: string;
   content: string;
   author: string;
   publishDate: string;
-  tags: string;
+  tags: string[];
   slug: string;
   excerpt: string;
   metaTitle: string;
@@ -57,6 +58,7 @@ const NewArticlePage: React.FC = () => {
   
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [currentTag, setCurrentTag] = useState('');
   
   const [formData, setFormData] = useState<ArticleFormData>({
     title: '',
@@ -67,7 +69,7 @@ const NewArticlePage: React.FC = () => {
     content: '',
     author: '',
     publishDate: new Date().toISOString().split('T')[0],
-    tags: '',
+    tags: [],
     slug: '',
     excerpt: '',
     metaTitle: '',
@@ -85,8 +87,24 @@ const NewArticlePage: React.FC = () => {
     'Ahmad Al-Rashid', 'محمد العنزي', 'Sarah Johnson', 'Omar Al-Zahra'
   ];
 
-  // Auto-generate slug from title
+  // Arabic-friendly slug generation that preserves Arabic characters for SEO
   const generateSlug = (title: string) => {
+    // For Arabic text, preserve Arabic characters for SEO benefits
+    if (/[\u0600-\u06FF]/.test(title)) {
+      return title
+        .trim()
+        // Remove punctuation and special characters but keep Arabic letters, numbers
+        .replace(/[^\u0600-\u06FF\u0660-\u0669a-zA-Z0-9\s]/g, '')
+        // Replace spaces with hyphens
+        .replace(/\s+/g, '-')
+        // Remove multiple consecutive hyphens
+        .replace(/-+/g, '-')
+        // Remove leading and trailing hyphens
+        .replace(/^-+|-+$/g, '')
+        || 'مقال-عربي';
+    }
+    
+    // Handle English text
     return title
       .toLowerCase()
       .replace(/[^\w\s-]/g, '')
@@ -126,11 +144,54 @@ const NewArticlePage: React.FC = () => {
     }));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, coverImage: file }));
+      try {
+        setLoading(true);
+        
+        // Upload image to media service
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', file);
+        uploadFormData.append('alt_text', 'Article cover image');
+        uploadFormData.append('description', `Cover image for article: ${formData.title || 'New Article'}`);
+
+        const uploadResult = await authenticatedFileUpload('/media/upload', uploadFormData);
+        setFormData(prev => ({ 
+          ...prev, 
+          coverImage: null, // Clear the file object
+          coverImageUrl: uploadResult.url // Store the URL instead
+        }));
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        // Fallback to storing the file
+        setFormData(prev => ({ ...prev, coverImage: file }));
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  // Tags functionality
+  const handleTagKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && currentTag.trim()) {
+      e.preventDefault();
+      const newTag = currentTag.trim();
+      if (!formData.tags.includes(newTag)) {
+        setFormData(prev => ({
+          ...prev,
+          tags: [...prev.tags, newTag]
+        }));
+      }
+      setCurrentTag('');
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }));
   };
 
   const validateForm = (): boolean => {
@@ -173,9 +234,8 @@ const NewArticlePage: React.FC = () => {
         status: formData.status,
         language: formData.language,
         category: formData.category,
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-        // For now, omit image upload (to be implemented with proper file upload later)
-        // coverImage: formData.coverImage ? formData.coverImage.name : null,
+        tags: formData.tags,
+        coverImage: formData.coverImageUrl || null,
         imageCaption: formData.imageCaption
       };
 
@@ -330,16 +390,43 @@ const NewArticlePage: React.FC = () => {
               {/* Tags */}
               <div>
                 <Label htmlFor="tags" className="text-gray-300">
-                  {isRTL ? 'العلامات (مفصولة بفواصل)' : 'Tags (comma-separated)'}
+                  {isRTL ? 'العلامات' : 'Tags'}
                 </Label>
-                <Input
-                  id="tags"
-                  type="text"
-                  value={formData.tags}
-                  onChange={(e) => handleInputChange('tags', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
-                  placeholder={isRTL ? 'معدات، تأجير، سلامة' : 'equipment, rental, safety'}
-                />
+                <div className="mt-1">
+                  {/* Existing Tags */}
+                  {formData.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {formData.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-awnash-primary text-black"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => removeTag(tag)}
+                            className={`${isRTL ? 'mr-2' : 'ml-2'} text-black hover:text-red-600 focus:outline-none`}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {/* Tag Input */}
+                  <Input
+                    id="tags"
+                    type="text"
+                    value={currentTag}
+                    onChange={(e) => setCurrentTag(e.target.value)}
+                    onKeyPress={handleTagKeyPress}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder={isRTL ? 'اكتب علامة واضغط Enter' : 'Type a tag and press Enter'}
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    {isRTL ? 'اكتب علامة واضغط Enter لإضافتها' : 'Type a tag and press Enter to add it'}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -374,8 +461,30 @@ const NewArticlePage: React.FC = () => {
                     <FontAwesomeIcon icon={faUpload} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {isRTL ? 'رفع صورة' : 'Upload Image'}
                   </Button>
-                  {formData.coverImage && (
-                    <p className="text-sm text-gray-400 mt-2">{formData.coverImage.name}</p>
+                  {(formData.coverImage || formData.coverImageUrl) && (
+                    <div className="mt-2">
+                      {formData.coverImageUrl ? (
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={formData.coverImageUrl} 
+                            alt="Cover preview" 
+                            className="w-16 h-16 object-cover rounded border"
+                          />
+                          <div>
+                            <p className="text-sm text-green-400">✓ Image uploaded successfully</p>
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, coverImageUrl: undefined, coverImage: null }))}
+                              className="text-xs text-red-400 hover:text-red-300"
+                            >
+                              Remove image
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-400">{formData.coverImage?.name}</p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>

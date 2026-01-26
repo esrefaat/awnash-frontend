@@ -35,6 +35,7 @@ import {
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
 // Mock client data
 const clientsData = [
@@ -110,6 +111,7 @@ const ModernClients: React.FC = () => {
   const router = useRouter();
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [typeFilter, setTypeFilter] = useState('All');
@@ -256,7 +258,7 @@ const ModernClients: React.FC = () => {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip contentStyle={contentStyle} labelStyle={labelStyle} itemStyle={itemStyle} />
             </PieChart>
           </ResponsiveContainer>
           <div className="grid grid-cols-2 gap-4 mt-4">
@@ -282,11 +284,9 @@ const ModernClients: React.FC = () => {
               <XAxis dataKey="month" stroke="#666" />
               <YAxis stroke="#666" />
               <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px'
-                }}
+                contentStyle={contentStyle}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
               />
               <Bar dataKey="business" fill="#3B82F6" name="Business" />
               <Bar dataKey="individual" fill="#10B981" name="Individual" />

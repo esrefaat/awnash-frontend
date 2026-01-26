@@ -12,6 +12,7 @@ import { equipmentService, Equipment } from '@/services/equipmentService';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { formatCurrency } from '@/lib/currencyUtils';
 import { getEquipmentTypeLabel, getEquipmentSizeLabel, getEquipmentStatusLabel, getEquipmentTypesForDropdown } from '@/config/equipment';
 import { getCityLabel } from '@/config/cities';
 import { GlobalEquipmentModal } from '@/components/modals/GlobalEquipmentModal';
@@ -266,13 +267,6 @@ const EquipmentPage: React.FC = () => {
     fetchEquipment();
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'SAR',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US').format(num);
@@ -686,7 +680,12 @@ const EquipmentPage: React.FC = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
-                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-900">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-blue-600 hover:text-blue-900"
+                              onClick={() => router.push(`/equipment/${item.id}`)}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Button 
@@ -799,7 +798,12 @@ const EquipmentPage: React.FC = () => {
                     {/* Actions */}
                     <div className="flex justify-between pt-2 border-t">
                       <div className={cn("flex space-x-1", isRTL && "space-x-reverse")}>
-                        <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-900">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-blue-600 hover:text-blue-900"
+                          onClick={() => router.push(`/equipment/${item.id}`)}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button 

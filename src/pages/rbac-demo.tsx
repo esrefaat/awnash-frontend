@@ -39,7 +39,7 @@ const RBACDemo: React.FC = () => {
 
   const checkBackendStatus = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/healthz');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/healthz`);
       if (response.ok) {
         setBackendStatus('online');
       } else {
@@ -117,7 +117,7 @@ const RBACDemo: React.FC = () => {
         </div>
         {backendStatus === 'offline' && (
           <p className="text-xs text-red-400 mt-2">
-            Backend server is not responding. Please start the backend server on port 3001.
+            Backend server is not responding. Please start the backend server.
           </p>
         )}
       </div>

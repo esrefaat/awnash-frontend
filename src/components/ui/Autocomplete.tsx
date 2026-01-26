@@ -66,7 +66,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       // Always include equipment_type parameter, even if it's empty
       params.append('equipment_type', equipmentType || '');
 
-      const response = await fetch(`http://localhost:3001/api/equipment/my-equipment?${params.toString()}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/equipment/my-equipment?${params.toString()}`, {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',

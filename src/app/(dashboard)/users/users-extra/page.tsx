@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Filter, Plus, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { userService } from '@/services/userService';
-import { User } from '@/types';
+import { usersService, User } from '@/services/usersService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -26,7 +25,7 @@ const Users: React.FC = () => {
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await userService.getUsers({
+      const response = await usersService.getAllUsers({
         page: currentPage,
         limit: 10,
         role: selectedRole || undefined,
@@ -34,10 +33,8 @@ const Users: React.FC = () => {
         search: searchTerm || undefined,
       });
 
-      if (response.success) {
-        setUsers(response.data.data);
-        setTotalPages(response.data.pagination.totalPages);
-      }
+      setUsers(response.users);
+      setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch users:', error);
     } finally {
@@ -53,14 +50,12 @@ const Users: React.FC = () => {
     setUsers(prev => [newUser, ...prev]);
   };
 
-  const handleStatusChange = async (userId: string, newStatus: User['status']) => {
+  const handleStatusChange = async (userId: string) => {
     try {
-      const response = await userService.updateUserStatus(userId, newStatus);
-      if (response.success) {
-        setUsers(prev => prev.map(user => 
-          user.id === userId ? { ...user, status: newStatus } : user
-        ));
-      }
+      const updatedUser = await usersService.toggleUserStatus(userId);
+      setUsers(prev => prev.map(user => 
+        user.id === userId ? updatedUser : user
+      ));
     } catch (error) {
       console.error('Failed to update user status:', error);
     }
@@ -69,10 +64,8 @@ const Users: React.FC = () => {
   const handleDeleteUser = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        const response = await userService.deleteUser(userId);
-        if (response.success) {
-          setUsers(prev => prev.filter(user => user.id !== userId));
-        }
+        await usersService.deleteUser(userId);
+        setUsers(prev => prev.filter(user => user.id !== userId));
       } catch (error) {
         console.error('Failed to delete user:', error);
       }

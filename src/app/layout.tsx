@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.variable} antialiased h-full`}>
+      <body className={`${inter.variable} h-full`}>
         <ClientProviders>
           <div className="App dark h-full">
             {children}

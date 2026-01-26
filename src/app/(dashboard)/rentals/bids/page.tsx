@@ -37,7 +37,13 @@ import {
 import { cn } from '@/lib/utils';
 import { requestsService, RentalRequest } from '@/services/requestsService';
 import { formatSimpleCurrency } from '@/lib/currencyUtils';
-import { bidsService, Bid, PaginatedBidsResponse } from '@/services/bidsService';
+import { offersService, Offer as Bid, PaginatedOffersResponse as PaginatedBidsResponse } from '@/services/offersService';
+
+// Legacy alias for bidsService
+const bidsService = {
+  getBidsByRequestId: (requestId: string, page?: number, limit?: number) => 
+    offersService.getOffersByRequestId(requestId, page, limit),
+};
 import { useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { BidDetailsModal } from '@/components/modals/BidDetailsModal';
