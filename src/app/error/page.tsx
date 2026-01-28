@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ErrorPage } from '../../components/ErrorPage';
 
@@ -10,7 +10,7 @@ interface ApiError {
   error?: string;
 }
 
-export default function GlobalErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<ApiError | null>(null);
 
@@ -64,5 +64,17 @@ export default function GlobalErrorPage() {
       title={error.error}
       message={error.message}
     />
+  );
+}
+
+export default function GlobalErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    }>
+      <ErrorContent />
+    </Suspense>
   );
 }

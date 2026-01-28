@@ -1,52 +1,35 @@
 import { useState, useCallback } from 'react';
 import { apiService, ApiError } from '@/services/api';
+import { Equipment, EquipmentFormData } from '@/services/equipmentService';
+
+// Re-export for backward compatibility
+export type { Equipment, EquipmentFormData };
 
 /**
- * Equipment interface matching backend entity
- */
-export interface Equipment {
-  id: string;
-  owner_id: string;
-  name: string;
-  description: string;
-  equipment_type_id: string;
-  size: string;
-  status: string;
-  image_urls?: string[];
-  city: string;
-  is_available: boolean;
-  total_rentals: number;
-  total_revenue: number;
-  daily_rate: number;
-  created_at: string;
-  updated_at: string;
-}
-
-/**
- * Create Equipment DTO
+ * Create Equipment DTO (uses camelCase to match API)
  */
 export interface CreateEquipmentDto {
   name: string;
   description: string;
-  equipment_type_id: string;
+  equipmentTypeId: string;
   size: string;
   city: string;
-  daily_rate: number;
-  image_urls?: string[];
+  dailyRate: number;
+  imageUrls?: string[];
 }
 
 /**
- * Update Equipment DTO
+ * Update Equipment DTO (uses camelCase to match API)
  */
 export interface UpdateEquipmentDto {
   name?: string;
   description?: string;
-  equipment_type_id?: string;
+  equipmentTypeId?: string;
   size?: string;
   city?: string;
-  daily_rate?: number;
-  image_urls?: string[];
-  is_available?: boolean;
+  dailyRate?: number;
+  imageUrls?: string[];
+  isAvailable?: boolean;
   status?: string;
 }
 
@@ -57,9 +40,9 @@ export interface EquipmentQueryParams {
   page?: number;
   limit?: number;
   city?: string;
-  equipment_type_id?: string;
+  equipmentTypeId?: string;
   status?: string;
-  is_available?: boolean;
+  isAvailable?: boolean;
   search?: string;
 }
 
@@ -167,9 +150,9 @@ export function useEquipment(): UseEquipmentReturn {
       if (params?.page) queryParams.page = params.page;
       if (params?.limit) queryParams.limit = params.limit;
       if (params?.city) queryParams.city = params.city;
-      if (params?.equipment_type_id) queryParams.equipment_type_id = params.equipment_type_id;
+      if (params?.equipmentTypeId) queryParams.equipmentTypeId = params.equipmentTypeId;
       if (params?.status) queryParams.status = params.status;
-      if (params?.is_available !== undefined) queryParams.is_available = params.is_available;
+      if (params?.isAvailable !== undefined) queryParams.isAvailable = params.isAvailable;
       if (params?.search) queryParams.search = params.search;
 
       const response = await apiService.getPaginated<Equipment>(

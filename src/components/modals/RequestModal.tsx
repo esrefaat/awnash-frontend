@@ -10,20 +10,20 @@ import { faUpload, faTimes, faMapMarkerAlt } from '@fortawesome/free-solid-svg-i
 import { LocationPicker } from '@/components/LocationPicker';
 
 export interface RequestFormValues {
-  equipment_type: string;
+  equipmentType: string;
   status: 'open' | 'closed';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   images: string[];
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
   size: 'small' | 'medium' | 'large';
-  max_budget: number;
+  maxBudget: number;
   city: string;
   location: string | null;
   latitude: number | null;
   longitude: number | null;
-  location_address: string | null;
-  note: string;
+  locationAddress: string | null;
+  notes: string;
 }
 
 interface RequestModalProps {
@@ -43,20 +43,20 @@ export const RequestModal: React.FC<RequestModalProps> = ({
   const isRTL = i18n.language === 'ar';
 
   const [form, setForm] = useState<RequestFormValues>({
-    equipment_type: '',
+    equipmentType: '',
     status: 'open',
     priority: 'medium',
     images: [],
-    start_date: '',
-    end_date: '',
+    startDate: '',
+    endDate: '',
     size: 'medium',
-    max_budget: 0,
+    maxBudget: 0,
     city: '',
     location: null,
     latitude: null,
     longitude: null,
-    location_address: null,
-    note: ''
+    locationAddress: null,
+    notes: ''
   });
 
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -73,7 +73,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
     const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: name === 'max_budget' ? parseFloat(value) || 0 : value
+      [name]: name === 'maxBudget' ? parseFloat(value) || 0 : value
     }));
   };
 
@@ -84,7 +84,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
       latitude: location.lat,
       longitude: location.lng,
       location: `${location.lat},${location.lng}`, // Format as "lat,lng" string
-      location_address: location.address // Store the full address
+      locationAddress: location.address // Store the full address
     }));
     setShowLocationPicker(false);
   };
@@ -96,7 +96,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
       latitude: null,
       longitude: null,
       location: null,
-      location_address: null
+      locationAddress: null
     }));
   };
 
@@ -250,20 +250,20 @@ export const RequestModal: React.FC<RequestModalProps> = ({
       setTimeout(() => {
         onClose();
         setForm({
-          equipment_type: '',
+          equipmentType: '',
           status: 'open',
           priority: 'medium',
           images: [],
-          start_date: '',
-          end_date: '',
+          startDate: '',
+          endDate: '',
           size: 'medium',
-          max_budget: 0,
+          maxBudget: 0,
           city: '',
           location: null,
           latitude: null,
           longitude: null,
-          location_address: null,
-          note: ''
+          locationAddress: null,
+          notes: ''
         });
         setImageUrls([]);
         setUploadedImageUrls([]);
@@ -281,13 +281,13 @@ export const RequestModal: React.FC<RequestModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Equipment Type */}
           <div>
-            <label htmlFor="equipment_type" className="block text-sm font-medium mb-2 text-white">
+            <label htmlFor="equipmentType" className="block text-sm font-medium mb-2 text-white">
               {isRTL ? 'نوع المعدة' : 'Equipment Type'}
             </label>
             <Select
-              id="equipment_type"
-              name="equipment_type"
-              value={form.equipment_type}
+              id="equipmentType"
+              name="equipmentType"
+              value={form.equipmentType}
               onChange={handleFormChange}
               required
             >
@@ -341,14 +341,14 @@ export const RequestModal: React.FC<RequestModalProps> = ({
 
           {/* Start Date */}
           <div>
-            <label htmlFor="start_date" className="block text-sm font-medium mb-2 text-white">
+            <label htmlFor="startDate" className="block text-sm font-medium mb-2 text-white">
               {isRTL ? 'تاريخ البداية' : 'Start Date'}
             </label>
             <Input
-              id="start_date"
-              name="start_date"
+              id="startDate"
+              name="startDate"
               type="datetime-local"
-              value={form.start_date}
+              value={form.startDate}
               onChange={handleFormChange}
               required
             />
@@ -356,14 +356,14 @@ export const RequestModal: React.FC<RequestModalProps> = ({
 
           {/* End Date */}
           <div>
-            <label htmlFor="end_date" className="block text-sm font-medium mb-2 text-white">
+            <label htmlFor="endDate" className="block text-sm font-medium mb-2 text-white">
               {isRTL ? 'تاريخ النهاية' : 'End Date'}
             </label>
             <Input
-              id="end_date"
-              name="end_date"
+              id="endDate"
+              name="endDate"
               type="datetime-local"
-              value={form.end_date}
+              value={form.endDate}
               onChange={handleFormChange}
               required
             />
@@ -430,14 +430,14 @@ export const RequestModal: React.FC<RequestModalProps> = ({
 
           {/* Max Budget */}
           <div>
-            <label htmlFor="max_budget" className="block text-sm font-medium mb-2 text-white">
+            <label htmlFor="maxBudget" className="block text-sm font-medium mb-2 text-white">
               {isRTL ? 'الميزانية القصوى (ريال)' : 'Max Budget (SAR)'}
             </label>
             <Input
-              id="max_budget"
-              name="max_budget"
+              id="maxBudget"
+              name="maxBudget"
               type="number"
-              value={form.max_budget}
+              value={form.maxBudget}
               onChange={handleFormChange}
               placeholder="0.00"
               min="0"
@@ -512,15 +512,15 @@ export const RequestModal: React.FC<RequestModalProps> = ({
           )}
         </div>
 
-        {/* Note */}
+        {/* Notes */}
         <div>
-          <label htmlFor="note" className="block text-sm font-medium mb-2 text-white">
+          <label htmlFor="notes" className="block text-sm font-medium mb-2 text-white">
             {isRTL ? 'ملاحظات إضافية' : 'Additional Notes'}
           </label>
           <Textarea
-            id="note"
-            name="note"
-            value={form.note}
+            id="notes"
+            name="notes"
+            value={form.notes}
             onChange={handleFormChange}
             placeholder={isRTL ? 'أضف أي تفاصيل إضافية حول الطلب...' : 'Add any additional details about the request...'}
             rows={3}

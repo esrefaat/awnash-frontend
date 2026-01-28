@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  Plus, Edit, Trash2, Search, Filter, Settings, 
-  MapPin, Navigation, X, ChevronDown, ChevronUp
+  Plus, Edit, Trash2, Search, Settings, 
+  MapPin, Navigation, X, AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { equipmentTypeService, EquipmentType, CreateEquipmentTypeData, UpdateEquipmentTypeData } from '@/services/equipmentTypeService';
@@ -21,6 +21,7 @@ interface EquipmentTypeAttribute {
   unit?: string;
   is_required: boolean;
   options: string[];
+  optionsInput: string; // Comma-separated input field
 }
 
 interface EquipmentTypeFormData {
@@ -31,6 +32,74 @@ interface EquipmentTypeFormData {
   location_mode: 'single' | 'from_to' | 'none';
   attributes: EquipmentTypeAttribute[];
 }
+
+interface FormErrors {
+  name_en?: string;
+  name_ar?: string;
+  category?: string;
+  attributes?: { [key: number]: { label?: string } };
+  submit?: string;
+}
+
+// Skeleton loader component
+const TableRowSkeleton: React.FC = () => (
+  <tr className="animate-pulse">
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-600 rounded w-32"></div>
+        <div className="h-3 bg-gray-700 rounded w-24"></div>
+      </div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="h-6 bg-gray-600 rounded-full w-20"></div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-4 bg-gray-600 rounded"></div>
+        <div className="h-4 bg-gray-600 rounded w-24"></div>
+      </div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="h-4 bg-gray-600 rounded w-20"></div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="h-4 bg-gray-600 rounded w-24"></div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="flex items-center gap-2">
+        <div className="h-8 w-8 bg-gray-600 rounded"></div>
+        <div className="h-8 w-8 bg-gray-600 rounded"></div>
+      </div>
+    </td>
+  </tr>
+);
+
+// Inline error message component
+const FieldError: React.FC<{ message?: string }> = ({ message }) => {
+  if (!message) return null;
+  return (
+    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+      <AlertCircle className="h-3 w-3" />
+      {message}
+    </p>
+  );
+};
+
+// Form-level error banner
+const ErrorBanner: React.FC<{ message?: string; onDismiss: () => void }> = ({ message, onDismiss }) => {
+  if (!message) return null;
+  return (
+    <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg flex items-start gap-3">
+      <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+      <div className="flex-1">
+        <p className="text-sm text-red-300">{message}</p>
+      </div>
+      <button onClick={onDismiss} className="text-red-400 hover:text-red-300">
+        <X className="h-4 w-4" />
+      </button>
+    </div>
+  );
+};
 
 const EquipmentTypesPage: React.FC = () => {
   const isRTL = false; // TODO: Implement proper RTL detection
@@ -58,6 +127,10 @@ const EquipmentTypesPage: React.FC = () => {
     attributes: []
   });
 
+  // Validation errors state
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
   // Default categories
   const defaultCategories = [
     'Construction', 'Transport', 'Material Handling', 'Power', 'Other'
@@ -69,6 +142,71 @@ const EquipmentTypesPage: React.FC = () => {
     { value: 'from_to', label: 'From/To (Transport)', icon: Navigation },
     { value: 'none', label: 'None', icon: X }
   ];
+
+  // Validation rules
+  const validateField = (field: string, value: string): string | undefined => {
+    switch (field) {
+      case 'name_en':
+        if (!value.trim()) return 'English name is required';
+        if (value.length < 2) return 'English name must be at least 2 characters';
+        if (value.length > 200) return 'English name must be less than 200 characters';
+        return undefined;
+      case 'name_ar':
+        if (!value.trim()) return 'Arabic name is required';
+        if (value.length < 2) return 'Arabic name must be at least 2 characters';
+        if (value.length > 200) return 'Arabic name must be less than 200 characters';
+        return undefined;
+      case 'category':
+        if (!value.trim()) return 'Category is required';
+        return undefined;
+      default:
+        return undefined;
+    }
+  };
+
+  const validateAttributeLabel = (label: string): string | undefined => {
+    if (!label.trim()) return 'Attribute label is required';
+    if (label.length < 1) return 'Label must be at least 1 character';
+    if (label.length > 100) return 'Label must be less than 100 characters';
+    return undefined;
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    
+    newErrors.name_en = validateField('name_en', form.name_en);
+    newErrors.name_ar = validateField('name_ar', form.name_ar);
+    newErrors.category = validateField('category', form.category);
+    
+    // Validate attributes
+    const attributeErrors: { [key: number]: { label?: string } } = {};
+    form.attributes.forEach((attr, index) => {
+      const labelError = validateAttributeLabel(attr.label);
+      if (labelError) {
+        attributeErrors[index] = { label: labelError };
+      }
+    });
+    
+    if (Object.keys(attributeErrors).length > 0) {
+      newErrors.attributes = attributeErrors;
+    }
+    
+    setErrors(newErrors);
+    
+    // Return true if no errors
+    return !newErrors.name_en && !newErrors.name_ar && !newErrors.category && 
+           Object.keys(attributeErrors).length === 0;
+  };
+
+  // Handle field blur for inline validation
+  const handleBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const value = form[field as keyof EquipmentTypeFormData];
+    if (typeof value === 'string') {
+      const error = validateField(field, value);
+      setErrors(prev => ({ ...prev, [field]: error }));
+    }
+  };
 
   // Load data
   useEffect(() => {
@@ -96,9 +234,9 @@ const EquipmentTypesPage: React.FC = () => {
   // Filter types
   const filteredTypes = equipmentTypes.filter(type => {
     const matchesSearch = !searchTerm || 
-      type.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      type.name_ar.includes(searchTerm) ||
-      (type.name_ur && type.name_ur.includes(searchTerm));
+      type.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      type.nameAr.includes(searchTerm) ||
+      (type.nameUr && type.nameUr.includes(searchTerm));
     
     const matchesCategory = !selectedCategory || type.category === selectedCategory;
     
@@ -108,6 +246,10 @@ const EquipmentTypesPage: React.FC = () => {
   // Form handlers
   const handleInputChange = (field: keyof EquipmentTypeFormData, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field as keyof FormErrors]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const addAttribute = () => {
@@ -116,7 +258,8 @@ const EquipmentTypesPage: React.FC = () => {
       label: '',
       unit: '',
       is_required: false,
-      options: []
+      options: [],
+      optionsInput: '' // Empty comma-separated input
     };
     setForm(prev => ({
       ...prev,
@@ -129,6 +272,12 @@ const EquipmentTypesPage: React.FC = () => {
       ...prev,
       attributes: prev.attributes.filter((_, i) => i !== index)
     }));
+    // Clear attribute errors
+    if (errors.attributes?.[index]) {
+      const newAttrErrors = { ...errors.attributes };
+      delete newAttrErrors[index];
+      setErrors(prev => ({ ...prev, attributes: newAttrErrors }));
+    }
   };
 
   const updateAttribute = (index: number, field: keyof EquipmentTypeAttribute, value: any) => {
@@ -138,39 +287,33 @@ const EquipmentTypesPage: React.FC = () => {
         i === index ? { ...attr, [field]: value } : attr
       )
     }));
+    
+    // Clear attribute label error when typing
+    if (field === 'label' && errors.attributes?.[index]?.label) {
+      const newAttrErrors = { ...errors.attributes };
+      delete newAttrErrors[index];
+      setErrors(prev => ({ 
+        ...prev, 
+        attributes: Object.keys(newAttrErrors).length > 0 ? newAttrErrors : undefined 
+      }));
+    }
   };
 
-  const addAttributeOption = (attributeIndex: number) => {
-    setForm(prev => ({
-      ...prev,
-      attributes: prev.attributes.map((attr, i) => 
-        i === attributeIndex 
-          ? { ...attr, options: [...attr.options, ''] }
-          : attr
-      )
-    }));
-  };
-
-  const updateAttributeOption = (attributeIndex: number, optionIndex: number, value: string) => {
+  // Handle options input change (comma-separated)
+  const handleOptionsInputChange = (attributeIndex: number, value: string) => {
     setForm(prev => ({
       ...prev,
       attributes: prev.attributes.map((attr, i) => 
         i === attributeIndex 
           ? { 
               ...attr, 
-              options: attr.options.map((opt, j) => j === optionIndex ? value : opt)
+              optionsInput: value,
+              // Parse comma-separated values, filter empty ones
+              options: value
+                .split(',')
+                .map(opt => opt.trim())
+                .filter(opt => opt.length > 0)
             }
-          : attr
-      )
-    }));
-  };
-
-  const removeAttributeOption = (attributeIndex: number, optionIndex: number) => {
-    setForm(prev => ({
-      ...prev,
-      attributes: prev.attributes.map((attr, i) => 
-        i === attributeIndex 
-          ? { ...attr, options: attr.options.filter((_, j) => j !== optionIndex) }
           : attr
       )
     }));
@@ -186,20 +329,38 @@ const EquipmentTypesPage: React.FC = () => {
       location_mode: 'single',
       attributes: []
     });
+    setErrors({});
+    setTouched({});
     setIsEditMode(false);
     setEditingType(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (type: EquipmentType) => {
+    // Transform API response (camelCase) to form state (snake_case)
     setForm({
-      name_en: type.name_en,
-      name_ar: type.name_ar,
-      name_ur: type.name_ur || '',
+      name_en: type.nameEn,
+      name_ar: type.nameAr,
+      name_ur: type.nameUr || '',
       category: type.category,
-      location_mode: type.location_mode,
-      attributes: type.attributes || []
+      location_mode: type.locationMode,
+      attributes: (type.attributes || []).map(attr => {
+        // Transform { value: string }[] back to string[]
+        const optionsArray = attr.options?.map(opt => 
+          typeof opt === 'string' ? opt : opt.value
+        ) || [];
+        return {
+          id: attr.id,
+          label: attr.label,
+          unit: attr.unit || '',
+          is_required: attr.isRequired,
+          options: optionsArray,
+          optionsInput: optionsArray.join(', ') // Convert to comma-separated string
+        };
+      })
     });
+    setErrors({});
+    setTouched({});
     setIsEditMode(true);
     setEditingType(type);
     setIsModalOpen(true);
@@ -208,25 +369,56 @@ const EquipmentTypesPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!form.name_en.trim() || !form.name_ar.trim() || !form.category.trim()) {
-      alert(isRTL ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields');
+    // Mark all fields as touched
+    setTouched({
+      name_en: true,
+      name_ar: true,
+      category: true
+    });
+    
+    // Validate form
+    if (!validateForm()) {
       return;
     }
 
     try {
       setFormLoading(true);
+      setErrors(prev => ({ ...prev, submit: undefined }));
+      
+      // Transform form data from snake_case to camelCase for API
+      const apiData: CreateEquipmentTypeData = {
+        nameEn: form.name_en,
+        nameAr: form.name_ar,
+        nameUr: form.name_ur || undefined,
+        category: form.category,
+        locationMode: form.location_mode,
+        attributes: form.attributes
+          .filter(attr => attr.label.trim()) // Filter out attributes without labels
+          .map(attr => ({
+            label: attr.label,
+            unit: attr.unit || undefined,
+            isRequired: attr.is_required,
+            // Transform string[] to { value: string }[] for backend
+            // Options already parsed from comma-separated input
+            options: attr.options
+              .filter(opt => opt.trim() !== '')
+              .map(opt => ({ value: opt }))
+          }))
+      };
       
       if (isEditMode && editingType) {
-        await equipmentTypeService.update(editingType.id, form);
+        await equipmentTypeService.update(editingType.id, apiData);
       } else {
-        await equipmentTypeService.create(form);
+        await equipmentTypeService.create(apiData);
       }
       
       setIsModalOpen(false);
       loadData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save equipment type:', error);
-      alert(isRTL ? 'فشل في حفظ نوع المعدة' : 'Failed to save equipment type');
+      // Extract error message from API response
+      const errorMessage = error?.message || 'Failed to save equipment type. Please try again.';
+      setErrors(prev => ({ ...prev, submit: errorMessage }));
     } finally {
       setFormLoading(false);
     }
@@ -240,9 +432,11 @@ const EquipmentTypesPage: React.FC = () => {
     try {
       await equipmentTypeService.delete(type.id);
       loadData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete equipment type:', error);
-      alert(isRTL ? 'فشل في حذف نوع المعدة' : 'Failed to delete equipment type');
+      const errorMessage = error?.message || 'Failed to delete equipment type';
+      // Show error inline instead of alert
+      setErrors(prev => ({ ...prev, submit: errorMessage }));
     }
   };
 
@@ -306,49 +500,54 @@ const EquipmentTypesPage: React.FC = () => {
       </div>
 
       {/* Content */}
-      {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0073E6]"></div>
-        </div>
-      ) : (
-        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-700">
-                <tr>
-                  <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
-                    {isRTL ? 'الاسم' : 'Name'}
-                  </th>
-                  <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
-                    {isRTL ? 'الفئة' : 'Category'}
-                  </th>
-                  <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
-                    {isRTL ? 'نمط الموقع' : 'Location Mode'}
-                  </th>
-                  <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
-                    {isRTL ? 'الخصائص' : 'Attributes'}
-                  </th>
-                  <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
-                    {isRTL ? 'تاريخ الإنشاء' : 'Created'}
-                  </th>
-                  <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
-                    {isRTL ? 'الإجراءات' : 'Actions'}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
-                {filteredTypes.map((type) => (
+      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
+                  {isRTL ? 'الاسم' : 'Name'}
+                </th>
+                <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
+                  {isRTL ? 'الفئة' : 'Category'}
+                </th>
+                <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
+                  {isRTL ? 'نمط الموقع' : 'Location Mode'}
+                </th>
+                <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
+                  {isRTL ? 'الخصائص' : 'Attributes'}
+                </th>
+                <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
+                  {isRTL ? 'تاريخ الإنشاء' : 'Created'}
+                </th>
+                <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL && "text-right font-cairo")}>
+                  {isRTL ? 'الإجراءات' : 'Actions'}
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+              {loading ? (
+                // Skeleton loaders
+                <>
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                </>
+              ) : (
+                filteredTypes.map((type) => (
                   <tr key={type.id} className="hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className={cn("text-sm font-medium text-white", isRTL && "font-cairo")}>
-                          {isRTL ? type.name_ar : type.name_en}
+                          {isRTL ? type.nameAr : type.nameEn}
                         </div>
-                        {!isRTL && type.name_ar && (
-                          <div className="text-sm text-gray-400 font-cairo">{type.name_ar}</div>
+                        {!isRTL && type.nameAr && (
+                          <div className="text-sm text-gray-400 font-cairo">{type.nameAr}</div>
                         )}
-                        {type.name_ur && (
-                          <div className="text-sm text-gray-400 font-cairo">{type.name_ur}</div>
+                        {type.nameUr && (
+                          <div className="text-sm text-gray-400 font-cairo">{type.nameUr}</div>
                         )}
                       </div>
                     </td>
@@ -359,11 +558,11 @@ const EquipmentTypesPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        {type.location_mode === 'single' && <MapPin className="h-4 w-4 text-gray-400" />}
-                        {type.location_mode === 'from_to' && <Navigation className="h-4 w-4 text-gray-400" />}
-                        {type.location_mode === 'none' && <X className="h-4 w-4 text-gray-400" />}
+                        {type.locationMode === 'single' && <MapPin className="h-4 w-4 text-gray-400" />}
+                        {type.locationMode === 'from_to' && <Navigation className="h-4 w-4 text-gray-400" />}
+                        {type.locationMode === 'none' && <X className="h-4 w-4 text-gray-400" />}
                         <span className="text-sm text-gray-300">
-                          {getLocationModeLabel(type.location_mode)}
+                          {getLocationModeLabel(type.locationMode)}
                         </span>
                       </div>
                     </td>
@@ -373,7 +572,7 @@ const EquipmentTypesPage: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {new Date(type.created_at).toLocaleDateString()}
+                      {new Date(type.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
@@ -396,24 +595,24 @@ const EquipmentTypesPage: React.FC = () => {
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {filteredTypes.length === 0 && (
-            <div className="text-center py-12">
-              <Settings className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-white font-cairo">
-                {isRTL ? 'لا توجد أنواع معدات' : 'No equipment types'}
-              </h3>
-              <p className="mt-1 text-sm text-gray-400">
-                {isRTL ? 'ابدأ بإضافة نوع معدة جديد' : 'Get started by adding a new equipment type'}
-              </p>
-            </div>
-          )}
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
+        
+        {!loading && filteredTypes.length === 0 && (
+          <div className="text-center py-12">
+            <Settings className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-sm font-medium text-white font-cairo">
+              {isRTL ? 'لا توجد أنواع معدات' : 'No equipment types'}
+            </h3>
+            <p className="mt-1 text-sm text-gray-400">
+              {isRTL ? 'ابدأ بإضافة نوع معدة جديد' : 'Get started by adding a new equipment type'}
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Add/Edit Modal */}
       <Modal
@@ -423,34 +622,48 @@ const EquipmentTypesPage: React.FC = () => {
         size="md"
       >
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Error Banner */}
+          <ErrorBanner 
+            message={errors.submit} 
+            onDismiss={() => setErrors(prev => ({ ...prev, submit: undefined }))} 
+          />
+
           {/* Names */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className={cn("block text-sm font-medium text-gray-300 mb-2", isRTL && "font-cairo")}>
-                {isRTL ? 'الاسم بالإنجليزية' : 'English Name'} *
+                {isRTL ? 'الاسم بالإنجليزية' : 'English Name'} <span className="text-red-400">*</span>
               </label>
               <Input
                 type="text"
                 value={form.name_en}
                 onChange={(e) => handleInputChange('name_en', e.target.value)}
-                required
-                className="dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
+                onBlur={() => handleBlur('name_en')}
+                className={cn(
+                  "dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400",
+                  touched.name_en && errors.name_en && "border-red-500 focus:border-red-500"
+                )}
                 placeholder={isRTL ? 'أدخل الاسم بالإنجليزية' : 'Enter English name'}
               />
+              {touched.name_en && <FieldError message={errors.name_en} />}
             </div>
             <div>
               <label className={cn("block text-sm font-medium text-gray-300 mb-2 font-cairo")}>
-                {isRTL ? 'الاسم بالعربية' : 'Arabic Name'} *
+                {isRTL ? 'الاسم بالعربية' : 'Arabic Name'} <span className="text-red-400">*</span>
               </label>
               <Input
                 type="text"
                 value={form.name_ar}
                 onChange={(e) => handleInputChange('name_ar', e.target.value)}
-                required
-                className="dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 font-cairo"
+                onBlur={() => handleBlur('name_ar')}
+                className={cn(
+                  "dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400 font-cairo",
+                  touched.name_ar && errors.name_ar && "border-red-500 focus:border-red-500"
+                )}
                 placeholder={isRTL ? 'أدخل الاسم بالعربية' : 'Enter Arabic name'}
                 dir="rtl"
               />
+              {touched.name_ar && <FieldError message={errors.name_ar} />}
             </div>
           </div>
 
@@ -471,13 +684,16 @@ const EquipmentTypesPage: React.FC = () => {
           {/* Category */}
           <div>
             <label className={cn("block text-sm font-medium text-gray-300 mb-2", isRTL && "font-cairo")}>
-              {isRTL ? 'الفئة' : 'Category'} *
+              {isRTL ? 'الفئة' : 'Category'} <span className="text-red-400">*</span>
             </label>
             <Select
               value={form.category}
               onChange={(e) => handleInputChange('category', e.target.value)}
-              required
-              className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+              onBlur={() => handleBlur('category')}
+              className={cn(
+                "dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                touched.category && errors.category && "border-red-500 focus:border-red-500"
+              )}
             >
               <option value="">{isRTL ? 'اختر الفئة' : 'Select category'}</option>
               {(categories.length > 0 ? categories : defaultCategories).map((category) => (
@@ -486,12 +702,13 @@ const EquipmentTypesPage: React.FC = () => {
                 </option>
               ))}
             </Select>
+            {touched.category && <FieldError message={errors.category} />}
           </div>
 
           {/* Location Mode */}
           <div>
             <label className={cn("block text-sm font-medium text-gray-300 mb-2", isRTL && "font-cairo")}>
-              {isRTL ? 'نمط الموقع' : 'Location Mode'} *
+              {isRTL ? 'نمط الموقع' : 'Location Mode'} <span className="text-red-400">*</span>
             </label>
             <Select
               value={form.location_mode}
@@ -547,9 +764,15 @@ const EquipmentTypesPage: React.FC = () => {
                       type="text"
                       value={attribute.label}
                       onChange={(e) => updateAttribute(index, 'label', e.target.value)}
-                      placeholder={isRTL ? 'تسمية الخاصية' : 'Attribute label'}
-                      className="dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
+                      placeholder={isRTL ? 'تسمية الخاصية *' : 'Attribute label *'}
+                      className={cn(
+                        "dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400",
+                        errors.attributes?.[index]?.label && "border-red-500 focus:border-red-500"
+                      )}
                     />
+                    {errors.attributes?.[index]?.label && (
+                      <FieldError message={errors.attributes[index].label} />
+                    )}
                   </div>
                   <div>
                     <Input
@@ -572,47 +795,33 @@ const EquipmentTypesPage: React.FC = () => {
                   </label>
                 </div>
 
-                {/* Attribute Options */}
+                {/* Attribute Options - Comma-separated input */}
                 <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className={cn("text-xs text-gray-400", isRTL && "font-cairo")}>
-                      {isRTL ? 'الخيارات المحددة مسبقاً' : 'Predefined Options'}
-                    </label>
-                    <Button
-                      type="button"
-                      onClick={() => addAttributeOption(index)}
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs text-[#0073E6] hover:text-[#0056B3]"
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      {isRTL ? 'إضافة خيار' : 'Add Option'}
-                    </Button>
-                  </div>
-                  
-                  {attribute.options.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex gap-2 mb-2">
-                      <Input
-                        type="text"
-                        value={option}
-                        onChange={(e) => updateAttributeOption(index, optionIndex, e.target.value)}
-                        placeholder={isRTL ? 'قيمة الخيار' : 'Option value'}
-                        className="flex-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
-                      />
-                      <Button
-                        type="button"
-                        onClick={() => removeAttributeOption(index, optionIndex)}
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-400 hover:text-red-300"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                  <label className={cn("text-xs text-gray-400 mb-2 block", isRTL && "font-cairo")}>
+                    {isRTL ? 'الخيارات المحددة مسبقاً (افصل بفاصلة)' : 'Predefined Options (comma-separated)'}
+                  </label>
+                  <Input
+                    type="text"
+                    value={attribute.optionsInput}
+                    onChange={(e) => handleOptionsInputChange(index, e.target.value)}
+                    placeholder={isRTL ? 'مثال: خيار1, خيار2, خيار3' : 'e.g., Option 1, Option 2, Option 3'}
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
+                  />
+                  {attribute.options.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {attribute.options.map((opt, optIdx) => (
+                        <Badge 
+                          key={optIdx} 
+                          variant="secondary" 
+                          className="bg-gray-700 text-gray-300 text-xs"
+                        >
+                          {opt}
+                        </Badge>
+                      ))}
                     </div>
-                  ))}
-                  
-                  {attribute.options.length === 0 && (
-                    <p className={cn("text-xs text-gray-500", isRTL && "font-cairo")}>
+                  )}
+                  {attribute.options.length === 0 && attribute.optionsInput.trim() === '' && (
+                    <p className={cn("text-xs text-gray-500 mt-1", isRTL && "font-cairo")}>
                       {isRTL ? 'لا توجد خيارات - سيكون هذا حقل نص حر' : 'No options - this will be a free text field'}
                     </p>
                   )}

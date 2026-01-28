@@ -48,12 +48,12 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
   const [form, setForm] = useState<EquipmentFormData>({
     name: '',
     description: '',
-    equipment_type: '',
+    equipmentTypeId: '',
     size: '',
     city: '',
     status: 'active',
-    image_urls: [],
-    daily_rate: 0
+    imageUrls: [],
+    dailyRate: 0
   });
 
   const [loading, setLoading] = useState(false);
@@ -68,25 +68,25 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
       setForm({
         name: equipmentToEdit.name,
         description: equipmentToEdit.description,
-        equipment_type: equipmentToEdit.equipment_type,
+        equipmentTypeId: equipmentToEdit.equipmentTypeId,
         size: equipmentToEdit.size,
         city: equipmentToEdit.city,
         status: equipmentToEdit.status,
-        image_urls: equipmentToEdit.image_urls,
-        daily_rate: parseFloat(equipmentToEdit.daily_rate || '0')
+        imageUrls: equipmentToEdit.imageUrls,
+        dailyRate: parseFloat(equipmentToEdit.dailyRate || '0')
       });
-      setImagePreviews(equipmentToEdit.image_urls);
+      setImagePreviews(equipmentToEdit.imageUrls);
     } else {
       // Reset form for adding new equipment
       setForm({
         name: '',
         description: '',
-        equipment_type: '',
+        equipmentTypeId: '',
         size: '',
         city: '',
         status: 'active',
-        image_urls: [],
-        daily_rate: 0
+        imageUrls: [],
+        dailyRate: 0
       });
       setImagePreviews([]);
     }
@@ -103,7 +103,7 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
     const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: name === 'daily_rate' ? parseFloat(value) || 0 : value
+      [name]: name === 'dailyRate' ? parseFloat(value) || 0 : value
     }));
   };
 
@@ -187,7 +187,7 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
       // Update the form with uploaded URLs
       setForm(prev => ({
         ...prev,
-        image_urls: [...prev.image_urls, ...newImageUrls]
+        imageUrls: [...prev.imageUrls, ...newImageUrls]
       }));
 
     } catch (error: any) {
@@ -206,7 +206,7 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
     setForm(prev => ({
       ...prev,
-      image_urls: prev.image_urls.filter((_, i) => i !== index)
+      imageUrls: prev.imageUrls.filter((_, i) => i !== index)
     }));
   };
 
@@ -226,7 +226,7 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
       return;
     }
 
-    if (!form.equipment_type) {
+    if (!form.equipmentTypeId) {
       if (onClearError) onClearError();
       return;
     }
@@ -241,7 +241,7 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
       return;
     }
 
-    if (form.image_urls.length > 10) {
+    if (form.imageUrls.length > 10) {
       if (onClearError) onClearError();
       return;
     }
@@ -258,12 +258,12 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
       setForm({
         name: '',
         description: '',
-        equipment_type: '',
+        equipmentTypeId: '',
         size: '',
         city: '',
         status: 'active',
-        image_urls: [],
-        daily_rate: 0
+        imageUrls: [],
+        dailyRate: 0
       });
       setImagePreviews([]);
       
@@ -342,13 +342,13 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
 
           {/* Equipment Type */}
           <div>
-            <label htmlFor="equipment_type" className="block text-sm font-medium mb-2 text-white">
+            <label htmlFor="equipmentTypeId" className="block text-sm font-medium mb-2 text-white">
               {isRTL ? 'نوع المعدة' : 'Equipment Type'} *
             </label>
             <Select
-              id="equipment_type"
-              name="equipment_type"
-              value={form.equipment_type}
+              id="equipmentTypeId"
+              name="equipmentTypeId"
+              value={form.equipmentTypeId}
               onChange={handleFormChange}
               required
             >
@@ -435,10 +435,10 @@ export const EquipmentAddModal: React.FC<EquipmentAddModalProps> = ({
               {isRTL ? 'السعر اليومي (ريال سعودي)' : 'Daily Rate (SAR)'}
             </label>
             <Input
-              id="daily_rate"
-              name="daily_rate"
+              id="dailyRate"
+              name="dailyRate"
               type="number"
-              value={form.daily_rate}
+              value={form.dailyRate}
               onChange={handleFormChange}
               placeholder="0"
               min="0"

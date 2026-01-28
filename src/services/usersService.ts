@@ -3,37 +3,38 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/a
 
 export interface User {
   id: string;
-  full_name: string;
-  mobile_number: string;
+  fullName: string;
+  mobileNumber: string;
   email?: string;
   role: string;
   roles: string[];
   permissions: string[];
-  is_verified: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-  last_login?: string;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  lastLogin?: string;
   city?: string;
-  total_bookings?: number;
-  total_equipment?: number;
+  totalBookings?: number;
+  totalEquipment?: number;
+  isSuperAdmin?: boolean;
 }
 
 export interface CreateUserData {
-  full_name: string;
-  mobile_number: string;
+  fullName: string;
+  mobileNumber: string;
   email?: string;
   role: string;
-  is_active?: boolean;
+  isActive?: boolean;
   password?: string;
 }
 
 export interface UpdateUserData {
-  full_name?: string;
-  mobile_number?: string;
+  fullName?: string;
+  mobileNumber?: string;
   email?: string;
   role?: string;
-  is_active?: boolean;
+  isActive?: boolean;
   city?: string;
 }
 
@@ -109,7 +110,7 @@ class UsersService {
         ...user,
         roles: [user.role], // Convert single role to array
         permissions: [], // Default empty permissions array (would need RBAC integration)
-        is_active: user.is_verified, // Use is_verified as proxy for is_active
+        isActive: user.isVerified, // Use isVerified as proxy for isActive
       })),
       total: response.total,
       page: response.page,
@@ -127,7 +128,7 @@ class UsersService {
       ...response,
       roles: [response.role],
       permissions: [],
-      is_active: response.is_verified,
+      isActive: response.isVerified,
     };
   }
 
@@ -142,7 +143,7 @@ class UsersService {
       ...response,
       roles: [response.role],
       permissions: [],
-      is_active: response.is_verified,
+      isActive: response.isVerified,
     };
   }
 
@@ -157,7 +158,7 @@ class UsersService {
       ...response,
       roles: [response.role],
       permissions: [],
-      is_active: response.is_verified,
+      isActive: response.isVerified,
     };
   }
 
@@ -179,7 +180,7 @@ class UsersService {
       ...response,
       roles: [response.role],
       permissions: [],
-      is_active: response.is_verified,
+      isActive: response.isVerified,
     };
   }
 
@@ -206,7 +207,7 @@ class UsersService {
       ...response.data,
       roles: [response.data.role],
       permissions: [],
-      is_active: response.data.is_verified,
+      isActive: response.data.isVerified,
     };
   }
 
@@ -253,7 +254,7 @@ class UsersService {
       ...response.data,
       roles: [response.data.role],
       permissions: [],
-      is_active: response.data.is_verified,
+      isActive: response.data.isVerified,
     };
   }
 
@@ -280,7 +281,7 @@ class UsersService {
       ...response.data,
       roles: [response.data.role],
       permissions: [],
-      is_active: response.data.is_verified,
+      isActive: response.data.isVerified,
     };
   }
 

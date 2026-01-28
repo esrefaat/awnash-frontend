@@ -37,67 +37,67 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 
-// Interfaces based on actual API response
-interface Bid {
+// Interfaces based on actual API response (camelCase to match backend)
+interface Offer {
   id: string;
-  created_at: string;
-  expires_at: string;
-  updated_at: string;
-  daily_rate: string;
-  daily_rate_currency: string;
-  total_amount: string;
-  total_amount_currency: string;
+  createdAt: string;
+  expiresAt: string;
+  updatedAt: string;
+  dailyRate: string;
+  dailyRateCurrency: string;
+  totalAmount: string;
+  totalAmountCurrency: string;
   note?: string;
   equipment: {
     id: string;
     name: string;
     description: string;
-    equipment_type: string;
+    equipmentType: string;
     size: string;
     status: string;
-    image_urls: string[];
+    imageUrls: string[];
     city: string;
-    daily_rate: string;
-    total_rentals: number;
-    total_revenue: string;
-    created_at: string;
-    updated_at: string;
+    dailyRate: string;
+    totalRentals: number;
+    totalRevenue: string;
+    createdAt: string;
+    updatedAt: string;
     owner: {
       id: string;
-      full_name: string;
+      fullName: string;
     };
   };
   request: {
     id: string;
-    equipment_type: string;
-    equipment_name: string;
+    equipmentType: string;
+    equipmentName: string;
     status: string;
     priority: string;
     images: string[];
-    start_date: string;
-    end_date: string;
+    startDate: string;
+    endDate: string;
     size: string;
-    max_budget: number;
-    max_budget_currency: string;
+    maxBudget: number;
+    maxBudgetCurrency: string;
     city: string;
     note: string;
     requestId: string;
-    created_at: string;
+    createdAt: string;
     requester: {
       id: string;
-      full_name: string;
+      fullName: string;
     };
   };
 }
 
 interface ApiResponse {
-  data: Bid[];
+  data: Offer[];
   page: number;
   limit: number;
   total: number;
 }
 
-const BidsManagement: React.FC = () => {
+const OffersManagement: React.FC = () => {
   const { i18n } = useTranslation();
   const params = useParams();
   const router = useRouter();
@@ -113,7 +113,7 @@ const BidsManagement: React.FC = () => {
   }, [requestId, router]);
 
   // State management
-  const [bids, setBids] = useState<Bid[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -122,17 +122,17 @@ const BidsManagement: React.FC = () => {
   const [equipmentTypeFilter, setEquipmentTypeFilter] = useState<string>('all');
   const [ownerRenterFilter, setOwnerRenterFilter] = useState<string>('');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
-  const [selectedBids, setSelectedBids] = useState<string[]>([]);
+  const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
   const [showExpiringSoon, setShowExpiringSoon] = useState(false);
   const [showHighValue, setShowHighValue] = useState(false);
-  const [sortBy, setSortBy] = useState<string>('created_at');
+  const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [paginationLoading, setPaginationLoading] = useState(false);
 
-  // Fetch bids from API with request filter
-  const fetchBids = async (pageNum: number = 1, append: boolean = false) => {
+  // Fetch offers from API with request filter
+  const fetchOffers = async (pageNum: number = 1, append: boolean = false) => {
     try {
       setLoading(!append);
       setPaginationLoading(!!append);
@@ -143,7 +143,7 @@ const BidsManagement: React.FC = () => {
         return;
       }
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/booking/bid/${requestId}?page=${pageNum}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/offers/request/${requestId}?page=${pageNum}`;
 
       const response = await fetch(url, {
         credentials: 'include',
@@ -157,21 +157,21 @@ const BidsManagement: React.FC = () => {
           router.push('/404');
           return;
         }
-        throw new Error('Failed to fetch bids');
+        throw new Error('Failed to fetch offers');
       }
 
       const result: ApiResponse = await response.json();
       
       if (append) {
-        setBids(prev => [...prev, ...result.data]);
+        setOffers(prev => [...prev, ...result.data]);
       } else {
-        setBids(result.data);
+        setOffers(result.data);
       }
       
       setPage(pageNum);
       setTotalPages(Math.ceil(result.total / result.limit));
     } catch (err: any) {
-      setError(err.message || 'Failed to load bids');
+      setError(err.message || 'Failed to load offers');
       // If it's a network error or invalid request, redirect to 404
       if (err.message.includes('Failed to fetch') || err.message.includes('Invalid')) {
         setTimeout(() => {
@@ -184,74 +184,74 @@ const BidsManagement: React.FC = () => {
     }
   };
 
-  // Load bids on component mount and when requestId changes
+  // Load offers on component mount and when requestId changes
   useEffect(() => {
     if (requestId) {
-      fetchBids(1);
+      fetchOffers(1);
     }
   }, [requestId]);
 
-  // Load more bids
+  // Load more offers
   const handleLoadMore = async () => {
     if (page >= totalPages) return;
-    fetchBids(page + 1, true);
+    fetchOffers(page + 1, true);
   };
 
   // Filter functions
-  const filteredBids = bids.filter(bid => {
+  const filteredOffers = offers.filter(offer => {
     const matchesSearch = 
-      bid.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bid.request.requestId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bid.equipment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bid.equipment.owner.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bid.request.requester.full_name.toLowerCase().includes(searchTerm.toLowerCase());
+      offer.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      offer.request.requestId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      offer.equipment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      offer.equipment.owner.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      offer.request.requester.fullName.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = statusFilter === 'all' || bid.request.status === statusFilter;
-    const matchesCity = cityFilter === 'all' || bid.equipment.city === cityFilter;
-    const matchesEquipmentType = equipmentTypeFilter === 'all' || bid.equipment.equipment_type === equipmentTypeFilter;
+    const matchesStatus = statusFilter === 'all' || offer.request.status === statusFilter;
+    const matchesCity = cityFilter === 'all' || offer.equipment.city === cityFilter;
+    const matchesEquipmentType = equipmentTypeFilter === 'all' || offer.equipment.equipmentType === equipmentTypeFilter;
     const matchesOwnerRenter = !ownerRenterFilter || 
-      bid.equipment.owner.full_name.toLowerCase().includes(ownerRenterFilter.toLowerCase()) ||
-      bid.request.requester.full_name.toLowerCase().includes(ownerRenterFilter.toLowerCase());
+      offer.equipment.owner.fullName.toLowerCase().includes(ownerRenterFilter.toLowerCase()) ||
+      offer.request.requester.fullName.toLowerCase().includes(ownerRenterFilter.toLowerCase());
     
     const matchesDateRange = !dateRange.start || !dateRange.end || 
-      (new Date(bid.request.start_date) >= new Date(dateRange.start) && 
-       new Date(bid.request.start_date) <= new Date(dateRange.end));
+      (new Date(offer.request.startDate) >= new Date(dateRange.start) && 
+       new Date(offer.request.startDate) <= new Date(dateRange.end));
     
     const today = new Date();
-    const expiresAt = new Date(bid.expires_at);
+    const expiresAt = new Date(offer.expiresAt);
     const matchesExpiringSoon = !showExpiringSoon || 
       (expiresAt > today && expiresAt.getTime() - today.getTime() < 24 * 60 * 60 * 1000); // Within 24 hours
     
-    const matchesHighValue = !showHighValue || parseFloat(bid.total_amount) > 20000;
+    const matchesHighValue = !showHighValue || parseFloat(offer.totalAmount) > 20000;
     
     return matchesSearch && matchesStatus && matchesCity && matchesEquipmentType && 
            matchesOwnerRenter && matchesDateRange && matchesExpiringSoon && matchesHighValue;
   });
 
   // Sort functions
-  const sortedBids = [...filteredBids].sort((a, b) => {
+  const sortedOffers = [...filteredOffers].sort((a, b) => {
     let aValue: any, bValue: any;
     
     switch (sortBy) {
-      case 'created_at':
-        aValue = new Date(a.created_at);
-        bValue = new Date(b.created_at);
+      case 'createdAt':
+        aValue = new Date(a.createdAt);
+        bValue = new Date(b.createdAt);
         break;
-      case 'start_date':
-        aValue = new Date(a.request.start_date);
-        bValue = new Date(b.request.start_date);
+      case 'startDate':
+        aValue = new Date(a.request.startDate);
+        bValue = new Date(b.request.startDate);
         break;
-      case 'total_amount':
-        aValue = parseFloat(a.total_amount);
-        bValue = parseFloat(b.total_amount);
+      case 'totalAmount':
+        aValue = parseFloat(a.totalAmount);
+        bValue = parseFloat(b.totalAmount);
         break;
-      case 'daily_rate':
-        aValue = parseFloat(a.daily_rate);
-        bValue = parseFloat(b.daily_rate);
+      case 'dailyRate':
+        aValue = parseFloat(a.dailyRate);
+        bValue = parseFloat(b.dailyRate);
         break;
-      case 'expires_at':
-        aValue = new Date(a.expires_at);
-        bValue = new Date(b.expires_at);
+      case 'expiresAt':
+        aValue = new Date(a.expiresAt);
+        bValue = new Date(b.expiresAt);
         break;
       default:
         aValue = a.id;
@@ -267,18 +267,18 @@ const BidsManagement: React.FC = () => {
 
   // Statistics
   const stats = {
-    total: bids.length,
-    pending: bids.filter(b => b.request.status === 'open').length,
-    accepted: bids.filter(b => b.request.status === 'fulfilled').length,
-    rejected: bids.filter(b => b.request.status === 'cancelled').length,
-    expired: bids.filter(b => {
+    total: offers.length,
+    pending: offers.filter(o => o.request.status === 'open').length,
+    accepted: offers.filter(o => o.request.status === 'fulfilled').length,
+    rejected: offers.filter(o => o.request.status === 'cancelled').length,
+    expired: offers.filter(o => {
       const today = new Date();
-      const expiresAt = new Date(b.expires_at);
+      const expiresAt = new Date(o.expiresAt);
       return expiresAt < today;
     }).length,
-    expiringSoon: bids.filter(b => {
+    expiringSoon: offers.filter(o => {
       const today = new Date();
-      const expiresAt = new Date(b.expires_at);
+      const expiresAt = new Date(o.expiresAt);
       return expiresAt > today && expiresAt.getTime() - today.getTime() < 24 * 60 * 60 * 1000;
     }).length
   };
@@ -324,27 +324,27 @@ const BidsManagement: React.FC = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedBids.length === sortedBids.length) {
-      setSelectedBids([]);
+    if (selectedOffers.length === sortedOffers.length) {
+      setSelectedOffers([]);
     } else {
-      setSelectedBids(sortedBids.map(bid => bid.id));
+      setSelectedOffers(sortedOffers.map(offer => offer.id));
     }
   };
 
-  const handleSelectBid = (bidId: string) => {
-    setSelectedBids(prev => 
-      prev.includes(bidId) 
-        ? prev.filter(id => id !== bidId)
-        : [...prev, bidId]
+  const handleSelectOffer = (offerId: string) => {
+    setSelectedOffers(prev => 
+      prev.includes(offerId) 
+        ? prev.filter(id => id !== offerId)
+        : [...prev, offerId]
     );
   };
 
   const handleBulkExport = () => {
-    console.log('Exporting bids:', selectedBids);
+    console.log('Exporting offers:', selectedOffers);
   };
 
   const handleBulkFlag = () => {
-    console.log('Flagging bids:', selectedBids);
+    console.log('Flagging offers:', selectedOffers);
   };
 
   const handleBackToRequests = () => {
@@ -356,7 +356,7 @@ const BidsManagement: React.FC = () => {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-awnash-primary animate-spin mb-4" />
-          <p className="text-gray-400">{isRTL ? 'جاري تحميل العروض...' : 'Loading bids...'}</p>
+          <p className="text-gray-400">{isRTL ? 'جاري تحميل العروض...' : 'Loading offers...'}</p>
         </div>
       </div>
     );
@@ -378,12 +378,12 @@ const BidsManagement: React.FC = () => {
               </button>
             </div>
             <h1 className="text-3xl font-bold text-white">
-              {isRTL ? 'عروض الطلب' : 'Request Bids'}
+              {isRTL ? 'عروض الطلب' : 'Request Offers'}
             </h1>
             <p className="text-gray-400 mt-1">
               {requestId 
-                ? `${isRTL ? 'عروض الطلب' : 'Bids for request'}: ${requestId}`
-                : (isRTL ? 'مراقبة وإدارة جميع العروض المقدمة على طلبات الاستئجار' : 'Monitor and manage all bids submitted for rental requests')
+                ? `${isRTL ? 'عروض الطلب' : 'Offers for request'}: ${requestId}`
+                : (isRTL ? 'مراقبة وإدارة جميع العروض المقدمة على طلبات الاستئجار' : 'Monitor and manage all offers submitted for rental requests')
               }
             </p>
           </div>
@@ -394,7 +394,7 @@ const BidsManagement: React.FC = () => {
             </button>
             <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors">
               <FontAwesomeIcon icon={faHandshake} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
-              {isRTL ? 'عرض جديد' : 'New Bid'}
+              {isRTL ? 'عرض جديد' : 'New Offer'}
             </button>
           </div>
         </div>
@@ -411,7 +411,7 @@ const BidsManagement: React.FC = () => {
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي العروض' : 'Total Bids'}</p>
+                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي العروض' : 'Total Offers'}</p>
                 <p className="text-2xl font-bold text-white">{stats.total}</p>
               </div>
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -489,7 +489,7 @@ const BidsManagement: React.FC = () => {
               <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder={isRTL ? 'البحث في العروض...' : 'Search bids...'}
+                placeholder={isRTL ? 'البحث في العروض...' : 'Search offers...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
@@ -584,26 +584,26 @@ const BidsManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Bids Table */}
+        {/* Offers Table */}
         <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
           {/* Table Header */}
           <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <input
                 type="checkbox"
-                checked={selectedBids.length === sortedBids.length && sortedBids.length > 0}
+                checked={selectedOffers.length === sortedOffers.length && sortedOffers.length > 0}
                 onChange={handleSelectAll}
                 className="rounded border-gray-600 bg-gray-700 text-awnash-primary focus:ring-awnash-primary"
               />
               <span className="text-white font-medium">
-                {selectedBids.length > 0 
-                  ? `${selectedBids.length} ${isRTL ? 'عرض محدد' : 'bids selected'}`
-                  : `${sortedBids.length} ${isRTL ? 'عرض' : 'bids'}`
+                {selectedOffers.length > 0 
+                  ? `${selectedOffers.length} ${isRTL ? 'عرض محدد' : 'offers selected'}`
+                  : `${sortedOffers.length} ${isRTL ? 'عرض' : 'offers'}`
                 }
               </span>
             </div>
             
-            {selectedBids.length > 0 && (
+            {selectedOffers.length > 0 && (
               <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
                 <button
                   onClick={handleBulkExport}
@@ -627,7 +627,7 @@ const BidsManagement: React.FC = () => {
               <thead className="bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    {isRTL ? 'عرض' : 'Bid'}
+                    {isRTL ? 'عرض' : 'Offer'}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     {isRTL ? 'المعدة' : 'Equipment'}
@@ -653,56 +653,56 @@ const BidsManagement: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-gray-800 divide-y divide-gray-700">
-                {sortedBids.map((bid) => (
-                  <tr key={bid.id} className="hover:bg-gray-700 transition-colors">
+                {sortedOffers.map((offer) => (
+                  <tr key={offer.id} className="hover:bg-gray-700 transition-colors">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-white">{bid.id}</div>
-                        <div className="text-xs text-gray-400">{bid.request.requestId}</div>
-                        <div className="text-xs text-gray-500">{formatDate(bid.created_at)}</div>
+                        <div className="text-sm font-medium text-white">{offer.id}</div>
+                        <div className="text-xs text-gray-400">{offer.request.requestId}</div>
+                        <div className="text-xs text-gray-500">{formatDate(offer.createdAt)}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <img
-                          src={bid.equipment.image_urls[0] || '/api/placeholder/80/60'}
-                          alt={bid.equipment.name}
+                          src={offer.equipment.imageUrls[0] || '/api/placeholder/80/60'}
+                          alt={offer.equipment.name}
                           className="w-10 h-10 rounded-lg object-cover mr-3"
                           onError={(e) => {
                             e.currentTarget.src = '/api/placeholder/80/60';
                           }}
                         />
                         <div>
-                          <div className="text-sm font-medium text-white">{bid.equipment.name}</div>
-                          <div className="text-xs text-gray-400">{bid.equipment.equipment_type}</div>
+                          <div className="text-sm font-medium text-white">{offer.equipment.name}</div>
+                          <div className="text-xs text-gray-400">{offer.equipment.equipmentType}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm text-white">{bid.equipment.owner.full_name}</div>
+                        <div className="text-sm text-white">{offer.equipment.owner.fullName}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm text-white">{bid.request.requester.full_name}</div>
+                        <div className="text-sm text-white">{offer.request.requester.fullName}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-white">{formatDate(bid.request.start_date)} - {formatDate(bid.request.end_date)}</div>
+                      <div className="text-sm text-white">{formatDate(offer.request.startDate)} - {formatDate(offer.request.endDate)}</div>
                       <div className="text-xs text-gray-400">
-                        {isRTL ? 'ينتهي' : 'Expires'}: {formatDate(bid.expires_at)}
+                        {isRTL ? 'ينتهي' : 'Expires'}: {formatDate(offer.expiresAt)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-white">{formatCurrency(bid.total_amount, bid.total_amount_currency)}</div>
+                      <div className="text-sm text-white">{formatCurrency(offer.totalAmount, offer.totalAmountCurrency)}</div>
                       <div className="text-xs text-gray-400">
-                        {formatCurrency(bid.daily_rate, bid.daily_rate_currency)}/{isRTL ? 'يوم' : 'day'}
+                        {formatCurrency(offer.dailyRate, offer.dailyRateCurrency)}/{isRTL ? 'يوم' : 'day'}
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col space-y-2">
-                        {getStatusBadge(bid.request.status)}
+                        {getStatusBadge(offer.request.status)}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -715,7 +715,7 @@ const BidsManagement: React.FC = () => {
                         </button>
                         <button
                           className="p-2 text-green-400 hover:text-green-300 transition-colors"
-                          title={isRTL ? 'قبول العرض' : 'Accept Bid'}
+                          title={isRTL ? 'قبول العرض' : 'Accept Offer'}
                         >
                           <FontAwesomeIcon icon={faCheck} className="h-4 w-4" />
                         </button>
@@ -733,16 +733,16 @@ const BidsManagement: React.FC = () => {
             </table>
           </div>
 
-          {sortedBids.length === 0 && !loading && (
+          {sortedOffers.length === 0 && !loading && (
             <div className="text-center py-12">
               <FontAwesomeIcon icon={faHandshake} className="h-12 w-12 text-gray-500 mb-4" />
               <h3 className="text-lg font-medium text-gray-400 mb-2">
-                {isRTL ? 'لا توجد عروض' : 'No bids found'}
+                {isRTL ? 'لا توجد عروض' : 'No offers found'}
               </h3>
               <p className="text-gray-500">
                 {requestId 
-                  ? (isRTL ? 'لا توجد عروض لهذا الطلب' : 'No bids found for this request')
-                  : (isRTL ? 'لا توجد عروض تطابق المعايير المحددة' : 'No bids match the selected criteria')
+                  ? (isRTL ? 'لا توجد عروض لهذا الطلب' : 'No offers found for this request')
+                  : (isRTL ? 'لا توجد عروض تطابق المعايير المحددة' : 'No offers match the selected criteria')
                 }
               </p>
             </div>
@@ -773,4 +773,4 @@ const BidsManagement: React.FC = () => {
   );
 };
 
-export default BidsManagement; 
+export default OffersManagement; 

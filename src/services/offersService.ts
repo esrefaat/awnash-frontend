@@ -6,67 +6,67 @@
 
 export interface Offer {
   id: string;
-  request_id: string;
-  equipment_id?: string;
-  daily_rate: number;
+  requestId: string;
+  equipmentId?: string;
+  dailyRate: number;
   currency: string;
   price: number;
-  expires_at: string;
+  expiresAt: string;
   notes: string;
   status: 'pending' | 'accepted' | 'rejected' | 'expired' | 'cancelled';
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   images: string[];
   documents: string[];
-  includes_delivery?: boolean;
+  includesDelivery?: boolean;
   owner: {
     id: string;
     name: string;
-    avatar_url?: string;
+    avatarUrl?: string;
     rating?: number;
-    total_reviews?: number;
+    totalReviews?: number;
   } | null;
   // Legacy field for backward compatibility
   bidder?: {
     id: string;
-    full_name: string;
+    fullName: string;
     email: string;
-    mobile_number?: string;
+    mobileNumber?: string;
     role?: string;
   };
   equipment?: {
     id: string;
     name: string;
-    equipment_type: string;
+    equipmentType: string;
     size: string;
     city: string;
-    image_urls: string[];
+    imageUrls: string[];
   };
   request?: {
     id: string;
-    equipment_type: string;
+    equipmentType: string;
     requester: {
       id: string;
       name?: string;
-      full_name?: string;
+      fullName?: string;
       email?: string;
     };
-    start_date: string;
-    end_date: string;
+    startDate: string;
+    endDate: string;
   };
   isNew?: boolean;
 }
 
 export interface CreateOfferData {
-  request_id: string;
-  equipment_id?: string;
-  daily_rate?: number;
+  requestId: string;
+  equipmentId?: string;
+  dailyRate?: number;
   price?: number;
   currency?: string;
-  expires_at?: string;
+  expiresAt?: string;
   notes?: string;
-  includes_delivery?: boolean;
-  driver_id?: string;
+  includesDelivery?: boolean;
+  driverId?: string;
   images?: string[];
   documents?: string[];
 }
@@ -77,7 +77,7 @@ export interface PaginatedOffersResponse {
     page: number;
     limit: number;
     total: number;
-    total_pages: number;
+    totalPages: number;
   };
 }
 
@@ -349,7 +349,7 @@ class OffersService {
         page: 1,
         limit: 10,
         total: 0,
-        total_pages: 0,
+        totalPages: 0,
       }
     };
   }
@@ -360,7 +360,7 @@ class OffersService {
       page: 1,
       limit: 10,
       total: 0,
-      total_pages: 0,
+      totalPages: 0,
     };
     
     if (data && data.data && Array.isArray(data.data)) {
@@ -369,7 +369,7 @@ class OffersService {
         page: data.page || 1,
         limit: data.limit || 10,
         total: data.total || offers.length,
-        total_pages: data.total_pages || Math.ceil((data.total || offers.length) / (data.limit || 10)),
+        totalPages: data.totalPages || Math.ceil((data.total || offers.length) / (data.limit || 10)),
       };
     } else if (data && Array.isArray(data)) {
       offers = data;
@@ -377,7 +377,7 @@ class OffersService {
         page: 1,
         limit: data.length,
         total: data.length,
-        total_pages: 1,
+        totalPages: 1,
       };
     }
     
@@ -386,15 +386,3 @@ class OffersService {
 }
 
 export const offersService = new OffersService();
-
-// Legacy exports for backward compatibility
-export type Bid = Offer;
-export type CreateBidData = CreateOfferData;
-export type PaginatedBidsResponse = PaginatedOffersResponse;
-export const bidsService = {
-  getBidsByRequestId: (requestId: string, page?: number, limit?: number) => 
-    offersService.getOffersByRequestId(requestId, page, limit),
-  createBid: (data: CreateOfferData) => offersService.createOffer(data),
-  acceptBid: (id: string) => offersService.acceptOffer(id),
-  rejectBid: (id: string) => offersService.rejectOffer(id),
-};

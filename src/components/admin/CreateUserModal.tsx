@@ -9,30 +9,30 @@ import { Badge } from '@/components/ui/Badge';
 
 interface User {
   id: string;
-  full_name: string;
-  mobile_number: string;
+  fullName: string;
+  mobileNumber: string;
   email?: string;
   role: string;
   roles: string[];
   permissions: string[];
-  permissions_override?: Record<string, boolean>;
-  is_verified: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  permissionsOverride?: Record<string, boolean>;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   city?: string;
-  last_login?: string;
+  lastLogin?: string;
 }
 
 interface CreateUserForm {
-  full_name: string;
-  mobile_number: string;
+  fullName: string;
+  mobileNumber: string;
   email: string;
   password: string;
   role: string;
   city: string;
-  is_active: boolean;
-  send_invite: boolean;
+  isActive: boolean;
+  sendInvite: boolean;
 }
 
 interface CreateUserModalProps {
@@ -43,14 +43,14 @@ interface CreateUserModalProps {
 
 const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [form, setForm] = useState<CreateUserForm>({
-    full_name: '',
-    mobile_number: '',
+    fullName: '',
+    mobileNumber: '',
     email: '',
     password: '',
     role: 'support_agent',
     city: '',
-    is_active: true,
-    send_invite: false
+    isActive: true,
+    sendInvite: false
   });
 
   const [errors, setErrors] = useState<Partial<CreateUserForm>>({});
@@ -79,23 +79,23 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
   const validateForm = (): boolean => {
     const newErrors: Partial<CreateUserForm> = {};
 
-    if (!form.full_name.trim()) {
-      newErrors.full_name = 'Full name is required';
+    if (!form.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
     }
 
-    if (!form.mobile_number.trim()) {
-      newErrors.mobile_number = 'Mobile number is required';
-    } else if (!/^\+[1-9]\d{1,14}$/.test(form.mobile_number)) {
-      newErrors.mobile_number = 'Please enter a valid mobile number with country code (e.g., +966501234567)';
+    if (!form.mobileNumber.trim()) {
+      newErrors.mobileNumber = 'Mobile number is required';
+    } else if (!/^\+[1-9]\d{1,14}$/.test(form.mobileNumber)) {
+      newErrors.mobileNumber = 'Please enter a valid mobile number with country code (e.g., +966501234567)';
     }
 
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (!form.send_invite && !form.password.trim()) {
+    if (!form.sendInvite && !form.password.trim()) {
       newErrors.password = 'Password is required when not sending invite';
-    } else if (!form.send_invite && form.password.length < 8) {
+    } else if (!form.sendInvite && form.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters long';
     }
 
@@ -118,17 +118,17 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
 
       const newUser: User = {
         id: Date.now().toString(),
-        full_name: form.full_name,
-        mobile_number: form.mobile_number,
+        fullName: form.fullName,
+        mobileNumber: form.mobileNumber,
         email: form.email || undefined,
         role: form.role,
         roles: [form.role],
         permissions: getPermissionsForRole(form.role),
-        is_verified: !form.send_invite,
-        is_active: form.is_active,
+        isVerified: !form.sendInvite,
+        isActive: form.isActive,
         city: form.city || undefined,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       onSuccess(newUser);
@@ -185,14 +185,14 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
 
   const resetForm = () => {
     setForm({
-      full_name: '',
-      mobile_number: '',
+      fullName: '',
+      mobileNumber: '',
       email: '',
       password: '',
       role: 'support_agent',
       city: '',
-      is_active: true,
-      send_invite: false
+      isActive: true,
+      sendInvite: false
     });
     setErrors({});
   };
@@ -220,36 +220,36 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="full_name" className="text-gray-300">
+                <Label htmlFor="fullName" className="text-gray-300">
                   Full Name <span className="text-red-400">*</span>
                 </Label>
                 <Input
-                  id="full_name"
+                  id="fullName"
                   type="text"
-                  value={form.full_name}
-                  onChange={(e) => setForm(prev => ({ ...prev, full_name: e.target.value }))}
+                  value={form.fullName}
+                  onChange={(e) => setForm(prev => ({ ...prev, fullName: e.target.value }))}
                   className="bg-gray-700 border-gray-600 text-gray-100 rounded-xl mt-1"
                   placeholder="Enter full name"
                 />
-                {errors.full_name && (
-                  <p className="text-red-400 text-sm mt-1">{errors.full_name}</p>
+                {errors.fullName && (
+                  <p className="text-red-400 text-sm mt-1">{errors.fullName}</p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="mobile_number" className="text-gray-300">
+                <Label htmlFor="mobileNumber" className="text-gray-300">
                   Mobile Number <span className="text-red-400">*</span>
                 </Label>
                 <Input
-                  id="mobile_number"
+                  id="mobileNumber"
                   type="tel"
-                  value={form.mobile_number}
-                  onChange={(e) => setForm(prev => ({ ...prev, mobile_number: e.target.value }))}
+                  value={form.mobileNumber}
+                  onChange={(e) => setForm(prev => ({ ...prev, mobileNumber: e.target.value }))}
                   className="bg-gray-700 border-gray-600 text-gray-100 rounded-xl mt-1"
                   placeholder="+966501234567"
                 />
-                {errors.mobile_number && (
-                  <p className="text-red-400 text-sm mt-1">{errors.mobile_number}</p>
+                {errors.mobileNumber && (
+                  <p className="text-red-400 text-sm mt-1">{errors.mobileNumber}</p>
                 )}
               </div>
 
@@ -339,10 +339,10 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={form.send_invite}
+                  checked={form.sendInvite}
                   onChange={(e) => setForm(prev => ({ 
                     ...prev, 
-                    send_invite: e.target.checked,
+                    sendInvite: e.target.checked,
                     password: e.target.checked ? '' : prev.password
                   }))}
                   className="sr-only peer"
@@ -351,7 +351,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
               </label>
             </div>
 
-            {!form.send_invite && (
+            {!form.sendInvite && (
               <div>
                 <Label htmlFor="password" className="text-gray-300">
                   Temporary Password <span className="text-red-400">*</span>
@@ -390,8 +390,8 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={form.is_active}
-                  onChange={(e) => setForm(prev => ({ ...prev, is_active: e.target.checked }))}
+                  checked={form.isActive}
+                  onChange={(e) => setForm(prev => ({ ...prev, isActive: e.target.checked }))}
                   className="sr-only peer"
                 />
                 <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FFCC00]"></div>
@@ -421,7 +421,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
                   <span>Creating User...</span>
                 </div>
               ) : (
-                form.send_invite ? 'Create & Send Invite' : 'Create User'
+                form.sendInvite ? 'Create & Send Invite' : 'Create User'
               )}
             </Button>
           </div>

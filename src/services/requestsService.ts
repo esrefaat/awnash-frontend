@@ -3,50 +3,52 @@ import { apiService } from './api';
 export interface RentalRequest {
   id: string;
   requestId: string;
-  equipment_type: string;
+  requestNumber?: string;
+  equipmentType: string;
+  equipmentTypeId?: string;
   status: string;
   priority: string;
   images: string[];
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
   size: string;
-  max_budget: number;
+  maxBudget: number;
   count: number;
   location: {
     x: number;
     y: number;
   };
   city: string;
-  location_address: string;
-  note: string;
-  created_at: string;
+  locationAddress: string;
+  notes: string;
+  createdAt: string;
   requester: {
     id: string;
-    full_name: string;
-    mobile_number: string;
+    fullName: string;
+    mobileNumber: string;
     email: string;
     role: string;
-    is_verified: boolean;
-    created_at: string;
-    updated_at: string;
+    isVerified: boolean;
+    createdAt: string;
+    updatedAt: string;
   };
 }
 
 export interface CreateRequestData {
-  equipment_type: string;
+  equipmentType: string;
   status: string;
   priority: string;
   images: string[];
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
   size: string;
-  max_budget: number;
+  maxBudget: number;
   city: string;
   location: string | null;
   latitude: number | null;
   longitude: number | null;
-  location_address: string | null;
-  note: string;
+  locationAddress: string | null;
+  notes: string;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
@@ -56,7 +58,7 @@ class RequestsService {
 
   async getRequests(): Promise<RentalRequest[]> {
     try {
-      const url = `${this.baseUrl}/booking/request`;
+      const url = `${this.baseUrl}/requests`;
       
       console.log('Fetching requests from:', url);
       
@@ -100,7 +102,7 @@ class RequestsService {
 
   async createRequest(requestData: CreateRequestData): Promise<RentalRequest> {
     try {
-      const response = await fetch(`${this.baseUrl}/booking/request`, {
+      const response = await fetch(`${this.baseUrl}/requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -124,7 +126,7 @@ class RequestsService {
 
   async updateRequest(requestId: string, requestData: Partial<CreateRequestData>): Promise<RentalRequest> {
     try {
-      const response = await fetch(`${this.baseUrl}/booking/request/${requestId}`, {
+      const response = await fetch(`${this.baseUrl}/requests/${requestId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -148,7 +150,7 @@ class RequestsService {
 
   async deleteRequest(requestId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/booking/request/${requestId}`, {
+      const response = await fetch(`${this.baseUrl}/requests/${requestId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -167,7 +169,7 @@ class RequestsService {
     try {
       console.log('Fetching request by ID:', requestId);
       
-      const response = await fetch(`${this.baseUrl}/booking/request/${requestId}`, {
+      const response = await fetch(`${this.baseUrl}/requests/${requestId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

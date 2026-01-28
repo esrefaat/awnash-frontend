@@ -15,7 +15,7 @@ export function useEquipmentForm({
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
   const [uploadingImages, setUploadingImages] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState<string[]>(initialValues.image_urls || []);
+  const [imagePreviews, setImagePreviews] = useState<string[]>(initialValues.imageUrls || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -40,7 +40,7 @@ export function useEquipmentForm({
         throw new Error(data.message || 'Failed to upload images');
       }
       setImagePreviews(prev => [...prev, ...data.data]);
-      setForm(f => ({ ...f, image_urls: [...f.image_urls, ...data.data] }));
+      setForm(f => ({ ...f, imageUrls: [...f.imageUrls, ...data.data] }));
     } catch (err: any) {
       setFormError(err.message || 'Failed to upload images');
     } finally {
@@ -52,12 +52,12 @@ export function useEquipmentForm({
   const handleImageReorder = (newList: any[]) => {
     const newUrls = newList.map(item => item.url || item);
     setImagePreviews(newUrls);
-    setForm(f => ({ ...f, image_urls: newUrls }));
+    setForm(f => ({ ...f, imageUrls: newUrls }));
   };
 
   const handleRemoveImage = (idx: number) => {
     setImagePreviews(prev => prev.filter((_, i) => i !== idx));
-    setForm(f => ({ ...f, image_urls: f.image_urls.filter((_, i) => i !== idx) }));
+    setForm(f => ({ ...f, imageUrls: f.imageUrls.filter((_, i) => i !== idx) }));
   };
 
   const handleModalSubmit = async (e?: React.FormEvent) => {

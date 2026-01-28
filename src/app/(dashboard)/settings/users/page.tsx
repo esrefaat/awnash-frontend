@@ -35,7 +35,7 @@ const UserManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [sortField, setSortField] = useState<keyof User>('created_at');
+  const [sortField, setSortField] = useState<keyof User>('createdAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -56,11 +56,11 @@ const UserManagement: React.FC = () => {
     hybrid: 0
   });
   const [createUserData, setCreateUserData] = useState<CreateUserData>({
-    full_name: '',
-    mobile_number: '',
+    fullName: '',
+    mobileNumber: '',
     email: '',
     role: 'renter',
-    is_active: true
+    isActive: true
   });
   const [isCreating, setIsCreating] = useState(false);
 
@@ -101,54 +101,54 @@ const UserManagement: React.FC = () => {
       const mockUsers = [
         {
           id: '1',
-          full_name: 'Ahmad Al-Rashid',
+          fullName: 'Ahmad Al-Rashid',
           email: 'ahmad@example.com',
-          mobile_number: '+966501234567',
+          mobileNumber: '+966501234567',
           role: 'super_admin',
           roles: ['super_admin'],
           permissions: ['system:configure', 'roles:manage', 'user:create', 'user:read', 'user:update', 'user:delete'],
-          is_active: true,
-          is_verified: true,
+          isActive: true,
+          isVerified: true,
           city: 'Riyadh',
-          created_at: '2024-01-01T00:00:00Z',
-          updated_at: '2024-01-01T00:00:00Z',
-          last_login: '2024-01-15T14:30:00Z',
-          total_bookings: 0,
-          total_equipment: 0
+          createdAt: '2024-01-01T00:00:00Z',
+          updatedAt: '2024-01-01T00:00:00Z',
+          lastLogin: '2024-01-15T14:30:00Z',
+          totalBookings: 0,
+          totalEquipment: 0
         },
         {
           id: '2',
-          full_name: 'Fatima Al-Zahra',
+          fullName: 'Fatima Al-Zahra',
           email: 'fatima@example.com',
-          mobile_number: '+966501234568',
+          mobileNumber: '+966501234568',
           role: 'booking_admin',
           roles: ['booking_admin'],
           permissions: ['booking:create', 'booking:read', 'booking:update', 'booking:approve'],
-          is_active: true,
-          is_verified: true,
+          isActive: true,
+          isVerified: true,
           city: 'Jeddah',
-          created_at: '2024-01-02T00:00:00Z',
-          updated_at: '2024-01-02T00:00:00Z',
-          last_login: '2024-01-15T13:45:00Z',
-          total_bookings: 0,
-          total_equipment: 0
+          createdAt: '2024-01-02T00:00:00Z',
+          updatedAt: '2024-01-02T00:00:00Z',
+          lastLogin: '2024-01-15T13:45:00Z',
+          totalBookings: 0,
+          totalEquipment: 0
         },
         {
           id: '3',
-          full_name: 'Omar Hassan',
+          fullName: 'Omar Hassan',
           email: 'omar@example.com',
-          mobile_number: '+966501234569',
+          mobileNumber: '+966501234569',
           role: 'content_admin',
           roles: ['content_admin'],
           permissions: ['equipment:create', 'equipment:read', 'equipment:update'],
-          is_active: false,
-          is_verified: true,
+          isActive: false,
+          isVerified: true,
           city: 'Dammam',
-          created_at: '2024-01-03T00:00:00Z',
-          updated_at: '2024-01-03T00:00:00Z',
-          last_login: '2024-01-15T12:20:00Z',
-          total_bookings: 0,
-          total_equipment: 0
+          createdAt: '2024-01-03T00:00:00Z',
+          updatedAt: '2024-01-03T00:00:00Z',
+          lastLogin: '2024-01-15T12:20:00Z',
+          totalBookings: 0,
+          totalEquipment: 0
         }
       ];
       setUsers(mockUsers);
@@ -355,11 +355,11 @@ const UserManagement: React.FC = () => {
       await usersService.createUser(createUserData);
       setShowCreateModal(false);
       setCreateUserData({
-        full_name: '',
-        mobile_number: '',
+        fullName: '',
+        mobileNumber: '',
         email: '',
         role: 'renter',
-        is_active: true
+        isActive: true
       });
       await loadUsers(); // Reload users after creation
       await loadUserStats(); // Reload stats
@@ -560,11 +560,11 @@ const UserManagement: React.FC = () => {
                     </th>
                     <th 
                       className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
-                      onClick={() => handleSort('full_name')}
+                      onClick={() => handleSort('fullName')}
                     >
                       <div className="flex items-center space-x-1">
                         <span>{isRTL ? 'الاسم' : 'Name'}</span>
-                        <FontAwesomeIcon icon={getSortIcon('full_name')} className="h-3 w-3" />
+                        <FontAwesomeIcon icon={getSortIcon('fullName')} className="h-3 w-3" />
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
@@ -584,11 +584,11 @@ const UserManagement: React.FC = () => {
                     </th>
                     <th 
                       className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
-                      onClick={() => handleSort('created_at')}
+                      onClick={() => handleSort('createdAt')}
                     >
                       <div className="flex items-center space-x-1">
                         <span>{isRTL ? 'تاريخ الإنشاء' : 'Created'}</span>
-                        <FontAwesomeIcon icon={getSortIcon('created_at')} className="h-3 w-3" />
+                        <FontAwesomeIcon icon={getSortIcon('createdAt')} className="h-3 w-3" />
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
@@ -615,7 +615,7 @@ const UserManagement: React.FC = () => {
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-white">{user.full_name}</div>
+                            <div className="text-sm font-medium text-white">{user.fullName}</div>
                             <div className="text-sm text-gray-400">ID: {user.id.slice(0, 8)}...</div>
                           </div>
                         </div>
@@ -624,7 +624,7 @@ const UserManagement: React.FC = () => {
                         <div className="text-sm text-white">
                           <div className="flex items-center mb-1">
                             <FontAwesomeIcon icon={faPhone} className="h-3 w-3 text-gray-400 mr-2" />
-                            {user.mobile_number}
+                            {user.mobileNumber}
                           </div>
                           {user.email && (
                             <div className="flex items-center mb-1">
@@ -652,22 +652,22 @@ const UserManagement: React.FC = () => {
                       <td className="px-6 py-4">
                         <div className="flex flex-col space-y-1">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            user.is_active ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                            user.isActive ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                           }`}>
-                            {user.is_active ? 'Active' : 'Inactive'}
+                            {user.isActive ? 'Active' : 'Inactive'}
                           </span>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            user.is_verified ? 'bg-blue-600 text-white' : 'bg-yellow-600 text-black'
+                            user.isVerified ? 'bg-blue-600 text-white' : 'bg-yellow-600 text-black'
                           }`}>
-                            {user.is_verified ? 'Verified' : 'Unverified'}
+                            {user.isVerified ? 'Verified' : 'Unverified'}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-300">
-                        <div>{formatDate(user.created_at)}</div>
-                        {user.last_login && (
+                        <div>{formatDate(user.createdAt)}</div>
+                        {user.lastLogin && (
                           <div className="text-xs text-gray-500">
-                            Last: {formatDate(user.last_login)}
+                            Last: {formatDate(user.lastLogin)}
                           </div>
                         )}
                       </td>
@@ -690,13 +690,13 @@ const UserManagement: React.FC = () => {
                           <button
                             onClick={() => handleToggleUserStatus(user.id)}
                             className={`p-2 transition-colors ${
-                              user.is_active 
+                              user.isActive 
                                 ? 'text-gray-400 hover:text-red-400' 
                                 : 'text-gray-400 hover:text-green-400'
                             }`}
-                            title={user.is_active ? 'Deactivate User' : 'Activate User'}
+                            title={user.isActive ? 'Deactivate User' : 'Activate User'}
                           >
-                            <FontAwesomeIcon icon={user.is_active ? faBan : faUserCheck} className="h-4 w-4" />
+                            <FontAwesomeIcon icon={user.isActive ? faBan : faUserCheck} className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteUser(user.id)}
@@ -770,8 +770,8 @@ const UserManagement: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      value={createUserData.full_name}
-                      onChange={(e) => handleCreateUserChange('full_name', e.target.value)}
+                      value={createUserData.fullName}
+                      onChange={(e) => handleCreateUserChange('fullName', e.target.value)}
                       className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل الاسم الكامل' : 'Enter full name'}
                       required
@@ -785,8 +785,8 @@ const UserManagement: React.FC = () => {
                     </label>
                     <input
                       type="tel"
-                      value={createUserData.mobile_number}
-                      onChange={(e) => handleCreateUserChange('mobile_number', e.target.value)}
+                      value={createUserData.mobileNumber}
+                      onChange={(e) => handleCreateUserChange('mobileNumber', e.target.value)}
                       className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? '+966xxxxxxxxx' : '+966xxxxxxxxx'}
                       required
@@ -834,19 +834,19 @@ const UserManagement: React.FC = () => {
                       {isRTL ? 'الحالة' : 'Status'}
                     </label>
                     <div className="flex items-center">
-                      <span className={`text-sm mr-3 ${createUserData.is_active ? 'text-green-400' : 'text-red-400'}`}>
-                        {createUserData.is_active ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'غير نشط' : 'Suspended')}
+                      <span className={`text-sm mr-3 ${createUserData.isActive ? 'text-green-400' : 'text-red-400'}`}>
+                        {createUserData.isActive ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'غير نشط' : 'Suspended')}
                       </span>
                       <button
                         type="button"
-                        onClick={() => handleCreateUserChange('is_active', !createUserData.is_active)}
+                        onClick={() => handleCreateUserChange('isActive', !createUserData.isActive)}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          createUserData.is_active ? 'bg-green-600' : 'bg-gray-600'
+                          createUserData.isActive ? 'bg-green-600' : 'bg-gray-600'
                         }`}
                       >
                         <span
                           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            createUserData.is_active ? 'translate-x-6' : 'translate-x-1'
+                            createUserData.isActive ? 'translate-x-6' : 'translate-x-1'
                           }`}
                         />
                       </button>
@@ -880,7 +880,7 @@ const UserManagement: React.FC = () => {
                 </button>
                 <button
                   onClick={handleCreateUser}
-                  disabled={isCreating || !createUserData.full_name || !createUserData.mobile_number}
+                  disabled={isCreating || !createUserData.fullName || !createUserData.mobileNumber}
                   className="flex items-center px-6 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isCreating ? (
@@ -927,8 +927,8 @@ const UserManagement: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      value={selectedUser.full_name}
-                      onChange={(e) => setSelectedUser(prev => prev ? {...prev, full_name: e.target.value} : null)}
+                      value={selectedUser.fullName}
+                      onChange={(e) => setSelectedUser(prev => prev ? {...prev, fullName: e.target.value} : null)}
                       className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل الاسم الكامل' : 'Enter full name'}
                     />
@@ -955,8 +955,8 @@ const UserManagement: React.FC = () => {
                     </label>
                     <input
                       type="tel"
-                      value={selectedUser.mobile_number || ''}
-                      onChange={(e) => setSelectedUser(prev => prev ? {...prev, mobile_number: e.target.value} : null)}
+                      value={selectedUser.mobileNumber || ''}
+                      onChange={(e) => setSelectedUser(prev => prev ? {...prev, mobileNumber: e.target.value} : null)}
                       className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل رقم الهاتف' : 'Enter mobile number'}
                     />
@@ -1002,19 +1002,19 @@ const UserManagement: React.FC = () => {
                       {isRTL ? 'الحالة' : 'Status'}
                     </label>
                     <div className="flex items-center">
-                      <span className={`text-sm mr-3 ${selectedUser.is_active ? 'text-green-400' : 'text-red-400'}`}>
-                        {selectedUser.is_active ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'غير نشط' : 'Suspended')}
+                      <span className={`text-sm mr-3 ${selectedUser.isActive ? 'text-green-400' : 'text-red-400'}`}>
+                        {selectedUser.isActive ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'غير نشط' : 'Suspended')}
                       </span>
                       <button
                         type="button"
-                        onClick={() => setSelectedUser(prev => prev ? {...prev, is_active: !prev.is_active} : null)}
+                        onClick={() => setSelectedUser(prev => prev ? {...prev, isActive: !prev.isActive} : null)}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          selectedUser.is_active ? 'bg-green-600' : 'bg-gray-600'
+                          selectedUser.isActive ? 'bg-green-600' : 'bg-gray-600'
                         }`}
                       >
                         <span
                           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            selectedUser.is_active ? 'translate-x-6' : 'translate-x-1'
+                            selectedUser.isActive ? 'translate-x-6' : 'translate-x-1'
                           }`}
                         />
                       </button>
@@ -1054,12 +1054,12 @@ const UserManagement: React.FC = () => {
                     try {
                       if (selectedUser) {
                         await usersService.updateUser(selectedUser.id, {
-                          full_name: selectedUser.full_name,
+                          fullName: selectedUser.fullName,
                           email: selectedUser.email,
-                          mobile_number: selectedUser.mobile_number,
+                          mobileNumber: selectedUser.mobileNumber,
                           city: selectedUser.city,
                           role: selectedUser.role,
-                          is_active: selectedUser.is_active
+                          isActive: selectedUser.isActive
                         });
                         setShowEditModal(false);
                         await loadUsers();

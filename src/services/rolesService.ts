@@ -7,9 +7,9 @@ export interface Role {
   description: string;
   permissions: string[];
   userCount: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Permission {
@@ -18,7 +18,7 @@ export interface Permission {
   resource: string;
   action: string;
   description?: string;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface CreateRoleData {
@@ -30,7 +30,7 @@ export interface CreateRoleData {
 export interface UpdateRoleData {
   name?: string;
   description?: string;
-  is_active?: boolean;
+  isActive?: boolean;
   permissionIds?: string[];
 }
 
@@ -86,9 +86,9 @@ class RolesService {
           description: 'Full system access',
           permissions: ['system:configure', 'roles:manage', 'user:create', 'user:read', 'user:update', 'user:delete'],
           userCount: 1,
-          is_active: true,
-          created_at: '2024-01-01T00:00:00Z',
-          updated_at: '2024-01-01T00:00:00Z'
+          isActive: true,
+          createdAt: '2024-01-01T00:00:00Z',
+          updatedAt: '2024-01-01T00:00:00Z'
         },
         {
           id: '2',
@@ -96,9 +96,9 @@ class RolesService {
           description: 'Booking management',
           permissions: ['booking:create', 'booking:read', 'booking:update', 'booking:approve'],
           userCount: 1,
-          is_active: true,
-          created_at: '2024-01-02T00:00:00Z',
-          updated_at: '2024-01-02T00:00:00Z'
+          isActive: true,
+          createdAt: '2024-01-02T00:00:00Z',
+          updatedAt: '2024-01-02T00:00:00Z'
         }
       ];
     }
@@ -136,9 +136,9 @@ class RolesService {
         description: data.description || '',
         permissions: data.permissionIds || [],
         userCount: 0,
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
       return mockRole;
     }
@@ -227,19 +227,19 @@ class RolesService {
       console.error('Failed to load permissions:', error);
       // Return fallback data for testing
       const fallbackPermissions: Permission[] = [
-        { id: '1', name: 'user:create', resource: 'user', action: 'create', description: 'Create users', created_at: '2024-01-01T00:00:00Z' },
-        { id: '2', name: 'user:read', resource: 'user', action: 'read', description: 'Read users', created_at: '2024-01-01T00:00:00Z' },
-        { id: '3', name: 'user:update', resource: 'user', action: 'update', description: 'Update users', created_at: '2024-01-01T00:00:00Z' },
-        { id: '4', name: 'user:delete', resource: 'user', action: 'delete', description: 'Delete users', created_at: '2024-01-01T00:00:00Z' },
-        { id: '5', name: 'equipment:create', resource: 'equipment', action: 'create', description: 'Create equipment', created_at: '2024-01-01T00:00:00Z' },
-        { id: '6', name: 'equipment:read', resource: 'equipment', action: 'read', description: 'Read equipment', created_at: '2024-01-01T00:00:00Z' },
-        { id: '7', name: 'booking:create', resource: 'booking', action: 'create', description: 'Create bookings', created_at: '2024-01-01T00:00:00Z' },
-        { id: '8', name: 'roles:manage', resource: 'roles', action: 'manage', description: 'Manage roles', created_at: '2024-01-01T00:00:00Z' },
-        { id: '9', name: 'system:configure', resource: 'system', action: 'configure', description: 'Configure system', created_at: '2024-01-01T00:00:00Z' },
-        { id: '10', name: 'roles:read', resource: 'roles', action: 'read', description: 'Read roles', created_at: '2024-01-01T00:00:00Z' },
-        { id: '11', name: 'roles:create', resource: 'roles', action: 'create', description: 'Create roles', created_at: '2024-01-01T00:00:00Z' },
-        { id: '12', name: 'roles:update', resource: 'roles', action: 'update', description: 'Update roles', created_at: '2024-01-01T00:00:00Z' },
-        { id: '13', name: 'roles:delete', resource: 'roles', action: 'delete', description: 'Delete roles', created_at: '2024-01-01T00:00:00Z' }
+        { id: '1', name: 'user:create', resource: 'user', action: 'create', description: 'Create users', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '2', name: 'user:read', resource: 'user', action: 'read', description: 'Read users', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '3', name: 'user:update', resource: 'user', action: 'update', description: 'Update users', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '4', name: 'user:delete', resource: 'user', action: 'delete', description: 'Delete users', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '5', name: 'equipment:create', resource: 'equipment', action: 'create', description: 'Create equipment', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '6', name: 'equipment:read', resource: 'equipment', action: 'read', description: 'Read equipment', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '7', name: 'booking:create', resource: 'booking', action: 'create', description: 'Create bookings', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '8', name: 'roles:manage', resource: 'roles', action: 'manage', description: 'Manage roles', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '9', name: 'system:configure', resource: 'system', action: 'configure', description: 'Configure system', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '10', name: 'roles:read', resource: 'roles', action: 'read', description: 'Read roles', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '11', name: 'roles:create', resource: 'roles', action: 'create', description: 'Create roles', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '12', name: 'roles:update', resource: 'roles', action: 'update', description: 'Update roles', createdAt: '2024-01-01T00:00:00Z' },
+        { id: '13', name: 'roles:delete', resource: 'roles', action: 'delete', description: 'Delete roles', createdAt: '2024-01-01T00:00:00Z' }
       ];
       
       const grouped = fallbackPermissions.reduce((acc, permission) => {

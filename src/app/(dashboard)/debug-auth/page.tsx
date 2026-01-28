@@ -55,7 +55,7 @@ const DebugAuth: React.FC = () => {
     setIsLoading(true);
     try {
       const result = await authService.login({
-        mobile_number: '+966500000001',
+        mobileNumber: '+966500000001',
         password: 'admin123456'
       });
       console.log('Login result:', result);
@@ -76,7 +76,7 @@ const DebugAuth: React.FC = () => {
     setIsLoading(true);
     try {
       const result = await authService.login({
-        mobile_number: '+966500000002',
+        mobileNumber: '+966500000002',
         password: 'owner123456'
       });
       console.log('Owner login result:', result);

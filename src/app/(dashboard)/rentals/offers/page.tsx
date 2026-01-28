@@ -37,18 +37,12 @@ import {
 import { cn } from '@/lib/utils';
 import { requestsService, RentalRequest } from '@/services/requestsService';
 import { formatSimpleCurrency } from '@/lib/currencyUtils';
-import { offersService, Offer as Bid, PaginatedOffersResponse as PaginatedBidsResponse } from '@/services/offersService';
-
-// Legacy alias for bidsService
-const bidsService = {
-  getBidsByRequestId: (requestId: string, page?: number, limit?: number) => 
-    offersService.getOffersByRequestId(requestId, page, limit),
-};
+import { offersService, Offer, PaginatedOffersResponse } from '@/services/offersService';
 import { useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { BidDetailsModal } from '@/components/modals/BidDetailsModal';
+import { OfferDetailsModal } from '@/components/modals/OfferDetailsModal';
 
-const BidsManagement: React.FC = () => {
+const OffersManagement: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
   const searchParams = useSearchParams();
@@ -68,10 +62,10 @@ const BidsManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Bids data state
-  const [bids, setBids] = useState<Bid[]>([]);
-  const [bidsLoading, setBidsLoading] = useState(true);
-  const [bidsError, setBidsError] = useState<string | null>(null);
+  // Offers data state
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [offersLoading, setOffersLoading] = useState(true);
+  const [offersError, setOffersError] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -82,40 +76,40 @@ const BidsManagement: React.FC = () => {
   });
   const [loadingMore, setLoadingMore] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const [selectedBid, setSelectedBid] = useState<Bid | null>(null);
-  const [isBidDetailsModalOpen, setIsBidDetailsModalOpen] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+  const [isOfferDetailsModalOpen, setIsOfferDetailsModalOpen] = useState(false);
 
-  // Fetch request data and bids
+  // Fetch request data and offers
   useEffect(() => {
     const fetchData = async () => {
       if (!requestId) {
         setError('No request ID provided');
         setLoading(false);
-        setBidsLoading(false);
+        setOffersLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        setBidsLoading(true);
+        setOffersLoading(true);
         setError(null);
-        setBidsError(null);
+        setOffersError(null);
         
-        // Fetch request data and bids in parallel
-        const [requestData, bidsResponse] = await Promise.all([
+        // Fetch request data and offers in parallel
+        const [requestData, offersResponse] = await Promise.all([
           requestsService.getRequestById(requestId),
-          bidsService.getBidsByRequestId(requestId, 1, 10)
+          offersService.getOffersByRequestId(requestId, 1, 10)
         ]);
         
         setRequestData(requestData);
-        setBids(bidsResponse.data);
-        setPagination(bidsResponse.pagination);
+        setOffers(offersResponse.data);
+        setPagination(offersResponse.pagination);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Failed to load data');
       } finally {
         setLoading(false);
-        setBidsLoading(false);
+        setOffersLoading(false);
       }
     };
 
@@ -162,8 +156,8 @@ const BidsManagement: React.FC = () => {
     );
   };
 
-  // Helper function to format bid status
-  const getBidStatusBadge = (status: string) => {
+  // Helper function to format offer status
+  const getOfferStatusBadge = (status: string) => {
     const statusMap = {
       pending: { color: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
       accepted: { color: 'bg-green-100 text-green-800', text: 'Accepted' },
@@ -179,46 +173,46 @@ const BidsManagement: React.FC = () => {
     );
   };
 
-  // Calculate bid statistics
-  const bidStats = {
-    total: bids.length,
-    accepted: bids.filter(bid => bid.status === 'accepted').length,
-    pending: bids.filter(bid => bid.status === 'pending').length,
-    rejected: bids.filter(bid => bid.status === 'rejected').length,
-    average: bids.length > 0 ? bids.reduce((sum, bid) => sum + bid.total_amount, 0) / bids.length : 0,
-    urgent: bids.filter(bid => new Date(bid.expires_at) < new Date(Date.now() + 24 * 60 * 60 * 1000)).length // Expires within 24 hours
+  // Calculate offer statistics
+  const offerStats = {
+    total: offers.length,
+    accepted: offers.filter(offer => offer.status === 'accepted').length,
+    pending: offers.filter(offer => offer.status === 'pending').length,
+    rejected: offers.filter(offer => offer.status === 'rejected').length,
+    average: offers.length > 0 ? offers.reduce((sum, offer) => sum + offer.total_amount, 0) / offers.length : 0,
+    urgent: offers.filter(offer => new Date(offer.expires_at) < new Date(Date.now() + 24 * 60 * 60 * 1000)).length // Expires within 24 hours
   };
 
-  // Bid action handlers
-  const handleAcceptBid = async (bidId: string) => {
+  // Offer action handlers
+  const handleAcceptOffer = async (offerId: string) => {
     try {
-      await bidsService.acceptBid(bidId);
-      // Refresh bids data
-      const updatedBidsResponse = await bidsService.getBidsByRequestId(requestId!, 1, 10);
-      setBids(updatedBidsResponse.data);
-      setPagination(updatedBidsResponse.pagination);
+      await offersService.acceptOffer(offerId);
+      // Refresh offers data
+      const updatedOffersResponse = await offersService.getOffersByRequestId(requestId!, 1, 10);
+      setOffers(updatedOffersResponse.data);
+      setPagination(updatedOffersResponse.pagination);
     } catch (error) {
-      console.error('Error accepting bid:', error);
-      setError('Failed to accept bid');
+      console.error('Error accepting offer:', error);
+      setError('Failed to accept offer');
     }
   };
 
-  const handleRejectBid = async (bidId: string) => {
+  const handleRejectOffer = async (offerId: string) => {
     try {
-      await bidsService.rejectBid(bidId);
-      // Refresh bids data
-      const updatedBidsResponse = await bidsService.getBidsByRequestId(requestId!, 1, 10);
-      setBids(updatedBidsResponse.data);
-      setPagination(updatedBidsResponse.pagination);
+      await offersService.rejectOffer(offerId);
+      // Refresh offers data
+      const updatedOffersResponse = await offersService.getOffersByRequestId(requestId!, 1, 10);
+      setOffers(updatedOffersResponse.data);
+      setPagination(updatedOffersResponse.pagination);
     } catch (error) {
-      console.error('Error rejecting bid:', error);
-      setError('Failed to reject bid');
+      console.error('Error rejecting offer:', error);
+      setError('Failed to reject offer');
     }
   };
 
-  const handleViewBidDetails = (bid: Bid) => {
-    setSelectedBid(bid);
-    setIsBidDetailsModalOpen(true);
+  const handleViewOfferDetails = (offer: Offer) => {
+    setSelectedOffer(offer);
+    setIsOfferDetailsModalOpen(true);
   };
 
   const handleBackToRequests = () => {
@@ -226,38 +220,38 @@ const BidsManagement: React.FC = () => {
   };
 
   // Infinite scroll functionality
-  const loadMoreBids = useCallback(async () => {
+  const loadMoreOffers = useCallback(async () => {
     if (loadingMore || !pagination.hasNextPage || !requestId) return;
 
     try {
       setLoadingMore(true);
       const nextPage = pagination.page + 1;
-      const response = await bidsService.getBidsByRequestId(requestId, nextPage, pagination.limit);
+      const response = await offersService.getOffersByRequestId(requestId, nextPage, pagination.limit);
       
-      setBids(prev => [...prev, ...response.data]);
+      setOffers(prev => [...prev, ...response.data]);
       setPagination(response.pagination);
     } catch (error) {
-      console.error('Error loading more bids:', error);
-      setBidsError('Failed to load more bids');
+      console.error('Error loading more offers:', error);
+      setOffersError('Failed to load more offers');
     } finally {
       setLoadingMore(false);
     }
   }, [loadingMore, pagination.hasNextPage, pagination.page, pagination.limit, requestId]);
 
   // Intersection Observer for infinite scroll
-  const lastBidElementRef = useCallback((node: HTMLDivElement | null) => {
+  const lastOfferElementRef = useCallback((node: HTMLDivElement | null) => {
     if (loadingMore) return;
     
     if (observerRef.current) observerRef.current.disconnect();
     
     observerRef.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && pagination.hasNextPage) {
-        loadMoreBids();
+        loadMoreOffers();
       }
     });
     
     if (node) observerRef.current.observe(node);
-  }, [loadingMore, pagination.hasNextPage, loadMoreBids]);
+  }, [loadingMore, pagination.hasNextPage, loadMoreOffers]);
 
   if (loading) {
     return (
@@ -304,17 +298,17 @@ const BidsManagement: React.FC = () => {
             </button>
             <div>
               <h1 className="text-3xl font-bold text-white">
-                {isRTL ? 'عروض الطلب' : 'Request Bids'}
+                {isRTL ? 'عروض الطلب' : 'Request Offers'}
         </h1>
               <p className="text-gray-400 mt-1">
-                {isRTL ? 'عرض وإدارة العروض المقدمة على هذا الطلب' : 'View and manage bids submitted for this request'}
+                {isRTL ? 'عرض وإدارة العروض المقدمة على هذا الطلب' : 'View and manage offers submitted for this request'}
               </p>
             </div>
           </div>
           <div className={cn('flex space-x-3', isRTL && 'space-x-reverse')}>
             <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
               <FontAwesomeIcon icon={faPlus} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
-              {isRTL ? 'عرض جديد' : 'New Bid'}
+              {isRTL ? 'عرض جديد' : 'New Offer'}
             </button>
             <button className="flex items-center px-4 py-2 bg-awnash-accent text-white rounded-2xl hover:bg-awnash-accent-hover font-medium transition-colors shadow-lg">
               <FontAwesomeIcon icon={faFileAlt} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
@@ -353,13 +347,13 @@ const BidsManagement: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faUser} className="h-4 w-4 text-green-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'مقدم الطلب:' : 'Requester:'}</span>
-                    <span className="text-white font-medium">{requestData.requester?.full_name}</span>
+                    <span className="text-white font-medium">{requestData.requester?.fullName}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faTruck} className="h-4 w-4 text-purple-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'نوع المعدة:' : 'Equipment Type:'}</span>
-                    <span className="text-white font-medium capitalize">{requestData.equipment_type}</span>
+                    <span className="text-white font-medium capitalize">{requestData.equipmentType}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
@@ -429,7 +423,7 @@ const BidsManagement: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-gray-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'تاريخ الإنشاء:' : 'Created:'}</span>
-                    <span className="text-white font-medium">{formatDate(requestData.created_at)}</span>
+                    <span className="text-white font-medium">{formatDate(requestData.createdAt)}</span>
                   </div>
                 </div>
               </div>
@@ -519,8 +513,8 @@ const BidsManagement: React.FC = () => {
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي العروض' : 'Total Bids'}</p>
-                <p className="text-2xl font-bold text-white">{bidStats.total}</p>
+                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي العروض' : 'Total Offers'}</p>
+                <p className="text-2xl font-bold text-white">{offerStats.total}</p>
               </div>
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                 <FontAwesomeIcon icon={faClipboardList} className="text-white h-5 w-5" />
@@ -532,7 +526,7 @@ const BidsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">{isRTL ? 'مقبولة' : 'Accepted'}</p>
-                <p className="text-2xl font-bold text-green-400">{bidStats.accepted}</p>
+                <p className="text-2xl font-bold text-green-400">{offerStats.accepted}</p>
               </div>
               <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                 <FontAwesomeIcon icon={faCheckCircle} className="text-white h-5 w-5" />
@@ -544,7 +538,7 @@ const BidsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">{isRTL ? 'معلقة' : 'Pending'}</p>
-                <p className="text-2xl font-bold text-yellow-400">{bidStats.pending}</p>
+                <p className="text-2xl font-bold text-yellow-400">{offerStats.pending}</p>
               </div>
               <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
                 <FontAwesomeIcon icon={faClock} className="text-white h-5 w-5" />
@@ -556,7 +550,7 @@ const BidsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">{isRTL ? 'مرفوضة' : 'Rejected'}</p>
-                <p className="text-2xl font-bold text-red-400">{bidStats.rejected}</p>
+                <p className="text-2xl font-bold text-red-400">{offerStats.rejected}</p>
               </div>
               <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
                 <FontAwesomeIcon icon={faTimes} className="text-white h-5 w-5" />
@@ -568,7 +562,7 @@ const BidsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">{isRTL ? 'متوسطة' : 'Average'}</p>
-                <p className="text-2xl font-bold text-purple-400">{formatSimpleCurrency(bidStats.average)}</p>
+                <p className="text-2xl font-bold text-purple-400">{formatSimpleCurrency(offerStats.average)}</p>
               </div>
               <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
                 <FontAwesomeIcon icon={faHandshake} className="text-white h-5 w-5" />
@@ -580,7 +574,7 @@ const BidsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">{isRTL ? 'عاجلة' : 'Urgent'}</p>
-                <p className="text-2xl font-bold text-orange-400">{bidStats.urgent}</p>
+                <p className="text-2xl font-bold text-orange-400">{offerStats.urgent}</p>
               </div>
               <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
                 <FontAwesomeIcon icon={faFlag} className="text-white h-5 w-5" />
@@ -674,9 +668,9 @@ const BidsManagement: React.FC = () => {
           {/* No Response Toggle */}
           <div className="mt-4 pt-4 border-t border-gray-700">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-300">
-                {isRTL ? 'إظهار العروض المعلقة فقط' : 'Show pending bids only'}
-              </span>
+                <span className="text-sm font-medium text-gray-300">
+                  {isRTL ? 'إظهار العروض المعلقة فقط' : 'Show pending offers only'}
+                </span>
               <button
                 onClick={() => setShowNoResponse(!showNoResponse)}
                 className={cn('p-2 rounded-full transition-colors', showNoResponse ? 'bg-yellow-600 text-white' : 'bg-gray-600 text-gray-300')}
@@ -687,106 +681,106 @@ const BidsManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content - Bids List */}
+        {/* Main Content - Offers List */}
         <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
           <div className="p-6 border-b border-gray-700">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-white">
-                {isRTL ? 'قائمة العروض' : 'Bids List'}
+                {isRTL ? 'قائمة العروض' : 'Offers List'}
               </h3>
               <span className="text-gray-400 text-sm">
-                {bids.length} {isRTL ? 'عرض' : 'bids'}
+                {offers.length} {isRTL ? 'عرض' : 'offers'}
               </span>
             </div>
           </div>
 
-          {/* Bids Content */}
-          {bidsLoading ? (
+          {/* Offers Content */}
+          {offersLoading ? (
             <div className="text-center py-12">
               <div className="loader mb-4"></div>
-              <p className="text-gray-400">{isRTL ? 'جاري تحميل العروض...' : 'Loading bids...'}</p>
+              <p className="text-gray-400">{isRTL ? 'جاري تحميل العروض...' : 'Loading offers...'}</p>
             </div>
-          ) : bids.length === 0 ? (
+          ) : offers.length === 0 ? (
             <div className="text-center py-12">
               <FontAwesomeIcon icon={faClipboardList} className="h-12 w-12 text-gray-500 mb-4" />
               <h3 className="text-lg font-medium text-gray-400 mb-2">
-                {isRTL ? 'لا توجد عروض' : 'No bids found'}
+                {isRTL ? 'لا توجد عروض' : 'No offers found'}
               </h3>
               <p className="text-gray-500">
-                {isRTL ? 'لم يتم تقديم أي عروض على هذا الطلب بعد' : 'No bids have been submitted for this request yet'}
+                {isRTL ? 'لم يتم تقديم أي عروض على هذا الطلب بعد' : 'No offers have been submitted for this request yet'}
               </p>
             </div>
           ) : (
             <div className="divide-y divide-gray-700">
-              {bids.map((bid, index) => (
+              {offers.map((offer, index) => (
                 <div 
-                  key={bid.id} 
-                  ref={index === bids.length - 1 ? lastBidElementRef : null}
+                  key={offer.id} 
+                  ref={index === offers.length - 1 ? lastOfferElementRef : null}
                   className="p-6 hover:bg-gray-750 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
                         <h4 className="text-lg font-semibold text-white">
-                          {bid.equipment?.name || 'Equipment Name'}
+                          {offer.equipment?.name || 'Equipment Name'}
                         </h4>
-                        {getBidStatusBadge(bid.status)}
+                        {getOfferStatusBadge(offer.status)}
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-gray-400 text-sm">{isRTL ? 'المزايد' : 'Bidder'}</p>
-                          <p className="text-white font-medium">{bid.bidder?.full_name}</p>
-                          <p className="text-gray-500 text-sm">{bid.bidder?.email}</p>
+                          <p className="text-gray-400 text-sm">{isRTL ? 'مقدم العرض' : 'Owner'}</p>
+                          <p className="text-white font-medium">{offer.bidder?.fullName}</p>
+                          <p className="text-gray-500 text-sm">{offer.bidder?.email}</p>
                         </div>
                         
                         <div>
                           <p className="text-gray-400 text-sm">{isRTL ? 'المعدة' : 'Equipment'}</p>
-                          <p className="text-white font-medium capitalize">{bid.equipment?.equipment_type}</p>
-                          <p className="text-gray-500 text-sm">{bid.equipment?.city}</p>
+                          <p className="text-white font-medium capitalize">{offer.equipment?.equipmentType}</p>
+                          <p className="text-gray-500 text-sm">{offer.equipment?.city}</p>
                         </div>
                         
                         <div>
                           <p className="text-gray-400 text-sm">{isRTL ? 'السعر اليومي' : 'Daily Rate'}</p>
                           <p className="text-white font-medium">
-                            {formatSimpleCurrency(bid.daily_rate, bid.daily_rate_currency)}/{isRTL ? 'يوم' : 'day'}
+                            {formatSimpleCurrency(offer.dailyRate, offer.dailyRateCurrency)}/{isRTL ? 'يوم' : 'day'}
                           </p>
                         </div>
                         
                         <div>
                           <p className="text-gray-400 text-sm">{isRTL ? 'المبلغ الإجمالي' : 'Total Amount'}</p>
                           <p className="text-white font-medium">
-                            {formatSimpleCurrency(bid.total_amount, bid.total_amount_currency)}
+                            {formatSimpleCurrency(offer.total_amount, offer.total_amount_currency)}
                           </p>
                         </div>
                       </div>
                       
-                      {bid.note && (
+                      {offer.note && (
                         <div className="mb-4">
                           <p className="text-gray-400 text-sm mb-1">{isRTL ? 'الملاحظات' : 'Notes'}</p>
                           <p className="text-gray-300 text-sm bg-gray-700 rounded-lg p-3">
-                            {bid.note}
+                            {offer.note}
                           </p>
                         </div>
                       )}
                       
                       <div className="flex items-center space-x-4 text-sm text-gray-400">
-                        <span>{isRTL ? 'تاريخ التقديم:' : 'Submitted:'} {formatDate(bid.created_at)}</span>
-                        <span>{isRTL ? 'ينتهي في:' : 'Expires:'} {formatDate(bid.expires_at)}</span>
+                        <span>{isRTL ? 'تاريخ التقديم:' : 'Submitted:'} {formatDate(offer.createdAt)}</span>
+                        <span>{isRTL ? 'ينتهي في:' : 'Expires:'} {formatDate(offer.expires_at)}</span>
                       </div>
                     </div>
                     
                     <div className="flex items-center space-x-2 ml-4">
-                      {bid.status === 'pending' && (
+                      {offer.status === 'pending' && (
                         <>
                           <button
-                            onClick={() => handleAcceptBid(bid.id)}
+                            onClick={() => handleAcceptOffer(offer.id)}
                             className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors"
                           >
                             {isRTL ? 'قبول' : 'Accept'}
                           </button>
                           <button
-                            onClick={() => handleRejectBid(bid.id)}
+                            onClick={() => handleRejectOffer(offer.id)}
                             className="px-3 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition-colors"
                           >
                             {isRTL ? 'رفض' : 'Reject'}
@@ -794,7 +788,7 @@ const BidsManagement: React.FC = () => {
                         </>
                       )}
                       <button
-                        onClick={() => handleViewBidDetails(bid)}
+                        onClick={() => handleViewOfferDetails(offer)}
                         className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
                         title={isRTL ? 'عرض التفاصيل' : 'View Details'}
                       >
@@ -809,14 +803,14 @@ const BidsManagement: React.FC = () => {
                {loadingMore && (
                  <div className="p-6 text-center">
                    <div className="loader mb-2"></div>
-                   <p className="text-gray-400 text-sm">{isRTL ? 'جاري تحميل المزيد من العروض...' : 'Loading more bids...'}</p>
+                   <p className="text-gray-400 text-sm">{isRTL ? 'جاري تحميل المزيد من العروض...' : 'Loading more offers...'}</p>
                  </div>
                )}
                
                {/* End of results indicator */}
-               {!loadingMore && !pagination.hasNextPage && bids.length > 0 && (
+               {!loadingMore && !pagination.hasNextPage && offers.length > 0 && (
                  <div className="p-6 text-center">
-                   <p className="text-gray-400 text-sm">{isRTL ? 'تم عرض جميع العروض' : 'All bids loaded'}</p>
+                   <p className="text-gray-400 text-sm">{isRTL ? 'تم عرض جميع العروض' : 'All offers loaded'}</p>
                  </div>
                )}
              </div>
@@ -824,18 +818,18 @@ const BidsManagement: React.FC = () => {
         </div>
       </div>
       
-      {/* Bid Details Modal */}
-      <BidDetailsModal
-        isOpen={isBidDetailsModalOpen}
+      {/* Offer Details Modal */}
+      <OfferDetailsModal
+        isOpen={isOfferDetailsModalOpen}
         onClose={() => {
-          setIsBidDetailsModalOpen(false);
-          setSelectedBid(null);
+          setIsOfferDetailsModalOpen(false);
+          setSelectedOffer(null);
         }}
-        bid={selectedBid}
+        offer={selectedOffer}
         isRTL={isRTL}
       />
     </div>
   );
 };
 
-export default BidsManagement; 
+export default OffersManagement; 

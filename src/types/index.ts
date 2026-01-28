@@ -84,7 +84,7 @@ export interface DashboardStats {
 }
 
 export interface Language {
-  code: 'en' | 'ar';
+  code: 'en' | 'ar' | 'ur';
   name: string;
   direction: 'ltr' | 'rtl';
 }

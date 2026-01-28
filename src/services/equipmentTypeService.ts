@@ -1,36 +1,41 @@
 import { apiService } from './api';
 
+export interface EquipmentTypeAttributeOption {
+  id?: string;
+  value: string;
+}
+
 export interface EquipmentTypeAttribute {
   id: string;
   label: string;
   unit?: string;
-  is_required: boolean;
-  options: string[];
+  isRequired: boolean;
+  options: EquipmentTypeAttributeOption[];
 }
 
 export interface EquipmentType {
   id: string;
-  name_en: string;
-  name_ar: string;
-  name_ur?: string;
+  nameEn: string;
+  nameAr: string;
+  nameUr?: string;
   category: string;
-  location_mode: 'single' | 'from_to' | 'none';
+  locationMode: 'single' | 'from_to' | 'none';
   attributes: EquipmentTypeAttribute[];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateEquipmentTypeData {
-  name_en: string;
-  name_ar: string;
-  name_ur?: string;
+  nameEn: string;
+  nameAr: string;
+  nameUr?: string;
   category: string;
-  location_mode: 'single' | 'from_to' | 'none';
+  locationMode: 'single' | 'from_to' | 'none';
   attributes?: {
     label: string;
     unit?: string;
-    is_required?: boolean;
-    options?: string[];
+    isRequired?: boolean;
+    options?: { value: string }[];
   }[];
 }
 

@@ -72,18 +72,18 @@ const EquipmentRequests: React.FC = () => {
   // Filter functions
   const filteredRequests = (Array.isArray(requests) ? requests : []).filter(request => {
     // Safety checks for required properties
-    if (!request || !request.requester?.full_name || !request.id || !request.equipment_type) {
+    if (!request || !request.requester?.fullName || !request.id || !request.equipmentType) {
       return false;
     }
 
     const matchesSearch = 
-      (request.requester?.full_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.requester?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (request.requestId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (request.equipment_type || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.equipmentType || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (request.city || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
-    const matchesCategory = categoryFilter === 'all' || (request.equipment_type === categoryFilter);
+    const matchesCategory = categoryFilter === 'all' || (request.equipmentType === categoryFilter);
     const matchesLocation = locationFilter === 'all' || (request.city === locationFilter);
     const matchesNoResponse = !showNoResponse || request.status === 'open'; // All open requests are considered "no response" for now
     
@@ -174,7 +174,7 @@ const EquipmentRequests: React.FC = () => {
     setIsSubmitting(true);
     try {
       const newRequest = await requestsService.createRequest({
-        equipment_type: formData.equipment_type,
+        equipmentType: formData.equipmentType,
         status: formData.status,
         priority: formData.priority,
         images: formData.images,
@@ -472,7 +472,7 @@ const EquipmentRequests: React.FC = () => {
               <tbody className="divide-y divide-gray-700">
                 {filteredRequests.map((request) => {
                   // Safety check - skip rendering if request is invalid
-                  if (!request || !request.id || !request.requester?.full_name || !request.equipment_type) {
+                  if (!request || !request.id || !request.requester?.fullName || !request.equipmentType) {
                     return null;
                   }
                   
@@ -492,7 +492,7 @@ const EquipmentRequests: React.FC = () => {
                           className="text-sm font-medium text-white hover:text-blue-400 transition-colors"
                           onClick={() => setSelectedRequest(request)}
                         >
-                          {request.requester.full_name}
+                          {request.requester.fullName}
                         </button>
                         <div className="text-xs text-gray-400 flex items-center mt-1">
                           <FontAwesomeIcon icon={faBuilding} className={cn('h-3 w-3', isRTL ? 'ml-1' : 'mr-1')} />
@@ -502,7 +502,7 @@ const EquipmentRequests: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm text-white">{request.equipment_type}</div>
+                        <div className="text-sm text-white">{request.equipmentType}</div>
                         <div className="text-xs text-gray-400 flex items-center mt-1">
                           <FontAwesomeIcon icon={faMapMarkerAlt} className={cn('h-3 w-3', isRTL ? 'ml-1' : 'mr-1')} />
                           {request.city}
@@ -516,9 +516,9 @@ const EquipmentRequests: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-white">{formatDate(request.created_at)}</div>
+                      <div className="text-sm text-white">{formatDate(request.createdAt)}</div>
                       <div className="text-xs text-gray-400">
-                        {new Date(request.created_at).toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', { 
+                        {new Date(request.createdAt).toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', { 
                           hour: '2-digit', 
                           minute: '2-digit' 
                         })}
@@ -533,7 +533,7 @@ const EquipmentRequests: React.FC = () => {
                     <td className="px-6 py-4">
                       <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
                         <button
-                          onClick={() => window.location.href = `/rentals/bids?requestId=${request.id}`}
+                          onClick={() => window.location.href = `/rentals/offers?requestId=${request.id}`}
                           className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
                           title={isRTL ? 'عرض العروض' : 'View Offers'}
                         >

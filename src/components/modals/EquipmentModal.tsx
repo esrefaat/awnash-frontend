@@ -9,10 +9,10 @@ import { getEquipmentTypesForDropdown } from '@/config/equipment';
 export type EquipmentFormValues = {
   name: string;
   description: string;
-  equipment_type: string;
+  equipmentType: string;
   size: string;
   status: 'active' | 'inactive';
-  image_urls: string[];
+  imageUrls: string[];
   city: string;
 };
 
@@ -86,11 +86,11 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
           />
         </div>
         <div>
-          <label htmlFor="equipment_type" className="block text-sm font-medium mb-1">Equipment Type</label>
+          <label htmlFor="equipmentType" className="block text-sm font-medium mb-1">Equipment Type</label>
           <Select
-            id="equipment_type"
-            name="equipment_type"
-            value={initialValues.equipment_type}
+            id="equipmentType"
+            name="equipmentType"
+            value={initialValues.equipmentType}
             onChange={onFormChange}
             required
           >

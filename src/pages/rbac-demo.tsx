@@ -27,7 +27,7 @@ const RBACDemo: React.FC = () => {
   } = usePermissions();
 
   const [testResults, setTestResults] = useState<Record<string, boolean>>({});
-  const [loginForm, setLoginForm] = useState({ mobile_number: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ mobileNumber: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
@@ -67,7 +67,7 @@ const RBACDemo: React.FC = () => {
 
     try {
       await authService.login({
-        mobile_number: loginForm.mobile_number,
+        mobileNumber: loginForm.mobileNumber,
         password: loginForm.password
       });
       // If we get here, login was successful
@@ -125,13 +125,13 @@ const RBACDemo: React.FC = () => {
       {backendStatus === 'online' ? (
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <Label htmlFor="mobile_number" className="text-gray-300">Mobile Number</Label>
+            <Label htmlFor="mobileNumber" className="text-gray-300">Mobile Number</Label>
             <Input
-              id="mobile_number"
+              id="mobileNumber"
               type="text"
               placeholder="+966500000001"
-              value={loginForm.mobile_number}
-              onChange={(e) => setLoginForm(prev => ({ ...prev, mobile_number: e.target.value }))}
+              value={loginForm.mobileNumber}
+              onChange={(e) => setLoginForm(prev => ({ ...prev, mobileNumber: e.target.value }))}
               className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
               required
             />

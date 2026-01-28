@@ -2,18 +2,19 @@ import { apiService } from './api';
 
 export interface User {
   id: string;
-  mobile_number: string;
+  mobileNumber: string;
   email?: string;
   role: string;
   roles?: string[];
   permissions?: string[];
-  full_name: string;
-  is_verified: boolean;
+  fullName: string;
+  isVerified: boolean;
+  isSuperAdmin?: boolean;
 }
 
 export interface LoginCredentials {
   email?: string;
-  mobile_number?: string;
+  mobileNumber?: string;
   password: string;
 }
 
@@ -24,9 +25,9 @@ export interface AuthResponse {
 
 export interface RegisterData {
   email?: string;
-  mobile_number: string;
+  mobileNumber: string;
   password: string;
-  full_name: string;
+  fullName: string;
   role?: string;
 }
 

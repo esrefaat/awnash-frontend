@@ -20,11 +20,11 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
   const isRTL = currentLanguage.direction === 'rtl';
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: '',
-    mobile_number: '',
+    fullName: '',
+    mobileNumber: '',
     email: '',
     role: 'requester',
-    is_active: true
+    isActive: true
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,20 +33,20 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     try {
       setLoading(true);
       const user = await usersService.createUser({
-        full_name: formData.full_name,
-        mobile_number: formData.mobile_number,
+        fullName: formData.fullName,
+        mobileNumber: formData.mobileNumber,
         email: formData.email || undefined,
         role: formData.role,
-        is_active: formData.is_active
+        isActive: formData.isActive
       });
       
       onUserAdded(user);
       setFormData({
-        full_name: '',
-        mobile_number: '',
+        fullName: '',
+        mobileNumber: '',
         email: '',
         role: 'requester',
-        is_active: true
+        isActive: true
       });
       onClose();
     } catch (error) {
@@ -57,8 +57,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
   };
 
   const handleChange = (field: string, value: string) => {
-    if (field === 'is_active') {
-      setFormData(prev => ({ ...prev, is_active: value === 'true' }));
+    if (field === 'isActive') {
+      setFormData(prev => ({ ...prev, isActive: value === 'true' }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
@@ -83,8 +83,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
           <input
             type="text"
             required
-            value={formData.full_name}
-            onChange={(e) => handleChange('full_name', e.target.value)}
+            value={formData.fullName}
+            onChange={(e) => handleChange('fullName', e.target.value)}
             className={cn(
               "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
               isRTL && "text-right"
@@ -104,8 +104,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
           <input
             type="tel"
             required
-            value={formData.mobile_number}
-            onChange={(e) => handleChange('mobile_number', e.target.value)}
+            value={formData.mobileNumber}
+            onChange={(e) => handleChange('mobileNumber', e.target.value)}
             className={cn(
               "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
               isRTL && "text-right"
@@ -165,8 +165,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
             {t('status') || 'Status'} *
           </label>
           <select
-            value={formData.is_active ? 'active' : 'inactive'}
-            onChange={(e) => handleChange('is_active', e.target.value === 'active' ? 'true' : 'false')}
+            value={formData.isActive ? 'active' : 'inactive'}
+            onChange={(e) => handleChange('isActive', e.target.value === 'active' ? 'true' : 'false')}
             className={cn(
               "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
               isRTL && "text-right"

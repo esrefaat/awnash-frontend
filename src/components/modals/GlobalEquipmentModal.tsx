@@ -45,13 +45,13 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
   const [form, setForm] = useState<EquipmentFormData>({
     name: '',
     description: '',
-    equipment_type_id: '',
+    equipmentTypeId: '',
     size: '',
     city: '',
     status: 'active',
-    image_urls: [],
-    daily_rate: 0,
-    owner_id: ''
+    imageUrls: [],
+    dailyRate: 0,
+    ownerId: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -59,7 +59,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
   const [error, setError] = useState('');
   const [uploadingImages, setUploadingImages] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [owners, setOwners] = useState<Array<{id: string, full_name: string, email?: string}>>([]);
+  const [owners, setOwners] = useState<Array<{id: string, fullName: string, email?: string}>>([]);
   const [loadingOwners, setLoadingOwners] = useState(false);
   const [ownerSearchTerm, setOwnerSearchTerm] = useState('');
   const [showOwnerDropdown, setShowOwnerDropdown] = useState(false);
@@ -73,14 +73,17 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
   const isSuperAdmin = user?.role === 'super_admin';
 
   // Filter owners based on search term
-  const filteredOwners = owners.filter(owner => 
-    owner.full_name.toLowerCase().includes(ownerSearchTerm.toLowerCase()) ||
-    (owner.email && owner.email.toLowerCase().includes(ownerSearchTerm.toLowerCase()))
-  );
+  const filteredOwners = owners.filter(owner => {
+    const fullName = owner.fullName || '';
+    const email = owner.email || '';
+    const searchTerm = ownerSearchTerm.toLowerCase();
+    return fullName.toLowerCase().includes(searchTerm) || email.toLowerCase().includes(searchTerm);
+  });
 
   // Get selected owner display text
-  const selectedOwner = owners.find(owner => owner.id === form.owner_id);
-  const selectedOwnerText = selectedOwner ? `${selectedOwner.full_name}${selectedOwner.email ? ` (${selectedOwner.email})` : ''}` : '';
+  const selectedOwner = owners.find(owner => owner.id === form.ownerId);
+  const selectedOwnerName = selectedOwner?.fullName || '';
+  const selectedOwnerText = selectedOwner ? `${selectedOwnerName}${selectedOwner.email ? ` (${selectedOwner.email})` : ''}` : '';
 
   // Initialize form with equipment data when editing
   useEffect(() => {
@@ -88,27 +91,27 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setForm({
         name: equipmentToEdit.name || '',
         description: equipmentToEdit.description || '',
-        equipment_type_id: equipmentToEdit.equipment_type_id || '',
+        equipmentTypeId: equipmentToEdit.equipmentTypeId || '',
         size: equipmentToEdit.size || '',
         city: equipmentToEdit.city || '',
         status: equipmentToEdit.status || 'active',
-        image_urls: equipmentToEdit.image_urls || [],
-        daily_rate: parseFloat(equipmentToEdit.daily_rate || '0'),
-        owner_id: equipmentToEdit.owner_id || user?.id || ''
+        imageUrls: equipmentToEdit.imageUrls || [],
+        dailyRate: parseFloat(equipmentToEdit.dailyRate || '0'),
+        ownerId: equipmentToEdit.ownerId || user?.id || ''
       });
-      setImagePreviews(equipmentToEdit.image_urls || []);
+      setImagePreviews(equipmentToEdit.imageUrls || []);
     } else {
       // Reset form for adding new equipment
       setForm({
         name: '',
         description: '',
-        equipment_type_id: '',
+        equipmentTypeId: '',
         size: '',
         city: '',
         status: 'active',
-        image_urls: [],
-        daily_rate: 0,
-        owner_id: user?.id || '' // Default to current user
+        imageUrls: [],
+        dailyRate: 0,
+        ownerId: user?.id || '' // Default to current user
       });
       setImagePreviews([]);
     }
@@ -126,7 +129,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
           
           setOwners(response.users.map((user) => ({
             id: user.id,
-            full_name: user.full_name,
+            fullName: user.fullName,
             email: user.email || ''
           })));
         } catch (error) {
@@ -174,15 +177,15 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
     }
   }, [showOwnerDropdown]);
 
-  // Set owner_id when user is available and form is reset
+  // Set ownerId when user is available and form is reset
   useEffect(() => {
-    if (user?.id && !isEditMode && form.owner_id === '') {
+    if (user?.id && !isEditMode && form.ownerId === '') {
       setForm(prev => ({
         ...prev,
-        owner_id: user.id
+        ownerId: user.id
       }));
     }
-  }, [user?.id, isEditMode, form.owner_id]);
+  }, [user?.id, isEditMode, form.ownerId]);
 
   // Clear success message when error appears
   useEffect(() => {
@@ -261,7 +264,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
 
       setForm(prev => ({
         ...prev,
-        image_urls: [...prev.image_urls, ...newImageUrls]
+        imageUrls: [...prev.imageUrls, ...newImageUrls]
       }));
       setImagePreviews(prev => [...prev, ...newImagePreviews]);
     } catch (error) {
@@ -272,7 +275,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
   };
 
   const handleRemoveImage = async (index: number) => {
-    const imageUrl = form.image_urls[index];
+    const imageUrl = form.imageUrls[index];
     const previewUrl = imagePreviews[index];
 
     try {
@@ -290,7 +293,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       // Remove from form and previews
       setForm(prev => ({
         ...prev,
-        image_urls: prev.image_urls.filter((_, i) => i !== index)
+        imageUrls: prev.imageUrls.filter((_, i) => i !== index)
       }));
       setImagePreviews(prev => prev.filter((_, i) => i !== index));
 
@@ -310,7 +313,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       return;
     }
 
-    if (!form.owner_id) {
+    if (!form.ownerId) {
       setError(isRTL ? 'يجب تحديد المالك' : 'Owner is required');
       return;
     }
@@ -318,7 +321,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setError(isRTL ? 'وصف المعدة مطلوب' : 'Equipment description is required');
       return;
     }
-    if (!form.equipment_type_id) {
+    if (!form.equipmentTypeId) {
       setError(isRTL ? 'نوع المعدة مطلوب' : 'Equipment type is required');
       return;
     }
@@ -337,7 +340,7 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
       setSuccess('');
 
       console.log('Form data being submitted:', form);
-      console.log('Image URLs in form:', form.image_urls);
+      console.log('Image URLs in form:', form.imageUrls);
       console.log('Image previews:', imagePreviews);
 
       if (isEditMode && equipmentToEdit) {
@@ -441,13 +444,13 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
                         key={owner.id}
                         className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm"
                         onClick={() => {
-                          handleInputChange('owner_id', owner.id);
+                          handleInputChange('ownerId', owner.id);
                           setShowOwnerDropdown(false);
                           setOwnerSearchTerm('');
                         }}
                       >
                         <div className="font-medium text-gray-900 dark:text-white">
-                          {owner.full_name}
+                          {owner.fullName || 'Unknown'}
                         </div>
                         {owner.email && (
                           <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -507,8 +510,8 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
                 {isRTL ? 'نوع المعدة' : 'Equipment Type'} *
               </label>
               <Select
-                value={form.equipment_type_id}
-                onChange={(e) => handleInputChange('equipment_type_id', e.target.value)}
+                value={form.equipmentTypeId}
+                onChange={(e) => handleInputChange('equipmentTypeId', e.target.value)}
                 required
               >
                 <option value="">{isRTL ? 'اختر نوع المعدة' : 'Select equipment type'}</option>
@@ -586,8 +589,8 @@ export const GlobalEquipmentModal: React.FC<GlobalEquipmentModalProps> = ({
               </label>
               <Input
                 type="number"
-                value={form.daily_rate}
-                onChange={(e) => handleInputChange('daily_rate', parseFloat(e.target.value) || 0)}
+                value={form.dailyRate}
+                onChange={(e) => handleInputChange('dailyRate', parseFloat(e.target.value) || 0)}
                 placeholder={isRTL ? 'أدخل المعدل اليومي' : 'Enter daily rate'}
                 min="0"
                 step="0.01"

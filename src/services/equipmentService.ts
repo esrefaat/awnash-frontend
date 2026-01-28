@@ -1,41 +1,41 @@
 export interface EquipmentFormData {
   name: string;
   description: string;
-  equipment_type_id: string;
+  equipmentTypeId: string;
   size: string;
   city: string;
   status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked' | 'pending' | 'rejected';
-  image_urls: string[];
-  daily_rate: number;
-  owner_id: string;
+  imageUrls: string[];
+  dailyRate: number;
+  ownerId: string;
 }
 
 export interface Equipment {
   id: string;
-  owner_id: string;
+  ownerId: string;
   name: string;
   description: string;
-  equipment_type_id: string;
+  equipmentTypeId: string;
   size: string;
   city: string;
   status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked' | 'pending' | 'rejected';
-  image_urls: string[];
-  is_available: boolean;
-  total_rentals: number;
-  total_revenue: string;
-  daily_rate: string;
-  created_at: string;
-  updated_at: string;
+  imageUrls: string[];
+  isAvailable: boolean;
+  totalRentals: number;
+  totalRevenue: string;
+  dailyRate: string;
+  createdAt: string;
+  updatedAt: string;
   owner?: {
     id: string;
-    full_name: string;
+    fullName: string;
     email: string;
   };
-  equipment_type?: {
+  equipmentType?: {
     id: string;
-    name_en: string;
-    name_ar: string;
-    name_ur?: string;
+    nameEn: string;
+    nameAr: string;
+    nameUr?: string;
   };
 }
 
@@ -70,8 +70,8 @@ export class EquipmentService {
     limit?: number;
     search?: string;
     status?: string;
-    equipment_type?: string;
-    is_available?: string;
+    equipmentType?: string;
+    isAvailable?: string;
     sortBy?: string;
     sortOrder?: string;
   }): Promise<{ data: Equipment[]; total: number; totalPages: number; page: number; limit: number }> {

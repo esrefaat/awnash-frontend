@@ -52,13 +52,13 @@ const EquipmentAddPage: React.FC = () => {
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
-    equipment_type: 'all',
-    is_available: 'all'
+    equipmentType: 'all',
+    isAvailable: 'all'
   });
   
   // Sort
   const [sortBy, setSortBy] = useState('created_at');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('DESC');
 
   // Handlers
   const handleOpenModal = () => {
@@ -97,8 +97,8 @@ const EquipmentAddPage: React.FC = () => {
       // Add filters
       if (filters.search) params.search = filters.search;
       if (filters.status !== 'all') params.status = filters.status;
-      if (filters.equipment_type !== 'all') params.equipment_type = filters.equipment_type;
-      if (filters.is_available !== 'all') params.is_available = filters.is_available;
+      if (filters.equipmentType !== 'all') params.equipmentType = filters.equipmentType;
+      if (filters.isAvailable !== 'all') params.isAvailable = filters.isAvailable;
       
       // Use the equipment service to fetch data
       const result = await equipmentService.getEquipment(params);
@@ -311,8 +311,8 @@ const EquipmentAddPage: React.FC = () => {
                 {isRTL ? 'نوع المعدة' : 'Equipment Type'}
               </label>
               <select
-                value={filters.equipment_type}
-                onChange={(e) => setFilters(prev => ({ ...prev, equipment_type: e.target.value }))}
+                value={filters.equipmentType}
+                onChange={(e) => setFilters(prev => ({ ...prev, equipmentType: e.target.value }))}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
@@ -335,8 +335,8 @@ const EquipmentAddPage: React.FC = () => {
                 {isRTL ? 'التوفر' : 'Availability'}
               </label>
               <select
-                value={filters.is_available}
-                onChange={(e) => setFilters(prev => ({ ...prev, is_available: e.target.value }))}
+                value={filters.isAvailable}
+                onChange={(e) => setFilters(prev => ({ ...prev, isAvailable: e.target.value }))}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">{isRTL ? 'الكل' : 'All'}</option>
@@ -363,10 +363,10 @@ const EquipmentAddPage: React.FC = () => {
                 <option value="daily_rate">{isRTL ? 'السعر اليومي' : 'Daily Rate'}</option>
               </select>
               <button
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                onClick={() => setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC')}
                 className="p-1 text-gray-400 hover:text-white transition-colors"
               >
-                <FontAwesomeIcon icon={sortOrder === 'asc' ? faAngleUp : faAngleDown} className="h-4 w-4" />
+                <FontAwesomeIcon icon={sortOrder === 'ASC' ? faAngleUp : faAngleDown} className="h-4 w-4" />
               </button>
             </div>
             <div className="text-sm text-gray-400">
@@ -462,7 +462,7 @@ const EquipmentAddPage: React.FC = () => {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-gray-300 capitalize">
-                          {item.equipment_type}
+                          {item.equipmentType}
                         </td>
                         <td className="px-4 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${statusBadge.color}`}>
@@ -471,16 +471,16 @@ const EquipmentAddPage: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-4 py-4 text-gray-300">
-                          ${parseFloat(item.daily_rate || '0').toFixed(2)}/day
+                          ${parseFloat(item.dailyRate || '0').toFixed(2)}/day
                         </td>
                         <td className="px-4 py-4 text-gray-300">
                           <div className="text-sm">
-                            <div>{isRTL ? 'التأجيرات:' : 'Rentals:'} {item.total_rentals}</div>
-                            <div>{isRTL ? 'الإيرادات:' : 'Revenue:'} ${parseFloat(item.total_revenue || '0').toFixed(2)}</div>
+                            <div>{isRTL ? 'التأجيرات:' : 'Rentals:'} {item.totalRentals}</div>
+                            <div>{isRTL ? 'الإيرادات:' : 'Revenue:'} ${parseFloat(item.totalRevenue || '0').toFixed(2)}</div>
                           </div>
                         </td>
                         <td className="px-4 py-4 text-gray-300">
-                          {formatDate(item.created_at)}
+                          {formatDate(item.createdAt)}
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center justify-center gap-2">

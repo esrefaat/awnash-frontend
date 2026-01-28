@@ -792,7 +792,7 @@ const RolesPermissionsPage: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-300">
-                        {formatDate(role.created_at)}
+                        {formatDate(role.createdAt)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">

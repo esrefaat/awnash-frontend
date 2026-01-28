@@ -6,31 +6,30 @@ import { Select } from '../ui/Select';
 import { Button } from '../ui/Button';
 import { Autocomplete } from '../ui/Autocomplete';
 
-interface BidModalProps {
+interface OfferModalProps {
   isOpen: boolean;
   onClose: () => void;
   requestId: string;
   equipmentId?: string;
   equipmentType?: string;
-  onBidSuccess?: () => void;
+  onOfferSuccess?: () => void;
 }
 
-export const BidModal: React.FC<BidModalProps> = ({ 
+export const OfferModal: React.FC<OfferModalProps> = ({ 
   isOpen, 
   onClose, 
   requestId, 
   equipmentId, 
   equipmentType,
-  onBidSuccess 
+  onOfferSuccess 
 }) => {
   const [form, setForm] = useState({
-    equipment_name: '',
-    daily_rate: '',
-    daily_rate_currency: 'SAR',
-    total_amount: '',
-    total_amount_currency: 'SAR',
-    expires_at: '',
-    note: '',
+    equipmentName: '',
+    dailyRate: '',
+    currency: 'SAR',
+    price: '',
+    expiresAt: '',
+    notes: '',
   });
   const [selectedEquipment, setSelectedEquipment] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -41,13 +40,12 @@ export const BidModal: React.FC<BidModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setForm({
-        equipment_name: '',
-        daily_rate: '',
-        daily_rate_currency: 'SAR',
-        total_amount: '',
-        total_amount_currency: 'SAR',
-        expires_at: '',
-        note: '',
+        equipmentName: '',
+        dailyRate: '',
+        currency: 'SAR',
+        price: '',
+        expiresAt: '',
+        notes: '',
       });
       setSelectedEquipment(null);
       setError('');
@@ -63,7 +61,7 @@ export const BidModal: React.FC<BidModalProps> = ({
   const handleEquipmentSelect = (equipment: any) => {
     setSelectedEquipment(equipment);
     if (equipment) {
-      setForm(prev => ({ ...prev, equipment_name: equipment.name || equipment.title || '' }));
+      setForm(prev => ({ ...prev, equipmentName: equipment.name || equipment.title || '' }));
     }
   };
 
@@ -71,50 +69,49 @@ export const BidModal: React.FC<BidModalProps> = ({
     e.preventDefault();
     setError('');
     setSuccess(false);
-    if (!form.daily_rate || !form.total_amount || !form.expires_at) {
+    if (!form.dailyRate || !form.price || !form.expiresAt) {
       setError('Please fill all required fields.');
       return;
     }
     setLoading(true);
     try {
       const payload: any = {
-        request_id: requestId,
-        daily_rate: parseFloat(form.daily_rate),
-        daily_rate_currency: form.daily_rate_currency,
-        total_amount: parseFloat(form.total_amount),
-        total_amount_currency: form.total_amount_currency,
-        expires_at: form.expires_at,
-        note: form.note,
+        requestId: requestId,
+        dailyRate: parseFloat(form.dailyRate),
+        currency: form.currency,
+        price: parseFloat(form.price),
+        expiresAt: form.expiresAt,
+        notes: form.notes,
       };
       // Use selected equipment ID if available, otherwise use the passed equipmentId
       if (selectedEquipment?.id) {
-        payload.equipment_id = selectedEquipment.id;
+        payload.equipmentId = selectedEquipment.id;
       } else if (equipmentId) {
-        payload.equipment_id = equipmentId;
+        payload.equipmentId = equipmentId;
       }
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/booking/bid`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/offers`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error('Failed to submit bid');
+      if (!res.ok) throw new Error('Failed to submit offer');
       setSuccess(true);
-      if (onBidSuccess) onBidSuccess();
+      if (onOfferSuccess) onOfferSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to submit bid');
+      setError(err.message || 'Failed to submit offer');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Submit Bid" size="md">
+    <Modal isOpen={isOpen} onClose={onClose} title="Submit Offer" size="md">
       <form onSubmit={handleSubmit} className="space-y-4">
         <Autocomplete
-          value={form.equipment_name}
-          onChange={(value) => setForm(prev => ({ ...prev, equipment_name: value }))}
+          value={form.equipmentName}
+          onChange={(value) => setForm(prev => ({ ...prev, equipmentName: value }))}
           onSelect={handleEquipmentSelect}
           placeholder="Search for equipment..."
           label="Equipment Name"
@@ -125,11 +122,11 @@ export const BidModal: React.FC<BidModalProps> = ({
         <div className="flex gap-2">
           <div className="flex-1">
             <label className="block text-sm font-medium mb-1">Daily Rate <span className="text-red-500">*</span></label>
-            <Input name="daily_rate" type="number" value={form.daily_rate} onChange={handleChange} required min="0" step="0.01" />
+            <Input name="dailyRate" type="number" value={form.dailyRate} onChange={handleChange} required min="0" step="0.01" />
           </div>
           <div className="w-32">
             <label className="block text-sm font-medium mb-1">Currency</label>
-            <Select name="daily_rate_currency" value={form.daily_rate_currency} onChange={handleChange}>
+            <Select name="currency" value={form.currency} onChange={handleChange}>
               <option value="SAR">SAR</option>
               <option value="USD">USD</option>
             </Select>
@@ -137,32 +134,25 @@ export const BidModal: React.FC<BidModalProps> = ({
         </div>
         <div className="flex gap-2">
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-1">Total Amount <span className="text-red-500">*</span></label>
-            <Input name="total_amount" type="number" value={form.total_amount} onChange={handleChange} required min="0" step="0.01" />
-          </div>
-          <div className="w-32">
-            <label className="block text-sm font-medium mb-1">Currency</label>
-            <Select name="total_amount_currency" value={form.total_amount_currency} onChange={handleChange}>
-              <option value="SAR">SAR</option>
-              <option value="USD">USD</option>
-            </Select>
+            <label className="block text-sm font-medium mb-1">Total Price <span className="text-red-500">*</span></label>
+            <Input name="price" type="number" value={form.price} onChange={handleChange} required min="0" step="0.01" />
           </div>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Expires At <span className="text-red-500">*</span></label>
-          <Input name="expires_at" type="datetime-local" value={form.expires_at} onChange={handleChange} required />
+          <Input name="expiresAt" type="datetime-local" value={form.expiresAt} onChange={handleChange} required />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Note</label>
-          <Textarea name="note" value={form.note} onChange={handleChange} rows={3} />
+          <label className="block text-sm font-medium mb-1">Notes</label>
+          <Textarea name="notes" value={form.notes} onChange={handleChange} rows={3} />
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
-        {success && <div className="text-green-600 text-sm">Bid submitted successfully!</div>}
+        {success && <div className="text-green-600 text-sm">Offer submitted successfully!</div>}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>Cancel</Button>
-          <Button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit Bid'}</Button>
+          <Button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit Offer'}</Button>
         </div>
       </form>
     </Modal>
   );
-}; 
+};

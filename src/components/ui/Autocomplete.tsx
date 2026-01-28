@@ -5,7 +5,7 @@ interface AutocompleteOption {
   id: string;
   name: string;
   title?: string;
-  equipment_type?: string;
+  equipmentType?: string;
   city?: string;
   location?: string;
   [key: string]: any;
@@ -139,7 +139,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   };
 
   const getEquipmentType = (option: AutocompleteOption) => {
-    return option.equipment_type || option.equipmentTypeName || 'N/A';
+    return option.equipmentType || option.equipmentTypeName || 'N/A';
   };
 
   const getLocation = (option: AutocompleteOption) => {

@@ -6,19 +6,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 interface User {
   id: string;
-  full_name: string;
-  mobile_number: string;
+  fullName: string;
+  mobileNumber: string;
   email?: string;
   role: string;
   roles: string[];
   permissions: string[];
-  permissions_override?: Record<string, boolean>;
-  is_verified: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  permissionsOverride?: Record<string, boolean>;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   city?: string;
-  last_login?: string;
+  lastLogin?: string;
 }
 
 interface PermissionsMatrixModalProps {
@@ -171,8 +171,8 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
   ];
 
   useEffect(() => {
-    if (user.permissions_override) {
-      setCustomPermissions(user.permissions_override);
+    if (user.permissionsOverride) {
+      setCustomPermissions(user.permissionsOverride);
     } else {
       // Initialize with current role permissions
       const rolePermissions: Record<string, boolean> = {};
@@ -303,7 +303,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
                 Permissions Matrix
               </DialogTitle>
               <p className="text-gray-400 mt-1">
-                Managing permissions for {user.full_name} ({user.role})
+                Managing permissions for {user.fullName} ({user.role})
               </p>
             </div>
             <div className="text-right">

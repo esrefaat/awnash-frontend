@@ -231,16 +231,16 @@ const EquipmentView: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Equipment Images */}
                 <div>
-                  {equipment.image_urls && equipment.image_urls.length > 0 ? (
+                  {equipment.imageUrls && equipment.imageUrls.length > 0 ? (
                     <div className="space-y-2">
                       <img
-                        src={equipment.image_urls[0]}
+                        src={equipment.imageUrls[0]}
                         alt={equipment.name}
                         className="w-full h-48 object-cover rounded-lg"
                       />
-                      {equipment.image_urls.length > 1 && (
+                      {equipment.imageUrls.length > 1 && (
                         <div className="grid grid-cols-3 gap-2">
-                          {equipment.image_urls.slice(1, 4).map((url, index) => (
+                          {equipment.imageUrls.slice(1, 4).map((url, index) => (
                             <img
                               key={index}
                               src={url}
@@ -267,7 +267,7 @@ const EquipmentView: React.FC = () => {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">{isRTL ? 'النوع:' : 'Type:'}</span>
-                        <span className="font-medium capitalize">{equipment.equipment_type}</span>
+                        <span className="font-medium capitalize">{equipment.equipmentType}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">{isRTL ? 'الحجم:' : 'Size:'}</span>
@@ -284,7 +284,7 @@ const EquipmentView: React.FC = () => {
                         <span className="text-gray-600">{isRTL ? 'السعر اليومي:' : 'Daily Rate:'}</span>
                         <span className="font-medium text-green-600">
                           <FontAwesomeIcon icon={faDollarSign} className="w-3 h-3 mr-1" />
-                          {equipment.daily_rate}
+                          {equipment.dailyRate}
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -403,7 +403,7 @@ const EquipmentView: React.FC = () => {
                       <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-purple-600" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">{equipment.owner.full_name}</div>
+                      <div className="font-medium text-gray-900">{equipment.owner.fullName}</div>
                       <div className="text-sm text-gray-600">{equipment.owner.email}</div>
                     </div>
                   </div>
@@ -459,15 +459,15 @@ const EquipmentView: React.FC = () => {
               <div className="text-center">
                 <div className={cn(
                   "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium",
-                  equipment.is_available 
+                  equipment.isAvailable 
                     ? "bg-green-100 text-green-800" 
                     : "bg-red-100 text-red-800"
                 )}>
                   <FontAwesomeIcon 
-                    icon={equipment.is_available ? faCheckCircle : faExclamationTriangle} 
+                    icon={equipment.isAvailable ? faCheckCircle : faExclamationTriangle} 
                     className="w-4 h-4 mr-2" 
                   />
-                  {equipment.is_available 
+                  {equipment.isAvailable 
                     ? (isRTL ? 'متاح للحجز' : 'Available for Booking')
                     : (isRTL ? 'غير متاح' : 'Not Available')
                   }

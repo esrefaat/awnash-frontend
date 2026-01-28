@@ -223,19 +223,19 @@ const UsersManagement: React.FC = () => {
   // Filtering and sorting
   const filteredUsers = useMemo(() => {
     let filtered = users.filter(user => {
-      const matchesSearch = (user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      const matchesSearch = (user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           user.mobile_number?.includes(searchTerm));
+                           user.mobileNumber?.includes(searchTerm));
       
       const matchesRole = roleFilter === 'all' || user.role === roleFilter;
       
-      // Map status filter to is_active
+      // Map status filter to isActive
       const matchesStatus = statusFilter === 'all' || 
-        (statusFilter === 'active' && user.is_active) ||
-        (statusFilter === 'inactive' && !user.is_active);
+        (statusFilter === 'active' && user.isActive) ||
+        (statusFilter === 'inactive' && !user.isActive);
       
       const matchesActivity = activityFilter === 'all' || 
-        (activityFilter === 'recent' && user.last_login && new Date(user.last_login) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+        (activityFilter === 'recent' && user.lastLogin && new Date(user.lastLogin) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
       
       return matchesSearch && matchesRole && matchesStatus && matchesActivity;
     });
@@ -500,11 +500,11 @@ const UsersManagement: React.FC = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
                           <span className="text-white font-medium text-sm">
-                            {user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}
+                            {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-white">{user.full_name || 'Unknown User'}</p>
+                          <p className="font-medium text-white">{user.fullName || 'Unknown User'}</p>
                           <div className="flex items-center gap-2 mt-1">
                             {/* {user.verificationStatus === 'verified' && (
                               <FontAwesomeIcon icon={faCheckCircle} className="h-3 w-3 text-green-500" />
@@ -517,7 +517,7 @@ const UsersManagement: React.FC = () => {
                     <td className="px-6 py-4">
                       <div>
                         <p className="text-sm text-white">{user.email || '-'}</p>
-                        <p className="text-sm text-gray-400">{user.mobile_number}</p>
+                        <p className="text-sm text-gray-400">{user.mobileNumber}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -525,8 +525,8 @@ const UsersManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        {getStatusBadge(user.is_active ? 'active' : 'inactive')}
-                        {user.is_verified && (
+                        {getStatusBadge(user.isActive ? 'active' : 'inactive')}
+                        {user.isVerified && (
                           <span className="block px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500 w-fit">
                             {isRTL ? 'موثق' : 'Verified'}
                           </span>
@@ -535,7 +535,7 @@ const UsersManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-xs text-gray-400">{formatDate(user.created_at)}</p>
+                        <p className="text-xs text-gray-400">{formatDate(user.createdAt)}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -664,11 +664,11 @@ const UsersManagement: React.FC = () => {
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium">
-                    {selectedUser.full_name ? selectedUser.full_name.charAt(0).toUpperCase() : 'U'}
+                    {selectedUser.fullName ? selectedUser.fullName.charAt(0).toUpperCase() : 'U'}
                   </span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-white">{selectedUser.full_name || 'Unknown User'}</h2>
+                  <h2 className="text-lg font-semibold text-white">{selectedUser.fullName || 'Unknown User'}</h2>
                   <p className="text-sm text-gray-400">{selectedUser.email}</p>
                 </div>
               </div>
@@ -719,7 +719,7 @@ const UsersManagement: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الاسم الكامل' : 'Full Name'}</p>
-                      <p className="text-white font-medium">{selectedUser.full_name || '-'}</p>
+                      <p className="text-white font-medium">{selectedUser.fullName || '-'}</p>
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'البريد الإلكتروني' : 'Email'}</p>
@@ -727,7 +727,7 @@ const UsersManagement: React.FC = () => {
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'رقم الجوال' : 'Mobile Number'}</p>
-                      <p className="text-white font-medium">{selectedUser.mobile_number || '-'}</p>
+                      <p className="text-white font-medium">{selectedUser.mobileNumber || '-'}</p>
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الدور' : 'Role'}</p>
@@ -736,8 +736,8 @@ const UsersManagement: React.FC = () => {
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الحالة' : 'Status'}</p>
                       <div className="flex gap-2 mt-1">
-                        {getStatusBadge(selectedUser.is_active ? 'active' : 'inactive')}
-                        {selectedUser.is_verified && (
+                        {getStatusBadge(selectedUser.isActive ? 'active' : 'inactive')}
+                        {selectedUser.isVerified && (
                           <span className="px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500">
                             {isRTL ? 'موثق' : 'Verified'}
                           </span>
@@ -746,7 +746,7 @@ const UsersManagement: React.FC = () => {
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'تاريخ التسجيل' : 'Registered'}</p>
-                      <p className="text-white font-medium">{formatDate(selectedUser.created_at)}</p>
+                      <p className="text-white font-medium">{formatDate(selectedUser.createdAt)}</p>
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'آخر تسجيل دخول' : 'Last Login'}</p>

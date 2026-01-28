@@ -38,7 +38,8 @@ import {
   faDollarSign,
   faCreditCard,
   faReceipt,
-  faChevronLeft
+  faChevronLeft,
+  faShieldHalved
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '../../lib/utils';
 
@@ -126,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
         {
           key: 'requests',
           icon: faClipboardList,
-          label: 'ٍRental Requests',
+          label: 'Rental Requests',
           labelAr: 'طلبات التأجير',
           path: '/rentals/requests'
         },
@@ -259,6 +260,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
       labelAr: 'إدارة المحتوى',
       icon: faNewspaper,
       items: [
+        {
+          key: 'moderation',
+          icon: faShieldHalved,
+          label: 'Media Moderation',
+          labelAr: 'إشراف على الوسائط',
+          path: '/content/moderation'
+        },
         {
           key: 'articles',
           icon: faNewspaper,

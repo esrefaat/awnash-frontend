@@ -6,19 +6,19 @@ import { Badge } from '@/components/ui/Badge';
 interface DemoUser {
   id: string;
   email: string;
-  mobile_number: string;
+  mobileNumber: string;
   role: string;
   roles: string[];
   permissions: string[];
-  full_name: string;
-  is_verified: boolean;
+  fullName: string;
+  isVerified: boolean;
 }
 
 const DEMO_USERS: { [key: string]: DemoUser } = {
   admin: {
     id: '8468611b-cfde-4818-ad13-0ccc861ac062',
     email: 'admin@awnash.net',
-    mobile_number: '+966500000001',
+    mobileNumber: '+966500000001',
     role: 'super_admin',
     roles: ['super_admin'],
     permissions: [
@@ -32,13 +32,13 @@ const DEMO_USERS: { [key: string]: DemoUser } = {
       'payment:refund', 'dashboard:view', 'equipment:list', 'lead:create',
       'equipment:create', 'equipment:read', 'lead:list'
     ],
-    full_name: 'Admin User',
-    is_verified: true,
+    fullName: 'Admin User',
+    isVerified: true,
   },
   owner: {
     id: 'owner-uuid-12345',
     email: 'owner@awnash.net',
-    mobile_number: '+966500000002',
+    mobileNumber: '+966500000002',
     role: 'owner',
     roles: ['owner'],
     permissions: [
@@ -46,13 +46,13 @@ const DEMO_USERS: { [key: string]: DemoUser } = {
       'booking:read', 'booking:update', 'booking:list',
       'payment:read', 'payment:list', 'dashboard:view'
     ],
-    full_name: 'Equipment Owner',
-    is_verified: true,
+    fullName: 'Equipment Owner',
+    isVerified: true,
   },
   renter: {
     id: 'c2c711a4-2bc0-4dbb-b644-70d9ec969754',
     email: 'renter@awnash.net',
-    mobile_number: '+966500000003',
+    mobileNumber: '+966500000003',
     role: 'renter',
     roles: ['renter'],
     permissions: [
@@ -60,8 +60,8 @@ const DEMO_USERS: { [key: string]: DemoUser } = {
       'payment:read', 'payment:create',
       'equipment:list', 'equipment:read'
     ],
-    full_name: 'Equipment Renter',
-    is_verified: true,
+    fullName: 'Equipment Renter',
+    isVerified: true,
   },
 };
 
@@ -116,7 +116,7 @@ export const DemoAuth: React.FC<DemoAuthProps> = ({ onLogin }) => {
             onClick={() => setSelectedUser(key)}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="font-medium">{user.full_name}</span>
+              <span className="font-medium">{user.fullName}</span>
               <Badge variant="outline">{user.role}</Badge>
             </div>
             <p className="text-sm text-muted-foreground">{user.email}</p>
@@ -132,7 +132,7 @@ export const DemoAuth: React.FC<DemoAuthProps> = ({ onLogin }) => {
         disabled={!selectedUser}
         className="w-full"
       >
-        Login as {selectedUser ? DEMO_USERS[selectedUser].full_name : 'Selected User'}
+        Login as {selectedUser ? DEMO_USERS[selectedUser].fullName : 'Selected User'}
       </Button>
 
       <div className="mt-4 p-3 bg-blue-50 rounded-lg">

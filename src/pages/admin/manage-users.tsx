@@ -10,19 +10,19 @@ import { PermissionGuard, SuperAdminOnly } from '@/components/PermissionGuard';
 
 interface User {
   id: string;
-  full_name: string;
-  mobile_number: string;
+  fullName: string;
+  mobileNumber: string;
   email?: string;
   role: string;
   roles: string[];
   permissions: string[];
-  permissions_override?: Record<string, boolean>;
-  is_verified: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  permissionsOverride?: Record<string, boolean>;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   city?: string;
-  last_login?: string;
+  lastLogin?: string;
 }
 
 interface UserFilters {
@@ -59,63 +59,63 @@ const ManageUsers: React.FC = () => {
     const mockUsers: User[] = [
       {
         id: '1',
-        full_name: 'Ahmed Al-Rashid',
-        mobile_number: '+966500000001',
+        fullName: 'Ahmed Al-Rashid',
+        mobileNumber: '+966500000001',
         email: 'admin@awnash.net',
         role: 'super_admin',
         roles: ['super_admin'],
         permissions: ['system:configure', 'roles:manage', 'user:create', 'user:delete'],
-        is_verified: true,
-        is_active: true,
-        created_at: '2024-01-15T10:30:00Z',
-        updated_at: '2024-12-06T12:00:00Z',
+        isVerified: true,
+        isActive: true,
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: '2024-12-06T12:00:00Z',
         city: 'Riyadh',
-        last_login: '2024-12-06T11:45:00Z'
+        lastLogin: '2024-12-06T11:45:00Z'
       },
       {
         id: '2',
-        full_name: 'Fatima Al-Zahra',
-        mobile_number: '+966500000002',
+        fullName: 'Fatima Al-Zahra',
+        mobileNumber: '+966500000002',
         email: 'booking.admin@awnash.net',
         role: 'booking_admin',
         roles: ['booking_admin'],
         permissions: ['booking:create', 'booking:approve', 'payment:read'],
-        is_verified: true,
-        is_active: true,
-        created_at: '2024-02-20T14:15:00Z',
-        updated_at: '2024-12-05T16:30:00Z',
+        isVerified: true,
+        isActive: true,
+        createdAt: '2024-02-20T14:15:00Z',
+        updatedAt: '2024-12-05T16:30:00Z',
         city: 'Jeddah',
-        last_login: '2024-12-05T16:20:00Z'
+        lastLogin: '2024-12-05T16:20:00Z'
       },
       {
         id: '3',
-        full_name: 'Omar Hassan',
-        mobile_number: '+966500000003',
+        fullName: 'Omar Hassan',
+        mobileNumber: '+966500000003',
         email: 'content@awnash.net',
         role: 'content_admin',
         roles: ['content_admin'],
         permissions: ['equipment:read', 'equipment:update', 'lead:manage'],
-        is_verified: true,
-        is_active: false,
-        created_at: '2024-03-10T09:00:00Z',
-        updated_at: '2024-11-20T10:15:00Z',
+        isVerified: true,
+        isActive: false,
+        createdAt: '2024-03-10T09:00:00Z',
+        updatedAt: '2024-11-20T10:15:00Z',
         city: 'Dammam',
-        last_login: '2024-11-20T10:10:00Z'
+        lastLogin: '2024-11-20T10:10:00Z'
       },
       {
         id: '4',
-        full_name: 'Sarah Al-Mutairi',
-        mobile_number: '+966500000004',
+        fullName: 'Sarah Al-Mutairi',
+        mobileNumber: '+966500000004',
         email: 'support@awnash.net',
         role: 'support_agent',
         roles: ['support_agent'],
         permissions: ['user:read', 'booking:read', 'equipment:read'],
-        is_verified: true,
-        is_active: true,
-        created_at: '2024-04-05T11:45:00Z',
-        updated_at: '2024-12-04T13:20:00Z',
+        isVerified: true,
+        isActive: true,
+        createdAt: '2024-04-05T11:45:00Z',
+        updatedAt: '2024-12-04T13:20:00Z',
         city: 'Mecca',
-        last_login: '2024-12-04T13:15:00Z'
+        lastLogin: '2024-12-04T13:15:00Z'
       }
     ];
 
@@ -134,15 +134,15 @@ const ManageUsers: React.FC = () => {
 
     if (filters.status) {
       filtered = filtered.filter(user => 
-        filters.status === 'active' ? user.is_active : !user.is_active
+        filters.status === 'active' ? user.isActive : !user.isActive
       );
     }
 
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(user => 
-        user.full_name.toLowerCase().includes(searchLower) ||
-        user.mobile_number.includes(searchLower) ||
+        user.fullName.toLowerCase().includes(searchLower) ||
+        user.mobileNumber.includes(searchLower) ||
         (user.email && user.email.toLowerCase().includes(searchLower))
       );
     }
@@ -202,7 +202,7 @@ const ManageUsers: React.FC = () => {
   const handleToggleUserStatus = (userId: string) => {
     setUsers(prev => prev.map(user => 
       user.id === userId 
-        ? { ...user, is_active: !user.is_active }
+        ? { ...user, isActive: !user.isActive }
         : user
     ));
   };
@@ -363,11 +363,11 @@ const ManageUsers: React.FC = () => {
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-[#0073E6] rounded-full flex items-center justify-center">
                             <span className="text-white font-semibold text-sm">
-                              {user.full_name.split(' ').map(n => n[0]).join('')}
+                              {user.fullName.split(' ').map(n => n[0]).join('')}
                             </span>
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-200">{user.full_name}</p>
+                            <p className="font-semibold text-gray-200">{user.fullName}</p>
                             <p className="text-sm text-gray-400">{user.city || 'N/A'}</p>
                           </div>
                         </div>
@@ -381,7 +381,7 @@ const ManageUsers: React.FC = () => {
                       
                       <td className="p-4">
                         <div>
-                          <p className="text-gray-200 font-mono text-sm">{user.mobile_number}</p>
+                          <p className="text-gray-200 font-mono text-sm">{user.mobileNumber}</p>
                           {user.email && (
                             <p className="text-gray-400 text-sm">{user.email}</p>
                           )}
@@ -390,23 +390,23 @@ const ManageUsers: React.FC = () => {
                       
                       <td className="p-4">
                         <div className="flex items-center space-x-2">
-                          <div className={`w-2 h-2 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
-                          <span className={`text-sm ${user.is_active ? 'text-green-400' : 'text-red-400'}`}>
-                            {user.is_active ? 'Active' : 'Suspended'}
+                          <div className={`w-2 h-2 rounded-full ${user.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+                          <span className={`text-sm ${user.isActive ? 'text-green-400' : 'text-red-400'}`}>
+                            {user.isActive ? 'Active' : 'Suspended'}
                           </span>
                         </div>
                       </td>
                       
                       <td className="p-4">
-                        <span className="text-gray-300 text-sm" title={formatDateTime(user.created_at)}>
-                          {formatDate(user.created_at)}
+                        <span className="text-gray-300 text-sm" title={formatDateTime(user.createdAt)}>
+                          {formatDate(user.createdAt)}
                         </span>
                       </td>
                       
                       <td className="p-4">
-                        {user.last_login ? (
-                          <span className="text-gray-300 text-sm" title={formatDateTime(user.last_login)}>
-                            {formatDate(user.last_login)}
+                        {user.lastLogin ? (
+                          <span className="text-gray-300 text-sm" title={formatDateTime(user.lastLogin)}>
+                            {formatDate(user.lastLogin)}
                           </span>
                         ) : (
                           <span className="text-gray-500 text-sm">Never</span>
@@ -540,11 +540,11 @@ const ManageUsers: React.FC = () => {
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="w-16 h-16 bg-[#0073E6] rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-xl">
-                      {selectedUser.full_name.split(' ').map(n => n[0]).join('')}
+                      {selectedUser.fullName.split(' ').map(n => n[0]).join('')}
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-100">{selectedUser.full_name}</h3>
+                    <h3 className="text-xl font-semibold text-gray-100">{selectedUser.fullName}</h3>
                     <Badge className={`mt-2 rounded-full px-3 py-1 ${roleColors[selectedUser.role]}`}>
                       {selectedUser.role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </Badge>
@@ -554,7 +554,7 @@ const ManageUsers: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <label className="block text-gray-400 mb-1">Mobile Number</label>
-                    <p className="text-gray-200 font-mono">{selectedUser.mobile_number}</p>
+                    <p className="text-gray-200 font-mono">{selectedUser.mobileNumber}</p>
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-1">Email</label>
@@ -567,9 +567,9 @@ const ManageUsers: React.FC = () => {
                   <div>
                     <label className="block text-gray-400 mb-1">Status</label>
                     <div className="flex items-center space-x-2">
-                      <div className={`w-2 h-2 rounded-full ${selectedUser.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
-                      <span className={`${selectedUser.is_active ? 'text-green-400' : 'text-red-400'}`}>
-                        {selectedUser.is_active ? 'Active' : 'Suspended'}
+                      <div className={`w-2 h-2 rounded-full ${selectedUser.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+                      <span className={`${selectedUser.isActive ? 'text-green-400' : 'text-red-400'}`}>
+                        {selectedUser.isActive ? 'Active' : 'Suspended'}
                       </span>
                     </div>
                   </div>
@@ -632,7 +632,7 @@ const ManageUsers: React.FC = () => {
              <div className="bg-gray-800 p-6 max-w-lg mx-auto rounded-2xl text-center">
                <h3 className="text-xl font-semibold text-gray-100 mb-4">Edit User Modal</h3>
                <p className="text-gray-400 mb-6">
-                 This would open the EditUserModal component for editing {selectedUser.full_name}.
+                 This would open the EditUserModal component for editing {selectedUser.fullName}.
                </p>
                <Button onClick={() => setIsEditModalOpen(false)} className="bg-[#0073E6] text-white">
                  Close
@@ -646,7 +646,7 @@ const ManageUsers: React.FC = () => {
              <div className="bg-gray-800 p-6 max-w-lg mx-auto rounded-2xl text-center">
                <h3 className="text-xl font-semibold text-gray-100 mb-4">Permissions Matrix</h3>
                <p className="text-gray-400 mb-6">
-                 This would open the PermissionsMatrixModal component for managing {selectedUser.full_name}'s permissions.
+                 This would open the PermissionsMatrixModal component for managing {selectedUser.fullName}'s permissions.
                </p>
                <Button onClick={() => setIsPermissionsModalOpen(false)} className="bg-[#FFCC00] text-black">
                  Close

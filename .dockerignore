@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# Development files
+*.md
+!README.md
+*.log
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Test files
+__tests__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+coverage/
+
+# Storybook
+.storybook/
+storybook-static/
+
+# Sample/test files
+sample-*
+test_*

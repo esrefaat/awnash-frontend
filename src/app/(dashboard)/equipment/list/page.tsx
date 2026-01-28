@@ -113,7 +113,7 @@ const EquipmentPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState<'revenue' | 'rentals' | 'created'>('revenue');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('DESC');
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [showFlagged, setShowFlagged] = useState(false);
   const [showUnverified, setShowUnverified] = useState(false);
@@ -148,7 +148,7 @@ const EquipmentPage: React.FC = () => {
       // Add filters
       if (searchTerm) params.search = searchTerm;
       if (selectedStatus && selectedStatus !== 'all') params.status = selectedStatus;
-      if (selectedCategory && selectedCategory !== 'all') params.equipment_type = selectedCategory;
+      if (selectedCategory && selectedCategory !== 'all') params.equipmentType = selectedCategory;
       
       // Use the equipment service to fetch data
       const result = await equipmentService.getEquipment(params);
@@ -160,7 +160,7 @@ const EquipmentPage: React.FC = () => {
       
       // Calculate summary stats from API data
       const totalEquip = result.total || 0;
-      const totalRev = result.data.reduce((sum, item) => sum + (parseFloat(item.daily_rate) || 0), 0);
+      const totalRev = result.data.reduce((sum, item) => sum + (parseFloat(item.dailyRate) || 0), 0);
       const pendingVer = result.data.filter(item => item.status === 'pending').length;
       
       setSummaryStats({
@@ -292,14 +292,14 @@ const EquipmentPage: React.FC = () => {
   const exportToCSV = () => {
     const csvData = equipment.map(item => ({
       'Equipment Name': item.name,
-      'Category': item.equipment_type,
-      'Owner': item.owner?.full_name || 'N/A',
+      'Category': item.equipmentTypeId,
+      'Owner': item.owner?.fullName || 'N/A',
       'Status': item.status,
-      'Daily Rate (SAR)': item.daily_rate,
-      'Total Rentals': item.total_rentals || 0,
-      'Total Revenue (SAR)': item.total_revenue || 0,
+      'Daily Rate (SAR)': item.dailyRate,
+      'Total Rentals': item.totalRentals || 0,
+      'Total Revenue (SAR)': item.totalRevenue || 0,
       'Location': item.city,
-      'Created Date': item.created_at
+      'Created Date': item.createdAt
     }));
     
     // Simple CSV export (in real app, use proper CSV library)
@@ -493,19 +493,19 @@ const EquipmentPage: React.FC = () => {
                 onChange={(e) => {
                   const [field, order] = e.target.value.split('-');
                   setSortBy(field as 'revenue' | 'rentals' | 'created');
-                  setSortOrder(order as 'asc' | 'desc');
+                  setSortOrder(order as 'ASC' | 'DESC');
                 }}
                 className={cn(
                   "rounded-md border border-gray-300 py-2 px-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
                   isRTL && "text-right"
                 )}
               >
-                <option value="revenue-desc">{t('highest_revenue', 'Highest Revenue')}</option>
-                <option value="revenue-asc">{t('lowest_revenue', 'Lowest Revenue')}</option>
-                <option value="rentals-desc">{t('most_rented', 'Most Rented')}</option>
-                <option value="rentals-asc">{t('least_rented', 'Least Rented')}</option>
-                <option value="created-desc">{t('newest_first', 'Newest First')}</option>
-                <option value="created-asc">{t('oldest_first', 'Oldest First')}</option>
+                <option value="revenue-DESC">{t('highest_revenue', 'Highest Revenue')}</option>
+                <option value="revenue-ASC">{t('lowest_revenue', 'Lowest Revenue')}</option>
+                <option value="rentals-DESC">{t('most_rented', 'Most Rented')}</option>
+                <option value="rentals-ASC">{t('least_rented', 'Least Rented')}</option>
+                <option value="created-DESC">{t('newest_first', 'Newest First')}</option>
+                <option value="created-ASC">{t('oldest_first', 'Oldest First')}</option>
               </select>
 
               {/* Toggle Filters */}
@@ -616,9 +616,9 @@ const EquipmentPage: React.FC = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <div className="h-12 w-12 flex-shrink-0">
-                                {item.image_urls && item.image_urls.length > 0 ? (
+                                {item.imageUrls && item.imageUrls.length > 0 ? (
                                 <img
-                                  src={item.image_urls[0]}
+                                  src={item.imageUrls[0]}
                                   alt={item.name}
                                   className="h-12 w-12 rounded-lg object-cover"
                                   onError={(e) => {
@@ -650,12 +650,12 @@ const EquipmentPage: React.FC = () => {
                         </td>
                         <td className="px-6 py-4">
                            <div className="text-sm text-gray-700">
-                             {getEquipmentTypeLabel(item.equipment_type, isRTL)}
+                             {getEquipmentTypeLabel(item.equipmentType, isRTL)}
                            </div>
                         </td>
                         <td className="px-6 py-4">
                            <div className="text-sm text-gray-700">
-                             {item.owner?.full_name || 'N/A'}
+                             {item.owner?.fullName || 'N/A'}
                            </div>
                            {item.owner?.email && (
                              <div className="text-xs text-gray-500">
@@ -665,7 +665,7 @@ const EquipmentPage: React.FC = () => {
                         </td>
                         <td className="px-6 py-4">
                            <div className="text-sm text-gray-700">
-                             {item.daily_rate ? formatCurrency(item.daily_rate) : 'N/A'}
+                             {item.dailyRate ? formatCurrency(item.dailyRate) : 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -760,7 +760,7 @@ const EquipmentPage: React.FC = () => {
             paginatedEquipment.map((item) => (
               <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative">
-                  <ImageCarousel images={item.image_urls || []} title={item.name} isRTL={isRTL} />
+                  <ImageCarousel images={item.imageUrls || []} title={item.name} isRTL={isRTL} />
                   <div className="absolute top-2 right-2">
                     <span className={`badge ${getStatusBadge(item.status)}`}>
                       {getEquipmentStatusLabel(item.status, isRTL)}
@@ -775,15 +775,15 @@ const EquipmentPage: React.FC = () => {
                     
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">
-                        {getEquipmentTypeLabel(item.equipment_type, isRTL)}
+                        {getEquipmentTypeLabel(item.equipmentType, isRTL)}
                       </span>
                       <span className="font-bold text-green-600">
-                        {item.daily_rate ? formatCurrency(item.daily_rate) + '/day' : 'N/A'}
+                        {item.dailyRate ? formatCurrency(item.dailyRate) + '/day' : 'N/A'}
                       </span>
                     </div>
 
                     <div className="text-xs text-gray-500">
-                      👤 {item.owner?.full_name || 'N/A'}
+                      👤 {item.owner?.fullName || 'N/A'}
                      </div>
                     {item.owner?.email && (
                       <div className="text-xs text-gray-400 truncate">
