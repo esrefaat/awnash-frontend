@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AudienceSegmentBuilder from '@/components/AudienceSegmentBuilder';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import {
   faSave,
   faRocket,
@@ -642,21 +643,22 @@ const CampaignCreator: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="mt-8 space-y-3">
-              <button className="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
+              <Button variant="success" className="w-full justify-center">
                 <FontAwesomeIcon icon={faRocket} className={cn(isRTL ? "ml-2" : "mr-2")} />
                 {isRTL ? 'إطلاق الآن' : 'Launch Now'}
-              </button>
-              <button className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors">
+              </Button>
+              <Button variant="dark" className="w-full justify-center">
                 <FontAwesomeIcon icon={faSave} className={cn(isRTL ? "ml-2" : "mr-2")} />
                 {isRTL ? 'حفظ كمسودة' : 'Save Draft'}
-              </button>
-              <button 
+              </Button>
+              <Button 
+                variant="accent"
                 onClick={() => setShowPreview(true)}
-                className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
+                className="w-full justify-center"
               >
                 <FontAwesomeIcon icon={faEye} className={cn(isRTL ? "ml-2" : "mr-2")} />
                 {isRTL ? 'معاينة' : 'Preview'}
-              </button>
+              </Button>
             </div>
           </div>
 

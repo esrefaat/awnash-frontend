@@ -32,6 +32,7 @@ import {
   faShieldAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/Button';
 
 // Mock renter data with dual role capability
 const mockRenterData = {
@@ -517,10 +518,10 @@ const RenterProfile: React.FC = () => {
                   <div>Expires: {doc.expiryDate}</div>
                 </div>
                 <div className={cn("flex space-x-2 mt-4", isRTL && "space-x-reverse")}>
-                  <button className="flex-1 px-3 py-2 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800">
+                  <Button variant="accent" size="sm" className="flex-1">
                     <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />
                     View
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -595,21 +596,21 @@ const RenterProfile: React.FC = () => {
 
               {/* Action Buttons */}
               <div className={cn("flex space-x-3", isRTL && "space-x-reverse")}>  
-                <button 
-                  className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 font-medium"
+                <Button 
+                  variant="accent"
                   onClick={() => setShowNotesModal(true)}
                 >
                   <FontAwesomeIcon icon={faStickyNote} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   Notes
-                </button>
-                <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium">
+                </Button>
+                <Button variant="default">
                   <FontAwesomeIcon icon={faFlag} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   Flag User
-                </button>
-                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">
+                </Button>
+                <Button variant="destructive">
                   <FontAwesomeIcon icon={faUserSlash} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   Disable
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -717,18 +718,19 @@ const RenterProfile: React.FC = () => {
                 onChange={(e) => setInternalNotes(e.target.value)}
               />
               <div className={cn("flex space-x-3 mt-4", isRTL && "space-x-reverse")}>
-                <button
-                  className="flex-1 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
+                <Button
+                  variant="accent"
+                  className="flex-1"
                   onClick={() => setShowNotesModal(false)}
                 >
                   Save Notes
-                </button>
-                <button
-                  className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500"
+                </Button>
+                <Button
+                  variant="secondary"
                   onClick={() => setShowNotesModal(false)}
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           </div>

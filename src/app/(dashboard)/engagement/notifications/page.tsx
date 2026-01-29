@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button } from '@/components/ui/Button';
 import {
   faBell,
   faSearch,
@@ -398,9 +399,9 @@ const NotificationsCenter: React.FC = () => {
         </div>
 
         <div className="mt-6 pt-6 border-t border-gray-700">
-          <button className="px-6 py-3 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+          <Button variant="default">
             {isRTL ? 'حفظ الإعدادات' : 'Save Settings'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -630,31 +631,31 @@ const NotificationsCenter: React.FC = () => {
                 {/* Action Buttons */}
                 <div className={cn("flex space-x-3 pt-4 border-t border-gray-700", isRTL && "space-x-reverse")}>
                   {selectedNotification.linkedEntityId && (
-                    <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+                    <Button variant="default">
                       <FontAwesomeIcon icon={faExternalLink} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'عرض السجل' : 'View Related'}
-                    </button>
+                    </Button>
                   )}
-                  <button
+                  <Button
+                    variant="default"
                     onClick={() => {
                       markAsRead(selectedNotification.id);
                       setSelectedNotification(null);
                     }}
-                    className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg"
                   >
                     <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                     {isRTL ? 'تحديد كمقروء' : 'Mark as Read'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="default"
                     onClick={() => {
                       markAsArchived(selectedNotification.id);
                       setSelectedNotification(null);
                     }}
-                    className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg"
                   >
                     <FontAwesomeIcon icon={faArchive} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                     {isRTL ? 'أرشفة' : 'Archive'}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

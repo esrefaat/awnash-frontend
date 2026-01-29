@@ -17,6 +17,7 @@ import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/Button';
 
 interface EquipmentFormData {
   type: string;
@@ -440,13 +441,14 @@ const AddEquipment: React.FC = () => {
                   placeholder={isRTL ? 'أضف مواصفة فنية...' : 'Add a specification...'}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecification())}
                 />
-                <button
+                <Button
                   type="button"
                   onClick={addSpecification}
-                  className="btn-accent"
+                  variant="accent"
+                  size="icon"
                 >
                   <FontAwesomeIcon icon={faPlus} />
-                </button>
+                </Button>
               </div>
               {formData.specifications.length > 0 && (
                 <div className="space-y-2">
@@ -527,24 +529,20 @@ const AddEquipment: React.FC = () => {
 
         {/* Submit Button */}
         <div className="flex justify-end gap-4">
-          <button
+          <Button
             type="button"
             onClick={() => router.push('/equipment')}
-            className="btn-secondary"
+            variant="secondary"
           >
             {isRTL ? 'إلغاء' : 'Cancel'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className="btn-primary"
-            style={{ 
-              backgroundColor: 'var(--awnash-primary)',
-              color: 'var(--awnash-secondary)'
-            }}
+            variant="default"
           >
-            <FontAwesomeIcon icon={faSave} />
+            <FontAwesomeIcon icon={faSave} className="mr-2" />
             <span>{isRTL ? 'حفظ المعدة' : 'Save Equipment'}</span>
-          </button>
+          </Button>
         </div>
       </form>
     </div>

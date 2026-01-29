@@ -34,6 +34,7 @@ import {
   faFilter
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import {
   LineChart,
   Line,
@@ -354,14 +355,14 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
           <div className="flex gap-4">
-            <button className="flex items-center px-6 py-2 bg-awnash-primary hover:bg-awnash-primary-hover text-black rounded-2xl font-medium transition-all shadow-lg hover:shadow-xl">
+            <Button variant="default">
               <FontAwesomeIcon icon={faRocket} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'إطلاق حملة' : 'Launch Campaign'}
-            </button>
-            <button className="flex items-center px-6 py-2 bg-awnash-accent hover:bg-awnash-accent-hover text-white rounded-2xl font-medium transition-all shadow-lg hover:shadow-xl">
+            </Button>
+            <Button variant="accent">
               <FontAwesomeIcon icon={faMapMarkerAlt} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'الخريطة المباشرة' : 'Live Map'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -485,12 +486,12 @@ const Dashboard: React.FC = () => {
                 {isRTL ? 'الحجوزات اليومية خلال آخر 30 يوم' : 'Daily Bookings (Last 30 Days)'}
               </h3>
               <div className="flex gap-2">
-                <button className="px-4 py-2 bg-awnash-accent text-white rounded-xl text-sm font-medium">
+                <Button variant="accent" size="sm">
                   {isRTL ? 'الحجوزات' : 'Bookings'}
-                </button>
-                <button className="px-4 py-2 bg-gray-600 text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-500 transition-colors">
+                </Button>
+                <Button variant="dark" size="sm">
                   {isRTL ? 'الإيرادات' : 'Revenue'}
-                </button>
+                </Button>
               </div>
             </div>
             <div className="h-80">
@@ -601,9 +602,9 @@ const Dashboard: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">
                   {isRTL ? 'الحجوزات الأخيرة' : 'Recent Bookings'}
                 </h3>
-                <button className="text-blue-400 hover:text-blue-300 text-sm">
+                <Button variant="link" className="text-blue-400 hover:text-blue-300">
                   {isRTL ? 'عرض الكل' : 'View All'}
-                </button>
+                </Button>
               </div>
             </div>
             <div className="p-6 space-y-4">
@@ -630,9 +631,9 @@ const Dashboard: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">
                   {isRTL ? 'المستخدمون الجدد هذا الأسبوع' : 'New Users This Week'}
                 </h3>
-                <button className="text-blue-400 hover:text-blue-300 text-sm">
+                <Button variant="link" className="text-blue-400 hover:text-blue-300">
                   {isRTL ? 'عرض الكل' : 'View All'}
-                </button>
+                </Button>
               </div>
             </div>
             <div className="p-6 space-y-4">
@@ -665,9 +666,9 @@ const Dashboard: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">
                   {isRTL ? 'الوثائق منتهية الصلاحية' : 'Expiring Documents'}
                 </h3>
-                <button className="text-yellow-400 hover:text-yellow-300 text-sm">
+                <Button variant="link" className="text-yellow-400 hover:text-yellow-300">
                   {isRTL ? 'عرض الكل' : 'View All'}
-                </button>
+                </Button>
               </div>
             </div>
             <div className="p-6 space-y-4">
@@ -702,37 +703,37 @@ const Dashboard: React.FC = () => {
             {isRTL ? 'إجراءات سريعة' : 'Quick Actions'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button className="flex items-center p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <Button variant="accent" className="flex items-center p-4 h-auto justify-start">
               <FontAwesomeIcon icon={faRocket} className={cn('h-5 w-5', isRTL ? 'ml-3' : 'mr-3')} />
               <div className={`text-${isRTL ? 'right' : 'left'}`}>
                 <div className="font-medium">{isRTL ? 'إطلاق حملة' : 'Launch Campaign'}</div>
                 <div className="text-xs opacity-80">{isRTL ? 'حملة تسويقية جديدة' : 'New marketing campaign'}</div>
               </div>
-            </button>
+            </Button>
 
-            <button className="flex items-center p-4 bg-yellow-600 text-black rounded-lg hover:bg-yellow-700 transition-colors">
+            <Button variant="default" className="flex items-center p-4 h-auto justify-start">
               <FontAwesomeIcon icon={faFlag} className={cn('h-5 w-5', isRTL ? 'ml-3' : 'mr-3')} />
               <div className={`text-${isRTL ? 'right' : 'left'}`}>
                 <div className="font-medium">{isRTL ? 'الإيجارات المعلمة' : 'Flagged Rentals'}</div>
                 <div className="text-xs opacity-80">{isRTL ? 'مراجعة المشاكل' : 'Review issues'}</div>
               </div>
-            </button>
+            </Button>
 
-            <button className="flex items-center p-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+            <Button variant="success" className="flex items-center p-4 h-auto justify-start">
               <FontAwesomeIcon icon={faMapMarkerAlt} className={cn('h-5 w-5', isRTL ? 'ml-3' : 'mr-3')} />
               <div className={`text-${isRTL ? 'right' : 'left'}`}>
                 <div className="font-medium">{isRTL ? 'مراقبة الخريطة المباشرة' : 'Monitor Live Map'}</div>
                 <div className="text-xs opacity-80">{isRTL ? 'عرض الإيجارات النشطة' : 'View active rentals'}</div>
               </div>
-            </button>
+            </Button>
 
-            <button className="flex items-center p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+            <Button variant="secondary" className="flex items-center p-4 h-auto justify-start bg-purple-600 hover:bg-purple-700">
               <FontAwesomeIcon icon={faChartLine} className={cn('h-5 w-5', isRTL ? 'ml-3' : 'mr-3')} />
               <div className={`text-${isRTL ? 'right' : 'left'}`}>
                 <div className="font-medium">{isRTL ? 'تقارير التحليلات' : 'Analytics Reports'}</div>
                 <div className="text-xs opacity-80">{isRTL ? 'إحصائيات مفصلة' : 'Detailed insights'}</div>
               </div>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

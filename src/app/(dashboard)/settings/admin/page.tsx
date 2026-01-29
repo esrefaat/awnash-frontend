@@ -8,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import { usePermissions } from '@/hooks/usePermissions';
 import { PermissionGuard, SuperAdminOnly } from '@/components/PermissionGuard';
 
@@ -402,13 +403,14 @@ const AdminSettings: React.FC = () => {
                     />
                   </div>
 
-                  <button
+                  <Button
                     onClick={saveSettings}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    variant="accent"
+                    className="w-full"
                   >
                     <FontAwesomeIcon icon={faSave} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                     Save Settings
-                  </button>
+                  </Button>
                 </div>
               )}
 
@@ -436,13 +438,14 @@ const AdminSettings: React.FC = () => {
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     onClick={saveSettings}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    variant="accent"
+                    className="w-full"
                   >
                     <FontAwesomeIcon icon={faSave} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                     Save Settings
-                  </button>
+                  </Button>
                 </div>
               )}
 
@@ -453,10 +456,10 @@ const AdminSettings: React.FC = () => {
                     <h3 className="text-xl font-bold text-white">
                       {isRTL ? 'إدارة الأدوار' : 'Role Management'}
                     </h3>
-                    <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <Button variant="accent">
                       <FontAwesomeIcon icon={faPlus} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                       {isRTL ? 'إضافة دور جديد' : 'Add New Role'}
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -470,12 +473,12 @@ const AdminSettings: React.FC = () => {
                             </h4>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <button className="p-2 text-gray-400 hover:text-blue-400 transition-colors">
+                            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-blue-400">
                               <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
-                            </button>
-                            <button className="p-2 text-gray-400 hover:text-red-400 transition-colors">
+                            </Button>
+                            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-red-400">
                               <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
-                            </button>
+                            </Button>
                           </div>
                         </div>
 

@@ -34,6 +34,7 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
+import { Button } from '@/components/ui/Button';
 
 // Mock data for Awnash platform
 const platformStats = {
@@ -315,10 +316,10 @@ const AwnashDashboard: React.FC = () => {
             <h3 className="text-xl font-bold text-gray-900">
               {isRTL ? 'الحجوزات الأخيرة' : 'Recent Bookings'}
             </h3>
-            <button className="flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors">
+            <Button variant="ghost" className="text-blue-600 hover:text-blue-800 hover:bg-blue-50">
               <FontAwesomeIcon icon={faEye} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />   
               {isRTL ? 'عرض الكل' : 'View All'}
-            </button>
+            </Button>
           </div>
         </div>
         <div className="overflow-x-auto">

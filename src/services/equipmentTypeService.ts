@@ -13,14 +13,51 @@ export interface EquipmentTypeAttribute {
   options: EquipmentTypeAttributeOption[];
 }
 
+export interface EquipmentCategory {
+  id: string;
+  slug: string;
+  nameEn: string;
+  nameAr: string;
+  nameUr?: string;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EquipmentTypeMarketName {
+  id: string;
+  equipmentTypeId: string;
+  marketCode: string;
+  nameEn?: string;
+  nameAr?: string;
+  nameUr?: string;
+  displayOrder?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface EquipmentType {
   id: string;
   nameEn: string;
   nameAr: string;
   nameUr?: string;
+  descriptionEn?: string;
+  descriptionAr?: string;
+  descriptionUr?: string;
   category: string;
+  categoryId?: string;
+  equipmentCategory?: EquipmentCategory;
   locationMode: 'single' | 'from_to' | 'none';
+  requiresTransport?: boolean;
+  sizeTypeKey?: string;
+  sizeUnit?: string;
+  imageUrl?: string;
+  displayOrder: number;
+  isActive: boolean;
   attributes: EquipmentTypeAttribute[];
+  marketNames?: EquipmentTypeMarketName[];
+  marketName?: EquipmentTypeMarketName; // Single market name (from query with market param)
   createdAt: string;
   updatedAt: string;
 }
@@ -29,8 +66,18 @@ export interface CreateEquipmentTypeData {
   nameEn: string;
   nameAr: string;
   nameUr?: string;
+  descriptionEn?: string;
+  descriptionAr?: string;
+  descriptionUr?: string;
   category: string;
+  categoryId?: string;
   locationMode: 'single' | 'from_to' | 'none';
+  requiresTransport?: boolean;
+  sizeTypeKey?: string;
+  sizeUnit?: string;
+  imageUrl?: string;
+  displayOrder?: number;
+  isActive?: boolean;
   attributes?: {
     label: string;
     unit?: string;
@@ -40,6 +87,13 @@ export interface CreateEquipmentTypeData {
 }
 
 export interface UpdateEquipmentTypeData extends Partial<CreateEquipmentTypeData> {}
+
+export interface MarketNameData {
+  nameEn?: string;
+  nameAr?: string;
+  nameUr?: string;
+  displayOrder?: number;
+}
 
 export interface EquipmentTypesResponse {
   data: EquipmentType[];
@@ -69,7 +123,8 @@ class EquipmentTypeService {
 
     const url = `${this.baseUrl}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     const response = await apiService.get<EquipmentTypesResponse>(url);
-    return response.data;
+    // Backend returns { data: [...], total, page, limit, totalPages } directly
+    return response as unknown as EquipmentTypesResponse;
   }
 
   async getById(id: string): Promise<EquipmentType> {
@@ -91,14 +146,108 @@ class EquipmentTypeService {
     await apiService.delete(`${this.baseUrl}/${id}`);
   }
 
-  async getCategories(): Promise<string[]> {
-    const response = await apiService.get<string[]>(`${this.baseUrl}/categories`);
+  /**
+   * Get all categories from the categories table
+   */
+  async getCategories(): Promise<EquipmentCategory[]> {
+    const response = await apiService.get<EquipmentCategory[]>(`${this.baseUrl}/categories`);
+    return response.data;
+  }
+
+  /**
+   * Get all categories including inactive (admin only)
+   */
+  async getAllCategories(): Promise<EquipmentCategory[]> {
+    const response = await apiService.get<EquipmentCategory[]>(`${this.baseUrl}/categories/all`);
+    // Backend returns array directly, not wrapped in { data: [...] }
+    return Array.isArray(response) ? response : (response.data || []);
+  }
+
+  /**
+   * Update a category
+   */
+  async updateCategory(id: string, data: Partial<EquipmentCategory>): Promise<EquipmentCategory> {
+    const response = await apiService.patch<EquipmentCategory>(`${this.baseUrl}/categories/${id}`, data);
     return response.data;
   }
 
   async getByCategory(category: string): Promise<EquipmentType[]> {
     const response = await apiService.get<EquipmentType[]>(`${this.baseUrl}/category/${category}`);
     return response.data;
+  }
+
+  /**
+   * Get equipment types with market-specific names
+   */
+  async getAllWithMarketNames(marketCode: string, params?: EquipmentTypeQueryParams): Promise<EquipmentTypesResponse> {
+    const queryParams = new URLSearchParams();
+    
+    if (params?.search) queryParams.append('search', params.search);
+    if (params?.category) queryParams.append('category', params.category);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+
+    const url = `${this.baseUrl}/market/${marketCode}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await apiService.get<EquipmentTypesResponse>(url);
+    // Backend returns { data: [...], total, page, limit, totalPages } directly
+    // apiService.get returns the parsed JSON, so response IS the EquipmentTypesResponse
+    return response as unknown as EquipmentTypesResponse;
+  }
+
+  /**
+   * Toggle equipment type active status
+   */
+  async toggleActive(id: string): Promise<EquipmentType> {
+    const response = await apiService.put<EquipmentType>(`${this.baseUrl}/${id}/toggle-active`);
+    return response.data;
+  }
+
+  /**
+   * Update display order for multiple equipment types
+   */
+  async updateDisplayOrder(updates: { id: string; displayOrder: number }[]): Promise<void> {
+    await apiService.put(`${this.baseUrl}/reorder`, updates);
+  }
+
+  /**
+   * Get all market names for an equipment type
+   */
+  async getMarketNames(equipmentTypeId: string): Promise<EquipmentTypeMarketName[]> {
+    const response = await apiService.get<EquipmentTypeMarketName[]>(`${this.baseUrl}/${equipmentTypeId}/market-names`);
+    return response.data;
+  }
+
+  /**
+   * Get market name for a specific market
+   */
+  async getMarketName(equipmentTypeId: string, marketCode: string): Promise<EquipmentTypeMarketName | null> {
+    const response = await apiService.get<EquipmentTypeMarketName>(`${this.baseUrl}/${equipmentTypeId}/market-names/${marketCode}`);
+    return response.data;
+  }
+
+  /**
+   * Create or update market name
+   */
+  async upsertMarketName(equipmentTypeId: string, marketCode: string, data: MarketNameData): Promise<EquipmentTypeMarketName> {
+    const response = await apiService.put<EquipmentTypeMarketName>(`${this.baseUrl}/${equipmentTypeId}/market-names/${marketCode}`, data);
+    return response.data;
+  }
+
+  /**
+   * Delete market name
+   */
+  async deleteMarketName(equipmentTypeId: string, marketCode: string): Promise<void> {
+    await apiService.delete(`${this.baseUrl}/${equipmentTypeId}/market-names/${marketCode}`);
+  }
+
+  /**
+   * Bulk update market names for a specific market
+   */
+  async bulkUpdateMarketNames(
+    marketCode: string,
+    updates: { equipmentTypeId: string; nameEn?: string; nameAr?: string; nameUr?: string; displayOrder?: number }[]
+  ): Promise<void> {
+    await apiService.put(`${this.baseUrl}/market-names/${marketCode}/bulk`, updates);
   }
 }
 

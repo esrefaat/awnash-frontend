@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Search, Filter, Grid, List, Download, Eye, Edit, Trash2, 
@@ -112,12 +112,19 @@ const EquipmentPage: React.FC = () => {
   const [deleteSuccess, setDeleteSuccess] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalEquipmentCount, setTotalEquipmentCount] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [sortBy, setSortBy] = useState<'revenue' | 'rentals' | 'created'>('revenue');
   const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('DESC');
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [showFlagged, setShowFlagged] = useState(false);
   const [showUnverified, setShowUnverified] = useState(false);
   const isRTL = i18n.language === 'ar';
+
+  // Refs for infinite scrolling
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
 
   // Summary stats - will be calculated from API data
   const [summaryStats, setSummaryStats] = useState({
@@ -133,14 +140,21 @@ const EquipmentPage: React.FC = () => {
     label: type.label
   }));
 
-  const fetchEquipment = useCallback(async () => {
+  const fetchEquipment = useCallback(async (page: number = 1, append: boolean = false) => {
+    if (loadingRef.current) return;
+
     try {
-      setLoading(true);
+      loadingRef.current = true;
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
       
       // Prepare parameters for the API call
       const params: any = {
-        page: currentPage,
-        limit: 10,
+        page,
+        limit: 20,
         sortBy,
         sortOrder
       };
@@ -154,21 +168,31 @@ const EquipmentPage: React.FC = () => {
       const result = await equipmentService.getEquipment(params);
       
       // Update state with the fetched data
-      setEquipment(result.data);
-      setTotalPages(result.totalPages);
-      setTotalPages(Math.ceil(result.total / 10));
+      if (append) {
+        setEquipment(prev => [...prev, ...result.data]);
+      } else {
+        setEquipment(result.data);
+      }
       
-      // Calculate summary stats from API data
-      const totalEquip = result.total || 0;
-      const totalRev = result.data.reduce((sum, item) => sum + (parseFloat(item.dailyRate) || 0), 0);
-      const pendingVer = result.data.filter(item => item.status === 'pending').length;
+      const calculatedTotalPages = Math.ceil(result.total / 20);
+      setTotalPages(calculatedTotalPages);
+      setTotalEquipmentCount(result.total);
+      setCurrentPage(page);
+      setHasMore(page < calculatedTotalPages);
       
-      setSummaryStats({
-        totalEquipment: totalEquip,
-        totalRevenue: totalRev,
-        mostRentedCategory: 'N/A', // Will need separate API call for this
-        pendingVerification: pendingVer
-      });
+      // Calculate summary stats from API data (only on initial load)
+      if (!append) {
+        const totalEquip = result.total || 0;
+        const totalRev = result.data.reduce((sum, item) => sum + (parseFloat(item.dailyRate) || 0), 0);
+        const pendingVer = result.data.filter(item => item.status === 'pending').length;
+        
+        setSummaryStats({
+          totalEquipment: totalEquip,
+          totalRevenue: totalRev,
+          mostRentedCategory: 'N/A', // Will need separate API call for this
+          pendingVerification: pendingVer
+        });
+      }
     } catch (error: any) {
       console.error('Failed to fetch equipment:', error);
       
@@ -179,16 +203,54 @@ const EquipmentPage: React.FC = () => {
       }
       
       handleApiError(error);
-      setEquipment([]);
-      setTotalPages(1);
+      if (!append) {
+        setEquipment([]);
+        setTotalPages(1);
+      }
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+      loadingRef.current = false;
     }
-  }, [searchTerm, selectedStatus, selectedCategory, currentPage, sortBy, sortOrder]);
+  }, [searchTerm, selectedStatus, selectedCategory, sortBy, sortOrder]);
 
+  // Load more equipment for infinite scroll
+  const loadMoreEquipment = useCallback(() => {
+    if (!hasMore || loadingRef.current) return;
+    fetchEquipment(currentPage + 1, true);
+  }, [fetchEquipment, currentPage, hasMore]);
+
+  // Initial load and reload when filters change
   useEffect(() => {
-    fetchEquipment();
-  }, [fetchEquipment]);
+    setCurrentPage(1);
+    setHasMore(true);
+    fetchEquipment(1, false);
+  }, [searchTerm, selectedStatus, selectedCategory, sortBy, sortOrder]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && hasMore && !loadingRef.current) {
+          loadMoreEquipment();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0,
+      }
+    );
+
+    observer.observe(sentinelRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, loadMoreEquipment]);
 
   const handleStatusChange = async (equipmentId: string, newStatus: Equipment['status']) => {
     try {
@@ -853,57 +915,25 @@ const EquipmentPage: React.FC = () => {
         </div>
       )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-700">
-            {t('showing_page', 'Showing page')} {currentPage} {t('of', 'of')} {totalPages}
+      {/* Infinite Scroll Sentinel */}
+      <div ref={sentinelRef} className="py-4">
+        {loadingMore ? (
+          <div className="flex justify-center items-center py-2">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+            <span className={cn("text-gray-500 text-sm", isRTL ? "mr-2" : "ml-2")}>
+              {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
+            </span>
           </div>
-          <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}> 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="flex items-center gap-2"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              {t('previous', 'Previous')}
-            </Button>
-            
-            {/* Page Numbers */}
-            <div className={cn("flex space-x-1", isRTL && "space-x-reverse")}>
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const pageNum = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
-                if (pageNum > totalPages) return null;
-                
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={pageNum === currentPage ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNum)}
-                    className="w-8 h-8 p-0"
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="flex items-center gap-2"
-            >
-              {t('next', 'Next')}
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+        ) : (
+          <div className="text-sm text-gray-500 text-center">
+            {hasMore 
+              ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
+              : (isRTL 
+                  ? `تم عرض ${equipment.length} من ${totalEquipmentCount} معدة` 
+                  : `Showing ${equipment.length} of ${totalEquipmentCount} equipment`)}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Global Equipment Modal */}
       <GlobalEquipmentModal

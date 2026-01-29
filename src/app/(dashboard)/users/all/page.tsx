@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { usersService, User } from '@/services/usersService';
@@ -40,6 +40,7 @@ import {
   faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 // Types
 
@@ -84,41 +85,98 @@ const UsersManagement: React.FC = () => {
   // State
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const limit = 20; // Users per page
 
-  // Load users from API
-  const loadUsers = useCallback(async () => {
+  // Refs for infinite scrolling
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
+
+  // Load users from API with infinite scroll support
+  const loadUsers = useCallback(async (page: number = 1, append: boolean = false) => {
+    if (loadingRef.current) return;
+
     try {
-      setLoading(true);
+      loadingRef.current = true;
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+
       const response = await usersService.getAllUsers({
-        page: currentPage,
-        limit: limit,
+        page,
+        limit,
       });
-      setUsers(response.users);
+
+      if (append) {
+        setUsers(prev => [...prev, ...response.users]);
+      } else {
+        setUsers(response.users);
+      }
       setTotalPages(response.totalPages);
       setTotalUsers(response.total);
+      setCurrentPage(page);
+      setHasMore(page < response.totalPages);
       setError(null);
     } catch (err) {
       setError('Failed to load users');
       console.error('Error loading users:', err);
-      setUsers([]);
+      if (!append) {
+        setUsers([]);
+      }
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+      loadingRef.current = false;
     }
-  }, [currentPage]);
+  }, []);
 
+  // Load more users for infinite scroll
+  const loadMoreUsers = useCallback(() => {
+    if (!hasMore || loadingRef.current) return;
+    loadUsers(currentPage + 1, true);
+  }, [loadUsers, currentPage, hasMore]);
+
+  // Initial load
   useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
+    loadUsers(1, false);
+  }, []);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && hasMore && !loadingRef.current) {
+          loadMoreUsers();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0,
+      }
+    );
+
+    observer.observe(sentinelRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, loadMoreUsers]);
 
   // Handle user added
   const handleUserAdded = (newUser: User) => {
-    loadUsers(); // Refresh the list
+    loadUsers(1, false); // Refresh the list from page 1
     setShowAddUserModal(false);
   };
 
@@ -373,12 +431,12 @@ const UsersManagement: React.FC = () => {
                 {isRTL ? 'إضافة مستخدم' : 'Add User'}
               </span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-2xl transition-colors shadow-lg">
-              <FontAwesomeIcon icon={faDownload} className="h-4 w-4" />
+            <Button variant="dark">
+              <FontAwesomeIcon icon={faDownload} className="h-4 w-4 mr-2" />
               <span className="text-sm font-medium">
                 {isRTL ? 'تصدير' : 'Export'}
               </span>
-            </button>
+            </Button>
           </div>
         </div>
       
@@ -585,72 +643,24 @@ const UsersManagement: React.FC = () => {
             </table>
           </div>
           
-          {/* Pagination */}
-          <div className="bg-gray-700 px-6 py-4 border-t border-gray-600">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">
-                {isRTL 
-                  ? `عرض ${filteredUsers.length} من أصل ${totalUsers} مستخدم (صفحة ${currentPage} من ${totalPages})`
-                  : `Showing ${filteredUsers.length} of ${totalUsers} users (Page ${currentPage} of ${totalPages})`}
-              </p>
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className={cn(
-                    "px-3 py-1 rounded text-sm transition-colors",
-                    currentPage === 1 
-                      ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
-                      : "bg-gray-600 hover:bg-gray-500 text-white"
-                  )}
-                >
-                  {isRTL ? 'السابق' : 'Previous'}
-                </button>
-                
-                {/* Page numbers */}
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={cn(
-                          "px-3 py-1 rounded text-sm transition-colors",
-                          currentPage === pageNum
-                            ? "bg-blue-600 text-white"
-                            : "bg-gray-600 hover:bg-gray-500 text-white"
-                        )}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-                </div>
-                
-                <button 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className={cn(
-                    "px-3 py-1 rounded text-sm transition-colors",
-                    currentPage === totalPages 
-                      ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
-                      : "bg-blue-600 hover:bg-blue-700 text-white"
-                  )}
-                >
-                  {isRTL ? 'التالي' : 'Next'}
-                </button>
+          {/* Infinite Scroll Sentinel */}
+          <div ref={sentinelRef} className="bg-gray-700 px-6 py-4 border-t border-gray-600">
+            {loadingMore ? (
+              <div className="flex justify-center items-center py-2">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+                <span className={cn("text-gray-400 text-sm", isRTL ? "mr-2" : "ml-2")}>
+                  {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
+                </span>
               </div>
-            </div>
+            ) : (
+              <div className="text-sm text-gray-400 text-center">
+                {hasMore 
+                  ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
+                  : (isRTL 
+                      ? `تم عرض ${users.length} من ${totalUsers} مستخدم` 
+                      : `Showing ${users.length} of ${totalUsers} users`)}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -852,12 +862,12 @@ const UsersManagement: React.FC = () => {
                     <h3 className="text-lg font-semibold text-white">
                       {isRTL ? 'ملاحظات الإدارة' : 'Admin Notes'}
                     </h3>
-                    <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                      <FontAwesomeIcon icon={faPlus} className="h-4 w-4 text-white" />
-                      <span className="text-sm text-white">
+                    <Button variant="accent" size="sm">
+                      <FontAwesomeIcon icon={faPlus} className="h-4 w-4 mr-2" />
+                      <span className="text-sm">
                         {isRTL ? 'إضافة ملاحظة' : 'Add Note'}
                       </span>
-                    </button>
+                    </Button>
                   </div>
                   {userNotes.map((note) => (
                     <div key={note.id} className="bg-gray-700 rounded-lg p-4">

@@ -36,6 +36,7 @@ import {
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 // Interfaces based on actual API response (camelCase to match backend)
 interface Offer {
@@ -388,14 +389,14 @@ const OffersManagement: React.FC = () => {
             </p>
           </div>
           <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
-            <button className="flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
+            <Button variant="dark">
               <FontAwesomeIcon icon={faFileExport} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'تصدير' : 'Export'}
-            </button>
-            <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors">
+            </Button>
+            <Button variant="default">
               <FontAwesomeIcon icon={faHandshake} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'عرض جديد' : 'New Offer'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -605,18 +606,21 @@ const OffersManagement: React.FC = () => {
             
             {selectedOffers.length > 0 && (
               <div className={cn('flex space-x-2', isRTL && 'space-x-reverse')}>
-                <button
+                <Button
+                  variant="accent"
+                  size="sm"
                   onClick={handleBulkExport}
-                  className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
                 >
                   {isRTL ? 'تصدير' : 'Export'}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
                   onClick={handleBulkFlag}
-                  className="px-3 py-1 bg-orange-600 text-white rounded text-sm hover:bg-orange-700 transition-colors"
+                  className="bg-orange-600 hover:bg-orange-700"
                 >
                   {isRTL ? 'وضع علامة' : 'Flag'}
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -752,10 +756,10 @@ const OffersManagement: React.FC = () => {
         {/* Load More Button */}
         {page < totalPages && (
           <div className="flex justify-center mt-6">
-            <button 
+            <Button 
+              variant="default"
               onClick={handleLoadMore} 
               disabled={paginationLoading}
-              className="px-6 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors disabled:opacity-50"
             >
               {paginationLoading ? (
                 <>
@@ -765,7 +769,7 @@ const OffersManagement: React.FC = () => {
               ) : (
                 isRTL ? 'تحميل المزيد' : 'Load More'
               )}
-            </button>
+            </Button>
           </div>
         )}
       </div>

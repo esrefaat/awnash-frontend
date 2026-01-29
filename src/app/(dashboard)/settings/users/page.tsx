@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faUsers, faSearch, faFilter, faPlus, faEdit, faTrash, faUserShield, 
@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import { usePermissions } from '@/hooks/usePermissions';
 import { SuperAdminOnly } from '@/components/PermissionGuard';
 import { usersService, User, CreateUserData } from '@/services/usersService';
@@ -30,7 +31,6 @@ const UserManagement: React.FC = () => {
   const { user: currentUser, permissions: currentPermissions } = usePermissions();
   
   const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -38,14 +38,21 @@ const UserManagement: React.FC = () => {
   const [sortField, setSortField] = useState<keyof User>('createdAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(20);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  
+  // Refs for infinite scrolling
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
   const [userStats, setUserStats] = useState({
     total: 0,
     active: 0,
@@ -75,90 +82,94 @@ const UserManagement: React.FC = () => {
     { id: '7', name: 'hybrid', description: 'Owner and renter', permissions: [], userCount: 1, isActive: true }
   ];
 
-  // Load users data from API
-  useEffect(() => {
-    loadUsers();
-    loadUserStats();
-  }, [currentPage, itemsPerPage, searchTerm, roleFilter, statusFilter, sortField, sortDirection]);
-
-  const loadUsers = async () => {
+  // Load users data from API with infinite scrolling support
+  const loadUsers = useCallback(async (page: number = 1, append: boolean = false) => {
+    if (loadingRef.current) return;
+    
     try {
-      setLoading(true);
-      const data = await usersService.getAllUsers();
+      loadingRef.current = true;
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+      
+      const data = await usersService.getAllUsers({
+        page,
+        limit: itemsPerPage,
+        search: searchTerm,
+        role: roleFilter !== 'all' ? roleFilter : undefined,
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        sortBy: sortField,
+        sortOrder: sortDirection,
+      });
       
       // Safety check to ensure data is valid
       if (data && data.users && Array.isArray(data.users)) {
-        setUsers(data.users);
-        setFilteredUsers(data.users);
+        if (append) {
+          setUsers(prev => [...prev, ...data.users]);
+        } else {
+          setUsers(data.users);
+        }
         setTotalUsers(data.total || data.users.length);
         setTotalPages(data.totalPages || 1);
+        setCurrentPage(page);
+        setHasMore(page < (data.totalPages || 1));
       } else {
         throw new Error('Invalid data format received from API');
       }
     } catch (error) {
       console.error('Failed to load users:', error);
-      // Set mock data as fallback for testing
-      const mockUsers = [
-        {
-          id: '1',
-          fullName: 'Ahmad Al-Rashid',
-          email: 'ahmad@example.com',
-          mobileNumber: '+966501234567',
-          role: 'super_admin',
-          roles: ['super_admin'],
-          permissions: ['system:configure', 'roles:manage', 'user:create', 'user:read', 'user:update', 'user:delete'],
-          isActive: true,
-          isVerified: true,
-          city: 'Riyadh',
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z',
-          lastLogin: '2024-01-15T14:30:00Z',
-          totalBookings: 0,
-          totalEquipment: 0
-        },
-        {
-          id: '2',
-          fullName: 'Fatima Al-Zahra',
-          email: 'fatima@example.com',
-          mobileNumber: '+966501234568',
-          role: 'booking_admin',
-          roles: ['booking_admin'],
-          permissions: ['booking:create', 'booking:read', 'booking:update', 'booking:approve'],
-          isActive: true,
-          isVerified: true,
-          city: 'Jeddah',
-          createdAt: '2024-01-02T00:00:00Z',
-          updatedAt: '2024-01-02T00:00:00Z',
-          lastLogin: '2024-01-15T13:45:00Z',
-          totalBookings: 0,
-          totalEquipment: 0
-        },
-        {
-          id: '3',
-          fullName: 'Omar Hassan',
-          email: 'omar@example.com',
-          mobileNumber: '+966501234569',
-          role: 'content_admin',
-          roles: ['content_admin'],
-          permissions: ['equipment:create', 'equipment:read', 'equipment:update'],
-          isActive: false,
-          isVerified: true,
-          city: 'Dammam',
-          createdAt: '2024-01-03T00:00:00Z',
-          updatedAt: '2024-01-03T00:00:00Z',
-          lastLogin: '2024-01-15T12:20:00Z',
-          totalBookings: 0,
-          totalEquipment: 0
-        }
-      ];
-      setUsers(mockUsers);
-      setFilteredUsers(mockUsers);
-      setTotalUsers(mockUsers.length);
-      setTotalPages(1);
+      if (!append) {
+        setUsers([]);
+        setTotalUsers(0);
+        setTotalPages(1);
+      }
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+      loadingRef.current = false;
     }
-  };
+  }, [itemsPerPage, searchTerm, roleFilter, statusFilter, sortField, sortDirection]);
+
+  // Load more users for infinite scroll
+  const loadMoreUsers = useCallback(() => {
+    if (!hasMore || loadingRef.current) return;
+    loadUsers(currentPage + 1, true);
+  }, [loadUsers, currentPage, hasMore]);
+
+  // Initial load and reload when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+    setHasMore(true);
+    loadUsers(1, false);
+    loadUserStats();
+  }, [searchTerm, roleFilter, statusFilter, sortField, sortDirection]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && hasMore && !loadingRef.current) {
+          loadMoreUsers();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0,
+      }
+    );
+
+    observer.observe(sentinelRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, loadMoreUsers]);
 
   const loadUserStats = async () => {
     try {
@@ -181,14 +192,7 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  // Since we're getting filtered data from API, we don't need client-side filtering
-  // But we keep this for any additional client-side operations if needed
-  useEffect(() => {
-    // Reset to page 1 when filters change
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-    }
-  }, [searchTerm, roleFilter, statusFilter, sortField, sortDirection]);
+  // Client-side filtering is no longer needed as we filter on the server
 
   const handleSort = (field: keyof User) => {
     if (sortField === field) {
@@ -260,16 +264,15 @@ const UserManagement: React.FC = () => {
   };
 
   const getCurrentPageUsers = () => {
-    // Since we're getting paginated data from API, just return the current users
-    // Add safety check to ensure we always return an array
-    return filteredUsers || [];
+    // With infinite scroll, return all loaded users
+    return users || [];
   };
 
   const handleBulkAction = async (action: string) => {
     try {
       await usersService.bulkUpdateUsers(selectedUsers, action as 'activate' | 'deactivate' | 'delete');
       setSelectedUsers([]);
-      await loadUsers(); // Reload users after bulk action
+      await loadUsers(1, false); // Reload users after bulk action
     } catch (error) {
       console.error('Bulk action failed:', error);
       alert('Failed to perform bulk action. Please try again.');
@@ -290,7 +293,7 @@ const UserManagement: React.FC = () => {
     if (confirm('Are you sure you want to delete this user?')) {
       try {
         await usersService.deleteUser(userId);
-        await loadUsers(); // Reload users after deletion
+        await loadUsers(1, false); // Reload users after deletion
       } catch (error) {
         console.error('Delete failed:', error);
         alert('Failed to delete user. Please try again.');
@@ -307,7 +310,7 @@ const UserManagement: React.FC = () => {
       console.log('Toggle result:', result);
       
       // Reload users to get updated data
-      await loadUsers();
+      await loadUsers(1, false);
       
       // Show success message
       alert('User status updated successfully!');
@@ -339,7 +342,7 @@ const UserManagement: React.FC = () => {
 
     try {
       await usersService.updateUserPermissions(selectedUser.id, permissions);
-      await loadUsers(); // Reload users to get updated data
+      await loadUsers(1, false); // Reload users to get updated data
       setShowRoleModal(false);
       setSelectedUser(null);
       alert('User permissions updated successfully!');
@@ -361,7 +364,7 @@ const UserManagement: React.FC = () => {
         role: 'renter',
         isActive: true
       });
-      await loadUsers(); // Reload users after creation
+      await loadUsers(1, false); // Reload users after creation
       await loadUserStats(); // Reload stats
     } catch (error) {
       console.error('Create user failed:', error);
@@ -414,17 +417,17 @@ const UserManagement: React.FC = () => {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <button
+                <Button
                   onClick={() => setShowCreateModal(true)}
-                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  variant="accent"
                 >
                   <FontAwesomeIcon icon={faPlus} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {isRTL ? 'إضافة مستخدم' : 'Add User'}
-                </button>
-                <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                </Button>
+                <Button variant="success">
                   <FontAwesomeIcon icon={faDownload} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {isRTL ? 'تصدير' : 'Export'}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -526,18 +529,20 @@ const UserManagement: React.FC = () => {
                     <span className="text-sm text-gray-400">
                       {selectedUsers.length} selected
                     </span>
-                    <button
+                    <Button
                       onClick={() => handleBulkAction('activate')}
-                      className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                      variant="success"
+                      size="sm"
                     >
                       Activate
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => handleBulkAction('deactivate')}
-                      className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                      variant="destructive"
+                      size="sm"
                     >
                       Deactivate
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -673,38 +678,46 @@ const UserManagement: React.FC = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
-                          <button
+                          <Button
                             onClick={() => handleEditUser(user)}
-                            className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-400 hover:text-blue-400"
                             title="Edit User"
                           >
                             <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => handleManageRoles(user)}
-                            className="p-2 text-gray-400 hover:text-purple-400 transition-colors"
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-400 hover:text-purple-400"
                             title="Manage Roles"
                           >
                             <FontAwesomeIcon icon={faUserShield} className="h-4 w-4" />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => handleToggleUserStatus(user.id)}
-                            className={`p-2 transition-colors ${
+                            variant="ghost"
+                            size="icon"
+                            className={
                               user.isActive 
                                 ? 'text-gray-400 hover:text-red-400' 
                                 : 'text-gray-400 hover:text-green-400'
-                            }`}
+                            }
                             title={user.isActive ? 'Deactivate User' : 'Activate User'}
                           >
                             <FontAwesomeIcon icon={user.isActive ? faBan : faUserCheck} className="h-4 w-4" />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => handleDeleteUser(user.id)}
-                            className="p-2 text-gray-400 hover:text-red-400 transition-colors"
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-400 hover:text-red-400"
                             title="Delete User"
                           >
                             <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -713,33 +726,25 @@ const UserManagement: React.FC = () => {
               </table>
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="bg-gray-700 px-6 py-4 flex items-center justify-between border-t border-gray-600">
-                <div className="text-sm text-gray-300">
-                  Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} results
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 bg-gray-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-300">
-                    Page {currentPage} of {totalPages}
+            {/* Infinite Scroll Sentinel */}
+            <div ref={sentinelRef} className="bg-gray-700 px-6 py-4 border-t border-gray-600">
+              {loadingMore ? (
+                <div className="flex justify-center items-center py-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+                  <span className={cn("text-gray-400 text-sm", isRTL ? "mr-2" : "ml-2")}>
+                    {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
                   </span>
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1 bg-gray-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-500"
-                  >
-                    Next
-                  </button>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="text-sm text-gray-300 text-center">
+                  {hasMore 
+                    ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
+                    : (isRTL 
+                        ? `تم عرض ${users.length} من ${totalUsers} مستخدم` 
+                        : `Showing ${users.length} of ${totalUsers} users`)}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -871,17 +876,18 @@ const UserManagement: React.FC = () => {
 
               {/* Footer */}
               <div className="flex items-center justify-end space-x-4 p-6 border-t border-gray-700">
-                <button
+                <Button
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                  variant="ghost"
+                  className="text-gray-400 hover:text-white"
                   disabled={isCreating}
                 >
                   {isRTL ? 'إلغاء' : 'Cancel'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleCreateUser}
                   disabled={isCreating || !createUserData.fullName || !createUserData.mobileNumber}
-                  className="flex items-center px-6 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="default"
                 >
                   {isCreating ? (
                     <>
@@ -894,7 +900,7 @@ const UserManagement: React.FC = () => {
                       {isRTL ? 'إنشاء المستخدم' : 'Create User'}
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -1033,23 +1039,25 @@ const UserManagement: React.FC = () => {
 
               {/* Footer */}
               <div className="flex items-center justify-end space-x-4 p-6 border-t border-gray-700">
-                <button
+                <Button
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                  variant="ghost"
+                  className="text-gray-400 hover:text-white"
                 >
                   {isRTL ? 'إلغاء' : 'Cancel'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => {
                     setShowEditModal(false);
                     setShowRoleModal(true);
                   }}
-                  className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium mr-2"
+                  variant="secondary"
+                  className="bg-purple-600 hover:bg-purple-700 mr-2"
                 >
                   <FontAwesomeIcon icon={faUserShield} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {isRTL ? 'إدارة الصلاحيات' : 'Manage Permissions'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={async () => {
                     try {
                       if (selectedUser) {
@@ -1062,18 +1070,18 @@ const UserManagement: React.FC = () => {
                           isActive: selectedUser.isActive
                         });
                         setShowEditModal(false);
-                        await loadUsers();
+                        await loadUsers(1, false);
                       }
                     } catch (error) {
                       console.error('Failed to update user:', error);
                       alert('Failed to update user. Please try again.');
                     }
                   }}
-                  className="flex items-center px-6 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition-colors font-medium"
+                  variant="default"
                 >
                   <FontAwesomeIcon icon={faSave} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {isRTL ? 'حفظ التغييرات' : 'Save Changes'}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

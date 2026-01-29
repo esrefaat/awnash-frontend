@@ -34,6 +34,7 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
+import { Button } from '@/components/ui/Button';
 
 const ModernDashboard: React.FC = () => {
   const { i18n } = useTranslation();
@@ -169,14 +170,14 @@ const ModernDashboard: React.FC = () => {
           </p>
         </div>
         <div className={cn("flex items-center space-x-3", isRTL && "space-x-reverse")}>
-          <button className="flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 border border-gray-600 rounded-lg hover:bg-gray-700">
+          <Button variant="outline" className="text-gray-300 border-gray-600 hover:bg-gray-700">
             <FontAwesomeIcon icon={faFilter} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'تصفية' : 'Filter'}
-          </button>
-          <button className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+          </Button>
+          <Button variant="accent">
             <FontAwesomeIcon icon={faDownload} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'تصدير التقرير' : 'Export Report'}
-          </button>
+          </Button>
         </div>
       </div>
 

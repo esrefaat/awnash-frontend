@@ -269,18 +269,12 @@ const Settings: React.FC = () => {
               }
             </p>
             <div className="flex justify-center gap-4">
-              <button 
-                className="btn-primary"
-                style={{ 
-                  backgroundColor: 'var(--awnash-primary)',
-                  color: 'var(--awnash-secondary)'
-                }}
-              >
+              <Button variant="default">
                 {isRTL ? 'تواصل مع الدعم' : 'Contact Support'}
-              </button>
-              <button className="btn-secondary">
+              </Button>
+              <Button variant="secondary">
                 {isRTL ? 'دليل المستخدم' : 'User Guide'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

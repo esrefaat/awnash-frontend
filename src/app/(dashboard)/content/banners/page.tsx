@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faGlobe,
@@ -333,10 +334,10 @@ const ContentManager: React.FC = () => {
 
       {/* Add New Snippet Button */}
       <div className="flex justify-end">
-        <button className="flex items-center px-6 py-3 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+        <Button variant="default">
           <FontAwesomeIcon icon={faPlus} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
           {isRTL ? 'إضافة نص جديد' : 'Add New Snippet'}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -408,9 +409,9 @@ const ContentManager: React.FC = () => {
                     <FontAwesomeIcon icon={faEdit} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {isRTL ? 'تعديل' : 'Edit'}
                   </button>
-                  <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors">
+                  <Button variant="dark" size="icon">
                     <FontAwesomeIcon icon={faEye} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -437,18 +438,18 @@ const ContentManager: React.FC = () => {
           {isRTL ? 'عناصر التحكم في المعاينة' : 'Preview Controls'}
         </h3>
         <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
-          <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+          <Button variant="default">
             <FontAwesomeIcon icon={faGlobe} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
             {isRTL ? 'معاينة الويب' : 'Web Preview'}
-          </button>
-          <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
+          </Button>
+          <Button variant="success">
             <FontAwesomeIcon icon={faMobile} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
             {isRTL ? 'معاينة الموبايل' : 'Mobile Preview'}
-          </button>
-          <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors">
+          </Button>
+          <Button variant="dark">
             <FontAwesomeIcon icon={faHistory} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
             {isRTL ? 'سجل النسخ' : 'Version History'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

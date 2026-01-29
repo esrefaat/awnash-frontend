@@ -29,6 +29,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { authenticatedGet } from '@/lib/apiUtils';
+import { Button } from '@/components/ui/Button';
 
 interface Article {
   id: string;
@@ -149,12 +150,12 @@ const ArticlesLandingPage: React.FC = () => {
             {isRTL ? 'خطأ' : 'Error'}
           </h1>
           <p className="text-gray-600 mb-6">{error}</p>
-          <button 
+          <Button 
             onClick={() => window.location.reload()}
-            className="inline-flex items-center px-4 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors"
+            variant="default"
           >
             {isRTL ? 'إعادة المحاولة' : 'Try Again'}
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -265,17 +266,19 @@ const ArticlesLandingPage: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button 
+              <Button 
                 onClick={() => document.getElementById('articles-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-awnash-primary text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-awnash-primary-hover transition-all duration-300 transform hover:scale-105 shadow-lg"
+                variant="default"
+                size="lg"
+                className="rounded-full font-bold text-lg transform hover:scale-105 shadow-lg"
               >
                 {isRTL ? 'استكشف المقالات' : 'Explore Articles'}
                 <FontAwesomeIcon icon={faChevronRight} className={`h-5 w-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-black transition-all duration-300">
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-full font-bold text-lg border-2 border-white text-white hover:bg-white hover:text-black">
                 <FontAwesomeIcon icon={faPlay} className={`h-5 w-5 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                 {isRTL ? 'شاهد الفيديو' : 'Watch Video'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -363,16 +366,17 @@ const ArticlesLandingPage: React.FC = () => {
                           <span>{article.shareCount}</span>
                         </div>
                       </div>
-                      <button
+                      <Button
                         onClick={() => window.open(`/articles/${article.slug}`, '_blank')}
-                        className="inline-flex items-center text-awnash-primary hover:text-awnash-accent transition-colors font-semibold group"
+                        variant="link"
+                        className="inline-flex items-center text-awnash-primary hover:text-awnash-accent font-semibold group p-0"
                       >
                         {isRTL ? 'اقرأ المزيد' : 'Read More'}
                         <FontAwesomeIcon 
                           icon={faArrowRight} 
                           className={`h-4 w-4 ${isRTL ? 'mr-2 rotate-180' : 'ml-2'} group-hover:translate-x-1 transition-transform`} 
                         />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </article>
@@ -548,16 +552,17 @@ const ArticlesLandingPage: React.FC = () => {
                           <span>{article.viewCount.toLocaleString()}</span>
                         </div>
                       </div>
-                      <button
+                      <Button
                         onClick={() => window.open(`/articles/${article.slug}`, '_blank')}
-                        className="inline-flex items-center text-awnash-primary hover:text-awnash-accent transition-colors font-semibold group"
+                        variant="link"
+                        className="inline-flex items-center text-awnash-primary hover:text-awnash-accent font-semibold group p-0"
                       >
                         {isRTL ? 'اقرأ المزيد' : 'Read More'}
                         <FontAwesomeIcon 
                           icon={faArrowRight} 
                           className={`h-4 w-4 ${isRTL ? 'mr-2 rotate-180' : 'ml-2'} group-hover:translate-x-1 transition-transform`} 
                         />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </article>
@@ -592,9 +597,9 @@ const ArticlesLandingPage: React.FC = () => {
               placeholder={isRTL ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
               className="flex-1 px-6 py-4 rounded-full text-black focus:outline-none focus:ring-2 focus:ring-awnash-primary"
             />
-            <button className="bg-awnash-primary text-black px-8 py-4 rounded-full font-bold hover:bg-awnash-primary-hover transition-colors whitespace-nowrap">
+            <Button variant="default" size="lg" className="rounded-full font-bold whitespace-nowrap">
               {isRTL ? 'اشترك الآن' : 'Subscribe Now'}
-            </button>
+            </Button>
           </div>
           
           <p className="text-sm text-gray-400 mt-4">

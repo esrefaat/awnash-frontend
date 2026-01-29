@@ -29,6 +29,7 @@ import {
   faEdit
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 // Dynamically import map components to avoid SSR issues
 const MapContainer = dynamic(
@@ -435,23 +436,19 @@ export default function LiveRentalsMap() {
           </div>
           
           <div className="flex gap-4">
-            <button 
+            <Button 
+              variant={zoomToEndingSoon ? "default" : "dark"}
               onClick={handleZoomToEndingSoon}
-              className={cn(
-                "flex items-center px-4 py-2 rounded-2xl font-medium transition-all shadow-lg hover:shadow-xl",
-                zoomToEndingSoon 
-                  ? "bg-yellow-600 hover:bg-yellow-700 text-black" 
-                  : "bg-gray-700 hover:bg-gray-600 text-white"
-              )}
+              className={zoomToEndingSoon ? "bg-yellow-600 hover:bg-yellow-700 text-black" : ""}
             >
               <FontAwesomeIcon icon={faClock} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
               Ending Soon
-            </button>
+            </Button>
             
-            <button className="flex items-center px-4 py-2 bg-awnash-accent hover:bg-awnash-accent-hover text-white rounded-2xl font-medium transition-all shadow-lg hover:shadow-xl">
+            <Button variant="accent">
               <FontAwesomeIcon icon={faExpand} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
               Fullscreen
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -578,12 +575,14 @@ export default function LiveRentalsMap() {
                             </div>
                           </div>
                           
-                          <button 
+                          <Button 
+                            variant="accent"
+                            size="sm"
                             onClick={() => handleMarkerClick(rental)}
-                            className="w-full mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                            className="w-full mt-2"
                           >
                             View Details
-                          </button>
+                          </Button>
                         </div>
                       </Popup>
                     </Marker>
@@ -744,13 +743,14 @@ export default function LiveRentalsMap() {
                         className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                       />
                     </div>
-                    <button 
+                    <Button 
+                      variant="destructive"
                       onClick={handleFlagBooking}
                       disabled={!flagReason}
-                      className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white rounded font-medium transition-colors"
+                      className="w-full"
                     >
                       Flag Rental
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -758,20 +758,22 @@ export default function LiveRentalsMap() {
               {/* Action Buttons */}
               <div className="space-y-3">
                 <div className="flex gap-2">
-                  <button 
+                  <Button 
+                    variant="accent"
                     onClick={() => handleSendReminder('driver')}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors"
+                    className="flex-1 justify-center"
                   >
-                    <FontAwesomeIcon icon={faBell} className="h-4 w-4" />
+                    <FontAwesomeIcon icon={faBell} className="h-4 w-4 mr-2" />
                     Remind Driver
-                  </button>
-                  <button 
+                  </Button>
+                  <Button 
+                    variant="secondary"
                     onClick={() => handleSendReminder('owner')}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-medium transition-colors"
+                    className="flex-1 justify-center bg-purple-600 hover:bg-purple-700"
                   >
-                    <FontAwesomeIcon icon={faBell} className="h-4 w-4" />
+                    <FontAwesomeIcon icon={faBell} className="h-4 w-4 mr-2" />
                     Remind Owner
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="bg-gray-700 rounded-lg p-4">
@@ -787,22 +789,23 @@ export default function LiveRentalsMap() {
                       <option value={3}>3 days</option>
                       <option value={7}>1 week</option>
                     </select>
-                    <button 
+                    <Button 
+                      variant="default"
                       onClick={handleExtendRental}
-                      className="px-4 py-2 bg-awnash-primary hover:bg-awnash-primary-hover text-black rounded font-medium transition-colors"
                     >
                       Extend
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
-                <button 
+                <Button 
+                  variant="success"
                   onClick={handleMarkCompleted}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded font-medium transition-colors"
+                  className="w-full justify-center"
                 >
-                  <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4" />
+                  <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4 mr-2" />
                   Mark as Completed
-                </button>
+                </Button>
               </div>
             </div>
           )}

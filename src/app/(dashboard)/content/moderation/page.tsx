@@ -77,36 +77,93 @@ const MediaModeration: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const limit = 20;
 
-  // Fetch media
-  const fetchMedia = useCallback(async () => {
-    setLoading(true);
+  // Refs for infinite scrolling
+  const sentinelRef = React.useRef<HTMLDivElement>(null);
+  const loadingRef = React.useRef(false);
+
+  // Fetch media with infinite scroll support
+  const fetchMedia = useCallback(async (pageNum: number = 1, append: boolean = false) => {
+    if (loadingRef.current) return;
+
+    loadingRef.current = true;
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
     setError(null);
+
     try {
       const response = await moderationService.getMediaList(
-        page,
+        pageNum,
         limit,
         statusFilter === 'all' ? undefined : statusFilter as MediaStatus,
         contextFilter === 'all' ? undefined : contextFilter,
         groupByContext
       );
-      setMediaFiles(response.data);
+
+      if (append) {
+        setMediaFiles(prev => [...prev, ...response.data]);
+      } else {
+        setMediaFiles(response.data);
+      }
       setTotalPages(response.pagination.totalPages);
       setTotalCount(response.pagination.total);
       setContextGroups(response.contextGroups || {});
+      setPage(pageNum);
+      setHasMore(pageNum < response.pagination.totalPages);
     } catch (err) {
       console.error('Failed to fetch media:', err);
       setError(isRTL ? 'فشل في جلب الوسائط' : 'Failed to fetch media');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+      loadingRef.current = false;
     }
-  }, [page, statusFilter, contextFilter, groupByContext, isRTL]);
+  }, [statusFilter, contextFilter, groupByContext, isRTL]);
 
+  // Load more media for infinite scroll
+  const loadMoreMedia = useCallback(() => {
+    if (!hasMore || loadingRef.current) return;
+    fetchMedia(page + 1, true);
+  }, [fetchMedia, page, hasMore]);
+
+  // Initial load and reload when filters change
   useEffect(() => {
-    fetchMedia();
-  }, [fetchMedia]);
+    setPage(1);
+    setHasMore(true);
+    fetchMedia(1, false);
+  }, [statusFilter, contextFilter, groupByContext]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && hasMore && !loadingRef.current) {
+          loadMoreMedia();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0,
+      }
+    );
+
+    observer.observe(sentinelRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, loadMoreMedia]);
 
   // Clear success message after 3 seconds
   useEffect(() => {
@@ -638,7 +695,7 @@ const MediaModeration: React.FC = () => {
                 {isRTL ? 'تجميع' : 'Group'}
               </label>
               <Button 
-                onClick={fetchMedia}
+                onClick={() => fetchMedia(1, false)}
                 className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
                 disabled={loading}
               >
@@ -876,34 +933,24 @@ const MediaModeration: React.FC = () => {
               </div>
             </div>
 
-            {/* Pagination */}
-            <div className="flex items-center justify-between">
-              <p className="text-gray-400">
-                {isRTL
-                  ? `عرض ${filteredMedia.length} من ${totalCount} ملف`
-                  : `Showing ${filteredMedia.length} of ${totalCount} files`}
-              </p>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                  disabled={page === 1 || loading}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon icon={isRTL ? faChevronRight : faChevronLeft} className="h-4 w-4" />
-                </Button>
-                <span className="text-gray-400 px-4">
-                  {isRTL ? `${totalPages} / ${page}` : `${page} / ${totalPages}`}
-                </span>
-                <Button
-                  variant="outline"
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages || loading}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon icon={isRTL ? faChevronLeft : faChevronRight} className="h-4 w-4" />
-                </Button>
-              </div>
+            {/* Infinite Scroll Sentinel */}
+            <div ref={sentinelRef} className="py-4">
+              {loadingMore ? (
+                <div className="flex justify-center items-center py-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+                  <span className={`text-gray-400 text-sm ${isRTL ? 'mr-2' : 'ml-2'}`}>
+                    {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-400 text-center">
+                  {hasMore 
+                    ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
+                    : (isRTL 
+                        ? `تم عرض ${mediaFiles.length} من ${totalCount} ملف` 
+                        : `Showing ${mediaFiles.length} of ${totalCount} files`)}
+                </div>
+              )}
             </div>
           </>
         )}

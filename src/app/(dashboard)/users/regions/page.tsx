@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -421,17 +422,13 @@ const RegionManagement: React.FC = () => {
               </div>
             </div>
             <div className="flex items-end">
-              <button
+              <Button
                 onClick={() => setShowSettings(!showSettings)}
-                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
-                  showSettings 
-                    ? 'bg-yellow-600 text-white hover:bg-yellow-700' 
-                    : 'bg-gray-600 text-gray-300 hover:bg-gray-700'
-                }`}
+                variant={showSettings ? 'default' : 'dark'}
               >
                 <FontAwesomeIcon icon={faCog} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                 {isRTL ? 'إعدادات المناطق' : 'Region Settings'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -443,10 +440,10 @@ const RegionManagement: React.FC = () => {
               <h3 className="text-xl font-bold text-white">
                 {isRTL ? 'جدول المناطق والمدن' : 'Regions & Cities Table'}
               </h3>
-              <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+              <Button variant="default">
                 <FontAwesomeIcon icon={faPlus} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                 {isRTL ? 'إضافة منطقة' : 'Add Region'}
-              </button>
+              </Button>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -518,36 +515,37 @@ const RegionManagement: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button
+                      <Button
                         onClick={() => {
                           setRegions(regions.map(r => 
                             r.id === region.id ? { ...r, active: !r.active } : r
                           ));
                         }}
-                        className={`p-2 rounded-full ${
-                          region.active 
-                            ? 'bg-yellow-600 text-white' 
-                            : 'bg-gray-600 text-gray-300'
-                        } hover:bg-opacity-80 transition-colors`}
+                        variant={region.active ? 'default' : 'dark'}
+                        size="icon"
                       >
                         <FontAwesomeIcon icon={region.active ? faToggleOn : faToggleOff} />
-                      </button>
+                      </Button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className={cn("flex space-x-2", isRTL && "space-x-reverse")}>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="text-blue-400 hover:text-blue-300"
                           title={isRTL ? 'عرض التفاصيل' : 'View Details'}
                         >
                           <FontAwesomeIcon icon={faEye} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => setEditingRegion(region.id)}
+                          variant="ghost"
+                          size="icon"
                           className="text-blue-400 hover:text-blue-300"
                           title={isRTL ? 'تعديل المنطقة' : 'Edit Region'}
                         >
                           <FontAwesomeIcon icon={faEdit} />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -596,9 +594,9 @@ const RegionManagement: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-end">
-                <button className="w-full px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+                <Button variant="default" className="w-full">
                   {isRTL ? 'حفظ المنطقة' : 'Save Region'}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

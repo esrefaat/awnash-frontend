@@ -38,6 +38,7 @@ import {
   faDollarSign,
   faCreditCard,
   faReceipt,
+  faMoneyBillWave,
   faChevronLeft,
   faShieldHalved
 } from '@fortawesome/free-solid-svg-icons';
@@ -323,6 +324,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           label: 'Invoices',
           labelAr: 'الفواتير',
           path: '/finance/invoices'
+        },
+        {
+          key: 'payouts',
+          icon: faMoneyBillWave,
+          label: 'Payouts',
+          labelAr: 'الدفعات',
+          path: '/finance/payouts'
         }
       ]
     },
@@ -340,11 +348,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           path: '/settings/general'
         },
         {
-          key: 'equipment-types',
+          key: 'equipment-config',
           icon: faCogs,
-          label: 'Equipment Types',
-          labelAr: 'أنواع المعدات',
-          path: '/settings/equipment-types'
+          label: 'Equipment Config',
+          labelAr: 'إعداد المعدات',
+          path: '/settings/equipment-config'
         },
         {
           key: 'permissions',

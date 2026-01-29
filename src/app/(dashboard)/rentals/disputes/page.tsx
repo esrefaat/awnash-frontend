@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button } from '@/components/ui/Button';
 import {
   faGavel,
   faSearch,
@@ -443,13 +444,14 @@ const DisputesManagement: React.FC = () => {
                       {new Date(dispute.submissionDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button
+                      <Button
+                        variant="accent"
+                        size="sm"
                         onClick={() => setSelectedDispute(dispute)}
-                        className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors text-sm"
                       >
                         <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                         {isRTL ? 'مراجعة' : 'Review'}
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -610,25 +612,25 @@ const DisputesManagement: React.FC = () => {
 
                   {/* Action Buttons */}
                   <div className="flex flex-wrap gap-3 mt-6">
-                    <button
+                    <Button
+                      variant="success"
                       onClick={handleResolveDispute}
-                      className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors"
                     >
                       <FontAwesomeIcon icon={faCheckCircle} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'حل النزاع' : 'Resolve Dispute'}
-                    </button>
-                    <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 font-medium transition-colors">
+                    </Button>
+                    <Button variant="default" className="bg-yellow-600 hover:bg-yellow-700 text-white">
                       <FontAwesomeIcon icon={faUser} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'إسناد للمراجع' : 'Assign Reviewer'}
-                    </button>
-                    <button className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors">
+                    </Button>
+                    <Button variant="destructive">
                       <FontAwesomeIcon icon={faBan} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'حظر المستخدم' : 'Ban User'}
-                    </button>
-                    <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                    </Button>
+                    <Button variant="accent">
                       <FontAwesomeIcon icon={faFileAlt} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'إعادة تحقق من الوثائق' : 'Re-verify Documents'}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

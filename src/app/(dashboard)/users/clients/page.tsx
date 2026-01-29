@@ -36,6 +36,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
+import { Button } from '@/components/ui/Button';
 
 // Mock client data
 const clientsData = [
@@ -195,14 +196,14 @@ const ModernClients: React.FC = () => {
           </p>
         </div>
         <div className={cn("flex items-center space-x-3", isRTL && "space-x-reverse")}>
-          <button className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+          <Button variant="outline" className="flex items-center">
             <FontAwesomeIcon icon={faDownload} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
             Export
-          </button>
-          <button className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+          </Button>
+          <Button variant="accent" className="flex items-center">
             <FontAwesomeIcon icon={faPlus} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
             Add Client
-          </button>
+          </Button>
         </div>
       </div>
 

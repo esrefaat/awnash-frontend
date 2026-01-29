@@ -27,6 +27,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 // Mock owner data
 const mockOwnerData = {
@@ -439,18 +440,18 @@ const OwnerProfile: React.FC = () => {
                   <div>Expires: {doc.expiryDate}</div>
                 </div>
                 <div className={cn("flex space-x-2 mt-4", isRTL && "space-x-reverse")}>
-                                     <button className="flex-1 px-3 py-2 bg-blue-700 dark:bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-800 dark:hover:bg-blue-700">
+                                     <Button variant="accent" size="sm" className="flex-1">
                      <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-1' : 'mr-1'}`}/>
                      View
-                   </button>
+                   </Button>
                   {doc.status === 'pending' && (
                     <>
-                      <button className="px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">
+                      <Button variant="success" size="sm">
                         <FontAwesomeIcon icon={faCheckCircle} />
-                      </button>
-                      <button className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700">
+                      </Button>
+                      <Button variant="destructive" size="sm">
                         <FontAwesomeIcon icon={faTimesCircle} />
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>
@@ -554,18 +555,18 @@ const OwnerProfile: React.FC = () => {
 
               {/* Action Buttons */}
               <div className={cn("flex space-x-3", isRTL && "space-x-reverse")}>
-                                 <button className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 font-medium">
+                                 <Button variant="accent">
                   <FontAwesomeIcon icon={faEdit} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                    Edit Profile
-                 </button>
-                 <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium">
+                 </Button>
+                 <Button variant="default">
                    <FontAwesomeIcon icon={faKey} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                    Reset Password
-                 </button>
-                 <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">
+                 </Button>
+                 <Button variant="destructive">
                    <FontAwesomeIcon icon={faUserSlash} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                    Deactivate
-                 </button>
+                 </Button>
               </div>
             </div>
           </div>

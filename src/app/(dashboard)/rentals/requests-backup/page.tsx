@@ -19,6 +19,7 @@ import {
   faFilter,
   faPlus
 } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '@/components/ui/Button';
 
 interface EquipmentRequest {
   id: string;
@@ -163,17 +164,10 @@ const EquipmentRequests: React.FC = () => {
             {isRTL ? 'إدارة ومتابعة طلبات استئجار المعدات' : 'Manage and track equipment rental requests'}
           </p>
         </div>
-        <button 
-          className="btn-primary"
-          style={{ 
-            backgroundColor: 'var(--awnash-primary)',
-            color: 'var(--awnash-secondary)',
-            border: `2px solid var(--awnash-primary)`
-          }}
-        >
-          <FontAwesomeIcon icon={faPlus} />
+        <Button variant="default">
+          <FontAwesomeIcon icon={faPlus} className="mr-2" />
           <span>{isRTL ? 'إضافة طلب' : 'Add Request'}</span>
-        </button>
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -300,10 +294,10 @@ const EquipmentRequests: React.FC = () => {
                 <option value="Bulldozer">{isRTL ? 'جرافات' : 'Bulldozers'}</option>
               </select>
             </div>
-            <button className="btn-accent">
-              <FontAwesomeIcon icon={faFilter} />
+            <Button variant="accent">
+              <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <span>{isRTL ? 'تصفية متقدمة' : 'Advanced Filter'}</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

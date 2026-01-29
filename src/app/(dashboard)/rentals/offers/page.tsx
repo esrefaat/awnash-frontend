@@ -35,6 +35,7 @@ import {
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 import { requestsService, RentalRequest } from '@/services/requestsService';
 import { formatSimpleCurrency } from '@/lib/currencyUtils';
 import { offersService, Offer, PaginatedOffersResponse } from '@/services/offersService';
@@ -306,14 +307,14 @@ const OffersManagement: React.FC = () => {
             </div>
           </div>
           <div className={cn('flex space-x-3', isRTL && 'space-x-reverse')}>
-            <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+            <Button variant="default">
               <FontAwesomeIcon icon={faPlus} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'عرض جديد' : 'New Offer'}
-            </button>
-            <button className="flex items-center px-4 py-2 bg-awnash-accent text-white rounded-2xl hover:bg-awnash-accent-hover font-medium transition-colors shadow-lg">
+            </Button>
+            <Button variant="accent">
               <FontAwesomeIcon icon={faFileAlt} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'تصدير الكل' : 'Export All'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -773,27 +774,31 @@ const OffersManagement: React.FC = () => {
                     <div className="flex items-center space-x-2 ml-4">
                       {offer.status === 'pending' && (
                         <>
-                          <button
+                          <Button
+                            variant="success"
+                            size="sm"
                             onClick={() => handleAcceptOffer(offer.id)}
-                            className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors"
                           >
                             {isRTL ? 'قبول' : 'Accept'}
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
                             onClick={() => handleRejectOffer(offer.id)}
-                            className="px-3 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition-colors"
                           >
                             {isRTL ? 'رفض' : 'Reject'}
-                          </button>
+                          </Button>
                         </>
                       )}
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleViewOfferDetails(offer)}
-                        className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
                         title={isRTL ? 'عرض التفاصيل' : 'View Details'}
+                        className="text-blue-400 hover:text-blue-300"
                       >
                         <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
-                      </button>
+                      </Button>
                     </div>
                                      </div>
                  </div>

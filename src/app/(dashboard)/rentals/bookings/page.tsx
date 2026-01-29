@@ -32,6 +32,7 @@ import {
   faToggleOff
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 // Interfaces
 interface Driver {
@@ -367,14 +368,14 @@ const BookingsManagement: React.FC = () => {
             </p>
           </div>
           <div className={cn('flex space-x-3', isRTL && 'space-x-reverse')}>
-            <button className="flex items-center px-4 py-2 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg">
+            <Button variant="default">
               <FontAwesomeIcon icon={faCalendarCheck} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'حجز جديد' : 'New Booking'}
-            </button>
-            <button className="flex items-center px-4 py-2 bg-awnash-accent text-white rounded-2xl hover:bg-awnash-accent-hover font-medium transition-colors shadow-lg">
+            </Button>
+            <Button variant="accent">
               <FontAwesomeIcon icon={faFileExport} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'تصدير الكل' : 'Export All'}
-            </button>
+            </Button>
           </div>
         </div>
 

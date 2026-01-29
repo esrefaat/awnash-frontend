@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button } from '@/components/ui/Button';
 import {
   faCalendarAlt,
   faChevronLeft,
@@ -354,25 +355,28 @@ const OperationalCalendar: React.FC = () => {
             {formatDate(currentDate)}
           </h2>
           <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
-            <button
+            <Button
+              variant="accent"
+              size="sm"
               onClick={() => navigateDate('today')}
-              className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
             >
-                             <FontAwesomeIcon icon={faCalendarDay} className={isRTL ? "ml-1" : "mr-1"} />
+              <FontAwesomeIcon icon={faCalendarDay} className={isRTL ? "ml-1" : "mr-1"} />
               {isRTL ? 'اليوم' : 'Today'}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="dark"
+              size="icon"
               onClick={() => navigateDate('prev')}
-              className="p-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
             >
               <FontAwesomeIcon icon={isRTL ? faChevronRight : faChevronLeft} />
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="dark"
+              size="icon"
               onClick={() => navigateDate('next')}
-              className="p-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
             >
               <FontAwesomeIcon icon={isRTL ? faChevronLeft : faChevronRight} />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -650,19 +654,19 @@ const OperationalCalendar: React.FC = () => {
 
             {/* Action buttons */}
             <div className={cn("flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-700", isRTL && "space-x-reverse")}>
-              <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+              <Button variant="success">
                 <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />  
                 {isRTL ? 'عرض التفاصيل' : 'View Details'}
-              </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              </Button>
+              <Button variant="accent">
                 <FontAwesomeIcon icon={faEdit} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />  
                 {isRTL ? 'تعديل' : 'Edit'}
-              </button>
+              </Button>
               {selectedEvent.type === 'document' && (
-                <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                <Button variant="default" className="bg-yellow-600 hover:bg-yellow-700 text-white">
                   <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />  
                   {isRTL ? 'تم المراجعة' : 'Mark Reviewed'}
-                </button>
+                </Button>
               )}
             </div>
           </div>

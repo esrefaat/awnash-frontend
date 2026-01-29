@@ -17,6 +17,7 @@ import {
   faEye,
   faDollarSign
 } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '@/components/ui/Button';
 
 interface Payment {
   id: string;
@@ -133,17 +134,10 @@ const Payments: React.FC = () => {
             {isRTL ? 'تتبع وإدارة جميع المدفوعات والعمولات' : 'Track and manage all payments and commissions'}
           </p>
         </div>
-        <button 
-          className="btn-primary"
-          style={{ 
-            backgroundColor: 'var(--awnash-primary)',
-            color: 'var(--awnash-secondary)',
-            border: `2px solid var(--awnash-primary)`
-          }}
-        >
-          <FontAwesomeIcon icon={faDownload} />
+        <Button variant="default">
+          <FontAwesomeIcon icon={faDownload} className="mr-2" />
           <span>{isRTL ? 'تصدير التقرير' : 'Export Report'}</span>
-        </button>
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -259,10 +253,10 @@ const Payments: React.FC = () => {
                 <option value="failed">{isRTL ? 'فشل' : 'Failed'}</option>
               </select>
             </div>
-            <button className="btn-accent">
-              <FontAwesomeIcon icon={faFilter} />
+            <Button variant="accent">
+              <FontAwesomeIcon icon={faFilter} className="mr-2" />
               <span>{isRTL ? 'تصفية متقدمة' : 'Advanced Filter'}</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

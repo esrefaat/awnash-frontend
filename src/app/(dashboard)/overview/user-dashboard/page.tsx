@@ -33,6 +33,7 @@ import {
   faFlag
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 // Types
 interface UserProfile {
@@ -481,45 +482,45 @@ const UserDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {currentRole === 'renter' ? (
               <>
-                <button className="flex items-center gap-3 p-4 bg-awnash-accent hover:bg-awnash-accent-hover rounded-2xl transition-all shadow-lg hover:shadow-xl">
-                  <FontAwesomeIcon icon={faSearch} className="h-5 w-5 text-white" />
-                  <span className="text-white font-medium">
+                <Button variant="accent" className="flex items-center gap-3 p-4 h-auto justify-start">
+                  <FontAwesomeIcon icon={faSearch} className="h-5 w-5" />
+                  <span className="font-medium">
                     {isRTL ? 'البحث عن معدات' : 'Request Equipment'}
                   </span>
-                </button>
-                <button className="flex items-center gap-3 p-4 bg-gray-700 hover:bg-gray-600 rounded-2xl transition-all shadow-lg hover:shadow-xl">
-                  <FontAwesomeIcon icon={faFileAlt} className="h-5 w-5 text-white" />
-                  <span className="text-white font-medium">
+                </Button>
+                <Button variant="dark" className="flex items-center gap-3 p-4 h-auto justify-start">
+                  <FontAwesomeIcon icon={faFileAlt} className="h-5 w-5" />
+                  <span className="font-medium">
                     {isRTL ? 'حجوزاتي' : 'My Bookings'}
                   </span>
-                </button>
-                <button className="flex items-center gap-3 p-4 bg-gray-700 hover:bg-gray-600 rounded-2xl transition-all shadow-lg hover:shadow-xl">
-                  <FontAwesomeIcon icon={faUpload} className="h-5 w-5 text-white" />
-                  <span className="text-white font-medium">
+                </Button>
+                <Button variant="dark" className="flex items-center gap-3 p-4 h-auto justify-start">
+                  <FontAwesomeIcon icon={faUpload} className="h-5 w-5" />
+                  <span className="font-medium">
                     {isRTL ? 'رفع الوثائق' : 'Upload Documents'}
                   </span>
-                </button>
+                </Button>
               </>
             ) : (
               <>
-                <button className="flex items-center gap-3 p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                  <FontAwesomeIcon icon={faPlus} className="h-5 w-5 text-white" />
-                  <span className="text-white font-medium">
+                <Button variant="accent" className="flex items-center gap-3 p-4 h-auto justify-start">
+                  <FontAwesomeIcon icon={faPlus} className="h-5 w-5" />
+                  <span className="font-medium">
                     {isRTL ? 'إضافة معدة' : 'Add Equipment'}
                   </span>
-                </button>
-                <button className="flex items-center gap-3 p-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                  <FontAwesomeIcon icon={faChartLine} className="h-5 w-5 text-white" />
-                  <span className="text-white font-medium">
+                </Button>
+                <Button variant="dark" className="flex items-center gap-3 p-4 h-auto justify-start">
+                  <FontAwesomeIcon icon={faChartLine} className="h-5 w-5" />
+                  <span className="font-medium">
                     {isRTL ? 'تقارير الإيرادات' : 'Revenue Reports'}
                   </span>
-                </button>
-                <button className="flex items-center gap-3 p-4 bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors">
-                  <FontAwesomeIcon icon={faUpload} className="h-5 w-5 text-black" />
-                  <span className="text-black font-medium">
+                </Button>
+                <Button variant="default" className="flex items-center gap-3 p-4 h-auto justify-start">
+                  <FontAwesomeIcon icon={faUpload} className="h-5 w-5" />
+                  <span className="font-medium">
                     {isRTL ? 'رفع الوثائق' : 'Upload Documents'}
                   </span>
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -573,9 +574,9 @@ const UserDashboard: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="p-2 text-blue-400 hover:text-blue-300 transition-colors">
+                        <Button variant="ghost" size="icon" className="text-blue-400 hover:text-blue-300">
                           <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -635,12 +636,12 @@ const UserDashboard: React.FC = () => {
                         <p className="text-sm font-medium text-white mt-1">{formatCurrency(offer.amount)}</p>
                         {offer.status === 'pending' && (
                           <div className="flex gap-1 mt-1">
-                            <button className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+                            <Button variant="success" size="sm" className="px-2 py-1 h-auto text-xs">
                               ✓
-                            </button>
-                            <button className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                            </Button>
+                            <Button variant="destructive" size="sm" className="px-2 py-1 h-auto text-xs">
                               ✗
-                            </button>
+                            </Button>
                           </div>
                         )}
                       </div>
