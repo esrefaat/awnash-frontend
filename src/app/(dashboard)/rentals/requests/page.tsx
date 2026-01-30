@@ -178,16 +178,15 @@ const EquipmentRequests: React.FC = () => {
         status: formData.status,
         priority: formData.priority,
         images: formData.images,
-        start_date: formData.start_date,
-        end_date: formData.end_date,
-        size: formData.size,
-        max_budget: formData.max_budget,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        maxBudget: formData.maxBudget,
         city: formData.city,
         location: formData.location,
         latitude: formData.latitude,
         longitude: formData.longitude,
-        location_address: formData.location_address,
-        note: formData.note
+        locationAddress: formData.locationAddress,
+        notes: formData.notes
       });
 
       console.log('Request submitted successfully:', newRequest);
@@ -512,7 +511,7 @@ const EquipmentRequests: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-white">{request.count} {isRTL ? 'قطعة' : 'piece(s)'}</div>
                       <div className="text-xs text-gray-400">
-                        {formatDate(request.start_date)} - {formatDate(request.end_date)}
+                        {formatDate(request.startDate)} - {formatDate(request.endDate)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

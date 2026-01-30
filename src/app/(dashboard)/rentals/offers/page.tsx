@@ -180,8 +180,8 @@ const OffersManagement: React.FC = () => {
     accepted: offers.filter(offer => offer.status === 'accepted').length,
     pending: offers.filter(offer => offer.status === 'pending').length,
     rejected: offers.filter(offer => offer.status === 'rejected').length,
-    average: offers.length > 0 ? offers.reduce((sum, offer) => sum + offer.total_amount, 0) / offers.length : 0,
-    urgent: offers.filter(offer => new Date(offer.expires_at) < new Date(Date.now() + 24 * 60 * 60 * 1000)).length // Expires within 24 hours
+    average: offers.length > 0 ? offers.reduce((sum, offer) => sum + offer.price, 0) / offers.length : 0,
+    urgent: offers.filter(offer => new Date(offer.expiresAt) < new Date(Date.now() + 24 * 60 * 60 * 1000)).length // Expires within 24 hours
   };
 
   // Offer action handlers
@@ -380,19 +380,19 @@ const OffersManagement: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-indigo-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'تاريخ البداية:' : 'Start Date:'}</span>
-                    <span className="text-white font-medium">{formatDate(requestData.start_date)}</span>
+                    <span className="text-white font-medium">{formatDate(requestData.startDate)}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-indigo-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'تاريخ النهاية:' : 'End Date:'}</span>
-                    <span className="text-white font-medium">{formatDate(requestData.end_date)}</span>
+                    <span className="text-white font-medium">{formatDate(requestData.endDate)}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faDollarSign} className="h-4 w-4 text-green-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'الميزانية القصوى:' : 'Max Budget:'}</span>
-                    <span className="text-white font-medium">{formatSimpleCurrency(requestData.max_budget)}</span>
+                    <span className="text-white font-medium">{formatSimpleCurrency(requestData.maxBudget)}</span>
                   </div>
                 </div>
               </div>
@@ -418,7 +418,7 @@ const OffersManagement: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faNoteSticky} className="h-4 w-4 text-cyan-400" />
                     <span className="text-gray-300 text-sm">{isRTL ? 'الملاحظات:' : 'Notes:'}</span>
-                    <span className="text-white font-medium">{requestData.note ? 'Yes' : 'No'}</span>
+                    <span className="text-white font-medium">{requestData.notes ? 'Yes' : 'No'}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
@@ -430,13 +430,13 @@ const OffersManagement: React.FC = () => {
               </div>
 
               {/* Notes */}
-              {requestData.note && (
+              {requestData.notes && (
                 <div className="space-y-3">
                   <h3 className="text-lg font-medium text-white mb-3">
                     {isRTL ? 'الملاحظات' : 'Notes'}
                   </h3>
                   <p className="text-gray-300 bg-gray-700 rounded-lg p-4">
-                    {requestData.note}
+                    {requestData.notes}
                   </p>
                 </div>
               )}
@@ -751,23 +751,23 @@ const OffersManagement: React.FC = () => {
                         <div>
                           <p className="text-gray-400 text-sm">{isRTL ? 'المبلغ الإجمالي' : 'Total Amount'}</p>
                           <p className="text-white font-medium">
-                            {formatSimpleCurrency(offer.total_amount, offer.total_amount_currency)}
+                            {formatSimpleCurrency(offer.price, offer.currency)}
                           </p>
                         </div>
                       </div>
                       
-                      {offer.note && (
+                      {offer.notes && (
                         <div className="mb-4">
                           <p className="text-gray-400 text-sm mb-1">{isRTL ? 'الملاحظات' : 'Notes'}</p>
                           <p className="text-gray-300 text-sm bg-gray-700 rounded-lg p-3">
-                            {offer.note}
+                            {offer.notes}
                           </p>
                         </div>
                       )}
                       
                       <div className="flex items-center space-x-4 text-sm text-gray-400">
                         <span>{isRTL ? 'تاريخ التقديم:' : 'Submitted:'} {formatDate(offer.createdAt)}</span>
-                        <span>{isRTL ? 'ينتهي في:' : 'Expires:'} {formatDate(offer.expires_at)}</span>
+                        <span>{isRTL ? 'ينتهي في:' : 'Expires:'} {formatDate(offer.expiresAt)}</span>
                       </div>
                     </div>
                     

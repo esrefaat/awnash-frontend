@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/currencyUtils';
 import { getEquipmentTypeLabel, getEquipmentSizeLabel, getEquipmentStatusLabel, getEquipmentTypesForDropdown } from '@/config/equipment';
 import { getCityLabel } from '@/config/cities';
-import { GlobalEquipmentModal } from '@/components/modals/GlobalEquipmentModal';
+import { EquipmentFormModal } from '@/components/modals/EquipmentFormModal';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { InlineErrorPage } from '@/components/InlineErrorPage';
 
@@ -936,7 +936,7 @@ const EquipmentPage: React.FC = () => {
       </div>
 
       {/* Global Equipment Modal */}
-      <GlobalEquipmentModal
+      <EquipmentFormModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         isRTL={isRTL}

@@ -598,7 +598,7 @@ const UsersManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-xs text-gray-400">{user.last_login ? formatDate(user.last_login) : '-'}</p>
+                        <p className="text-xs text-gray-400">{user.lastLogin ? formatDate(user.lastLogin) : '-'}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -760,7 +760,7 @@ const UsersManagement: React.FC = () => {
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'آخر تسجيل دخول' : 'Last Login'}</p>
-                      <p className="text-white font-medium">{selectedUser.last_login ? formatDate(selectedUser.last_login) : '-'}</p>
+                      <p className="text-white font-medium">{selectedUser.lastLogin ? formatDate(selectedUser.lastLogin) : '-'}</p>
                     </div>
                     <div className="bg-gray-700 rounded-lg p-4">
                       <p className="text-sm text-gray-400 mb-1">{isRTL ? 'المدينة' : 'City'}</p>
@@ -775,11 +775,11 @@ const UsersManagement: React.FC = () => {
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="bg-gray-700 rounded-lg p-4 text-center">
-                        <p className="text-2xl font-bold text-blue-400">{selectedUser.total_bookings || 0}</p>
+                        <p className="text-2xl font-bold text-blue-400">{selectedUser.totalBookings || 0}</p>
                         <p className="text-sm text-gray-400">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
                       </div>
                       <div className="bg-gray-700 rounded-lg p-4 text-center">
-                        <p className="text-2xl font-bold text-green-400">{selectedUser.total_equipment || 0}</p>
+                        <p className="text-2xl font-bold text-green-400">{selectedUser.totalEquipment || 0}</p>
                         <p className="text-sm text-gray-400">{isRTL ? 'المعدات' : 'Equipment'}</p>
                       </div>
                     </div>

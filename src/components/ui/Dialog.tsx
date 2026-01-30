@@ -1,185 +1,155 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
-import { useTranslation } from 'react-i18next';
+"use client"
 
-interface DialogProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  children: React.ReactNode;
+import * as React from "react"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { X } from "lucide-react"
+import { useTranslation } from "react-i18next"
+
+import { cn } from "@/lib/utils"
+
+const Dialog = DialogPrimitive.Root
+
+const DialogTrigger = DialogPrimitive.Trigger
+
+const DialogPortal = DialogPrimitive.Portal
+
+const DialogClose = DialogPrimitive.Close
+
+const DialogOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Overlay
+    ref={ref}
+    className={cn(
+      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+  />
+))
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
+
+interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  highZIndex?: boolean
 }
 
-interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-  highZIndex?: boolean;
-}
+const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  DialogContentProps
+>(({ className, children, highZIndex = false, ...props }, ref) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
 
-interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
-
-interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  children: React.ReactNode;
-}
-
-interface DialogTriggerProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
-  children: React.ReactNode;
-}
-
-const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) => {
-  const [isOpen, setIsOpen] = React.useState(open || false);
-
-  React.useEffect(() => {
-    if (open !== undefined) {
-      setIsOpen(open);
-    }
-  }, [open]);
-
-  const handleOpenChange = (newOpen: boolean) => {
-    setIsOpen(newOpen);
-    onOpenChange?.(newOpen);
-  };
+  const zIndexClass = highZIndex ? "z-[9999]" : "z-50"
 
   return (
-    <div>
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, { 
-            open: isOpen, 
-            onOpenChange: handleOpenChange 
-          } as any);
-        }
-        return child;
-      })}
-    </div>
-  );
-};
-
-const DialogTrigger: React.FC<DialogTriggerProps> = ({ 
-  asChild, 
-  children, 
-  onClick,
-  ...props 
-}) => {
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClick?.(e);
-  };
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
-      onClick: handleClick,
-    } as any);
-  }
-
-  return (
-    <div onClick={handleClick} {...props}>
-      {children}
-    </div>
-  );
-};
-
-const DialogContent: React.FC<DialogContentProps & { open?: boolean; onOpenChange?: (open: boolean) => void }> = ({ 
-  className, 
-  children, 
-  open, 
-  onOpenChange,
-  highZIndex = false,
-  ...props 
-}) => {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
-  
-  if (!open) return null;
-
-  const zIndexClasses = highZIndex 
-    ? { container: 'z-[9999]', backdrop: 'z-[9998]', content: 'z-[9999]' }
-    : { container: 'z-50', backdrop: 'z-40', content: 'z-50' };
-
-  return (
-    <div className={`fixed inset-0 ${zIndexClasses.container} flex items-center justify-center`}>
-      {/* Backdrop */}
-      <div 
-        className={`fixed inset-0 bg-black/80 ${zIndexClasses.backdrop}`}
-        onClick={() => onOpenChange?.(false)}
-      />
-      
-      {/* Content */}
-      <div
+    <DialogPortal>
+      <DialogOverlay className={highZIndex ? "z-[9998]" : undefined} />
+      <DialogPrimitive.Content
+        ref={ref}
+        dir={isRTL ? "rtl" : "ltr"}
+        aria-describedby={undefined}
         className={cn(
-          `relative ${zIndexClasses.content} grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg`,
+          zIndexClass,
+          "fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] grid w-full max-w-lg gap-4 border bg-card text-card-foreground p-6 shadow-lg duration-200 max-h-[90vh] overflow-y-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
           className
         )}
         {...props}
       >
         {children}
-        
-        {/* Close button - RTL aware */}
-        <button
-          onClick={() => onOpenChange?.(false)}
+        <DialogPrimitive.Close
           className={cn(
-            "absolute top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+            "absolute top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
             isRTL ? "left-4" : "right-4"
           )}
         >
+          <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
-          ✕
-        </button>
-      </div>
-    </div>
-  );
-};
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  )
+})
+DialogContent.displayName = DialogPrimitive.Content.displayName
 
-const DialogHeader: React.FC<DialogHeaderProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
-  
+const DialogHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
+
   return (
     <div
       className={cn(
-        'flex flex-col space-y-1.5 text-center',
-        isRTL ? 'sm:text-right' : 'sm:text-left',
+        "flex flex-col space-y-1.5 text-center",
+        isRTL ? "sm:text-right" : "sm:text-left",
         className
       )}
       {...props}
-    >
-      {children}
-    </div>
-  );
-};
+    />
+  )
+}
+DialogHeader.displayName = "DialogHeader"
 
-const DialogTitle: React.FC<DialogTitleProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
+const DialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
+
   return (
-    <h3
+    <div
       className={cn(
-        'text-lg font-semibold leading-none tracking-tight',
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+        isRTL && "sm:space-x-reverse",
         className
       )}
       {...props}
-    >
-      {children}
-    </h3>
-  );
-};
+    />
+  )
+}
+DialogFooter.displayName = "DialogFooter"
 
-export { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
-};
-export type { 
-  DialogProps, 
-  DialogContentProps, 
-  DialogHeaderProps, 
-  DialogTitleProps, 
-  DialogTriggerProps 
-}; 
+const DialogTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn(
+      "text-lg font-semibold leading-none tracking-tight text-card-foreground",
+      className
+    )}
+    {...props}
+  />
+))
+DialogTitle.displayName = DialogPrimitive.Title.displayName
+
+const DialogDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+DialogDescription.displayName = DialogPrimitive.Description.displayName
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+}

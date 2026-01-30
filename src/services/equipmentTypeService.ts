@@ -37,6 +37,16 @@ export interface EquipmentTypeMarketName {
   updatedAt: string;
 }
 
+export interface SupportEquipmentRequirement {
+  id?: string;
+  equipmentTypeId?: string;
+  supportEquipmentTypeId: string;
+  supportEquipmentType?: EquipmentType;
+  quantity: number;
+  isRequired: boolean;
+  displayOrder?: number;
+}
+
 export interface EquipmentType {
   id: string;
   nameEn: string;
@@ -45,11 +55,12 @@ export interface EquipmentType {
   descriptionEn?: string;
   descriptionAr?: string;
   descriptionUr?: string;
-  category: string;
-  categoryId?: string;
+  categoryId: string;
   equipmentCategory?: EquipmentCategory;
   locationMode: 'single' | 'from_to' | 'none';
   requiresTransport?: boolean;
+  requiresSupportEquipment?: boolean;
+  supportRequirements?: SupportEquipmentRequirement[];
   sizeTypeKey?: string;
   sizeUnit?: string;
   imageUrl?: string;
@@ -69,10 +80,16 @@ export interface CreateEquipmentTypeData {
   descriptionEn?: string;
   descriptionAr?: string;
   descriptionUr?: string;
-  category: string;
-  categoryId?: string;
+  categoryId: string;
   locationMode: 'single' | 'from_to' | 'none';
   requiresTransport?: boolean;
+  requiresSupportEquipment?: boolean;
+  supportRequirements?: {
+    supportEquipmentTypeId: string;
+    quantity: number;
+    isRequired?: boolean;
+    displayOrder?: number;
+  }[];
   sizeTypeKey?: string;
   sizeUnit?: string;
   imageUrl?: string;
@@ -105,7 +122,7 @@ export interface EquipmentTypesResponse {
 
 export interface EquipmentTypeQueryParams {
   search?: string;
-  category?: string;
+  categoryId?: string;
   page?: number;
   limit?: number;
 }
@@ -117,7 +134,7 @@ class EquipmentTypeService {
     const queryParams = new URLSearchParams();
     
     if (params?.search) queryParams.append('search', params.search);
-    if (params?.category) queryParams.append('category', params.category);
+    if (params?.categoryId) queryParams.append('categoryId', params.categoryId);
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
 
@@ -171,8 +188,15 @@ class EquipmentTypeService {
     return response.data;
   }
 
-  async getByCategory(category: string): Promise<EquipmentType[]> {
-    const response = await apiService.get<EquipmentType[]>(`${this.baseUrl}/category/${category}`);
+  /**
+   * Bulk update display order for categories
+   */
+  async updateCategoryDisplayOrder(updates: { id: string; displayOrder: number }[]): Promise<void> {
+    await apiService.put(`${this.baseUrl}/categories/reorder`, updates);
+  }
+
+  async getByCategorySlug(slug: string): Promise<EquipmentType[]> {
+    const response = await apiService.get<EquipmentType[]>(`${this.baseUrl}/category/${slug}`);
     return response.data;
   }
 
@@ -183,7 +207,7 @@ class EquipmentTypeService {
     const queryParams = new URLSearchParams();
     
     if (params?.search) queryParams.append('search', params.search);
-    if (params?.category) queryParams.append('category', params.category);
+    if (params?.categoryId) queryParams.append('categoryId', params.categoryId);
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
 
@@ -198,7 +222,7 @@ class EquipmentTypeService {
    * Toggle equipment type active status
    */
   async toggleActive(id: string): Promise<EquipmentType> {
-    const response = await apiService.put<EquipmentType>(`${this.baseUrl}/${id}/toggle-active`);
+    const response = await apiService.put<EquipmentType>(`${this.baseUrl}/${id}/toggle-active`, {});
     return response.data;
   }
 
@@ -248,6 +272,28 @@ class EquipmentTypeService {
     updates: { equipmentTypeId: string; nameEn?: string; nameAr?: string; nameUr?: string; displayOrder?: number }[]
   ): Promise<void> {
     await apiService.put(`${this.baseUrl}/market-names/${marketCode}/bulk`, updates);
+  }
+
+  /**
+   * Get equipment types that can be used as support equipment.
+   * Excludes the given equipment type and types that would create circular dependencies.
+   */
+  async getAvailableSupportEquipmentTypes(equipmentTypeId?: string): Promise<EquipmentType[]> {
+    const queryParams = new URLSearchParams();
+    if (equipmentTypeId) {
+      queryParams.append('equipmentTypeId', equipmentTypeId);
+    }
+    const url = `${this.baseUrl}/support-equipment/available${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await apiService.get<EquipmentType[]>(url);
+    return Array.isArray(response) ? response : (response.data || []);
+  }
+
+  /**
+   * Get support requirements for a specific equipment type
+   */
+  async getSupportRequirements(equipmentTypeId: string): Promise<SupportEquipmentRequirement[]> {
+    const response = await apiService.get<SupportEquipmentRequirement[]>(`${this.baseUrl}/${equipmentTypeId}/support-requirements`);
+    return Array.isArray(response) ? response : (response.data || []);
   }
 }
 

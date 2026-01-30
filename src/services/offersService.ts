@@ -4,6 +4,8 @@
  * Service for handling offers-related API calls
  */
 
+import { transformKeysToCamelCase, transformKeysToSnakeCase } from '@/lib/caseTransform';
+
 export interface Offer {
   id: string;
   requestId: string;
@@ -86,6 +88,42 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/a
 class OffersService {
   private baseUrl = API_BASE_URL;
 
+  private async makeRequest<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    
+    // Transform request body to snake_case if present
+    let body = options.body;
+    if (body && typeof body === 'string') {
+      try {
+        const parsed = JSON.parse(body);
+        body = JSON.stringify(transformKeysToSnakeCase(parsed));
+      } catch {
+        // Not JSON, use as-is
+      }
+    }
+    
+    const response = await fetch(url, {
+      ...options,
+      body,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return transformKeysToCamelCase(data) as T;
+  }
+
   /**
    * Get all offers with optional filters
    */
@@ -104,20 +142,7 @@ class OffersService {
         params.append('status', status);
       }
       
-      const response = await fetch(`${this.baseUrl}/offers?${params}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        console.error('Failed to fetch offers:', response.status, response.statusText);
-        return this.emptyResponse();
-      }
-
-      const data = await response.json();
+      const data = await this.makeRequest<any>(`/offers?${params}`, { method: 'GET' });
       return this.normalizeResponse(data);
     } catch (error) {
       console.error('Error fetching offers:', error);
@@ -143,20 +168,7 @@ class OffersService {
         params.append('status', status);
       }
       
-      const response = await fetch(`${this.baseUrl}/offers/me?${params}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        console.error('Failed to fetch my offers:', response.status, response.statusText);
-        return this.emptyResponse();
-      }
-
-      const data = await response.json();
+      const data = await this.makeRequest<any>(`/offers/me?${params}`, { method: 'GET' });
       return this.normalizeResponse(data);
     } catch (error) {
       console.error('Error fetching my offers:', error);
@@ -173,29 +185,12 @@ class OffersService {
     limit: number = 10
   ): Promise<PaginatedOffersResponse> {
     try {
-      console.log('Fetching offers for request:', requestId, 'page:', page, 'limit:', limit);
-      
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString()
       });
       
-      const response = await fetch(`${this.baseUrl}/offers/request/${requestId}?${params}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        console.error('Failed to fetch offers:', response.status, response.statusText);
-        return this.emptyResponse();
-      }
-
-      const data = await response.json();
+      const data = await this.makeRequest<any>(`/offers/request/${requestId}?${params}`, { method: 'GET' });
       return this.normalizeResponse(data);
     } catch (error) {
       console.error('Error fetching offers:', error);
@@ -221,19 +216,7 @@ class OffersService {
         params.append('equipment_type', equipmentType);
       }
       
-      const response = await fetch(`${this.baseUrl}/offers/available-requests?${params}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch available requests');
-      }
-
-      return await response.json();
+      return await this.makeRequest<any>(`/offers/available-requests?${params}`, { method: 'GET' });
     } catch (error) {
       console.error('Error fetching available requests:', error);
       throw error;
@@ -245,19 +228,7 @@ class OffersService {
    */
   async getOfferById(offerId: string): Promise<Offer | null> {
     try {
-      const response = await fetch(`${this.baseUrl}/offers/${offerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        return null;
-      }
-
-      return await response.json();
+      return await this.makeRequest<Offer>(`/offers/${offerId}`, { method: 'GET' });
     } catch (error) {
       console.error('Error fetching offer:', error);
       return null;
@@ -269,21 +240,10 @@ class OffersService {
    */
   async createOffer(offerData: CreateOfferData): Promise<Offer> {
     try {
-      const response = await fetch(`${this.baseUrl}/offers`, {
+      const result = await this.makeRequest<any>('/offers', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(offerData)
+        body: JSON.stringify(offerData),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create offer');
-      }
-
-      const result = await response.json();
       return result.offer || result;
     } catch (error) {
       console.error('Error creating offer:', error);
@@ -296,20 +256,10 @@ class OffersService {
    */
   async acceptOffer(offerId: string): Promise<{ success: boolean; message: string; offer: Offer }> {
     try {
-      const response = await fetch(`${this.baseUrl}/offers/${offerId}/accept`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to accept offer');
-      }
-
-      return await response.json();
+      return await this.makeRequest<{ success: boolean; message: string; offer: Offer }>(
+        `/offers/${offerId}/accept`,
+        { method: 'POST' }
+      );
     } catch (error) {
       console.error('Error accepting offer:', error);
       throw error;
@@ -321,21 +271,13 @@ class OffersService {
    */
   async rejectOffer(offerId: string, reason?: string): Promise<{ success: boolean; message: string; offer: Offer }> {
     try {
-      const response = await fetch(`${this.baseUrl}/offers/${offerId}/reject`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({ reason })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to reject offer');
-      }
-
-      return await response.json();
+      return await this.makeRequest<{ success: boolean; message: string; offer: Offer }>(
+        `/offers/${offerId}/reject`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ reason }),
+        }
+      );
     } catch (error) {
       console.error('Error rejecting offer:', error);
       throw error;

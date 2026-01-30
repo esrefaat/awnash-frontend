@@ -1,52 +1,64 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
+"use client"
 
-interface ToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  pressed?: boolean;
-  onPressedChange?: (pressed: boolean) => void;
-  variant?: 'default' | 'outline';
-  size?: 'default' | 'sm' | 'lg';
+import * as React from "react"
+import * as TogglePrimitive from "@radix-ui/react-toggle"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const toggleVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 gap-2",
+  {
+    variants: {
+      variant: {
+        default: "bg-transparent",
+        outline:
+          "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+      },
+      size: {
+        default: "h-10 px-3 min-w-10",
+        sm: "h-9 px-2.5 min-w-9",
+        lg: "h-11 px-5 min-w-11",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+// Extended props to support both Radix API and legacy API
+interface ToggleProps
+  extends Omit<React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root>, 'onChange'>,
+    VariantProps<typeof toggleVariants> {
+  // Legacy props for backward compatibility
+  checked?: boolean
+  onChange?: (checked: boolean) => void
 }
 
-const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
-  ({ className, checked, onChange, pressed, onPressedChange, variant = 'default', size = 'default', ...props }, ref) => {
-    const isPressed = checked !== undefined ? checked : pressed;
-    const handleChange = onChange || onPressedChange;
-    
-    const handleClick = () => {
-      handleChange?.(!isPressed);
-    };
-
-    return (
-      <button
-        type="button"
-        ref={ref}
-        className={cn(
-          'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-          {
-            'bg-transparent': variant === 'default' && !isPressed,
-            'bg-accent text-accent-foreground': variant === 'default' && isPressed,
-            'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground': variant === 'outline' && !isPressed,
-            'border border-input bg-accent text-accent-foreground': variant === 'outline' && isPressed,
-          },
-          {
-            'h-10 px-3': size === 'default',
-            'h-9 px-2.5': size === 'sm',
-            'h-11 px-5': size === 'lg',
-          },
-          className
-        )}
-        onClick={handleClick}
-        data-state={isPressed ? 'on' : 'off'}
-        {...props}
-      />
-    );
+const Toggle = React.forwardRef<
+  React.ElementRef<typeof TogglePrimitive.Root>,
+  ToggleProps
+>(({ className, variant, size, checked, onChange, pressed, onPressedChange, ...props }, ref) => {
+  // Support both legacy (checked/onChange) and Radix (pressed/onPressedChange) APIs
+  const isPressed = checked !== undefined ? checked : pressed
+  const handlePressedChange = (newPressed: boolean) => {
+    onChange?.(newPressed)
+    onPressedChange?.(newPressed)
   }
-);
 
-Toggle.displayName = 'Toggle';
+  return (
+    <TogglePrimitive.Root
+      ref={ref}
+      pressed={isPressed}
+      onPressedChange={handlePressedChange}
+      className={cn(toggleVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+})
 
-export { Toggle };
-export type { ToggleProps }; 
+Toggle.displayName = TogglePrimitive.Root.displayName
+
+export { Toggle, toggleVariants }

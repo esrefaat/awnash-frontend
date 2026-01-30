@@ -12,7 +12,6 @@ export interface CreateEquipmentDto {
   name: string;
   description: string;
   equipmentTypeId: string;
-  size: string;
   city: string;
   dailyRate: number;
   imageUrls?: string[];
@@ -25,7 +24,6 @@ export interface UpdateEquipmentDto {
   name?: string;
   description?: string;
   equipmentTypeId?: string;
-  size?: string;
   city?: string;
   dailyRate?: number;
   imageUrls?: string[];
@@ -150,7 +148,7 @@ export function useEquipment(): UseEquipmentReturn {
       if (params?.page) queryParams.page = params.page;
       if (params?.limit) queryParams.limit = params.limit;
       if (params?.city) queryParams.city = params.city;
-      if (params?.equipmentTypeId) queryParams.equipmentTypeId = params.equipmentTypeId;
+      if (params?.equipmentTypeId) queryParams.equipmentType = params.equipmentTypeId; // Backend uses 'equipmentType' param
       if (params?.status) queryParams.status = params.status;
       if (params?.isAvailable !== undefined) queryParams.isAvailable = params.isAvailable;
       if (params?.search) queryParams.search = params.search;

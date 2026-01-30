@@ -18,7 +18,7 @@ import {
   faAngleUp
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
-import { GlobalEquipmentModal } from '@/components/modals/GlobalEquipmentModal';
+import { EquipmentFormModal } from '@/components/modals/EquipmentFormModal';
 import { equipmentService, Equipment } from '@/services/equipmentService';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { InlineErrorPage } from '@/components/InlineErrorPage';
@@ -563,7 +563,7 @@ const EquipmentAddPage: React.FC = () => {
       )}
 
       {/* Global Equipment Modal - Always render outside conditional */}
-      <GlobalEquipmentModal
+      <EquipmentFormModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         isRTL={isRTL}

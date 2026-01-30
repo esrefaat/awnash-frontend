@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { usersService, User } from '../../services/usersService';
-import { Modal } from '../ui/Modal';
-import { Button } from '../ui/Button';
-import { cn } from '../../lib/utils';
+"use client";
+
+import React, { useState } from "react";
+import { Loader2, AlertTriangle, UserPlus, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { usersService, User } from "@/services/usersService";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
+import { Button } from "@/components/ui/Button";
+
+// =============================================================================
+// Types
+// =============================================================================
 
 interface AddUserModalProps {
   isOpen: boolean;
@@ -11,25 +24,103 @@ interface AddUserModalProps {
   onUserAdded: (user: User) => void;
 }
 
-const AddUserModal: React.FC<AddUserModalProps> = ({
-  isOpen,
-  onClose,
-  onUserAdded
-}) => {
+// =============================================================================
+// Styled Components
+// =============================================================================
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, ...props }, ref) => (
+    <input
+      ref={ref}
+      className={cn(
+        "w-full h-11 px-4 rounded-lg",
+        "bg-gray-900/50 border border-gray-700",
+        "text-white placeholder:text-gray-500",
+        "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
+        "transition-all duration-200",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+StyledInput.displayName = "StyledInput";
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  children: React.ReactNode;
+}
+
+const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
+  ({ className, children, ...props }, ref) => (
+    <div className="relative">
+      <select
+        ref={ref}
+        className={cn(
+          "w-full h-11 px-4 pr-10 rounded-lg appearance-none cursor-pointer",
+          "bg-[#1a1f2e] border border-gray-700",
+          "text-white",
+          "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
+          "transition-all duration-200",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </select>
+      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+    </div>
+  )
+);
+StyledSelect.displayName = "StyledSelect";
+
+// =============================================================================
+// Form Field Component
+// =============================================================================
+
+interface FormFieldProps {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}
+
+function FormField({ label, required, children, className }: FormFieldProps) {
+  return (
+    <div className={className}>
+      <label className="block text-sm font-medium text-gray-300 mb-2">
+        {label}
+        {required && <span className="text-awnash-primary ml-1">*</span>}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+// =============================================================================
+// Main Component
+// =============================================================================
+
+const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdded }) => {
   const { t, currentLanguage } = useLanguage();
-  const isRTL = currentLanguage.direction === 'rtl';
+  const isRTL = currentLanguage.direction === "rtl";
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    fullName: '',
-    mobileNumber: '',
-    email: '',
-    role: 'requester',
-    isActive: true
+    fullName: "",
+    mobileNumber: "",
+    email: "",
+    role: "requester",
+    isActive: true,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError("");
+
     try {
       setLoading(true);
       const user = await usersService.createUser({
@@ -37,169 +128,155 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         mobileNumber: formData.mobileNumber,
         email: formData.email || undefined,
         role: formData.role,
-        isActive: formData.isActive
+        isActive: formData.isActive,
       });
-      
+
       onUserAdded(user);
       setFormData({
-        fullName: '',
-        mobileNumber: '',
-        email: '',
-        role: 'requester',
-        isActive: true
+        fullName: "",
+        mobileNumber: "",
+        email: "",
+        role: "requester",
+        isActive: true,
       });
       onClose();
-    } catch (error) {
-      console.error('Failed to create user:', error);
+    } catch (err: any) {
+      console.error("Failed to create user:", err);
+      setError(err.message || (isRTL ? "فشل في إنشاء المستخدم" : "Failed to create user"));
     } finally {
       setLoading(false);
     }
   };
 
   const handleChange = (field: string, value: string) => {
-    if (field === 'isActive') {
-      setFormData(prev => ({ ...prev, isActive: value === 'true' }));
+    if (field === "isActive") {
+      setFormData((prev) => ({ ...prev, isActive: value === "true" }));
     } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
+      setFormData((prev) => ({ ...prev, [field]: value }));
     }
+    if (error) setError("");
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={t('add_new_user')}
-      size="md"
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Full Name */}
-        <div>
-          <label className={cn(
-            "block text-sm font-medium text-gray-300 mb-2",
-            isRTL && "text-right"
-          )}>
-            {t('full_name') || 'Full Name'} *
-          </label>
-          <input
-            type="text"
-            required
-            value={formData.fullName}
-            onChange={(e) => handleChange('fullName', e.target.value)}
-            className={cn(
-              "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
-              isRTL && "text-right"
-            )}
-            placeholder={isRTL ? 'أدخل الاسم الكامل' : 'Enter full name'}
-          />
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className="max-w-md max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700"
+        dir={isRTL ? "rtl" : "ltr"}
+      >
+        {/* Header */}
+        <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <UserPlus className="h-5 w-5 text-blue-400" />
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-semibold text-white">
+                {t("add_new_user") || "Add New User"}
+              </DialogTitle>
+              <p className="text-sm text-gray-400 mt-0.5">
+                {isRTL ? "أدخل بيانات المستخدم الجديد" : "Enter new user details"}
+              </p>
+            </div>
+          </div>
+        </DialogHeader>
 
-        {/* Mobile Number */}
-        <div>
-          <label className={cn(
-            "block text-sm font-medium text-gray-300 mb-2",
-            isRTL && "text-right"
-          )}>
-            {t('mobile_number') || 'Mobile Number'} *
-          </label>
-          <input
-            type="tel"
-            required
-            value={formData.mobileNumber}
-            onChange={(e) => handleChange('mobileNumber', e.target.value)}
-            className={cn(
-              "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
-              isRTL && "text-right"
-            )}
-            placeholder={isRTL ? 'أدخل رقم الجوال' : 'Enter mobile number'}
-          />
-        </div>
+        {/* Error */}
+        {error && (
+          <div className="mb-6 p-4 rounded-xl flex items-start gap-3 bg-red-500/10 border border-red-500/20">
+            <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <span className="text-sm text-red-300">{error}</span>
+          </div>
+        )}
 
-        {/* Email */}
-        <div>
-          <label className={cn(
-            "block text-sm font-medium text-gray-300 mb-2",
-            isRTL && "text-right"
-          )}>
-            {t('email') || 'Email'}
-          </label>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            className={cn(
-              "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
-              isRTL && "text-right"
-            )}
-            placeholder={isRTL ? 'أدخل البريد الإلكتروني' : 'Enter email (optional)'}
-          />
-        </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Full Name */}
+          <FormField label={t("full_name") || "Full Name"} required>
+            <StyledInput
+              type="text"
+              required
+              value={formData.fullName}
+              onChange={(e) => handleChange("fullName", e.target.value)}
+              placeholder={isRTL ? "أدخل الاسم الكامل" : "Enter full name"}
+            />
+          </FormField>
 
-        {/* Role */}
-        <div>
-          <label className={cn(
-            "block text-sm font-medium text-gray-300 mb-2",
-            isRTL && "text-right"
-          )}>
-            {t('role') || 'Role'} *
-          </label>
-          <select
-            value={formData.role}
-            onChange={(e) => handleChange('role', e.target.value)}
-            className={cn(
-              "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
-              isRTL && "text-right"
-            )}
-          >
-            <option value="requester">{isRTL ? 'طالب' : 'Requester'}</option>
-            <option value="owner">{isRTL ? 'مالك' : 'Owner'}</option>
-            <option value="hybrid">{isRTL ? 'هجين' : 'Hybrid'}</option>
-          </select>
-        </div>
+          {/* Mobile Number */}
+          <FormField label={t("mobile_number") || "Mobile Number"} required>
+            <StyledInput
+              type="tel"
+              required
+              value={formData.mobileNumber}
+              onChange={(e) => handleChange("mobileNumber", e.target.value)}
+              placeholder={isRTL ? "أدخل رقم الجوال" : "Enter mobile number"}
+            />
+          </FormField>
 
-        {/* Status */}
-        <div>
-          <label className={cn(
-            "block text-sm font-medium text-gray-300 mb-2",
-            isRTL && "text-right"
-          )}>
-            {t('status') || 'Status'} *
-          </label>
-          <select
-            value={formData.isActive ? 'active' : 'inactive'}
-            onChange={(e) => handleChange('isActive', e.target.value === 'active' ? 'true' : 'false')}
-            className={cn(
-              "w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
-              isRTL && "text-right"
-            )}
-          >
-            <option value="active">{isRTL ? 'نشط' : 'Active'}</option>
-            <option value="inactive">{isRTL ? 'غير نشط' : 'Inactive'}</option>
-          </select>
-        </div>
+          {/* Email */}
+          <FormField label={t("email") || "Email"}>
+            <StyledInput
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              placeholder={isRTL ? "أدخل البريد الإلكتروني" : "Enter email (optional)"}
+            />
+          </FormField>
 
-        {/* Form Actions */}
-        <div className={cn(
-          "flex justify-end space-x-3 pt-4 border-t border-gray-700",
-          isRTL && "space-x-reverse"
-        )}>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            disabled={loading}
-          >
-            {t('cancel') || 'Cancel'}
-          </Button>
-          <Button
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? (t('creating') || 'Creating...') : (t('create_user') || 'Create User')}
-          </Button>
-        </div>
-      </form>
-    </Modal>
+          {/* Role */}
+          <FormField label={t("role") || "Role"} required>
+            <StyledSelect
+              value={formData.role}
+              onChange={(e) => handleChange("role", e.target.value)}
+            >
+              <option value="requester">{isRTL ? "طالب" : "Requester"}</option>
+              <option value="owner">{isRTL ? "مالك" : "Owner"}</option>
+              <option value="hybrid">{isRTL ? "هجين" : "Hybrid"}</option>
+            </StyledSelect>
+          </FormField>
+
+          {/* Status */}
+          <FormField label={t("status") || "Status"} required>
+            <StyledSelect
+              value={formData.isActive ? "active" : "inactive"}
+              onChange={(e) =>
+                handleChange("isActive", e.target.value === "active" ? "true" : "false")
+              }
+            >
+              <option value="active">{isRTL ? "نشط" : "Active"}</option>
+              <option value="inactive">{isRTL ? "غير نشط" : "Inactive"}</option>
+            </StyledSelect>
+          </FormField>
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={loading}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              {t("cancel") || "Cancel"}
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-awnash-primary hover:bg-awnash-primary-hover text-black font-medium"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t("creating") || "Creating..."}
+                </span>
+              ) : (
+                t("create_user") || "Create User"
+              )}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default AddUserModal; 
+export default AddUserModal;

@@ -1,6 +1,8 @@
 // API Configuration  
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
 
+import { transformKeysToCamelCase, transformKeysToSnakeCase } from '@/lib/caseTransform';
+
 /**
  * API Service Configuration
  * 
@@ -159,7 +161,8 @@ class ApiService {
       }
 
       const data = JSON.parse(text);
-      return data;
+      // Transform snake_case keys from backend to camelCase for frontend
+      return transformKeysToCamelCase(data) as ApiResponse<T>;
     } catch (error) {
       // Re-throw ApiError as-is
       if (error instanceof ApiError) {
@@ -182,21 +185,21 @@ class ApiService {
   async post<T>(endpoint: string, data: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(transformKeysToSnakeCase(data)),
     });
   }
 
   async put<T>(endpoint: string, data: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
-      body: JSON.stringify(data),
+      body: JSON.stringify(transformKeysToSnakeCase(data)),
     });
   }
 
   async patch<T>(endpoint: string, data: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: JSON.stringify(transformKeysToSnakeCase(data)),
     });
   }
 
@@ -306,7 +309,9 @@ export async function apiFetch<T>(
       return null as T;
     }
 
-    return JSON.parse(text);
+    const data = JSON.parse(text);
+    // Transform snake_case keys from backend to camelCase for frontend
+    return transformKeysToCamelCase(data) as T;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -320,6 +325,7 @@ export async function apiFetch<T>(
 
 /**
  * Convenience wrapper functions
+ * Automatically transforms request bodies to snake_case and responses to camelCase.
  */
 export const api = {
   get: <T>(endpoint: string) => apiFetch<T>(endpoint),
@@ -327,19 +333,19 @@ export const api = {
   post: <T>(endpoint: string, data: unknown) => 
     apiFetch<T>(endpoint, { 
       method: 'POST', 
-      body: JSON.stringify(data) 
+      body: JSON.stringify(transformKeysToSnakeCase(data)) 
     }),
   
   put: <T>(endpoint: string, data: unknown) => 
     apiFetch<T>(endpoint, { 
       method: 'PUT', 
-      body: JSON.stringify(data) 
+      body: JSON.stringify(transformKeysToSnakeCase(data)) 
     }),
   
   patch: <T>(endpoint: string, data: unknown) => 
     apiFetch<T>(endpoint, { 
       method: 'PATCH', 
-      body: JSON.stringify(data) 
+      body: JSON.stringify(transformKeysToSnakeCase(data)) 
     }),
   
   delete: <T>(endpoint: string) => 

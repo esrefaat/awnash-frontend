@@ -1,3 +1,5 @@
+import { transformKeysToCamelCase, transformKeysToSnakeCase } from '@/lib/caseTransform';
+
 // API Configuration  
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
 
@@ -109,6 +111,17 @@ class PayoutsService {
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
+    // Transform request body to snake_case if present
+    let body = options.body;
+    if (body && typeof body === 'string') {
+      try {
+        const parsed = JSON.parse(body);
+        body = JSON.stringify(transformKeysToSnakeCase(parsed));
+      } catch {
+        // Not JSON, use as-is
+      }
+    }
+    
     const defaultOptions: RequestInit = {
       credentials: 'include',
       headers: {
@@ -117,14 +130,15 @@ class PayoutsService {
       },
     };
 
-    const response = await fetch(url, { ...defaultOptions, ...options });
+    const response = await fetch(url, { ...defaultOptions, ...options, body });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    const data = await response.json();
+    return transformKeysToCamelCase(data) as T;
   }
 
   // ============================================

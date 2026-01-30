@@ -1,259 +1,174 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
-import { useTranslation } from 'react-i18next';
+"use client"
 
-interface AlertDialogProps {
-  children: React.ReactNode;
+import * as React from "react"
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
+import { useTranslation } from "react-i18next"
+
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/Button"
+
+const AlertDialog = AlertDialogPrimitive.Root
+
+const AlertDialogTrigger = AlertDialogPrimitive.Trigger
+
+const AlertDialogPortal = AlertDialogPrimitive.Portal
+
+const AlertDialogOverlay = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Overlay
+    className={cn(
+      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+    ref={ref}
+  />
+))
+AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
+
+interface AlertDialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> {
+  highZIndex?: boolean
 }
 
-interface AlertDialogTriggerProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
-  children: React.ReactNode;
-}
+const AlertDialogContent = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Content>,
+  AlertDialogContentProps
+>(({ className, highZIndex = false, ...props }, ref) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
 
-interface AlertDialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-  highZIndex?: boolean;
-}
-
-interface AlertDialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
-
-interface AlertDialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
-
-interface AlertDialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  children: React.ReactNode;
-}
-
-interface AlertDialogDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  children: React.ReactNode;
-}
-
-interface AlertDialogActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-
-interface AlertDialogCancelProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-
-const AlertDialog: React.FC<AlertDialogProps> = ({ children }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const zIndexClass = highZIndex ? "z-[9999]" : "z-50"
 
   return (
-    <div>
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, { 
-            open: isOpen, 
-            onOpenChange: setIsOpen 
-          } as any);
-        }
-        return child;
-      })}
-    </div>
-  );
-};
-
-const AlertDialogTrigger: React.FC<AlertDialogTriggerProps & { onOpenChange?: (open: boolean) => void }> = ({ 
-  asChild, 
-  children, 
-  onOpenChange,
-  onClick,
-  ...props 
-}) => {
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    onOpenChange?.(true);
-    onClick?.(e);
-  };
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
-      onClick: handleClick,
-    } as any);
-  }
-
-  return (
-    <div onClick={handleClick} {...props}>
-      {children}
-    </div>
-  );
-};
-
-const AlertDialogContent: React.FC<AlertDialogContentProps & { open?: boolean; onOpenChange?: (open: boolean) => void }> = ({ 
-  className, 
-  children, 
-  open, 
-  onOpenChange,
-  highZIndex = false,
-  ...props 
-}) => {
-  if (!open) return null;
-
-  const zIndexClasses = highZIndex 
-    ? { container: 'z-[9999]', backdrop: 'z-[9998]', content: 'z-[9999]' }
-    : { container: 'z-50', backdrop: 'z-40', content: 'z-50' };
-
-  return (
-    <div className={`fixed inset-0 ${zIndexClasses.container} flex items-center justify-center`}>
-      {/* Backdrop */}
-      <div 
-        className={`fixed inset-0 bg-black/80 ${zIndexClasses.backdrop}`}
-        onClick={() => onOpenChange?.(false)}
-      />
-      
-      {/* Content */}
-      <div
+    <AlertDialogPortal>
+      <AlertDialogOverlay className={highZIndex ? "z-[9998]" : undefined} />
+      <AlertDialogPrimitive.Content
+        ref={ref}
+        dir={isRTL ? "rtl" : "ltr"}
         className={cn(
-          `relative ${zIndexClasses.content} grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg`,
+          zIndexClass,
+          "fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] grid w-full max-w-lg gap-4 border bg-card p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
           className
         )}
         {...props}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
+      />
+    </AlertDialogPortal>
+  )
+})
+AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
 
-const AlertDialogHeader: React.FC<AlertDialogHeaderProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
-  
+const AlertDialogHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
+
   return (
     <div
       className={cn(
-        'flex flex-col space-y-2 text-center',
-        isRTL ? 'sm:text-right' : 'sm:text-left',
+        "flex flex-col space-y-2 text-center",
+        isRTL ? "sm:text-right" : "sm:text-left",
         className
       )}
       {...props}
-    >
-      {children}
-    </div>
-  );
-};
+    />
+  )
+}
+AlertDialogHeader.displayName = "AlertDialogHeader"
 
-const AlertDialogFooter: React.FC<AlertDialogFooterProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
-  
+const AlertDialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
+
   return (
     <div
       className={cn(
-        'flex flex-col-reverse sm:flex-row',
-        isRTL ? 'sm:justify-start sm:space-x-reverse sm:space-x-2' : 'sm:justify-end sm:space-x-2',
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+        isRTL && "sm:space-x-reverse",
         className
       )}
       {...props}
-    >
-      {children}
-    </div>
-  );
-};
+    />
+  )
+}
+AlertDialogFooter.displayName = "AlertDialogFooter"
 
-const AlertDialogTitle: React.FC<AlertDialogTitleProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
+const AlertDialogTitle = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Title
+    ref={ref}
+    className={cn("text-lg font-semibold text-card-foreground", className)}
+    {...props}
+  />
+))
+AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName
+
+const AlertDialogDescription = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Description
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+AlertDialogDescription.displayName =
+  AlertDialogPrimitive.Description.displayName
+
+const AlertDialogAction = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Action>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Action
+    ref={ref}
+    className={cn(buttonVariants(), className)}
+    {...props}
+  />
+))
+AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName
+
+const AlertDialogCancel = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
+>(({ className, ...props }, ref) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
+
   return (
-    <h2
+    <AlertDialogPrimitive.Cancel
+      ref={ref}
       className={cn(
-        'text-lg font-semibold',
+        buttonVariants({ variant: "outline" }),
+        "mt-2 sm:mt-0",
+        isRTL ? "sm:ml-2" : "sm:mr-2",
         className
       )}
       {...props}
-    >
-      {children}
-    </h2>
-  );
-};
+    />
+  )
+})
+AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
 
-const AlertDialogDescription: React.FC<AlertDialogDescriptionProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
-  return (
-    <p
-      className={cn(
-        'text-sm text-muted-foreground',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </p>
-  );
-};
-
-const AlertDialogAction: React.FC<AlertDialogActionProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
-  return (
-    <button
-      className={cn(
-        'inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
-
-const AlertDialogCancel: React.FC<AlertDialogCancelProps> = ({ 
-  className, 
-  children, 
-  ...props 
-}) => {
-  return (
-    <button
-      className={cn(
-        'mt-2 inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-semibold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:mt-0',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
-
-export { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
-};
-export type { 
-  AlertDialogProps, 
-  AlertDialogActionProps, 
-  AlertDialogCancelProps, 
-  AlertDialogContentProps, 
-  AlertDialogDescriptionProps, 
-  AlertDialogFooterProps, 
-  AlertDialogHeaderProps, 
-  AlertDialogTitleProps, 
-  AlertDialogTriggerProps 
-}; 
+export {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+}

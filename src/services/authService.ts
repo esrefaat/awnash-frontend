@@ -1,4 +1,5 @@
 import { apiService } from './api';
+import { transformKeysToCamelCase, transformKeysToSnakeCase } from '@/lib/caseTransform';
 
 export interface User {
   id: string;
@@ -32,19 +33,21 @@ export interface RegisterData {
 }
 
 class AuthService {
+  private baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
+
   /**
    * Login with email/mobile and password
    * Uses HTTP-only cookies exclusively for security
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/login`, {
+      const response = await fetch(`${this.baseUrl}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // Include cookies for HTTP-only cookies
-        body: JSON.stringify(credentials),
+        body: JSON.stringify(transformKeysToSnakeCase(credentials)),
       });
 
       if (!response.ok) {
@@ -52,7 +55,8 @@ class AuthService {
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
-      const authData: AuthResponse = await response.json();
+      const data = await response.json();
+      const authData = transformKeysToCamelCase(data) as AuthResponse;
       
       // HTTP-only cookies are set by the backend automatically
       // No need to store tokens in localStorage for security
@@ -69,13 +73,13 @@ class AuthService {
    */
   async register(registerData: RegisterData): Promise<AuthResponse> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/register`, {
+      const response = await fetch(`${this.baseUrl}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify(registerData),
+        body: JSON.stringify(transformKeysToSnakeCase(registerData)),
       });
 
       if (!response.ok) {
@@ -83,7 +87,8 @@ class AuthService {
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
-      const authData: AuthResponse = await response.json();
+      const data = await response.json();
+      const authData = transformKeysToCamelCase(data) as AuthResponse;
       
       // HTTP-only cookies are set by the backend automatically
       
@@ -100,7 +105,7 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       // Call backend logout to clear HTTP-only cookies
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/logout`, {
+      await fetch(`${this.baseUrl}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -114,7 +119,7 @@ class AuthService {
    */
   async getCurrentUser(): Promise<User | null> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/me`, {
+      const response = await fetch(`${this.baseUrl}/auth/me`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -123,7 +128,8 @@ class AuthService {
         return null;
       }
 
-      return await response.json();
+      const data = await response.json();
+      return transformKeysToCamelCase(data) as User;
     } catch (error) {
       console.error('Failed to get current user:', error);
       return null;

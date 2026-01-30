@@ -1,65 +1,70 @@
-import React from 'react';
-import { X } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { Button } from './Button';
+"use client"
+
+import * as React from "react"
+import { X } from "lucide-react"
+import { useTranslation } from "react-i18next"
+
+import { cn } from "@/lib/utils"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog"
+import { Button } from "@/components/ui/Button"
 
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  isOpen: boolean
+  onClose: () => void
+  title: string
+  children: React.ReactNode
+  size?: "sm" | "md" | "lg" | "xl"
 }
 
-export const Modal: React.FC<ModalProps> = ({
+const sizeClasses = {
+  sm: "max-w-md",
+  md: "max-w-lg",
+  lg: "max-w-2xl",
+  xl: "max-w-4xl",
+}
+
+export function Modal({
   isOpen,
   onClose,
   title,
   children,
-  size = 'md'
-}) => {
-  if (!isOpen) return null;
-
-  const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
-  };
+  size = "md",
+}: ModalProps) {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center p-4">
-        {/* Backdrop */}
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity"
-          onClick={onClose}
-        />
-
-        {/* Modal */}
-        <div className={cn(
-          "relative w-full rounded-lg bg-gray-800 border border-gray-700 shadow-xl transition-all",
-          sizeClasses[size]
-        )}>
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-700 px-6 py-4">
-            <h3 className="text-lg font-medium text-white">{title}</h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-300"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-
-          {/* Content */}
-          <div className="px-6 py-4">
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}; 
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className={cn(
+          sizeClasses[size],
+          "bg-card border-border"
+        )}
+      >
+        <DialogHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
+          <DialogTitle className="text-lg font-medium">
+            {title}
+          </DialogTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className={cn(
+              "h-8 w-8 text-muted-foreground hover:text-foreground",
+              isRTL ? "mr-auto" : "ml-auto"
+            )}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </DialogHeader>
+        <div className="pt-4">{children}</div>
+      </DialogContent>
+    </Dialog>
+  )
+}

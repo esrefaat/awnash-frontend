@@ -1,4 +1,5 @@
 import { apiService } from './api';
+import { transformKeysToCamelCase, transformKeysToSnakeCase } from '@/lib/caseTransform';
 
 export interface RentalRequest {
   id: string;
@@ -11,7 +12,6 @@ export interface RentalRequest {
   images: string[];
   startDate: string;
   endDate: string;
-  size: string;
   maxBudget: number;
   count: number;
   location: {
@@ -41,7 +41,6 @@ export interface CreateRequestData {
   images: string[];
   startDate: string;
   endDate: string;
-  size: string;
   maxBudget: number;
   city: string;
   location: string | null;
@@ -56,28 +55,45 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/a
 class RequestsService {
   private baseUrl = API_BASE_URL;
 
+  private async makeRequest<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    
+    // Transform request body to snake_case if present
+    let body = options.body;
+    if (body && typeof body === 'string') {
+      try {
+        const parsed = JSON.parse(body);
+        body = JSON.stringify(transformKeysToSnakeCase(parsed));
+      } catch {
+        // Not JSON, use as-is
+      }
+    }
+    
+    const response = await fetch(url, {
+      ...options,
+      body,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return transformKeysToCamelCase(data) as T;
+  }
+
   async getRequests(): Promise<RentalRequest[]> {
     try {
-      const url = `${this.baseUrl}/requests`;
-      
-      console.log('Fetching requests from:', url);
-      
-      const response = await fetch(url, {
-        method: 'GET',
-        credentials: 'include'
-      });
-
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`Failed to fetch requests: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('API response data:', data);
+      const data = await this.makeRequest<any>('/requests', { method: 'GET' });
       
       // The API returns data in a nested structure
       let requests: RentalRequest[] = [];
@@ -91,7 +107,6 @@ class RequestsService {
         requests = [data];
       }
       
-      console.log('Processed requests:', requests);
       return requests;
     } catch (error) {
       console.error('Error fetching requests:', error);
@@ -102,21 +117,10 @@ class RequestsService {
 
   async createRequest(requestData: CreateRequestData): Promise<RentalRequest> {
     try {
-      const response = await fetch(`${this.baseUrl}/requests`, {
+      const result = await this.makeRequest<any>('/requests', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestData),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create request');
-      }
-
-      const result = await response.json();
       return result.request || result;
     } catch (error) {
       console.error('Error creating request:', error);
@@ -126,21 +130,10 @@ class RequestsService {
 
   async updateRequest(requestId: string, requestData: Partial<CreateRequestData>): Promise<RentalRequest> {
     try {
-      const response = await fetch(`${this.baseUrl}/requests/${requestId}`, {
+      const result = await this.makeRequest<any>(`/requests/${requestId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestData),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update request');
-      }
-
-      const result = await response.json();
       return result.request || result;
     } catch (error) {
       console.error('Error updating request:', error);
@@ -150,15 +143,7 @@ class RequestsService {
 
   async deleteRequest(requestId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/requests/${requestId}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to delete request');
-      }
+      await this.makeRequest<any>(`/requests/${requestId}`, { method: 'DELETE' });
     } catch (error) {
       console.error('Error deleting request:', error);
       throw error;
@@ -167,25 +152,7 @@ class RequestsService {
 
   async getRequestById(requestId: string): Promise<RentalRequest | null> {
     try {
-      console.log('Fetching request by ID:', requestId);
-      
-      const response = await fetch(`${this.baseUrl}/requests/${requestId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        console.error('Failed to fetch request:', response.status, response.statusText);
-        return null;
-      }
-
-      const data = await response.json();
-      console.log('Request data received:', data);
+      const data = await this.makeRequest<any>(`/requests/${requestId}`, { method: 'GET' });
 
       // Handle different response structures
       let requestData = data;

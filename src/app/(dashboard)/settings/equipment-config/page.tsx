@@ -5,7 +5,7 @@ import {
   Plus, Edit, Trash2, Search, Settings, 
   MapPin, Navigation, X, AlertCircle,
   Edit2, Check, Loader2, Eye, EyeOff,
-  GripVertical, Save, Layers, Tag, Globe
+  GripVertical, Save, Layers, Tag, Globe, ChevronDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { 
@@ -14,15 +14,39 @@ import {
   EquipmentCategory,
   CreateEquipmentTypeData, 
   UpdateEquipmentTypeData,
-  MarketNameData
+  MarketNameData,
+  SupportEquipmentRequirement
 } from '@/services/equipmentTypeService';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SearchableSelect } from '@/components/ui/SearchableSelect';
-import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { Toggle } from '@/components/ui/Toggle';
+import { Switch } from '@/components/ui/Switch';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // =============================================================================
 // TYPES & CONSTANTS
@@ -37,12 +61,21 @@ interface EquipmentTypeAttribute {
   optionsInput: string;
 }
 
+interface SupportRequirementFormData {
+  id: string;
+  supportEquipmentTypeId: string;
+  quantity: number;
+  isRequired: boolean;
+}
+
 interface EquipmentTypeFormData {
   name_en: string;
   name_ar: string;
   name_ur: string;
   categoryId: string;
   location_mode: 'single' | 'from_to' | 'none';
+  requires_support_equipment: boolean;
+  support_requirements: SupportRequirementFormData[];
   attributes: EquipmentTypeAttribute[];
 }
 
@@ -67,6 +100,110 @@ const locationModes = [
 ];
 
 type TabType = 'categories' | 'types' | 'naming';
+
+// =============================================================================
+// Styled Components (matching EquipmentFormModal exactly)
+// =============================================================================
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, ...props }, ref) => (
+    <input
+      ref={ref}
+      className={cn(
+        "w-full h-11 px-4 rounded-lg",
+        "bg-gray-900/50 border border-gray-700",
+        "text-white placeholder:text-gray-500",
+        "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
+        "transition-all duration-200",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+StyledInput.displayName = "StyledInput";
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  children: React.ReactNode;
+}
+
+const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
+  ({ className, children, ...props }, ref) => (
+    <div className="relative">
+      <select
+        ref={ref}
+        className={cn(
+          "w-full h-11 px-4 pr-10 rounded-lg appearance-none cursor-pointer",
+          "bg-[#1a1f2e] border border-gray-700",
+          "text-white",
+          "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
+          "transition-all duration-200",
+          "disabled:opacity-50 disabled:cursor-not-allowed",
+          className
+        )}
+        style={{
+          colorScheme: 'dark',
+        }}
+        {...props}
+      >
+        {children}
+      </select>
+      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+    </div>
+  )
+);
+StyledSelect.displayName = "StyledSelect";
+
+// Alert Component
+interface AlertProps {
+  type: "error" | "success";
+  message: string;
+}
+
+function Alert({ type, message }: AlertProps) {
+  const isError = type === "error";
+  return (
+    <div
+      className={cn(
+        "px-4 py-3 rounded-lg flex items-center gap-3 mb-4",
+        isError ? "bg-red-900/30 border border-red-800" : "bg-green-900/30 border border-green-800"
+      )}
+    >
+      {isError ? (
+        <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
+      ) : (
+        <Check className="h-5 w-5 text-green-400 flex-shrink-0" />
+      )}
+      <span className={cn("text-sm", isError ? "text-red-300" : "text-green-300")}>
+        {message}
+      </span>
+    </div>
+  );
+}
+
+// Form Field Component
+interface FormFieldProps {
+  label: string;
+  required?: boolean;
+  hint?: string;
+  children: React.ReactNode;
+}
+
+function FormField({ label, required, hint, children }: FormFieldProps) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-2">
+        {label}
+        {required && <span className="text-red-400 ml-1">*</span>}
+        {hint && <span className="text-gray-500 ml-2 text-xs">({hint})</span>}
+      </label>
+      {children}
+    </div>
+  );
+}
 
 // =============================================================================
 // HELPER COMPONENTS
@@ -108,16 +245,194 @@ const ErrorBanner: React.FC<{ message?: string; onDismiss: () => void }> = ({ me
 };
 
 // =============================================================================
-// TAB: CATEGORIES
+// TAB: CATEGORIES (with Drag-and-Drop)
 // =============================================================================
+
+// Sortable Category Row Component
+const SortableCategoryRow: React.FC<{
+  category: EquipmentCategory;
+  isEditing: boolean;
+  isSaving: boolean;
+  editForm: Partial<EquipmentCategory>;
+  onEditFormChange: (form: Partial<EquipmentCategory>) => void;
+  onStartEditing: () => void;
+  onCancelEditing: () => void;
+  onSave: () => void;
+  onToggleActive: () => void;
+}> = ({
+  category,
+  isEditing,
+  isSaving,
+  editForm,
+  onEditFormChange,
+  onStartEditing,
+  onCancelEditing,
+  onSave,
+  onToggleActive,
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        'hover:bg-gray-700/50 transition-colors',
+        isEditing && 'bg-blue-900/20',
+        !category.isActive && 'opacity-60',
+        isDragging && 'bg-gray-600'
+      )}
+    >
+      {/* Drag Handle */}
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center gap-2">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-600 rounded"
+            title="Drag to reorder"
+          >
+            <GripVertical className="h-4 w-4 text-gray-400" />
+          </button>
+          <span className="text-sm text-gray-500 w-6 text-center">{category.displayOrder}</span>
+        </div>
+      </td>
+
+      {/* Slug */}
+      <td className="px-6 py-4 whitespace-nowrap">
+        <code className="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">
+          {category.slug}
+        </code>
+      </td>
+
+      {/* English Name */}
+      <td className="px-6 py-4 whitespace-nowrap">
+        {isEditing ? (
+          <Input
+            value={editForm.nameEn ?? ''}
+            onChange={(e) => onEditFormChange({ ...editForm, nameEn: e.target.value })}
+            className="w-full text-sm"
+          />
+        ) : (
+          <span className="text-sm font-medium text-white">{category.nameEn}</span>
+        )}
+      </td>
+
+      {/* Arabic Name */}
+      <td className="px-6 py-4 whitespace-nowrap text-right" dir="rtl">
+        {isEditing ? (
+          <Input
+            value={editForm.nameAr ?? ''}
+            onChange={(e) => onEditFormChange({ ...editForm, nameAr: e.target.value })}
+            className="w-full text-sm text-right"
+            dir="rtl"
+          />
+        ) : (
+          <span className="text-sm text-gray-300 font-cairo">{category.nameAr}</span>
+        )}
+      </td>
+
+      {/* Status */}
+      <td className="px-6 py-4 whitespace-nowrap text-center">
+        <button
+          onClick={onToggleActive}
+          disabled={isSaving}
+          className={cn(
+            'inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors',
+            category.isActive
+              ? 'bg-green-900/50 text-green-300 hover:bg-green-900/70'
+              : 'bg-red-900/50 text-red-300 hover:bg-red-900/70'
+          )}
+        >
+          {category.isActive ? (
+            <>
+              <Eye className="h-3 w-3" />
+              Active
+            </>
+          ) : (
+            <>
+              <EyeOff className="h-3 w-3" />
+              Hidden
+            </>
+          )}
+        </button>
+      </td>
+
+      {/* Actions */}
+      <td className="px-6 py-4 whitespace-nowrap text-center">
+        <div className="flex items-center justify-center gap-2">
+          {isEditing ? (
+            <>
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={onSave}
+                disabled={isSaving}
+                className="bg-[#FFCC00] hover:bg-[#E6B800] text-black"
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onCancelEditing}
+                disabled={isSaving}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onStartEditing}
+              className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-white"
+            >
+              <Edit2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 const CategoriesTab: React.FC = () => {
   const [categories, setCategories] = useState<EquipmentCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<EquipmentCategory>>({});
   const [error, setError] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -136,13 +451,48 @@ const CategoriesTab: React.FC = () => {
     fetchCategories();
   }, [fetchCategories]);
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = categories.findIndex((cat) => cat.id === active.id);
+      const newIndex = categories.findIndex((cat) => cat.id === over.id);
+
+      const newCategories = arrayMove(categories, oldIndex, newIndex);
+      
+      // Update display order values
+      const updatedCategories = newCategories.map((cat, index) => ({
+        ...cat,
+        displayOrder: index + 1,
+      }));
+      
+      setCategories(updatedCategories);
+
+      // Save to backend
+      try {
+        setReordering(true);
+        const updates = updatedCategories.map((cat) => ({
+          id: cat.id,
+          displayOrder: cat.displayOrder,
+        }));
+        await equipmentTypeService.updateCategoryDisplayOrder(updates);
+      } catch (err) {
+        console.error('Failed to save order:', err);
+        setError('Failed to save order');
+        // Revert on error
+        await fetchCategories();
+      } finally {
+        setReordering(false);
+      }
+    }
+  };
+
   const startEditing = (category: EquipmentCategory) => {
     setEditingId(category.id);
     setEditForm({
       nameEn: category.nameEn,
       nameAr: category.nameAr,
       nameUr: category.nameUr || '',
-      displayOrder: category.displayOrder,
       isActive: category.isActive
     });
   };
@@ -186,8 +536,14 @@ const CategoriesTab: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold text-white">Equipment Categories</h2>
-          <p className="text-sm text-gray-400">Manage equipment categories and their display order</p>
+          <p className="text-sm text-gray-400">Drag to reorder categories. Changes are saved automatically.</p>
         </div>
+        {reordering && (
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Saving order...
+          </div>
+        )}
       </div>
 
       {error && (
@@ -197,201 +553,202 @@ const CategoriesTab: React.FC = () => {
       )}
 
       {/* Table */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Order
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Slug
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  English Name
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Arabic Name
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {loading ? (
-                <>
-                  <TableRowSkeleton cols={6} />
-                  <TableRowSkeleton cols={6} />
-                  <TableRowSkeleton cols={6} />
-                </>
-              ) : categories.length === 0 ? (
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-700">
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
-                    No categories found
-                  </td>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-24">
+                    Order
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Slug
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    English Name
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Arabic Name
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ) : (
-                categories.map((category) => {
-                  const isEditing = editingId === category.id;
-                  const isSaving = saving === category.id;
-
-                  return (
-                    <tr
-                      key={category.id}
-                      className={cn(
-                        'hover:bg-gray-700/50 transition-colors',
-                        isEditing && 'bg-blue-900/20',
-                        !category.isActive && 'opacity-60'
-                      )}
-                    >
-                      {/* Display Order */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {isEditing ? (
-                          <Input
-                            type="number"
-                            value={editForm.displayOrder ?? ''}
-                            onChange={(e) => setEditForm({ ...editForm, displayOrder: parseInt(e.target.value) || 0 })}
-                            className="w-20 text-sm"
-                          />
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm text-gray-300">{category.displayOrder}</span>
-                          </div>
-                        )}
-                      </td>
-
-                      {/* Slug */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <code className="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">
-                          {category.slug}
-                        </code>
-                      </td>
-
-                      {/* English Name */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {isEditing ? (
-                          <Input
-                            value={editForm.nameEn ?? ''}
-                            onChange={(e) => setEditForm({ ...editForm, nameEn: e.target.value })}
-                            className="w-full text-sm"
-                          />
-                        ) : (
-                          <span className="text-sm font-medium text-white">{category.nameEn}</span>
-                        )}
-                      </td>
-
-                      {/* Arabic Name */}
-                      <td className="px-6 py-4 whitespace-nowrap text-right" dir="rtl">
-                        {isEditing ? (
-                          <Input
-                            value={editForm.nameAr ?? ''}
-                            onChange={(e) => setEditForm({ ...editForm, nameAr: e.target.value })}
-                            className="w-full text-sm text-right"
-                            dir="rtl"
-                          />
-                        ) : (
-                          <span className="text-sm text-gray-300 font-cairo">{category.nameAr}</span>
-                        )}
-                      </td>
-
-                      {/* Status */}
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <button
-                          onClick={() => toggleActive(category)}
-                          disabled={isSaving}
-                          className={cn(
-                            'inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors',
-                            category.isActive
-                              ? 'bg-green-900/50 text-green-300 hover:bg-green-900/70'
-                              : 'bg-red-900/50 text-red-300 hover:bg-red-900/70'
-                          )}
-                        >
-                          {category.isActive ? (
-                            <>
-                              <Eye className="h-3 w-3" />
-                              Active
-                            </>
-                          ) : (
-                            <>
-                              <EyeOff className="h-3 w-3" />
-                              Hidden
-                            </>
-                          )}
-                        </button>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          {isEditing ? (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="primary"
-                                onClick={() => saveCategory(category.id)}
-                                disabled={isSaving}
-                                className="bg-[#FFCC00] hover:bg-[#E6B800] text-black"
-                              >
-                                {isSaving ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <Check className="h-4 w-4" />
-                                )}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={cancelEditing}
-                                disabled={isSaving}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </>
-                          ) : (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => startEditing(category)}
-                              className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-white"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {loading ? (
+                  <>
+                    <TableRowSkeleton cols={6} />
+                    <TableRowSkeleton cols={6} />
+                    <TableRowSkeleton cols={6} />
+                  </>
+                ) : categories.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
+                      No categories found
+                    </td>
+                  </tr>
+                ) : (
+                  <SortableContext
+                    items={categories.map((c) => c.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {categories.map((category) => (
+                      <SortableCategoryRow
+                        key={category.id}
+                        category={category}
+                        isEditing={editingId === category.id}
+                        isSaving={saving === category.id}
+                        editForm={editForm}
+                        onEditFormChange={setEditForm}
+                        onStartEditing={() => startEditing(category)}
+                        onCancelEditing={cancelEditing}
+                        onSave={() => saveCategory(category.id)}
+                        onToggleActive={() => toggleActive(category)}
+                      />
+                    ))}
+                  </SortableContext>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </DndContext>
 
       {/* Info */}
       <div className="bg-gray-800 rounded-lg p-4 text-sm text-gray-400">
-        <strong className="text-gray-300">Note:</strong> Categories are seeded during initial setup. 
-        You can rename them or change their display order, but the slugs remain constant for data integrity.
+        <strong className="text-gray-300">Tip:</strong> Drag the handle on the left to reorder categories. 
+        The order affects how categories appear in the app and admin interface.
       </div>
     </div>
   );
 };
 
 // =============================================================================
-// TAB: EQUIPMENT TYPES
+// TAB: EQUIPMENT TYPES (with Drag-and-Drop)
 // =============================================================================
+
+// Sortable Equipment Type Row Component
+const SortableEquipmentTypeRow: React.FC<{
+  type: EquipmentType;
+  getCategoryName: (categoryId?: string, categorySlug?: string) => string;
+  getLocationModeLabel: (mode: string) => string;
+  onEdit: () => void;
+  onDelete: () => void;
+  onToggleActive: () => void;
+}> = ({ type, getCategoryName, getLocationModeLabel, onEdit, onDelete, onToggleActive }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: type.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        'hover:bg-gray-700 transition-colors',
+        isDragging && 'bg-gray-600',
+        !type.isActive && 'opacity-60'
+      )}
+    >
+      {/* Drag Handle + Order */}
+      <td className="px-4 py-4 whitespace-nowrap">
+        <div className="flex items-center gap-2">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-600 rounded"
+            title="Drag to reorder"
+          >
+            <GripVertical className="h-4 w-4 text-gray-400" />
+          </button>
+          <span className="text-xs text-gray-500 w-6">{type.displayOrder}</span>
+        </div>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap">
+        <div>
+          <div className="text-sm font-medium text-white">{type.nameEn}</div>
+          <div className="text-sm text-gray-400 font-cairo">{type.nameAr}</div>
+        </div>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap">
+        <Badge variant="secondary" className="bg-gray-600 text-gray-200">
+          {getCategoryName(type.categoryId, type.category)}
+        </Badge>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap">
+        <div className="flex items-center gap-2">
+          {type.locationMode === 'single' && <MapPin className="h-4 w-4 text-gray-400" />}
+          {type.locationMode === 'from_to' && <Navigation className="h-4 w-4 text-gray-400" />}
+          {type.locationMode === 'none' && <X className="h-4 w-4 text-gray-400" />}
+          <span className="text-sm text-gray-300">{getLocationModeLabel(type.locationMode)}</span>
+        </div>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap">
+        <span className="text-sm text-gray-300">{type.attributes?.length || 0}</span>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap text-center">
+        <button
+          onClick={onToggleActive}
+          className={cn(
+            'inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors',
+            type.isActive
+              ? 'bg-green-900/50 text-green-300 hover:bg-green-900/70'
+              : 'bg-red-900/50 text-red-300 hover:bg-red-900/70'
+          )}
+        >
+          {type.isActive ? <><Eye className="h-3 w-3" />Active</> : <><EyeOff className="h-3 w-3" />Hidden</>}
+        </button>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={onEdit}
+            variant="ghost"
+            size="sm"
+            className="text-[#0073E6] hover:text-[#0056B3] hover:bg-blue-900"
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button
+            onClick={onDelete}
+            variant="ghost"
+            size="sm"
+            className="text-red-400 hover:text-red-300 hover:bg-red-900"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 const EquipmentTypesTab: React.FC = () => {
   const isRTL = false;
 
   const [equipmentTypes, setEquipmentTypes] = useState<EquipmentType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reordering, setReordering] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState<EquipmentCategory[]>([]);
@@ -407,11 +764,26 @@ const EquipmentTypesTab: React.FC = () => {
     name_ur: '',
     categoryId: '',
     location_mode: 'single',
+    requires_support_equipment: false,
+    support_requirements: [],
     attributes: []
   });
+  
+  const [availableSupportTypes, setAvailableSupportTypes] = useState<EquipmentType[]>([]);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const validateField = (field: string, value: string): string | undefined => {
     switch (field) {
@@ -474,7 +846,12 @@ const EquipmentTypesTab: React.FC = () => {
         equipmentTypeService.getAllCategories()
       ]);
       
-      setEquipmentTypes(typesResponse.data || []);
+      // Sort by displayOrder only
+      const sortedTypes = (typesResponse.data || []).sort((a, b) => 
+        (a.displayOrder || 0) - (b.displayOrder || 0)
+      );
+      
+      setEquipmentTypes(sortedTypes);
       setCategories(categoriesResponse || []);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -483,17 +860,65 @@ const EquipmentTypesTab: React.FC = () => {
     }
   };
 
-  const filteredTypes = equipmentTypes.filter(type => {
-    const matchesSearch = !searchTerm || 
-      type.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      type.nameAr.includes(searchTerm);
-    
-    const matchesCategory = !selectedCategory || 
-      type.categoryId === selectedCategory ||
-      type.category === selectedCategory;
-    
-    return matchesSearch && matchesCategory;
-  });
+  // Filter types for display
+  const filteredTypes = React.useMemo(() => {
+    return equipmentTypes.filter(type => {
+      const matchesSearch = !searchTerm || 
+        type.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        type.nameAr.includes(searchTerm);
+      
+      const matchesCategory = !selectedCategory || 
+        type.categoryId === selectedCategory ||
+        type.category === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [equipmentTypes, searchTerm, selectedCategory]);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = filteredTypes.findIndex((t) => t.id === active.id);
+      const newIndex = filteredTypes.findIndex((t) => t.id === over.id);
+
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const reorderedTypes = arrayMove(filteredTypes, oldIndex, newIndex);
+      
+      // Update display order values for all reordered types
+      const updatedTypes = reorderedTypes.map((type, index) => ({
+        ...type,
+        displayOrder: index + 1,
+      }));
+
+      // Update state optimistically
+      setEquipmentTypes(prev => {
+        // Replace filtered types with updated ones, keep others unchanged
+        const filteredIds = new Set(filteredTypes.map(t => t.id));
+        const otherTypes = prev.filter(t => !filteredIds.has(t.id));
+        return [...otherTypes, ...updatedTypes].sort((a, b) => 
+          (a.displayOrder || 0) - (b.displayOrder || 0)
+        );
+      });
+
+      // Save to backend
+      try {
+        setReordering(true);
+        const updates = updatedTypes.map((type) => ({
+          id: type.id,
+          displayOrder: type.displayOrder,
+        }));
+        await equipmentTypeService.updateDisplayOrder(updates);
+      } catch (err) {
+        console.error('Failed to save order:', err);
+        // Revert on error
+        await loadData();
+      } finally {
+        setReordering(false);
+      }
+    }
+  };
 
   const handleInputChange = (field: keyof EquipmentTypeFormData, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -533,6 +958,36 @@ const EquipmentTypesTab: React.FC = () => {
     }));
   };
 
+  // Support Equipment helper functions
+  const addSupportRequirement = () => {
+    const newRequirement: SupportRequirementFormData = {
+      id: Date.now().toString(),
+      supportEquipmentTypeId: '',
+      quantity: 1,
+      isRequired: true
+    };
+    setForm(prev => ({
+      ...prev,
+      support_requirements: [...prev.support_requirements, newRequirement]
+    }));
+  };
+
+  const removeSupportRequirement = (index: number) => {
+    setForm(prev => ({
+      ...prev,
+      support_requirements: prev.support_requirements.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateSupportRequirement = (index: number, field: keyof SupportRequirementFormData, value: any) => {
+    setForm(prev => ({
+      ...prev,
+      support_requirements: prev.support_requirements.map((req, i) => 
+        i === index ? { ...req, [field]: value } : req
+      )
+    }));
+  };
+
   const handleOptionsInputChange = (attributeIndex: number, value: string) => {
     setForm(prev => ({
       ...prev,
@@ -548,13 +1003,23 @@ const EquipmentTypesTab: React.FC = () => {
     }));
   };
 
-  const openAddModal = () => {
+  const openAddModal = async () => {
+    // Load available support equipment types
+    try {
+      const supportTypes = await equipmentTypeService.getAvailableSupportEquipmentTypes();
+      setAvailableSupportTypes(supportTypes);
+    } catch (err) {
+      console.error('Failed to load support types:', err);
+    }
+    
     setForm({
       name_en: '',
       name_ar: '',
       name_ur: '',
       categoryId: '',
       location_mode: 'single',
+      requires_support_equipment: false,
+      support_requirements: [],
       attributes: []
     });
     setErrors({});
@@ -564,13 +1029,28 @@ const EquipmentTypesTab: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (type: EquipmentType) => {
+  const openEditModal = async (type: EquipmentType) => {
+    // Load available support equipment types (excluding the current type)
+    try {
+      const supportTypes = await equipmentTypeService.getAvailableSupportEquipmentTypes(type.id);
+      setAvailableSupportTypes(supportTypes);
+    } catch (err) {
+      console.error('Failed to load support types:', err);
+    }
+    
     setForm({
       name_en: type.nameEn,
       name_ar: type.nameAr,
       name_ur: type.nameUr || '',
       categoryId: type.categoryId || '',
       location_mode: type.locationMode,
+      requires_support_equipment: type.requiresSupportEquipment || false,
+      support_requirements: (type.supportRequirements || []).map(req => ({
+        id: req.id,
+        supportEquipmentTypeId: req.supportEquipmentTypeId,
+        quantity: req.quantity,
+        isRequired: req.isRequired
+      })),
       attributes: (type.attributes || []).map(attr => {
         const optionsArray = attr.options?.map(opt => 
           typeof opt === 'string' ? opt : opt.value
@@ -605,6 +1085,16 @@ const EquipmentTypesTab: React.FC = () => {
       // Find category to get slug for backward compatibility
       const selectedCat = categories.find(c => c.id === form.categoryId);
       
+      // Validate support requirements if enabled
+      if (form.requires_support_equipment) {
+        const invalidReqs = form.support_requirements.filter(r => !r.supportEquipmentTypeId);
+        if (invalidReqs.length > 0) {
+          setErrors(prev => ({ ...prev, submit: 'Please select an equipment type for all support requirements' }));
+          setFormLoading(false);
+          return;
+        }
+      }
+      
       const apiData: CreateEquipmentTypeData = {
         nameEn: form.name_en,
         nameAr: form.name_ar,
@@ -612,6 +1102,17 @@ const EquipmentTypesTab: React.FC = () => {
         categoryId: form.categoryId,
         category: selectedCat?.slug || '', // For backward compatibility
         locationMode: form.location_mode,
+        requiresSupportEquipment: form.requires_support_equipment,
+        supportRequirements: form.requires_support_equipment
+          ? form.support_requirements
+              .filter(req => req.supportEquipmentTypeId)
+              .map((req, index) => ({
+                supportEquipmentTypeId: req.supportEquipmentTypeId,
+                quantity: req.quantity,
+                isRequired: req.isRequired,
+                displayOrder: index
+              }))
+          : [],
         attributes: form.attributes
           .filter(attr => attr.label.trim())
           .map(attr => ({
@@ -649,6 +1150,15 @@ const EquipmentTypesTab: React.FC = () => {
     }
   };
 
+  const handleToggleActive = async (type: EquipmentType) => {
+    try {
+      await equipmentTypeService.toggleActive(type.id);
+      loadData();
+    } catch (error: any) {
+      console.error('Failed to toggle active status:', error);
+    }
+  };
+
   const getCategoryName = (categoryId?: string, categorySlug?: string) => {
     if (categoryId) {
       const cat = categories.find(c => c.id === categoryId);
@@ -672,15 +1182,23 @@ const EquipmentTypesTab: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-lg font-semibold text-white">Equipment Types</h2>
-          <p className="text-sm text-gray-400">Manage equipment types and their attributes</p>
+          <p className="text-sm text-gray-400">Drag to reorder equipment types. Changes are saved automatically.</p>
         </div>
-        <Button
-          onClick={openAddModal}
-          className="bg-[#FFCC00] hover:bg-[#E6B800] text-black font-medium px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Add New Type
-        </Button>
+        <div className="flex items-center gap-4">
+          {reordering && (
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Saving order...
+            </div>
+          )}
+          <Button
+            onClick={openAddModal}
+            className="bg-[#FFCC00] hover:bg-[#E6B800] text-black font-medium px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add New Type
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -713,190 +1231,258 @@ const EquipmentTypesTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Location Mode</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Attributes</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {loading ? (
-                <>
-                  <TableRowSkeleton />
-                  <TableRowSkeleton />
-                  <TableRowSkeleton />
-                </>
-              ) : filteredTypes.length === 0 ? (
+      {/* Equipment Types Table */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-700">
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <Settings className="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 className="mt-2 text-sm font-medium text-white">No equipment types</h3>
-                    <p className="mt-1 text-sm text-gray-400">Get started by adding a new equipment type</p>
-                  </td>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-16">Order</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Category</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Location Mode</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-20">Attrs</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase w-24">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-24">Actions</th>
                 </tr>
-              ) : (
-                filteredTypes.map((type) => (
-                  <tr key={type.id} className="hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-white">{type.nameEn}</div>
-                        <div className="text-sm text-gray-400 font-cairo">{type.nameAr}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant="secondary" className="bg-gray-600 text-gray-200">
-                        {getCategoryName(type.categoryId, type.category)}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        {type.locationMode === 'single' && <MapPin className="h-4 w-4 text-gray-400" />}
-                        {type.locationMode === 'from_to' && <Navigation className="h-4 w-4 text-gray-400" />}
-                        {type.locationMode === 'none' && <X className="h-4 w-4 text-gray-400" />}
-                        <span className="text-sm text-gray-300">{getLocationModeLabel(type.locationMode)}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-300">{type.attributes?.length || 0} attributes</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {new Date(type.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          onClick={() => openEditModal(type)}
-                          variant="ghost"
-                          size="sm"
-                          className="text-[#0073E6] hover:text-[#0056B3] hover:bg-blue-900"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          onClick={() => handleDelete(type)}
-                          variant="ghost"
-                          size="sm"
-                          className="text-red-400 hover:text-red-300 hover:bg-red-900"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {loading ? (
+                  <>
+                    <TableRowSkeleton />
+                    <TableRowSkeleton />
+                    <TableRowSkeleton />
+                  </>
+                ) : filteredTypes.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-12 text-center">
+                      <Settings className="mx-auto h-12 w-12 text-gray-400" />
+                      <h3 className="mt-2 text-sm font-medium text-white">No equipment types</h3>
+                      <p className="mt-1 text-sm text-gray-400">Get started by adding a new equipment type</p>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  <SortableContext
+                    items={filteredTypes.map((t) => t.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {filteredTypes.map((type) => (
+                      <SortableEquipmentTypeRow
+                        key={type.id}
+                        type={type}
+                        getCategoryName={getCategoryName}
+                        getLocationModeLabel={getLocationModeLabel}
+                        onEdit={() => openEditModal(type)}
+                        onDelete={() => handleDelete(type)}
+                        onToggleActive={() => handleToggleActive(type)}
+                      />
+                    ))}
+                  </SortableContext>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </DndContext>
 
-      {/* Add/Edit Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={isEditMode ? 'Edit Equipment Type' : 'Add New Equipment Type'}
-        size="md"
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <ErrorBanner 
-            message={errors.submit} 
-            onDismiss={() => setErrors(prev => ({ ...prev, submit: undefined }))} 
-          />
-
-          {/* Names */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                English Name <span className="text-red-400">*</span>
-              </label>
-              <Input
-                type="text"
-                value={form.name_en}
-                onChange={(e) => handleInputChange('name_en', e.target.value)}
-                onBlur={() => handleBlur('name_en')}
-                className={cn(
-                  "dark:bg-gray-800 dark:border-gray-700 dark:text-white",
-                  touched.name_en && errors.name_en && "border-red-500"
-                )}
-                placeholder="Enter English name"
-              />
-              {touched.name_en && <FieldError message={errors.name_en} />}
+      {/* Add/Edit Modal - Matching EquipmentFormModal structure */}
+      <Dialog open={isModalOpen} onOpenChange={(open) => !open && setIsModalOpen(false)}>
+        <DialogContent
+          className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700"
+        >
+          {/* Header */}
+          <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-awnash-primary/10 flex items-center justify-center">
+                <Settings className="h-5 w-5 text-awnash-primary" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-semibold text-white">
+                  {isEditMode ? "Edit Equipment Type" : "Add New Equipment Type"}
+                </DialogTitle>
+                <p className="text-sm text-gray-400 mt-0.5">
+                  Enter the equipment type details below
+                </p>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Arabic Name <span className="text-red-400">*</span>
-              </label>
-              <Input
-                type="text"
-                value={form.name_ar}
-                onChange={(e) => handleInputChange('name_ar', e.target.value)}
-                onBlur={() => handleBlur('name_ar')}
-                className={cn(
-                  "dark:bg-gray-800 dark:border-gray-700 dark:text-white font-cairo",
-                  touched.name_ar && errors.name_ar && "border-red-500"
-                )}
-                placeholder="Enter Arabic name"
+          </DialogHeader>
+
+          {/* Alerts */}
+          {errors.submit && <Alert type="error" message={errors.submit} />}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Names - English and Arabic in two columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField label="English Name" required>
+                <StyledInput
+                  value={form.name_en}
+                  onChange={(e) => handleInputChange('name_en', e.target.value)}
+                  onBlur={() => handleBlur('name_en')}
+                  placeholder="Enter English name"
+                  className={touched.name_en && errors.name_en ? "border-red-500" : ""}
+                />
+                {touched.name_en && errors.name_en && <span className="text-red-400 text-xs mt-1 block">{errors.name_en}</span>}
+              </FormField>
+
+              <FormField label="Arabic Name" required>
+                <StyledInput
+                  value={form.name_ar}
+                  onChange={(e) => handleInputChange('name_ar', e.target.value)}
+                  onBlur={() => handleBlur('name_ar')}
+                  placeholder="Enter Arabic name"
+                  dir="rtl"
+                  className={cn("font-cairo", touched.name_ar && errors.name_ar ? "border-red-500" : "")}
+                />
+                {touched.name_ar && errors.name_ar && <span className="text-red-400 text-xs mt-1 block">{errors.name_ar}</span>}
+              </FormField>
+            </div>
+
+            {/* Urdu Name */}
+            <FormField label="Urdu Name" hint="Optional">
+              <StyledInput
+                value={form.name_ur}
+                onChange={(e) => handleInputChange('name_ur', e.target.value)}
+                placeholder="Enter Urdu name"
                 dir="rtl"
+                className="font-cairo"
               />
-              {touched.name_ar && <FieldError message={errors.name_ar} />}
+            </FormField>
+
+            {/* Two Column Layout for Category and Location Mode */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Category */}
+              <FormField label="Category" required>
+                <StyledSelect
+                  value={form.categoryId}
+                  onChange={(e) => handleInputChange('categoryId', e.target.value)}
+                  onBlur={() => handleBlur('categoryId')}
+                >
+                  <option value="">Select category</option>
+                  {categories.filter(c => c.isActive).map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.nameEn}
+                    </option>
+                  ))}
+                </StyledSelect>
+                {touched.categoryId && errors.categoryId && <span className="text-red-400 text-xs mt-1 block">{errors.categoryId}</span>}
+              </FormField>
+
+              {/* Location Mode */}
+              <FormField label="Location Mode" required>
+                <StyledSelect
+                  value={form.location_mode}
+                  onChange={(e) => handleInputChange('location_mode', e.target.value)}
+                >
+                  {locationModes.map((mode) => (
+                    <option key={mode.value} value={mode.value}>
+                      {mode.label}
+                    </option>
+                  ))}
+                </StyledSelect>
+              </FormField>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Urdu Name</label>
-            <Input
-              type="text"
-              value={form.name_ur}
-              onChange={(e) => handleInputChange('name_ur', e.target.value)}
-              className="dark:bg-gray-800 dark:border-gray-700 dark:text-white font-cairo"
-              placeholder="Enter Urdu name (optional)"
-              dir="rtl"
-            />
-          </div>
+          {/* Support Equipment Section */}
+          <div className="space-y-4 border border-gray-700 rounded-xl p-4 bg-gray-900/20">
+            <div className="flex items-center gap-3">
+              <Switch
+                checked={form.requires_support_equipment}
+                onCheckedChange={(checked) => {
+                  handleInputChange('requires_support_equipment', checked);
+                  if (!checked) {
+                    handleInputChange('support_requirements', []);
+                  }
+                }}
+              />
+              <label className="text-sm font-medium text-gray-300">
+                Requires Support Equipment
+              </label>
+            </div>
+            
+            {form.requires_support_equipment && (
+              <div className="space-y-4 mt-4">
+                <p className="text-xs text-gray-500">
+                  Specify equipment required to operate or transport this equipment type
+                </p>
+                
+                {form.support_requirements.length === 0 && (
+                  <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-xl">
+                    <Settings className="mx-auto h-6 w-6 text-gray-500" />
+                    <p className="text-sm text-gray-500 mt-2">No support equipment added yet</p>
+                  </div>
+                )}
 
-          {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Category <span className="text-red-400">*</span>
-            </label>
-            <SearchableSelect
-              value={form.categoryId}
-              onChange={(value) => handleInputChange('categoryId', value)}
-              onBlur={() => handleBlur('categoryId')}
-              options={categories.filter(c => c.isActive).map((category) => ({
-                value: category.id,
-                label: category.nameEn,
-                labelAr: category.nameAr,
-              }))}
-              placeholder="Select category"
-              searchPlaceholder="Search categories..."
-              error={!!(touched.categoryId && errors.categoryId)}
-            />
-            {touched.categoryId && <FieldError message={errors.categoryId} />}
-          </div>
+                {form.support_requirements.map((requirement, index) => (
+                  <div 
+                    key={requirement.id} 
+                    className="border border-gray-600 rounded-lg p-3 space-y-3 bg-gray-800/50"
+                  >
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs text-gray-400">Equipment {index + 1}</span>
+                      <Button
+                        type="button"
+                        onClick={() => removeSupportRequirement(index)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-6 w-6 p-0"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <Select
+                      value={requirement.supportEquipmentTypeId}
+                      onChange={(e) => updateSupportRequirement(index, 'supportEquipmentTypeId', e.target.value)}
+                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                    >
+                      <option value="">Select equipment type...</option>
+                      {availableSupportTypes.map((type) => (
+                        <option key={type.id} value={type.id}>{type.nameEn}</option>
+                      ))}
+                    </Select>
 
-          {/* Location Mode */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Location Mode <span className="text-red-400">*</span>
-            </label>
-            <Select
-              value={form.location_mode}
-              onChange={(e) => handleInputChange('location_mode', e.target.value)}
-              className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            >
-              {locationModes.map((mode) => (
-                <option key={mode.value} value={mode.value}>{mode.label}</option>
-              ))}
-            </Select>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs text-gray-400 mb-1 block">Quantity</label>
+                        <Input
+                          type="number"
+                          min={1}
+                          value={requirement.quantity}
+                          onChange={(e) => updateSupportRequirement(index, 'quantity', parseInt(e.target.value) || 1)}
+                          className="dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        />
+                      </div>
+                      <div className="flex items-end pb-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <Toggle
+                            checked={requirement.isRequired}
+                            onChange={(checked) => updateSupportRequirement(index, 'isRequired', checked)}
+                          />
+                          <span className="text-xs text-gray-400">Required</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <Button
+                  type="button"
+                  onClick={addSupportRequirement}
+                  variant="outline"
+                  size="sm"
+                  className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-white w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Support Equipment
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Attributes */}
@@ -990,28 +1576,37 @@ const EquipmentTypesTab: React.FC = () => {
             ))}
           </div>
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-600">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsModalOpen(false)}
-              disabled={formLoading}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={formLoading}
-              className="bg-[#FFCC00] hover:bg-[#E6B800] text-black font-medium"
-            >
-              {formLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              {isEditMode ? 'Update' : 'Add'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsModalOpen(false)}
+                disabled={formLoading}
+                className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={formLoading}
+                className="bg-awnash-primary hover:bg-awnash-primary-hover text-black font-medium"
+              >
+                {formLoading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {isEditMode ? "Updating..." : "Adding..."}
+                  </span>
+                ) : isEditMode ? (
+                  "Update Equipment Type"
+                ) : (
+                  "Add Equipment Type"
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -1057,7 +1652,11 @@ const MarketNamingTab: React.FC = () => {
         equipmentTypeService.getAllCategories(),
       ]);
 
-      setEquipmentTypes(typesResponse.data || []);
+      // Sort by displayOrder
+      const sortedTypes = (typesResponse.data || []).sort((a, b) => 
+        (a.displayOrder || 0) - (b.displayOrder || 0)
+      );
+      setEquipmentTypes(sortedTypes);
       setCategories(categoriesResponse || []);
     } catch (err) {
       console.error('Failed to fetch data:', err);
@@ -1346,7 +1945,7 @@ const MarketNamingTab: React.FC = () => {
 // =============================================================================
 
 export default function EquipmentConfigPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('categories');
+  const [activeTab, setActiveTab] = useState<TabType>('types');
 
   const tabs = [
     { id: 'categories' as TabType, label: 'Categories', icon: Layers },

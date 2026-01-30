@@ -1,13 +1,21 @@
+import { transformKeysToCamelCase, transformKeysToSnakeCase } from '@/lib/caseTransform';
+
+export interface EquipmentAttributeValue {
+  typeAttributeId: string;
+  value: string;
+}
+
 export interface EquipmentFormData {
   name: string;
   description: string;
   equipmentTypeId: string;
-  size: string;
+  size?: string; // Deprecated: use attributes instead
   city: string;
   status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked' | 'pending' | 'rejected';
   imageUrls: string[];
   dailyRate: number;
   ownerId: string;
+  attributes?: EquipmentAttributeValue[];
 }
 
 export interface Equipment {
@@ -16,7 +24,7 @@ export interface Equipment {
   name: string;
   description: string;
   equipmentTypeId: string;
-  size: string;
+  size?: string; // Deprecated: use attributes instead
   city: string;
   status: 'active' | 'inactive' | 'suspended' | 'maintenance' | 'booked' | 'pending' | 'rejected';
   imageUrls: string[];
@@ -37,6 +45,7 @@ export interface Equipment {
     nameAr: string;
     nameUr?: string;
   };
+  attributes?: EquipmentAttributeValue[];
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
@@ -44,25 +53,51 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/a
 export class EquipmentService {
   private baseUrl = API_BASE_URL;
 
-  async createEquipment(data: EquipmentFormData): Promise<Equipment> {
-    const response = await fetch(`${this.baseUrl}/equipment`, {
-      method: 'POST',
+  private async makeRequest<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    
+    // Transform request body to snake_case if present
+    let body = options.body;
+    if (body && typeof body === 'string') {
+      try {
+        const parsed = JSON.parse(body);
+        body = JSON.stringify(transformKeysToSnakeCase(parsed));
+      } catch {
+        // Not JSON, use as-is
+      }
+    }
+    
+    const response = await fetch(url, {
+      ...options,
+      body,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        ...options.headers,
       },
-      credentials: 'include',
-      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      const error = new Error(errorData.message || 'Failed to create equipment');
+      const errorData = await response.json().catch(() => ({}));
+      const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
       (error as any).status = response.status;
       (error as any).statusCode = response.status;
       throw error;
     }
 
-    return response.json();
+    const data = await response.json();
+    return transformKeysToCamelCase(data) as T;
+  }
+
+  async createEquipment(data: EquipmentFormData): Promise<Equipment> {
+    const result = await this.makeRequest<any>('/equipment', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return result.data || result;
   }
 
   async getEquipment(params?: {
@@ -85,24 +120,9 @@ export class EquipmentService {
       });
     }
 
-    const response = await fetch(`${this.baseUrl}/equipment?${queryParams.toString()}`, {
+    const result = await this.makeRequest<any>(`/equipment?${queryParams.toString()}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      const error = new Error(errorData.message || 'Failed to fetch equipment');
-      // Add status code to error object for better error handling
-      (error as any).status = response.status;
-      (error as any).statusCode = response.status;
-      throw error;
-    }
-
-    const result = await response.json();
     
     // Handle the updated response structure: { data: [...], pagination: {...}, success: boolean, message: string }
     if (result.data && Array.isArray(result.data)) {
@@ -136,86 +156,56 @@ export class EquipmentService {
   }
 
   async getEquipmentById(id: string): Promise<Equipment | null> {
-    const response = await fetch(`${this.baseUrl}/equipment/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) {
+    try {
+      const result = await this.makeRequest<any>(`/equipment/${id}`, {
+        method: 'GET',
+      });
+      return result.data || result;
+    } catch (error: any) {
+      if (error.status === 404) {
         return null;
       }
-      const errorData = await response.json();
-      const error = new Error(errorData.message || 'Failed to fetch equipment');
-      (error as any).status = response.status;
-      (error as any).statusCode = response.status;
       throw error;
     }
-
-    const result = await response.json();
-    return result.data || result;
   }
 
   async updateEquipment(id: string, data: EquipmentFormData): Promise<Equipment> {
-    const response = await fetch(`${this.baseUrl}/equipment/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      
+    try {
+      const result = await this.makeRequest<any>(`/equipment/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+      return result.data || result;
+    } catch (error: any) {
       // Handle specific error cases
-      if (response.status === 403) {
+      if (error.status === 403) {
         throw new Error('You can only update your own equipment. This equipment belongs to another user.');
-      } else if (response.status === 404) {
+      } else if (error.status === 404) {
         throw new Error('Equipment not found. It may have been deleted or moved.');
-      } else if (response.status === 401) {
+      } else if (error.status === 401) {
         throw new Error('You are not authorized to perform this action. Please log in again.');
-      } else if (response.status === 400) {
-        // Handle validation errors
-        const message = Array.isArray(errorData.message) 
-          ? errorData.message.join(', ') 
-          : errorData.message;
-        throw new Error(`Validation failed: ${message || 'Invalid data provided'}`);
-      } else {
-        throw new Error(errorData.message || 'Failed to update equipment');
+      } else if (error.status === 400) {
+        throw new Error(`Validation failed: ${error.message || 'Invalid data provided'}`);
       }
+      throw error;
     }
-
-    const result = await response.json();
-    return result.data || result;
   }
 
   async deleteEquipment(id: string): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/equipment/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      
+    try {
+      await this.makeRequest<any>(`/equipment/${id}`, {
+        method: 'DELETE',
+      });
+    } catch (error: any) {
       // Handle specific error cases
-      if (response.status === 403) {
+      if (error.status === 403) {
         throw new Error('You can only delete your own equipment. This equipment belongs to another user.');
-      } else if (response.status === 404) {
+      } else if (error.status === 404) {
         throw new Error('Equipment not found. It may have been deleted or moved.');
-      } else if (response.status === 401) {
+      } else if (error.status === 401) {
         throw new Error('You are not authorized to perform this action. Please log in again.');
-      } else {
-        throw new Error(errorData.message || 'Failed to delete equipment');
       }
+      throw error;
     }
   }
 }

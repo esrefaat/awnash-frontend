@@ -1,153 +1,39 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
+"use client"
 
-interface TooltipProviderProps {
-  children: React.ReactNode;
-}
+import * as React from "react"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import { useTranslation } from "react-i18next"
 
-interface TooltipProps {
-  children: React.ReactNode;
-}
+import { cn } from "@/lib/utils"
 
-interface TooltipTriggerProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
-  children: React.ReactNode;
-}
+const TooltipProvider = TooltipPrimitive.Provider
 
-interface TooltipContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-  side?: 'top' | 'right' | 'bottom' | 'left';
-}
+const Tooltip = TooltipPrimitive.Root
 
-interface TooltipContextType {
-  isVisible: boolean;
-  setIsVisible: (visible: boolean) => void;
-}
+const TooltipTrigger = TooltipPrimitive.Trigger
 
-const TooltipContext = React.createContext<TooltipContextType | null>(null);
-
-const TooltipProvider: React.FC<TooltipProviderProps> = ({ children }) => {
-  return <>{children}</>;
-};
-
-const Tooltip: React.FC<TooltipProps> = ({ children }) => {
-  const [isVisible, setIsVisible] = React.useState(false);
+const TooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => {
+  const { i18n } = useTranslation()
+  const isRTL = i18n.language === "ar"
 
   return (
-    <TooltipContext.Provider value={{ isVisible, setIsVisible }}>
-      <div className="relative inline-block">
-        {children}
-      </div>
-    </TooltipContext.Provider>
-  );
-};
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Content
+        ref={ref}
+        dir={isRTL ? "rtl" : "ltr"}
+        sideOffset={sideOffset}
+        className={cn(
+          "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          className
+        )}
+        {...props}
+      />
+    </TooltipPrimitive.Portal>
+  )
+})
+TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ 
-  asChild, 
-  children, 
-  onMouseEnter,
-  onMouseLeave,
-  ...props 
-}) => {
-  const context = React.useContext(TooltipContext);
-  if (!context) {
-    throw new Error('TooltipTrigger must be used within a Tooltip');
-  }
-
-  const { setIsVisible } = context;
-
-  const handleMouseEnter = (e: React.MouseEvent) => {
-    setIsVisible(true);
-    if (typeof onMouseEnter === 'function') {
-      onMouseEnter(e as React.MouseEvent<HTMLDivElement>);
-    }
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent) => {
-    setIsVisible(false);
-    if (typeof onMouseLeave === 'function') {
-      onMouseLeave(e as React.MouseEvent<HTMLDivElement>);
-    }
-  };
-
-  if (asChild && React.isValidElement(children)) {
-    // Only pass DOM-safe props to cloned elements
-    const childProps = children.props as any;
-    const existingMouseEnter = childProps.onMouseEnter;
-    const existingMouseLeave = childProps.onMouseLeave;
-    
-    return React.cloneElement(children, {
-      onMouseEnter: (e: React.MouseEvent) => {
-        handleMouseEnter(e);
-        if (typeof existingMouseEnter === 'function') {
-          existingMouseEnter(e);
-        }
-      },
-      onMouseLeave: (e: React.MouseEvent) => {
-        handleMouseLeave(e);
-        if (typeof existingMouseLeave === 'function') {
-          existingMouseLeave(e);
-        }
-      },
-    } as any);
-  }
-
-  return (
-    <div 
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
-
-const TooltipContent: React.FC<TooltipContentProps> = ({ 
-  className, 
-  children, 
-  side = 'top',
-  ...props 
-}) => {
-  const context = React.useContext(TooltipContext);
-  if (!context) {
-    throw new Error('TooltipContent must be used within a Tooltip');
-  }
-
-  const { isVisible } = context;
-
-  if (!isVisible) return null;
-
-  const sideClasses = {
-    top: 'bottom-full left-1/2 transform -translate-x-1/2 mb-2', 
-    right: 'left-full top-1/2 transform -translate-y-1/2 ml-2',
-    bottom: 'top-full left-1/2 transform -translate-x-1/2 mt-2',
-    left: 'right-full top-1/2 transform -translate-y-1/2 mr-2', 
-  };
-
-  return (
-    <div
-      className={cn(
-        'absolute z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-xs text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95',
-        sideClasses[side],
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
-
-export { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-};
-export type { 
-  TooltipProps, 
-  TooltipContentProps, 
-  TooltipProviderProps, 
-  TooltipTriggerProps 
-}; 
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
