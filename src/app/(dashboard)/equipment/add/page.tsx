@@ -20,6 +20,7 @@ import {
 import { cn } from '@/lib/utils';
 import { EquipmentFormModal } from '@/components/modals/EquipmentFormModal';
 import { equipmentService, Equipment } from '@/services/equipmentService';
+import { equipmentTypeService, EquipmentType } from '@/services/equipmentTypeService';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { InlineErrorPage } from '@/components/InlineErrorPage';
 
@@ -55,6 +56,10 @@ const EquipmentAddPage: React.FC = () => {
     equipmentType: 'all',
     isAvailable: 'all'
   });
+  
+  // Equipment types for filter dropdown
+  const [equipmentTypes, setEquipmentTypes] = useState<EquipmentType[]>([]);
+  const [equipmentTypesLoading, setEquipmentTypesLoading] = useState(true);
   
   // Sort
   const [sortBy, setSortBy] = useState('created_at');
@@ -131,6 +136,24 @@ const EquipmentAddPage: React.FC = () => {
   useEffect(() => {
     fetchEquipment();
   }, [currentPage, filters, sortBy, sortOrder]);
+
+  // Fetch equipment types for filter dropdown (API returns sorted by displayOrder)
+  useEffect(() => {
+    const fetchEquipmentTypes = async () => {
+      try {
+        setEquipmentTypesLoading(true);
+        const response = await equipmentTypeService.getAll({ limit: 100 });
+        setEquipmentTypes(response.data || []);
+      } catch (err) {
+        console.error('Failed to fetch equipment types:', err);
+        setEquipmentTypes([]);
+      } finally {
+        setEquipmentTypesLoading(false);
+      }
+    };
+    
+    fetchEquipmentTypes();
+  }, []);
 
 
 
@@ -314,18 +337,14 @@ const EquipmentAddPage: React.FC = () => {
                 value={filters.equipmentType}
                 onChange={(e) => setFilters(prev => ({ ...prev, equipmentType: e.target.value }))}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={equipmentTypesLoading}
               >
                 <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
-                <option value="excavator">{isRTL ? 'حفار' : 'Excavator'}</option>
-                <option value="bulldozer">{isRTL ? 'بلدوزر' : 'Bulldozer'}</option>
-                <option value="crane">{isRTL ? 'رافعة' : 'Crane'}</option>
-                <option value="forklift">{isRTL ? 'رافعة شوكية' : 'Forklift'}</option>
-                <option value="truck">{isRTL ? 'شاحنة' : 'Truck'}</option>
-                <option value="generator">{isRTL ? 'مولد' : 'Generator'}</option>
-                <option value="compressor">{isRTL ? 'ضاغط' : 'Compressor'}</option>
-                <option value="welder">{isRTL ? 'لحام' : 'Welder'}</option>
-                <option value="tools">{isRTL ? 'أدوات' : 'Tools'}</option>
-                <option value="other">{isRTL ? 'أخرى' : 'Other'}</option>
+                {equipmentTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {isRTL ? type.nameAr : type.nameEn}
+                  </option>
+                ))}
               </select>
             </div>
 

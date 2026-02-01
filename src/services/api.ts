@@ -232,6 +232,52 @@ class ApiService {
   ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, options, true);
   }
+
+  /**
+   * Upload a file using multipart form data
+   */
+  async upload<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
+    const url = `${this.baseUrl}${endpoint}`;
+
+    const config: RequestInit = {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+      // Don't set Content-Type - browser will set it with boundary for FormData
+    };
+
+    try {
+      const response = await fetch(url, config);
+      
+      if (response.status === 401) {
+        console.warn('Unauthorized request, redirecting to login');
+        this.handleUnauthorized();
+        throw new ApiError('Session expired. Please log in again.', 401);
+      }
+
+      if (!response.ok) {
+        const errorMessage = await this.parseErrorResponse(response);
+        throw new ApiError(errorMessage, response.status);
+      }
+
+      const text = await response.text();
+      if (!text) {
+        return { data: null as T, success: true };
+      }
+
+      const data = JSON.parse(text);
+      return transformKeysToCamelCase(data) as ApiResponse<T>;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      console.error('Upload request failed:', error);
+      throw new ApiError(
+        error instanceof Error ? error.message : 'Upload failed',
+        0
+      );
+    }
+  }
 }
 
 export const apiService = new ApiService();

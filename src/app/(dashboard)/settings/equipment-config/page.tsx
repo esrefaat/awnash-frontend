@@ -5,8 +5,10 @@ import {
   Plus, Edit, Trash2, Search, Settings, 
   MapPin, Navigation, X, AlertCircle,
   Edit2, Check, Loader2, Eye, EyeOff,
-  GripVertical, Save, Layers, Tag, Globe, ChevronDown
+  GripVertical, Save, Layers, Tag, Globe, ChevronDown,
+  Upload, Image as ImageIcon, Link as LinkIcon
 } from 'lucide-react';
+import { mediaService } from '@/services/mediaService';
 import { cn } from '@/lib/utils';
 import { 
   equipmentTypeService, 
@@ -77,6 +79,8 @@ interface EquipmentTypeFormData {
   requires_support_equipment: boolean;
   support_requirements: SupportRequirementFormData[];
   attributes: EquipmentTypeAttribute[];
+  imageUrl: string;
+  imageFile: File | null;
 }
 
 interface FormErrors {
@@ -684,6 +688,23 @@ const SortableEquipmentTypeRow: React.FC<{
           <span className="text-xs text-gray-500 w-6">{type.displayOrder}</span>
         </div>
       </td>
+      {/* Image */}
+      <td className="px-4 py-4 whitespace-nowrap">
+        {type.imageUrl ? (
+          <img 
+            src={type.imageUrl} 
+            alt={type.nameEn} 
+            className="h-10 w-10 rounded object-cover bg-gray-700"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        ) : (
+          <div className="h-10 w-10 rounded bg-gray-700 flex items-center justify-center">
+            <ImageIcon className="h-5 w-5 text-gray-500" />
+          </div>
+        )}
+      </td>
       <td className="px-4 py-4 whitespace-nowrap">
         <div>
           <div className="text-sm font-medium text-white">{type.nameEn}</div>
@@ -766,8 +787,14 @@ const EquipmentTypesTab: React.FC = () => {
     location_mode: 'single',
     requires_support_equipment: false,
     support_requirements: [],
-    attributes: []
+    attributes: [],
+    imageUrl: '',
+    imageFile: null,
   });
+  
+  const [imageInputMode, setImageInputMode] = useState<'url' | 'upload'>('upload');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   const [availableSupportTypes, setAvailableSupportTypes] = useState<EquipmentType[]>([]);
 
@@ -846,12 +873,8 @@ const EquipmentTypesTab: React.FC = () => {
         equipmentTypeService.getAllCategories()
       ]);
       
-      // Sort by displayOrder only
-      const sortedTypes = (typesResponse.data || []).sort((a, b) => 
-        (a.displayOrder || 0) - (b.displayOrder || 0)
-      );
-      
-      setEquipmentTypes(sortedTypes);
+      // API returns sorted by displayOrder
+      setEquipmentTypes(typesResponse.data || []);
       setCategories(categoriesResponse || []);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -1020,8 +1043,11 @@ const EquipmentTypesTab: React.FC = () => {
       location_mode: 'single',
       requires_support_equipment: false,
       support_requirements: [],
-      attributes: []
+      attributes: [],
+      imageUrl: '',
+      imageFile: null,
     });
+    setImageInputMode('upload');
     setErrors({});
     setTouched({});
     setIsEditMode(false);
@@ -1063,8 +1089,11 @@ const EquipmentTypesTab: React.FC = () => {
           options: optionsArray,
           optionsInput: optionsArray.join(', ')
         };
-      })
+      }),
+      imageUrl: type.imageUrl || '',
+      imageFile: null,
     });
+    setImageInputMode(type.imageUrl ? 'url' : 'upload');
     setErrors({});
     setTouched({});
     setIsEditMode(true);
@@ -1094,6 +1123,25 @@ const EquipmentTypesTab: React.FC = () => {
           return;
         }
       }
+
+      // Handle image upload if a file was selected
+      let finalImageUrl = form.imageUrl;
+      if (form.imageFile) {
+        try {
+          setUploadingImage(true);
+          // Use a temporary ID for new types, or the actual ID for edits
+          const contextId = isEditMode && editingType ? editingType.id : 'new';
+          finalImageUrl = await mediaService.upload(form.imageFile, 'equipment-type', contextId);
+        } catch (uploadError: any) {
+          console.error('Failed to upload image:', uploadError);
+          setErrors(prev => ({ ...prev, submit: `Image upload failed: ${uploadError?.message || 'Unknown error'}` }));
+          setFormLoading(false);
+          setUploadingImage(false);
+          return;
+        } finally {
+          setUploadingImage(false);
+        }
+      }
       
       const apiData: CreateEquipmentTypeData = {
         nameEn: form.name_en,
@@ -1113,6 +1161,7 @@ const EquipmentTypesTab: React.FC = () => {
                 displayOrder: index
               }))
           : [],
+        imageUrl: finalImageUrl || undefined,
         attributes: form.attributes
           .filter(attr => attr.label.trim())
           .map(attr => ({
@@ -1243,6 +1292,7 @@ const EquipmentTypesTab: React.FC = () => {
               <thead className="bg-gray-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-16">Order</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-14">Image</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Category</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Location Mode</th>
@@ -1260,7 +1310,7 @@ const EquipmentTypesTab: React.FC = () => {
                   </>
                 ) : filteredTypes.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center">
+                    <td colSpan={8} className="px-6 py-12 text-center">
                       <Settings className="mx-auto h-12 w-12 text-gray-400" />
                       <h3 className="mt-2 text-sm font-medium text-white">No equipment types</h3>
                       <p className="mt-1 text-sm text-gray-400">Get started by adding a new equipment type</p>
@@ -1386,6 +1436,110 @@ const EquipmentTypesTab: React.FC = () => {
                   ))}
                 </StyledSelect>
               </FormField>
+            </div>
+
+            {/* Image Upload Section */}
+            <div className="space-y-4 border border-gray-700 rounded-xl p-4 bg-gray-900/20">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium text-gray-300">
+                  <ImageIcon className="inline-block h-4 w-4 mr-2" />
+                  Equipment Type Image
+                </label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setImageInputMode('upload')}
+                    className={cn(
+                      'px-3 py-1 text-xs rounded-l-lg border transition-colors',
+                      imageInputMode === 'upload'
+                        ? 'bg-awnash-primary text-black border-awnash-primary'
+                        : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
+                    )}
+                  >
+                    <Upload className="inline-block h-3 w-3 mr-1" />
+                    Upload
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageInputMode('url')}
+                    className={cn(
+                      'px-3 py-1 text-xs rounded-r-lg border transition-colors',
+                      imageInputMode === 'url'
+                        ? 'bg-awnash-primary text-black border-awnash-primary'
+                        : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
+                    )}
+                  >
+                    <LinkIcon className="inline-block h-3 w-3 mr-1" />
+                    URL
+                  </button>
+                </div>
+              </div>
+
+              {/* Image Preview */}
+              {(form.imageUrl || form.imageFile) && (
+                <div className="relative w-full h-40 bg-gray-800 rounded-lg overflow-hidden">
+                  <img
+                    src={form.imageFile ? URL.createObjectURL(form.imageFile) : form.imageUrl}
+                    alt="Equipment type preview"
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"%3E%3Cpath stroke="%239CA3AF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4-4a3 3 0 014.3 0l5 5M14.7 14.7L16 13.4a3 3 0 014.3 0L22 15m-3-5a1 1 0 11-2 0 1 1 0 012 0zM6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"%3E%3C/path%3E%3C/svg%3E';
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleInputChange('imageUrl', '');
+                      handleInputChange('imageFile', null);
+                    }}
+                    className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 rounded-full text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+
+              {imageInputMode === 'upload' ? (
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        handleInputChange('imageFile', file);
+                        handleInputChange('imageUrl', ''); // Clear URL when file is selected
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full py-8 border-2 border-dashed border-gray-600 rounded-lg hover:border-awnash-primary transition-colors flex flex-col items-center gap-2"
+                  >
+                    <Upload className="h-8 w-8 text-gray-400" />
+                    <span className="text-sm text-gray-400">Click to upload image</span>
+                    <span className="text-xs text-gray-500">JPG, PNG, WebP, GIF (max 50MB)</span>
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <StyledInput
+                    value={form.imageUrl}
+                    onChange={(e) => {
+                      handleInputChange('imageUrl', e.target.value);
+                      handleInputChange('imageFile', null); // Clear file when URL is entered
+                    }}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Enter a direct link to an image. Make sure it's publicly accessible.
+                  </p>
+                </div>
+              )}
             </div>
 
           {/* Support Equipment Section */}
@@ -1589,13 +1743,13 @@ const EquipmentTypesTab: React.FC = () => {
               </Button>
               <Button
                 type="submit"
-                disabled={formLoading}
+                disabled={formLoading || uploadingImage}
                 className="bg-awnash-primary hover:bg-awnash-primary-hover text-black font-medium"
               >
-                {formLoading ? (
+                {formLoading || uploadingImage ? (
                   <span className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    {isEditMode ? "Updating..." : "Adding..."}
+                    {uploadingImage ? "Uploading image..." : (isEditMode ? "Updating..." : "Adding...")}
                   </span>
                 ) : isEditMode ? (
                   "Update Equipment Type"
