@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,9 +27,16 @@ const SHOW_DEMO_ACCOUNTS = process.env.NEXT_PUBLIC_SHOW_DEMO_ACCOUNTS === "true"
 
 const Login: React.FC = () => {
   const { i18n } = useTranslation();
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const isRTL = i18n.language === "ar";
+
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/overview/main-dashboard");
+    }
+  }, [isAuthenticated, authLoading, router]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -140,6 +147,21 @@ const Login: React.FC = () => {
     setFormData((prev) => ({ ...prev, email, password }));
     setErrors({});
   };
+
+  // Show loading spinner while checking auth status
+  if (authLoading || isAuthenticated) {
+    return (
+      <div
+        className={cn(
+          "min-h-screen flex items-center justify-center bg-[#F4F4F4] dark:bg-black transition-colors",
+          isRTL ? "font-arabic" : "font-montserrat"
+        )}
+        dir={isRTL ? "rtl" : "ltr"}
+      >
+        <FontAwesomeIcon icon={faSpinner} className="animate-spin h-8 w-8 text-[#0073E6]" />
+      </div>
+    );
+  }
 
   return (
     <div
