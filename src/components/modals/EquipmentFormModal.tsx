@@ -100,7 +100,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       <select
         ref={ref}
         className={cn(
-          "w-full h-11 px-4 pr-10 rounded-lg appearance-none cursor-pointer",
+          "w-full h-11 px-4 pe-10 rounded-lg appearance-none cursor-pointer",
           "bg-[#1a1f2e] border border-gray-700",
           "text-white",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
@@ -116,7 +116,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
     </div>
   )
 );
@@ -171,7 +171,7 @@ function FormField({ label, required, children, hint, className }: FormFieldProp
     <div className={className}>
       <label className="block text-sm font-medium text-gray-300 mb-2">
         {label}
-        {required && <span className="text-awnash-primary ml-1">*</span>}
+        {required && <span className="text-awnash-primary ms-1">*</span>}
       </label>
       {children}
       {hint && <p className="text-xs text-gray-500 mt-1.5">{hint}</p>}
@@ -224,7 +224,7 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
   return (
     <div className="relative" ref={dropdownRef}>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         <input
           type="text"
           value={isOpen ? searchTerm : selectedText}
@@ -239,7 +239,7 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
           placeholder={isRTL ? "ابحث عن المالك..." : "Search for owner..."}
           disabled={isLoading}
           className={cn(
-            "w-full h-11 pl-10 pr-4 rounded-lg",
+            "w-full h-11 ps-10 pe-4 rounded-lg",
             "bg-gray-900/50 border border-gray-700",
             "text-white placeholder:text-gray-500",
             "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
@@ -257,7 +257,7 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
                 className={cn(
                   "px-4 py-3 cursor-pointer transition-colors",
                   "hover:bg-gray-700/50",
-                  selectedOwnerId === owner.id && "bg-awnash-primary/10 border-l-2 border-awnash-primary"
+                  selectedOwnerId === owner.id && "bg-awnash-primary/10 border-s-2 border-awnash-primary"
                 )}
                 onClick={() => {
                   onSelect(owner.id);

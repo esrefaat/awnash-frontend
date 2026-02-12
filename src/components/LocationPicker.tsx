@@ -257,7 +257,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
               </MapContainer>
               
               {/* Current Location Button */}
-              <div className="absolute top-4 right-4 z-[1000]">
+              <div className="absolute top-4 end-4 z-[1000]">
                 <Button
                   onClick={getCurrentLocation}
                   disabled={isGettingLocation}
@@ -266,7 +266,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 >
                   <FontAwesomeIcon 
                     icon={faLocationArrow} 
-                    className={`mr-2 ${isGettingLocation ? 'animate-spin' : ''}`}
+                    className={`me-2 ${isGettingLocation ? 'animate-spin' : ''}`}
                   />
                   {isGettingLocation ? (isRTL ? 'جاري التحديد...' : 'Locating...') : (isRTL ? 'موقعي' : 'My Location')}
                 </Button>
@@ -370,7 +370,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 >
                   <FontAwesomeIcon 
                     icon={faLocationArrow} 
-                    className={`mr-2 ${isGettingLocation ? 'animate-spin' : ''}`}
+                    className={`me-2 ${isGettingLocation ? 'animate-spin' : ''}`}
                   />
                   {isGettingLocation ? (isRTL ? 'جاري تحديد الموقع...' : 'Getting location...') : (isRTL ? 'استخدم موقعي الحالي' : 'Use My Current Location')}
                 </Button>
@@ -383,7 +383,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center mb-2">
-                      <FontAwesomeIcon icon={faMapMarkerAlt} className="text-red-400 mr-2" />
+                      <FontAwesomeIcon icon={faMapMarkerAlt} className="text-red-400 me-2" />
                       <span className="text-sm font-medium text-white">
                         {isRTL ? 'الموقع المحدد' : 'Selected Location'}
                       </span>
@@ -395,7 +395,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                   </div>
                   <button
                     onClick={handleClear}
-                    className="text-red-400 hover:text-red-300 ml-2"
+                    className="text-red-400 hover:text-red-300 ms-2"
                     title={isRTL ? 'حذف الموقع' : 'Clear location'}
                   >
                     <FontAwesomeIcon icon={faTimes} />

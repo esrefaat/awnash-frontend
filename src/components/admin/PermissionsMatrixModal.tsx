@@ -366,7 +366,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
                 </p>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-end">
               <p className="text-sm text-gray-400">Total Permissions</p>
               <p className="text-2xl font-bold text-awnash-primary">
                 {getTotalGrantedPermissions()}
@@ -396,7 +396,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="overflow-y-auto flex-1 space-y-6 pr-2">
+          <TabsContent value="overview" className="overflow-y-auto flex-1 space-y-6 pe-2">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {permissionModules.map((module) => {
                 const grantedCount = module.permissions.filter((p) =>
@@ -441,7 +441,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
 
           {/* Module Tabs */}
           {permissionModules.map((module) => (
-            <TabsContent key={module.name} value={module.name} className="overflow-y-auto flex-1 pr-2">
+            <TabsContent key={module.name} value={module.name} className="overflow-y-auto flex-1 pe-2">
               <div className="bg-gray-900/50 border border-gray-700 rounded-xl overflow-hidden">
                 <div className="bg-gray-900 px-6 py-4 border-b border-gray-700">
                   <h3 className="text-lg font-semibold text-white">{module.label}</h3>
@@ -454,8 +454,8 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
                   <table className="w-full">
                     <thead className="bg-gray-900/50">
                       <tr>
-                        <th className="text-left p-4 font-semibold text-gray-300">Permission</th>
-                        <th className="text-left p-4 font-semibold text-gray-300">Description</th>
+                        <th className="text-start p-4 font-semibold text-gray-300">Permission</th>
+                        <th className="text-start p-4 font-semibold text-gray-300">Description</th>
                         <th className="text-center p-4 font-semibold text-gray-300">Status</th>
                         <th className="text-center p-4 font-semibold text-gray-300">Toggle</th>
                       </tr>
@@ -516,7 +516,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
             onClick={resetToRoleDefaults}
             className="border-gray-600 text-gray-300 hover:bg-gray-700"
           >
-            <RotateCcw className="h-4 w-4 mr-2" />
+            <RotateCcw className="h-4 w-4 me-2" />
             Reset to Role Defaults
           </Button>
 

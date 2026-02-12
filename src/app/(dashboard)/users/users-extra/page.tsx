@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Filter, Plus, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAppTranslation } from '@/hooks/useAppTranslation';
 import { usersService, User } from '@/services/usersService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import AddUserModal from '@/components/modals/AddUserModal';
 
 const Users: React.FC = () => {
-  const { t, currentLanguage } = useLanguage();
+  const { t, isRTL, language } = useAppTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,7 +20,6 @@ const Users: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const isRTL = currentLanguage.direction === 'rtl';
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -89,7 +88,7 @@ const Users: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(currentLanguage.code === 'ar' ? 'ar-SA' : 'en-US', {
+    return new Date(dateString).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -129,7 +128,7 @@ const Users: React.FC = () => {
       {/* Page Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{t('user_management')}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('users.management')}</h2>
           <p className="mt-1 text-sm text-gray-500">
             Manage platform users, roles, and permissions
           </p>
@@ -139,7 +138,7 @@ const Users: React.FC = () => {
           onClick={() => setShowAddUserModal(true)}
         >
           <Plus className="h-4 w-4" />
-          {t('add_new')}
+          {t('common.addNew')}
         </Button>
       </div>
 
@@ -154,7 +153,7 @@ const Users: React.FC = () => {
               )} />
               <input
                 type="text"
-                placeholder={t('search')}
+                placeholder={t('common.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={cn(
@@ -173,10 +172,10 @@ const Users: React.FC = () => {
                 isRTL && "text-right"
               )}
             >
-              <option value="">{t('role')} - All</option>
-              <option value="admin">{t('admin')}</option>
-              <option value="owner">{t('owner')}</option>
-              <option value="renter">{t('renter')}</option>
+              <option value="">{t('users.role')} - All</option>
+              <option value="admin">{t('users.admin')}</option>
+              <option value="owner">{t('users.owner')}</option>
+              <option value="renter">{t('users.renter')}</option>
             </select>
 
             {/* Status Filter */}
@@ -188,17 +187,17 @@ const Users: React.FC = () => {
                 isRTL && "text-right"
               )}
             >
-              <option value="">{t('status')} - All</option>
-              <option value="active">{t('active')}</option>
-              <option value="inactive">{t('inactive')}</option>
-              <option value="pending">{t('pending')}</option>
+              <option value="">{t('common.status')} - All</option>
+              <option value="active">{t('common.active')}</option>
+              <option value="inactive">{t('common.inactive')}</option>
+              <option value="pending">{t('common.pending')}</option>
             </select>
 
             {/* Actions */}
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="flex items-center gap-2">
                 <Filter className="h-4 w-4" />
-                {t('filter')}
+                {t('common.filter')}
               </Button>
               {selectedUsers.length > 0 && (
                 <Button variant="outline" size="sm">
@@ -214,7 +213,7 @@ const Users: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>{t('users')} ({users.length})</span>
+            <span>{t('nav.users')} ({users.length})</span>
             <Button variant="outline" size="sm" onClick={handleSelectAll}>
               {selectedUsers.length === users.length ? 'Deselect All' : 'Select All'}
             </Button>
@@ -247,16 +246,16 @@ const Users: React.FC = () => {
                       User
                     </th>
                     <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", isRTL && "text-right")}>
-                      {t('role')}
+                      {t('users.role')}
                     </th>
                     <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", isRTL && "text-right")}>
-                      {t('status')}
+                      {t('common.status')}
                     </th>
                     <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", isRTL && "text-right")}>
-                      {t('created_at')}
+                      {t('users.createdAt')}
                     </th>
                     <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", isRTL && "text-right")}>
-                      {t('last_login')}
+                      {t('users.lastLogin')}
                     </th>
                     <th className={cn("px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", isRTL && "text-right")}>
                       Actions

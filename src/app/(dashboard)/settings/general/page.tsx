@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAppTranslation } from '@/hooks/useAppTranslation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Settings as SettingsIcon, Package, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EquipmentType } from '@/types';
 import { equipmentTypeService } from '@/services/equipmentTypeService';
-import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -25,9 +24,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Settings: React.FC = () => {
-  const { t, currentLanguage } = useLanguage();
-  const isRTL = currentLanguage.direction === 'rtl';
-  const { i18n } = useTranslation();
+  const { t, isRTL } = useAppTranslation();
   
   const [equipmentTypes, setEquipmentTypes] = useState<EquipmentType[]>([]);
   const [loading, setLoading] = useState(true);

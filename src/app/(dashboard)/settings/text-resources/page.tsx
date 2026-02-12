@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAppTranslation } from '@/hooks/useAppTranslation';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { FileText, Plus, Search, Edit, Trash2 } from 'lucide-react';
@@ -20,8 +20,7 @@ interface TextResource {
 }
 
 const TextResources: React.FC = () => {
-  const { t, currentLanguage } = useLanguage();
-  const isRTL = currentLanguage.direction === 'rtl';
+  const { t, isRTL } = useAppTranslation();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -78,10 +77,10 @@ const TextResources: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {t('text_resources_management')}
+            {t('settings.textResourcesManagement')}
           </h1>
           <p className="text-gray-600 mt-1">
-            {currentLanguage.code === 'ar' 
+            {isRTL 
               ? 'إدارة النصوص والمحتوى متعدد اللغات'
               : 'Manage multilingual text content and resources'
             }
@@ -89,7 +88,7 @@ const TextResources: React.FC = () => {
         </div>
         <Button className="flex items-center">
           <Plus className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
-          {currentLanguage.code === 'ar' ? 'إضافة نص جديد' : 'Add New Text'}
+          {isRTL ? 'إضافة نص جديد' : 'Add New Text'}
         </Button>
       </div>
 
@@ -103,7 +102,7 @@ const TextResources: React.FC = () => {
             )} />
             <input
               type="text"
-              placeholder={currentLanguage.code === 'ar' ? 'البحث في النصوص...' : 'Search texts...'}
+              placeholder={isRTL ? 'البحث في النصوص...' : 'Search texts...'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={cn(
@@ -124,7 +123,7 @@ const TextResources: React.FC = () => {
           >
             {categories.map((category) => (
               <option key={category.value} value={category.value}>
-                {currentLanguage.code === 'ar' ? category.labelAr : category.labelEn}
+                {isRTL ? category.labelAr : category.labelEn}
               </option>
             ))}
           </select>
@@ -144,7 +143,7 @@ const TextResources: React.FC = () => {
                       {resource.key}
                     </CardTitle>
                     <p className="text-sm text-gray-500">
-                      {currentLanguage.code === 'ar' ? resource.categoryAr : resource.categoryEn}
+                      {isRTL ? resource.categoryAr : resource.categoryEn}
                     </p>
                   </div>
                 </div>
@@ -162,7 +161,7 @@ const TextResources: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {currentLanguage.code === 'ar' ? 'النص العربي' : 'Arabic Text'}
+                    {isRTL ? 'النص العربي' : 'Arabic Text'}
                   </label>
                   <div className="p-3 bg-gray-50 rounded-md text-right">
                     {resource.textAr}
@@ -170,7 +169,7 @@ const TextResources: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {currentLanguage.code === 'ar' ? 'النص الإنجليزي' : 'English Text'}
+                    {isRTL ? 'النص الإنجليزي' : 'English Text'}
                   </label>
                   <div className="p-3 bg-gray-50 rounded-md">
                     {resource.textEn}
@@ -186,13 +185,13 @@ const TextResources: React.FC = () => {
                       : "bg-red-100 text-red-800"
                   )}>
                     {resource.isActive 
-                      ? (currentLanguage.code === 'ar' ? 'نشط' : 'Active')
-                      : (currentLanguage.code === 'ar' ? 'غير نشط' : 'Inactive')
+                      ? (isRTL ? 'نشط' : 'Active')
+                      : (isRTL ? 'غير نشط' : 'Inactive')
                     }
                   </span>
                 </div>
                 <p className="text-xs text-gray-500">
-                  {currentLanguage.code === 'ar' ? 'آخر تحديث:' : 'Last updated:'} {new Date(resource.updatedAt).toLocaleDateString()}
+                  {isRTL ? 'آخر تحديث:' : 'Last updated:'} {new Date(resource.updatedAt).toLocaleDateString()}
                 </p>
               </div>
             </CardContent>
@@ -204,10 +203,10 @@ const TextResources: React.FC = () => {
         <div className="text-center py-12">
           <FileText className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            {currentLanguage.code === 'ar' ? 'لا توجد نصوص' : 'No text resources'}
+            {isRTL ? 'لا توجد نصوص' : 'No text resources'}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {currentLanguage.code === 'ar' 
+            {isRTL 
               ? 'ابدأ بإضافة نص جديد'
               : 'Get started by adding a new text resource'
             }
