@@ -540,7 +540,7 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
     const formData = new FormData();
     formData.append("file", file);
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/api/v1"}/media/upload`,
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/v1"}/media/upload`,
       { method: "POST", credentials: "include", body: formData }
     );
     if (!response.ok) throw new Error("Failed to upload image");
@@ -575,7 +575,7 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
         const mediaId = imageUrl.split("/").pop();
         if (mediaId) {
           await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/api/v1"}/media/${mediaId}`,
+            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/v1"}/media/${mediaId}`,
             { method: "DELETE", credentials: "include" }
           );
         }

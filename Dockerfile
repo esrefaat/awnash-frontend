@@ -13,7 +13,7 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Set build-time environment variables
-ARG NEXT_PUBLIC_API_URL=https://api.staging.awnash.net/api/v1
+ARG NEXT_PUBLIC_API_URL=https://api.staging.awnash.net/v1
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Build the application

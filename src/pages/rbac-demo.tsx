@@ -39,7 +39,7 @@ const RBACDemo: React.FC = () => {
 
   const checkBackendStatus = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/healthz`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1'}/healthz`);
       if (response.ok) {
         setBackendStatus('online');
       } else {

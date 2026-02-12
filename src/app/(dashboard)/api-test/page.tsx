@@ -11,7 +11,7 @@ const ApiTestPage: React.FC = () => {
   const testHealthCheck = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1'}`);
       const data = await response.json();
       setResult(`Health Check: ${JSON.stringify(data, null, 2)}`);
     } catch (error) {

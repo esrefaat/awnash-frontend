@@ -83,7 +83,7 @@ export interface PaginatedOffersResponse {
   };
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1';
 
 class OffersService {
   private baseUrl = API_BASE_URL;

@@ -18,7 +18,7 @@ const DebugAuth: React.FC = () => {
       let authError = null;
       
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/auth/me`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1'}/auth/me`, {
           method: 'GET',
           credentials: 'include',
         });

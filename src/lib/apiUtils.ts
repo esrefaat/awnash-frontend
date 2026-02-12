@@ -5,7 +5,7 @@
  * across all API calls in the application.
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1';
 
 /**
  * Creates a fetch configuration with proper authentication headers

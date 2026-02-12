@@ -144,7 +144,7 @@ const OffersManagement: React.FC = () => {
         return;
       }
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1'}/offers/request/${requestId}?page=${pageNum}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1'}/offers/request/${requestId}?page=${pageNum}`;
 
       const response = await fetch(url, {
         credentials: 'include',

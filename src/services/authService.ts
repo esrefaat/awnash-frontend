@@ -33,7 +33,7 @@ export interface RegisterData {
 }
 
 class AuthService {
-  private baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/api/v1';
+  private baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3007/v1';
 
   /**
    * Login with email/mobile and password

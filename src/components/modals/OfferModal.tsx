@@ -239,7 +239,7 @@ export const OfferModal: React.FC<OfferModalProps> = ({
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/api/v1"}/offers`,
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/v1"}/offers`,
         {
           method: "POST",
           credentials: "include",

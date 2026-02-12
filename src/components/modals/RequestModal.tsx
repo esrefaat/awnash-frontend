@@ -255,7 +255,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
     formData.append("file", file);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/api/v1"}/media/upload`,
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/v1"}/media/upload`,
       { method: "POST", credentials: "include", body: formData }
     );
 
