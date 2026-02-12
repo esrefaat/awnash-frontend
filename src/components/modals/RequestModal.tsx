@@ -105,7 +105,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       <select
         ref={ref}
         className={cn(
-          "w-full h-11 px-4 pr-10 rounded-lg appearance-none cursor-pointer",
+          "w-full h-11 px-4 pe-10 rounded-lg appearance-none cursor-pointer",
           "bg-[#1a1f2e] border border-gray-700",
           "text-white",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
@@ -116,7 +116,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
     </div>
   )
 );
@@ -170,7 +170,7 @@ function FormField({ label, required, children, className }: FormFieldProps) {
     <div className={className}>
       <label className="block text-sm font-medium text-gray-300 mb-2">
         {label}
-        {required && <span className="text-awnash-primary ml-1">*</span>}
+        {required && <span className="text-awnash-primary ms-1">*</span>}
       </label>
       {children}
     </div>
@@ -435,7 +435,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                       <button
                         type="button"
                         onClick={clearLocation}
-                        className="ml-2 p-1 text-red-400 hover:text-red-300"
+                        className="ms-2 p-1 text-red-400 hover:text-red-300"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -454,7 +454,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                   onClick={() => setShowLocationPicker(true)}
                   className="w-full border-gray-600 text-gray-300 hover:bg-gray-700"
                 >
-                  <MapPin className="h-4 w-4 mr-2" />
+                  <MapPin className="h-4 w-4 me-2" />
                   {isRTL ? "اختر موقع من الخريطة" : "Pick Location from Map"}
                 </Button>
               </div>

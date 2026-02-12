@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation, SUPPORTED_LANGUAGES } from '@/hooks/useAppTranslation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faBell, 
-  faGlobe, 
-  faSignOutAlt, 
-  faUserCircle, 
+import {
+  faBell,
+  faGlobe,
+  faSignOutAlt,
+  faUserCircle,
   faCog,
   faTachometerAlt,
   faUsers,
@@ -30,16 +30,17 @@ import {
   faCogs
 } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '@/contexts/AuthContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 import type { User } from '@/types';
 
 const Header: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, isRTL, language, changeLanguage } = useAppTranslation();
   const { user: userRaw, logout } = useAuth();
   const user = userRaw as User | null;
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const isRTL = i18n?.language === 'ar' || false;
 
   const menuItems = [
     {
@@ -87,7 +88,7 @@ const Header: React.FC = () => {
     {
       key: 'reports',
       icon: faChartLine,
-      label: isRTL ? 'التقارير المالية' : 'Financial Reports',
+      label: t('nav.financialReports'),
       path: '/reports/commission'
     },
     {
@@ -105,62 +106,62 @@ const Header: React.FC = () => {
     {
       key: 'admin-settings',
       icon: faUserShield,
-      label: isRTL ? 'إعدادات النظام' : 'Admin Settings',
+      label: t('nav.adminSettings'),
       path: '/settings/admin'
     },
     {
       key: 'content-manager',
       icon: faLanguage,
-      label: isRTL ? 'مدير المحتوى' : 'Content Manager',
+      label: t('nav.contentManager'),
       path: '/content-manager'
     },
     {
       key: 'region-management',
       icon: faMapMarkerAlt,
-      label: isRTL ? 'إدارة المناطق' : 'Region Management',
+      label: t('nav.regionManagement'),
       path: '/region-management'
     },
     {
       key: 'disputes',
       icon: faGavel,
-      label: isRTL ? 'إدارة النزاعات' : 'Dispute Center',
+      label: t('nav.disputes'),
       path: '/disputes'
     },
     {
       key: 'notifications',
       icon: faBell,
-      label: isRTL ? 'مركز الإشعارات' : 'Notifications',
+      label: t('nav.notifications'),
       path: '/notifications'
     },
     {
       key: 'message-templates',
       icon: faEnvelope,
-      label: isRTL ? 'قوالب الرسائل' : 'Message Templates',
+      label: t('nav.messageTemplates'),
       path: '/message-templates'
     },
     {
       key: 'campaign-creator',
       icon: faBullhorn,
-      label: isRTL ? 'منشئ الحملات' : 'Campaign Creator',
+      label: t('nav.campaignCreator'),
       path: '/campaign-creator'
     },
     {
       key: 'operational-calendar',
       icon: faCalendarAlt,
-      label: isRTL ? 'التقويم التشغيلي' : 'Operational Calendar',
+      label: t('nav.operationalCalendar'),
       path: '/operational-calendar'
     },
     {
       key: 'trigger-rules',
       icon: faCogs,
-      label: isRTL ? 'قواعد التحفيز' : 'Trigger Rules',
+      label: t('nav.triggerRules'),
       path: '/trigger-rules'
     }
   ];
 
   const getPageTitle = () => {
     const currentPath = pathname;
-    
+
     // Define page titles based on pathname
     const pageTitles: { [key: string]: { en: string; ar: string } } = {
       '/overview/main-dashboard': { en: 'Main Dashboard', ar: 'لوحة التحكم الرئيسية' },
@@ -191,25 +192,21 @@ const Header: React.FC = () => {
       '/engagement/trigger-rules': { en: 'Trigger Rules', ar: 'قواعد التشغيل' },
       '/engagement/notifications': { en: 'Notifications Center', ar: 'مركز الإشعارات' }
     };
-    
+
     const pageTitle = pageTitles[currentPath || ''];
     if (pageTitle) {
       return isRTL ? pageTitle.ar : pageTitle.en;
     }
-    
+
     // Fallback to Dashboard
     return isRTL ? 'لوحة التحكم' : 'Dashboard';
   };
 
-  const toggleLanguage = () => {
-    if (i18n && i18n.changeLanguage) {
-      const newLang = i18n.language === 'en' ? 'ar' : 'en';
-      i18n.changeLanguage(newLang);
-      document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-      document.documentElement.lang = newLang;
-      // Ensure localStorage is updated
-      localStorage.setItem('i18nextLng', newLang);
-    }
+  const cycleLanguage = () => {
+    const codes = SUPPORTED_LANGUAGES.map(l => l.code);
+    const currentIndex = codes.indexOf(language);
+    const nextIndex = (currentIndex + 1) % codes.length;
+    changeLanguage(codes[nextIndex]);
   };
 
   const handleLogout = () => {
@@ -220,24 +217,24 @@ const Header: React.FC = () => {
   // Get user display name
   const getUserDisplayName = () => {
     if (!user) return isRTL ? 'مستخدم غير معروف' : 'Unknown User';
-    
+
     if (user.firstName && user.lastName) {
       return `${user.firstName} ${user.lastName}`;
     }
-    
+
     return user.email?.split('@')[0] || (isRTL ? 'مستخدم' : 'User');
   };
 
   // Get user role display
   const getUserRoleDisplay = () => {
     if (!user) return '';
-    
+
     const roleMap = {
       admin: { en: 'System Admin', ar: 'مدير النظام' },
       owner: { en: 'Equipment Owner', ar: 'مالك معدات' },
       renter: { en: 'Equipment Renter', ar: 'مستأجر معدات' }
     };
-    
+
     const validRoles = ['admin', 'owner', 'renter'];
     if (validRoles.includes(user.role)) {
       const role = roleMap[user.role as 'admin' | 'owner' | 'renter'];
@@ -246,12 +243,18 @@ const Header: React.FC = () => {
     return user.role;
   };
 
+  // Get display label for current language
+  const getCurrentLanguageLabel = () => {
+    const current = SUPPORTED_LANGUAGES.find(l => l.code === language);
+    return current?.name || language;
+  };
+
   return (
-    <header 
+    <header
       className="sticky top-0 z-30 border-b border-gray-700 px-6 py-4"
-      style={{ 
+      style={{
         backgroundColor: 'var(--awnash-secondary)',
-        fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)' 
+        fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)'
       }}
     >
       <div className="flex items-center justify-between">
@@ -267,22 +270,51 @@ const Header: React.FC = () => {
 
         {/* Header Actions */}
         <div className="flex items-center gap-4">
-          {/* Language Toggle */}
-          <button
-            onClick={toggleLanguage}
-            className="p-2 rounded-lg border border-gray-600 hover:bg-gray-700 transition-colors flex items-center gap-2"
-          >
-            <FontAwesomeIcon icon={faGlobe} className="text-gray-300" />
-            <span className="text-sm font-medium text-gray-300">
-              {i18n?.language === 'ar' ? 'EN' : 'عربي'}
-            </span>
-          </button>
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
+          {/* Language Selector */}
+          <div className="relative">
+            <button
+              onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+              className="p-2 rounded-lg border border-gray-600 hover:bg-gray-700 transition-colors flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faGlobe} className="text-gray-300" />
+              <span className="text-sm font-medium text-gray-300">
+                {getCurrentLanguageLabel()}
+              </span>
+            </button>
+
+            {isLangMenuOpen && (
+              <div
+                className="absolute top-full mt-2 end-0 w-40 rounded-lg shadow-lg border border-gray-600 py-2 z-50"
+                style={{ backgroundColor: 'var(--awnash-secondary)' }}
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      changeLanguage(lang.code);
+                      setIsLangMenuOpen(false);
+                    }}
+                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${
+                      language === lang.code
+                        ? 'text-white bg-gray-700 font-semibold'
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    }`}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Notifications */}
           <button className="p-2 rounded-lg hover:bg-gray-700 transition-colors relative">
             <FontAwesomeIcon icon={faBell} className="text-gray-300 text-lg" />
-            <span 
-              className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold text-black flex items-center justify-center"
+            <span
+              className="absolute -top-1 -end-1 w-5 h-5 rounded-full text-xs font-bold text-black flex items-center justify-center"
               style={{ backgroundColor: 'var(--awnash-primary)' }}
             >
               3
@@ -296,10 +328,10 @@ const Header: React.FC = () => {
               className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700 transition-colors"
             >
               <div>
-                <p className="text-sm font-semibold text-white text-right">
+                <p className="text-sm font-semibold text-white text-end">
                   {getUserDisplayName()}
                 </p>
-                <p className="text-xs text-gray-300 text-right">
+                <p className="text-xs text-gray-300 text-end">
                   {getUserRoleDisplay()}
                 </p>
               </div>
@@ -308,13 +340,11 @@ const Header: React.FC = () => {
 
             {/* User Dropdown Menu */}
             {isUserMenuOpen && (
-              <div 
-                className={`absolute top-full mt-2 w-48 rounded-lg shadow-lg border border-gray-600 py-2 z-50 ${
-                  isRTL ? 'left-0' : 'right-0'
-                }`}
-                style={{ 
+              <div
+                className="absolute top-full mt-2 end-0 w-48 rounded-lg shadow-lg border border-gray-600 py-2 z-50"
+                style={{
                   backgroundColor: 'var(--awnash-secondary)',
-                  fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)' 
+                  fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)'
                 }}
               >
                 <Link
@@ -334,7 +364,7 @@ const Header: React.FC = () => {
                 <hr className="my-2 border-gray-600" />
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 w-full text-left"
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 w-full text-start"
                 >
                   <FontAwesomeIcon icon={faSignOutAlt} />
                   <span>{isRTL ? 'تسجيل الخروج' : 'Logout'}</span>
@@ -348,4 +378,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header; 
+export default Header;

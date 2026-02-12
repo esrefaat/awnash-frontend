@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Loader2, AlertTriangle, UserPlus, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useAppTranslation } from "@/hooks/useAppTranslation";
 import { usersService, User } from "@/services/usersService";
 
 import {
@@ -104,8 +104,7 @@ function FormField({ label, required, children, className }: FormFieldProps) {
 // =============================================================================
 
 const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdded }) => {
-  const { t, currentLanguage } = useLanguage();
-  const isRTL = currentLanguage.direction === "rtl";
+  const { t, isRTL } = useAppTranslation();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -171,7 +170,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
             </div>
             <div>
               <DialogTitle className="text-xl font-semibold text-white">
-                {t("add_new_user") || "Add New User"}
+                {t("users.addNewUser") || "Add New User"}
               </DialogTitle>
               <p className="text-sm text-gray-400 mt-0.5">
                 {isRTL ? "أدخل بيانات المستخدم الجديد" : "Enter new user details"}
@@ -202,7 +201,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
           </FormField>
 
           {/* Mobile Number */}
-          <FormField label={t("mobile_number") || "Mobile Number"} required>
+          <FormField label={t("common.phone") || "Mobile Number"} required>
             <StyledInput
               type="tel"
               required
@@ -213,7 +212,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
           </FormField>
 
           {/* Email */}
-          <FormField label={t("email") || "Email"}>
+          <FormField label={t("common.email") || "Email"}>
             <StyledInput
               type="email"
               value={formData.email}
@@ -223,7 +222,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
           </FormField>
 
           {/* Role */}
-          <FormField label={t("role") || "Role"} required>
+          <FormField label={t("users.role") || "Role"} required>
             <StyledSelect
               value={formData.role}
               onChange={(e) => handleChange("role", e.target.value)}
@@ -235,7 +234,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
           </FormField>
 
           {/* Status */}
-          <FormField label={t("status") || "Status"} required>
+          <FormField label={t("common.status") || "Status"} required>
             <StyledSelect
               value={formData.isActive ? "active" : "inactive"}
               onChange={(e) =>
@@ -256,7 +255,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
               disabled={loading}
               className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
             >
-              {t("cancel") || "Cancel"}
+              {t("common.cancel") || "Cancel"}
             </Button>
             <Button
               type="submit"
@@ -266,10 +265,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onUserAdde
               {loading ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  {t("creating") || "Creating..."}
+                  {t("common.creating") || "Creating..."}
                 </span>
               ) : (
-                t("create_user") || "Create User"
+                t("users.createUser") || "Create User"
               )}
             </Button>
           </div>

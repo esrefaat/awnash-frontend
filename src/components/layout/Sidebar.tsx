@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+import { useAppTranslation } from '@/hooks/useAppTranslation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import {
   faTachometerAlt,
   faCalendarCheck,
   faClipboardList,
@@ -47,15 +47,13 @@ import { cn } from '../../lib/utils';
 interface MenuSubItem {
   key: string;
   icon: any;
-  label: string;
-  labelAr: string;
+  i18nKey: string;
   path: string;
 }
 
 interface MenuGroup {
   key: string;
-  label: string;
-  labelAr: string;
+  i18nKey: string;
   icon: any;
   items: MenuSubItem[];
 }
@@ -66,14 +64,13 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
-  const { i18n } = useTranslation();
+  const { t, isRTL } = useAppTranslation();
   const pathname = usePathname();
-  const isRTL = i18n.language === 'ar';
   const [expandedGroups, setExpandedGroups] = useState<string[]>(['overview', 'rentals', 'equipment-users']);
 
   const toggleGroup = (key: string) => {
-    setExpandedGroups(prev => 
-      prev.includes(key) 
+    setExpandedGroups(prev =>
+      prev.includes(key)
         ? prev.filter(item => item !== key)
         : [...prev, key]
     );
@@ -85,320 +82,277 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
   const menuGroups: MenuGroup[] = [
     {
       key: 'overview',
-      label: 'Overview',
-      labelAr: 'نظرة عامة',
+      i18nKey: 'sidebar.overview',
       icon: faTachometerAlt,
       items: [
         {
           key: 'main-dashboard',
           icon: faTachometerAlt,
-          label: 'Main Dashboard',
-          labelAr: 'لوحة التحكم الرئيسية',
+          i18nKey: 'sidebar.mainDashboard',
           path: '/overview/main-dashboard'
         },
         {
           key: 'modern-dashboard',
           icon: faChartLine,
-          label: 'Modern Dashboard',
-          labelAr: 'لوحة التحكم الحديثة',
+          i18nKey: 'sidebar.modernDashboard',
           path: '/overview/modern-dashboard'
         },
         {
           key: 'user-dashboard',
           icon: faUsers,
-          label: 'User Dashboard',
-          labelAr: 'لوحة تحكم المستخدم',
+          i18nKey: 'sidebar.userDashboard',
           path: '/overview/user-dashboard'
         }
       ]
     },
     {
       key: 'rentals',
-      label: 'Rental Operations',
-      labelAr: 'عمليات التأجير',
+      i18nKey: 'sidebar.rentalOperations',
       icon: faCalendarCheck,
       items: [
         {
           key: 'bookings',
           icon: faCalendarCheck,
-          label: 'Bookings',
-          labelAr: 'الحجوزات',
+          i18nKey: 'sidebar.bookings',
           path: '/rentals/bookings'
         },
         {
           key: 'requests',
           icon: faClipboardList,
-          label: 'Rental Requests',
-          labelAr: 'طلبات التأجير',
+          i18nKey: 'sidebar.rentalRequests',
           path: '/rentals/requests'
         },
         {
           key: 'live-map',
           icon: faMap,
-          label: 'Live Rental Map',
-          labelAr: 'الخريطة الحية للتأجير',
+          i18nKey: 'sidebar.liveRentalMap',
           path: '/rentals/live-map'
         },
         {
           key: 'calendar',
           icon: faCalendarAlt,
-          label: 'Operations Calendar',
-          labelAr: 'جدول العمليات',
+          i18nKey: 'sidebar.operationsCalendar',
           path: '/rentals/calendar'
         },
         {
           key: 'disputes',
           icon: faGavel,
-          label: 'Dispute Resolution',
-          labelAr: 'حل النزاعات',
+          i18nKey: 'sidebar.disputeResolution',
           path: '/rentals/disputes'
         }
       ]
     },
     {
       key: 'equipment-users',
-      label: 'Equipment & Users',
-      labelAr: 'المعدات و العملاء',
+      i18nKey: 'sidebar.equipmentUsers',
       icon: faTruck,
       items: [
         {
           key: 'equipment-list',
           icon: faTruck,
-          label: 'Equipment List',
-          labelAr: 'قائمة المعدات',
+          i18nKey: 'sidebar.equipmentList',
           path: '/equipment/list'
         },
         {
           key: 'all-equipment',
           icon: faTruck,
-          label: 'All Equipment',
-          labelAr: 'جميع المعدات',
+          i18nKey: 'sidebar.allEquipment',
           path: '/equipment/all'
         },
-      {
-        key: 'equipment-add',
-        icon: faPlus,
-        label: 'Add Equipment',
-        labelAr: 'إضافة معدة',
-        path: '/equipment/add'
-      },
+        {
+          key: 'equipment-add',
+          icon: faPlus,
+          i18nKey: 'sidebar.addEquipment',
+          path: '/equipment/add'
+        },
         {
           key: 'users-all',
           icon: faUsers,
-          label: 'All Users',
-          labelAr: 'جميع المستخدمين',
+          i18nKey: 'sidebar.allUsers',
           path: '/users/all'
         },
         {
           key: 'users-analytics',
           icon: faUsers,
-          label: 'User Analytics',
-          labelAr: 'تحليلات المستخدمين',
+          i18nKey: 'sidebar.userAnalytics',
           path: '/users/analytics'
         },
         {
           key: 'users-documents',
           icon: faIdCard,
-          label: 'Document Verification',
-          labelAr: 'التحقق من الوثائق',
+          i18nKey: 'sidebar.documentVerification',
           path: '/users/documents'
         },
         {
           key: 'region-management',
           icon: faMapMarkerAlt,
-          label: 'Region Management',
-          labelAr: 'إدارة المناطق',
+          i18nKey: 'sidebar.regionManagement',
           path: '/users/regions'
         }
       ]
     },
     {
       key: 'engagement',
-      label: 'Marketing & Engagement',
-      labelAr: 'التفاعل والتسويق',
+      i18nKey: 'sidebar.marketingEngagement',
       icon: faBullhorn,
       items: [
         {
           key: 'campaign-creator',
           icon: faBullhorn,
-          label: 'Campaign Creator',
-          labelAr: 'إنشاء حملة',
+          i18nKey: 'sidebar.campaignCreator',
           path: '/engagement/campaigns-create'
         },
         {
           key: 'campaign-analytics',
           icon: faChartLine,
-          label: 'Campaign Analytics',
-          labelAr: 'تحليل أداء الحملات',
+          i18nKey: 'sidebar.campaignAnalytics',
           path: '/engagement/campaigns-analytics'
         },
         {
           key: 'trigger-rules',
           icon: faCogs,
-          label: 'Trigger Rules',
-          labelAr: 'قواعد التفعيل',
+          i18nKey: 'sidebar.triggerRules',
           path: '/engagement/trigger-rules'
         },
         {
           key: 'user-segments',
           icon: faSegments,
-          label: 'User Segments',
-          labelAr: 'شرائح الجمهور',
+          i18nKey: 'sidebar.userSegments',
           path: '/users/modern'
         },
         {
           key: 'notifications',
           icon: faBell,
-          label: 'Notifications Center',
-          labelAr: 'مركز الإشعارات',
+          i18nKey: 'sidebar.notificationsCenter',
           path: '/engagement/notifications'
         }
       ]
     },
     {
       key: 'content',
-      label: 'Content Managment',
-      labelAr: 'إدارة المحتوى',
+      i18nKey: 'sidebar.contentManagement',
       icon: faNewspaper,
       items: [
         {
           key: 'moderation',
           icon: faShieldHalved,
-          label: 'Media Moderation',
-          labelAr: 'إشراف على الوسائط',
+          i18nKey: 'sidebar.mediaModeration',
           path: '/content/moderation'
         },
         {
           key: 'articles',
           icon: faNewspaper,
-          label: 'Articles Publishing',
-          labelAr: 'نشر المقالات',
+          i18nKey: 'sidebar.articlesPublishing',
           path: '/content/articles'
         },
         {
           key: 'banners',
           icon: faImage,
-          label: 'Banners & Promotions',
-          labelAr: 'اللافتات والعروض',
+          i18nKey: 'sidebar.bannersPromotions',
           path: '/content/banners'
         },
         {
           key: 'brand-colors',
           icon: faFont,
-          label: 'Brand & Colors',
-          labelAr: 'العلامة التجارية والألوان',
+          i18nKey: 'sidebar.brandColors',
           path: '/content/banners'
         },
         {
           key: 'message-templates',
           icon: faEnvelope,
-          label: 'Message Templates',
-          labelAr: 'نماذج الرسائل',
+          i18nKey: 'sidebar.messageTemplates',
           path: '/content/message-templates'
         }
       ]
     },
     {
       key: 'finance',
-      label: 'Financial Management',
-      labelAr: 'الإدارة المالية',
+      i18nKey: 'sidebar.financialManagement',
       icon: faDollarSign,
       items: [
         {
           key: 'commission-reports',
           icon: faReceipt,
-          label: 'Financial Report',
-          labelAr: 'التقارير المالية',
+          i18nKey: 'sidebar.financialReport',
           path: '/finance/reports'
         },
         {
           key: 'payments',
           icon: faCreditCard,
-          label: 'Payment Management',
-          labelAr: 'إدارة المدفوعات',
+          i18nKey: 'sidebar.paymentManagement',
           path: '/finance/payments'
         },
         {
           key: 'invoices',
           icon: faFileAlt,
-          label: 'Invoices',
-          labelAr: 'الفواتير',
+          i18nKey: 'sidebar.invoices',
           path: '/finance/invoices'
         },
         {
           key: 'payouts',
           icon: faMoneyBillWave,
-          label: 'Payouts',
-          labelAr: 'الدفعات',
+          i18nKey: 'sidebar.payouts',
           path: '/finance/payouts'
         }
       ]
     },
     {
       key: 'settings',
-      label: 'Settings',
-      labelAr: 'الإعدادات',
+      i18nKey: 'sidebar.settings',
       icon: faCog,
       items: [
         {
           key: 'general-settings',
           icon: faCog,
-          label: 'General Settings',
-          labelAr: 'الإعدادات العامة',
+          i18nKey: 'sidebar.generalSettings',
           path: '/settings/general'
         },
         {
           key: 'equipment-config',
           icon: faCogs,
-          label: 'Equipment Config',
-          labelAr: 'إعداد المعدات',
+          i18nKey: 'sidebar.equipmentConfig',
           path: '/settings/equipment-config'
         },
         {
           key: 'permissions',
           icon: faUserShield,
-          label: 'Permissions',
-          labelAr: 'الصلاحيات',
+          i18nKey: 'sidebar.permissions',
           path: '/settings/admin'
         },
         {
           key: 'user-management',
           icon: faUsers,
-          label: 'User Management',
-          labelAr: 'إدارة المستخدمين',
+          i18nKey: 'sidebar.userManagement',
           path: '/settings/users'
         },
         {
           key: 'roles-permissions',
           icon: faUserShield,
-          label: 'Roles & Permissions',
-          labelAr: 'الأدوار والصلاحيات',
+          i18nKey: 'sidebar.rolesPermissions',
           path: '/settings/roles-permissions'
         },
         {
           key: 'audit-log',
           icon: faFileAlt,
-          label: 'Audit Log',
-          labelAr: 'سجل النشاط',
+          i18nKey: 'sidebar.auditLog',
           path: '/finance/reports'
         }
       ]
     }
   ];
 
-  const authItems = [
+  const authItems: MenuSubItem[] = [
     {
       key: 'forgot-password',
       icon: faKey,
-      label: 'Reset Password',
-      labelAr: 'إعادة تعيين كلمة المرور',
+      i18nKey: 'sidebar.resetPassword',
       path: '/forgot-password'
     }
   ];
 
   const renderMenuItem = (item: MenuSubItem, isInGroup = false) => {
     const isActive = pathname === item.path;
-    
+
     return (
       <Link
         key={item.key}
@@ -409,14 +363,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           isActive
             ? 'bg-awnash-primary text-black font-semibold shadow-lg'
             : 'text-gray-300 hover:text-white hover:bg-gray-700',
-          isRTL && !isCollapsed && 'text-right',
+          !isCollapsed && 'text-start',
           isCollapsed ? 'justify-center' : '',
-          isInGroup && isRTL ? 'mr-4' : isInGroup && !isRTL ? 'ml-4' : ''
+          isInGroup ? 'ms-4' : ''
         )}
-        title={isCollapsed ? (isRTL ? item.labelAr : item.label) : ''}
+        title={isCollapsed ? t(item.i18nKey) : ''}
       >
-        <FontAwesomeIcon 
-          icon={item.icon} 
+        <FontAwesomeIcon
+          icon={item.icon}
           className={cn(
             isInGroup ? 'text-sm' : 'text-lg',
             isCollapsed ? 'mx-auto' : ''
@@ -427,7 +381,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
             'font-medium',
             isInGroup ? 'text-sm' : 'text-base'
           )}>
-            {isRTL ? item.labelAr : item.label}
+            {t(item.i18nKey)}
           </span>
         )}
       </Link>
@@ -436,30 +390,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
 
   const renderGroupHeader = (group: MenuGroup) => {
     const isExpanded = isGroupExpanded(group.key);
-    
+
     return (
       <button
         onClick={() => !isCollapsed && toggleGroup(group.key)}
         className={cn(
           'w-full flex items-center gap-3 px-3 py-3 mb-2 rounded-2xl transition-all duration-200 group',
           'text-gray-300 hover:text-white hover:bg-gray-700 font-medium',
-          isRTL && !isCollapsed && 'text-right',
+          !isCollapsed && 'text-start',
           isCollapsed ? 'justify-center cursor-default' : 'cursor-pointer'
         )}
         disabled={isCollapsed}
-        title={isCollapsed ? (isRTL ? group.labelAr : group.label) : ''}
+        title={isCollapsed ? t(group.i18nKey) : ''}
       >
-        <FontAwesomeIcon 
-          icon={group.icon} 
+        <FontAwesomeIcon
+          icon={group.icon}
           className={cn('text-sm', isCollapsed ? 'mx-auto' : '')}
         />
         {!isCollapsed && (
           <>
             <span className="font-bold text-sm flex-1">
-              {isRTL ? group.labelAr : group.label}
+              {t(group.i18nKey)}
             </span>
-            <FontAwesomeIcon 
-              icon={isExpanded ? faChevronUp : isRTL ? faChevronLeft : faChevronRight} 
+            <FontAwesomeIcon
+              icon={isExpanded ? faChevronUp : isRTL ? faChevronLeft : faChevronRight}
               className="text-sm transition-transform duration-200"
             />
           </>
@@ -472,7 +426,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
     <div
       className={cn(
         'fixed top-0 h-full z-40 transition-all duration-300 bg-black border-gray-700',
-        isRTL ? 'right-0 border-l' : 'left-0 border-r',
+        'start-0 border-e',
         isCollapsed ? 'w-16' : 'w-64',
         isRTL ? 'font-arabic' : 'font-montserrat'
       )}
@@ -488,7 +442,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
               A
             </div>
             <h1 className="text-xl font-bold text-white">
-              {isRTL ? 'أوناش' : 'Awnash'}
+              {t('sidebar.brandName')}
             </h1>
           </div>
         )}
@@ -505,11 +459,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
         {/* Grouped Menu Items */}
         {menuGroups.map((group) => {
           const isExpanded = isGroupExpanded(group.key);
-          
+
           return (
             <div key={group.key} className="space-y-1">
               {renderGroupHeader(group)}
-              
+
               {/* Group Items */}
               {(!isCollapsed && isExpanded) && (
                 <div className="space-y-1">
@@ -526,7 +480,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
             <div className="pt-4 border-t border-gray-700 mt-6">
               <div className="px-3 py-2 mb-2">
                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  {isRTL ? 'المصادقة' : 'Authentication'}
+                  {t('sidebar.authentication')}
                 </span>
               </div>
               {authItems.map((item) => renderMenuItem(item))}
@@ -538,4 +492,4 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
   );
 };
 
-export default Sidebar; 
+export default Sidebar;

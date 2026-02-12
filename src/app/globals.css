@@ -16,31 +16,7 @@
 /* shadcn/ui CSS Variables Layer */
 @layer base {
   :root {
-    /* Dark mode is default for Awnash */
-    --background: 220 13% 10%;        /* #111827 - gray-900 */
-    --foreground: 0 0% 98%;
-    --card: 220 13% 12%;              /* #1F2937 - gray-800 */
-    --card-foreground: 0 0% 98%;
-    --popover: 220 13% 12%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 48 100% 50%;           /* #FFCC00 - Awnash Yellow */
-    --primary-foreground: 0 0% 0%;    /* Black text on yellow */
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 210 100% 45%;           /* #0073E6 - Blueprint Blue */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 48 100% 50%;              /* Awnash Yellow for focus rings */
-    --radius: 0.5rem;
-  }
-
-  /* Light mode (for public pages or light sections) */
-  .light {
+    /* Light mode variables (base) */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -59,7 +35,8 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 48 100% 50%;
+    --ring: 48 100% 50%;              /* Awnash Yellow for focus rings */
+    --radius: 0.5rem;
   }
 
   /* Also support .dark class for explicit dark mode */
@@ -155,31 +132,29 @@
 body {
   margin: 0;
   font-family: var(--awnash-font-english);
-  background-color: var(--awnash-gray-900);
-  color: white;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   line-height: 1.6;
 }
 
-/* Dark mode as default */
-.dark, [data-theme="dark"] {
-  background-color: var(--awnash-gray-900);
-  color: white;
+/* Native select option styling */
+select {
+  color-scheme: light;
 }
 
-/* Native select option styling for dark mode */
-select {
+.dark select {
   color-scheme: dark;
 }
 
-select option {
+.dark select option {
   background-color: #1f2937;
   color: white;
   padding: 8px 12px;
 }
 
-select option:hover,
-select option:focus,
-select option:checked {
+.dark select option:hover,
+.dark select option:focus,
+.dark select option:checked {
   background-color: #374151;
   color: white;
 }
@@ -353,10 +328,10 @@ select option:checked {
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--awnash-gray-300);
+  border: 2px solid hsl(var(--border));
   border-radius: var(--awnash-radius-md);
-  background-color: white;
-  color: var(--awnash-secondary);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   font-size: 0.875rem;
   transition: all 0.2s ease-in-out;
   font-family: inherit;
@@ -372,7 +347,7 @@ select option:checked {
   display: block;
   font-weight: 600;
   font-size: 0.875rem;
-  color: var(--awnash-secondary);
+  color: hsl(var(--foreground));
   margin-bottom: 0.5rem;
 }
 
@@ -417,31 +392,31 @@ select option:checked {
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: hsl(var(--card));
   border-radius: var(--awnash-radius-lg);
   overflow: hidden;
   box-shadow: var(--awnash-shadow);
 }
 
 .table th {
-  background-color: var(--awnash-gray-50);
-  color: var(--awnash-secondary);
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
   font-weight: 600;
   padding: 1rem;
-  text-align: left;
-  border-bottom: 2px solid var(--awnash-gray-200);
+  text-align: start;
+  border-bottom: 2px solid hsl(var(--border));
   font-size: 0.875rem;
 }
 
 .table td {
   padding: 1rem;
-  border-bottom: 1px solid var(--awnash-gray-200);
-  color: var(--awnash-gray-700);
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
   font-size: 0.875rem;
 }
 
 .table tbody tr:hover {
-  background-color: var(--awnash-gray-50);
+  background-color: hsl(var(--muted));
 }
 
 /* Responsive utilities */

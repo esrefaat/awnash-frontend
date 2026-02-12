@@ -1,11 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
+import { RTL_LANGUAGES, SUPPORTED_LANGUAGES } from '@/lib/i18n';
 
-/**
- * RTL Languages
- * Languages that are written right-to-left
- */
-const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur'];
+export { SUPPORTED_LANGUAGES };
 
 /**
  * Custom translation hook with RTL support

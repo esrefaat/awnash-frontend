@@ -31,7 +31,7 @@ import {
   Pie,
   Cell
 } from 'recharts';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAppTranslation } from '@/hooks/useAppTranslation';
 import { cn } from '@/lib/utils';
 import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 import { Button } from '@/components/ui/Button';
@@ -130,8 +130,7 @@ const recentBookings = [
 
 const AwnashDashboard: React.FC = () => {
   const router = useRouter();
-  const { currentLanguage } = useLanguage();
-  const isRTL = currentLanguage.direction === 'rtl';
+  const { isRTL } = useAppTranslation();
   const { contentStyle, labelStyle, itemStyle } = useChartTooltipStyle();
 
   const StatCard = ({ title, titleAr, value, growth, icon, color, currency = false }: any) => (

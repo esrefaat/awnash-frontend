@@ -1,16 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAppTranslation } from '@/hooks/useAppTranslation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Star } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 const Reviews: React.FC = () => {
-  const { t, currentLanguage } = useLanguage();
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+  const { t, isRTL } = useAppTranslation();
   
   return (
     <div className="space-y-6">
@@ -18,11 +15,11 @@ const Reviews: React.FC = () => {
         <div className="flex items-center">
           <Star className={cn("h-5 w-5", isRTL ? "ml-2" : "mr-2")} />
           <h1 className="text-2xl font-bold text-gray-900">
-            {t('reviews_ratings_management')}
+            {t('settings.reviewsRatingsManagement')}
           </h1>
         </div>
         <p className="text-gray-600 mt-1">
-          {currentLanguage.code === 'ar' 
+          {isRTL 
             ? 'إدارة مراجعات وتقييمات المستخدمين'
             : 'Manage user reviews and ratings'
           }
@@ -33,12 +30,12 @@ const Reviews: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Star className={`h-5 w-5 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-            {currentLanguage.code === 'ar' ? 'إدارة المراجعات' : 'Review Management'}
+            {isRTL ? 'إدارة المراجعات' : 'Review Management'}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-gray-600">
-            {currentLanguage.code === 'ar' 
+            {isRTL 
               ? 'صفحة إدارة المراجعات قيد التطوير...'
               : 'Review management page under development...'
             }
