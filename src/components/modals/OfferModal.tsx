@@ -38,8 +38,8 @@ const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "w-full h-11 px-4 rounded-lg",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -59,8 +59,8 @@ const StyledTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       ref={ref}
       className={cn(
         "w-full px-4 py-3 rounded-lg resize-none",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         className
@@ -82,8 +82,8 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={cn(
           "w-full h-11 px-4 pr-10 rounded-lg appearance-none cursor-pointer",
-          "bg-[#1a1f2e] border border-gray-700",
-          "text-white",
+          "bg-card border border-border",
+          "text-foreground",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
           "transition-all duration-200",
           className
@@ -92,7 +92,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
     </div>
   )
 );
@@ -144,7 +144,7 @@ interface FormFieldProps {
 function FormField({ label, required, children, className }: FormFieldProps) {
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
+      <label className="block text-sm font-medium text-muted-foreground mb-2">
         {label}
         {required && <span className="text-awnash-primary ms-1">*</span>}
       </label>
@@ -261,18 +261,18 @@ export const OfferModal: React.FC<OfferModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-muted border-border">
         {/* Header */}
-        <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+        <DialogHeader className="border-b border-border pb-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
               <DollarSign className="h-5 w-5 text-green-400" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-semibold text-white">
+              <DialogTitle className="text-xl font-semibold text-foreground">
                 Submit Offer
               </DialogTitle>
-              <p className="text-sm text-gray-400 mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 Enter your offer details
               </p>
             </div>
@@ -353,13 +353,13 @@ export const OfferModal: React.FC<OfferModalProps> = ({
           </FormField>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-border">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={loading}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               Cancel
             </Button>

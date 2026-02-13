@@ -224,14 +224,14 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-card border border-border rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-lg font-semibold text-foreground">
             {isRTL ? 'اختر الموقع من الخريطة' : 'Pick Location from Map'}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
           >
             <FontAwesomeIcon icon={faTimes} />
           </button>
@@ -284,7 +284,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             
             {/* Search Section */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-muted-foreground">
                 {isRTL ? 'البحث عن موقع' : 'Search for Location'}
               </label>
               <div className="flex gap-2">
@@ -292,7 +292,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={isRTL ? 'أدخل اسم المدينة أو العنوان' : 'Enter city name or address'}
-                  className="flex-1 bg-gray-700 border-gray-600 text-white"
+                  className="flex-1 bg-muted border-border text-foreground"
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
                 <Button
@@ -309,13 +309,13 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
           {/* Manual Input Section */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'إدخال الإحداثيات يدوياً' : 'Manual Coordinates Input'}
               </label>
               
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     {isRTL ? 'خط العرض' : 'Latitude'}
                   </label>
                   <Input
@@ -323,12 +323,12 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                     value={manualLat}
                     onChange={(e) => setManualLat(e.target.value)}
                     placeholder="24.7136"
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     step="any"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     {isRTL ? 'خط الطول' : 'Longitude'}
                   </label>
                   <Input
@@ -336,21 +336,21 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                     value={manualLng}
                     onChange={(e) => setManualLng(e.target.value)}
                     placeholder="46.6753"
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     step="any"
                   />
                 </div>
               </div>
               
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {isRTL ? 'العنوان' : 'Address'}
                 </label>
                 <Input
                   value={manualAddress}
                   onChange={(e) => setManualAddress(e.target.value)}
                   placeholder={isRTL ? 'أدخل العنوان' : 'Enter address'}
-                  className="bg-gray-700 border-gray-600 text-white"
+                  className="bg-muted border-border text-foreground"
                 />
               </div>
               
@@ -384,12 +384,12 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                   <div className="flex-1">
                     <div className="flex items-center mb-2">
                       <FontAwesomeIcon icon={faMapMarkerAlt} className="text-red-400 me-2" />
-                      <span className="text-sm font-medium text-white">
+                      <span className="text-sm font-medium text-foreground">
                         {isRTL ? 'الموقع المحدد' : 'Selected Location'}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-300 mb-1">{selectedLocation.address}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-muted-foreground mb-1">{selectedLocation.address}</p>
+                    <p className="text-xs text-muted-foreground">
                       {isRTL ? 'الإحداثيات:' : 'Coordinates:'} {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
                     </p>
                   </div>

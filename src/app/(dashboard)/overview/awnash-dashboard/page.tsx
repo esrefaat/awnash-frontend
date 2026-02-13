@@ -155,7 +155,7 @@ const AwnashDashboard: React.FC = () => {
           </div>
         </div>
         <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${color} shadow-lg`}>
-          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-foreground" />
         </div>
       </div>
     </div>
@@ -383,7 +383,7 @@ const AwnashDashboard: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center text-sm text-gray-600">
-                      <FontAwesomeIcon icon={faMapMarkerAlt} className={`h-3 w-3 ${isRTL ? 'ml-1' : 'mr-1'} text-gray-400`} />  
+                      <FontAwesomeIcon icon={faMapMarkerAlt} className={`h-3 w-3 ${isRTL ? 'ml-1' : 'mr-1'} text-muted-foreground`} />  
                       {booking.location}
                     </div>
                   </td>
@@ -403,7 +403,7 @@ const AwnashDashboard: React.FC = () => {
                         <span className="text-sm font-medium text-gray-900">{booking.rating}</span>
                       </div>
                     ) : (
-                      <span className="text-sm text-gray-400">Pending</span>
+                      <span className="text-sm text-muted-foreground">Pending</span>
                     )}
                   </td>
                 </tr>

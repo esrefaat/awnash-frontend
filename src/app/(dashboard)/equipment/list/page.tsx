@@ -26,7 +26,7 @@ const ImageCarousel: React.FC<{ images: string[]; title: string; isRTL: boolean 
   if (!images || images.length === 0) {
     return (
       <div className="h-48 bg-gray-100 flex items-center justify-center">
-        <Package className="h-12 w-12 text-gray-400" />
+        <Package className="h-12 w-12 text-muted-foreground" />
         <span className={`${isRTL ? 'mr-2' : 'ml-2'} text-gray-500 text-sm`}>No Image</span>
       </div>
     );
@@ -55,7 +55,7 @@ const ImageCarousel: React.FC<{ images: string[]; title: string; isRTL: boolean 
       
       {/* Fallback for failed images */}
       <div className="hidden absolute inset-0 flex items-center justify-center">
-        <Package className="h-12 w-12 text-gray-400" />
+        <Package className="h-12 w-12 text-muted-foreground" />
         <span className={`${isRTL ? 'mr-2' : 'ml-2'} text-gray-500 text-sm`}>Image Error</span>
       </div>
 
@@ -64,13 +64,13 @@ const ImageCarousel: React.FC<{ images: string[]; title: string; isRTL: boolean 
         <>
   <button
             onClick={prevImage}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-foreground p-1 rounded-full hover:bg-black/70 transition-colors"
           >
             <ChevronLeftIcon className="h-4 w-4" />
   </button>
   <button
             onClick={nextImage}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-foreground p-1 rounded-full hover:bg-black/70 transition-colors"
           >
             <ChevronRightIcon className="h-4 w-4" />
   </button>
@@ -486,7 +486,7 @@ const EquipmentPage: React.FC = () => {
             <div className={cn("grid grid-cols-1 md:grid-cols-6 gap-4", isRTL && "text-right")}>
               {/* Search */}
               <div className="relative md:col-span-2">
-                <Search className={cn("absolute top-2.5 h-4 w-4 text-gray-400", 
+                <Search className={cn("absolute top-2.5 h-4 w-4 text-muted-foreground", 
                   isRTL ? "right-3" : "left-3"
                 )} />
                 <input
@@ -691,13 +691,13 @@ const EquipmentPage: React.FC = () => {
                                 />
                               ) : (
                                 <div className="h-12 w-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                                  <Package className="h-6 w-6 text-gray-400" />
+                                  <Package className="h-6 w-6 text-muted-foreground" />
                                 </div>
                                 )}
                               
                               {/* Fallback for failed images */}
                               <div className="hidden h-12 w-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                                <Package className="h-6 w-6 text-gray-400" />
+                                <Package className="h-6 w-6 text-muted-foreground" />
                               </div>
                             </div>
                             <div className={cn("ml-4", isRTL && "mr-4 ml-0")}> 
@@ -848,7 +848,7 @@ const EquipmentPage: React.FC = () => {
                       👤 {item.owner?.fullName || 'N/A'}
                      </div>
                     {item.owner?.email && (
-                      <div className="text-xs text-gray-400 truncate">
+                      <div className="text-xs text-muted-foreground truncate">
                         📧 {item.owner.email}
                       </div>
                     )}

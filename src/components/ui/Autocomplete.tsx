@@ -179,8 +179,8 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                   key={option.id}
                   className={`px-4 py-3 cursor-pointer text-sm border-b border-gray-800 last:border-b-0 transition-colors ${
                     index === highlightedIndex 
-                      ? 'bg-gray-800 text-white' 
-                      : 'bg-black text-gray-200 hover:bg-gray-900'
+                      ? 'bg-muted text-foreground'
+                      : 'bg-card text-foreground hover:bg-muted'
                   }`}
                   onClick={() => handleOptionClick(option)}
                 >

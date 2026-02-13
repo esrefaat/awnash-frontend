@@ -358,11 +358,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
         key={item.key}
         href={item.path}
         className={cn(
-          'flex items-center gap-3 rounded-2xl transition-all duration-200 hover:shadow-lg',
+          'flex items-center gap-3 rounded-lg transition-colors duration-150',
           isInGroup ? 'px-4 py-2 mb-1' : 'px-3 py-3 mb-1',
           isActive
-            ? 'bg-awnash-primary text-black font-semibold shadow-lg'
-            : 'text-gray-300 hover:text-white hover:bg-gray-700',
+            ? 'bg-awnash-primary text-black font-semibold shadow-md'
+            : 'text-muted-foreground hover:text-foreground hover:bg-muted',
           !isCollapsed && 'text-start',
           isCollapsed ? 'justify-center' : '',
           isInGroup ? 'ms-4' : ''
@@ -395,8 +395,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
       <button
         onClick={() => !isCollapsed && toggleGroup(group.key)}
         className={cn(
-          'w-full flex items-center gap-3 px-3 py-3 mb-2 rounded-2xl transition-all duration-200 group',
-          'text-gray-300 hover:text-white hover:bg-gray-700 font-medium',
+          'w-full flex items-center gap-3 px-3 py-3 mb-1 rounded-lg transition-colors duration-150 group',
+          'text-muted-foreground hover:text-foreground hover:bg-muted font-medium',
           !isCollapsed && 'text-start',
           isCollapsed ? 'justify-center cursor-default' : 'cursor-pointer'
         )}
@@ -425,7 +425,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
   return (
     <div
       className={cn(
-        'fixed top-0 h-full z-40 transition-all duration-300 bg-black border-gray-700',
+        'fixed top-0 h-full z-40 transition-all duration-300 bg-card border-border',
         'start-0 border-e',
         isCollapsed ? 'w-16' : 'w-64',
         isRTL ? 'font-arabic' : 'font-montserrat'
@@ -433,7 +433,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
     >
       {/* Logo Section */}
       <div className={cn(
-        'flex items-center justify-between p-[1.45rem] border-b border-gray-700',
+        'flex items-center justify-between p-[1.45rem] border-b border-border',
         isCollapsed && 'px-3'
       )}>
         {!isCollapsed && (
@@ -441,14 +441,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
             <div className="w-10 h-10 bg-awnash-primary rounded-2xl flex items-center justify-center text-black font-bold text-xl shadow-lg">
               A
             </div>
-            <h1 className="text-xl font-bold text-white">
+            <h1 className="text-xl font-bold text-foreground">
               {t('sidebar.brandName')}
             </h1>
           </div>
         )}
         <button
           onClick={onToggleCollapse}
-          className="p-2 rounded-lg hover:bg-gray-700 text-white transition-colors"
+          className="p-2 rounded-lg hover:bg-muted text-foreground transition-colors"
         >
           <FontAwesomeIcon icon={isCollapsed ? faBars : faTimes} />
         </button>
@@ -477,9 +477,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
         {/* Authentication Section */}
         {!isCollapsed && (
           <>
-            <div className="pt-4 border-t border-gray-700 mt-6">
+            <div className="pt-4 border-t border-border mt-6">
               <div className="px-3 py-2 mb-2">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider">
                   {t('sidebar.authentication')}
                 </span>
               </div>

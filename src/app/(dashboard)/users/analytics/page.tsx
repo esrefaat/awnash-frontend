@@ -117,17 +117,17 @@ const UsersAnalytics: React.FC = () => {
     icon: any;
     color: string;
   }) => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+    <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-400">{title}</p>
-          <p className="text-2xl font-bold text-white mt-1">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
           {change && (
             <p className="text-sm text-emerald-400 mt-1">+{change}% {isRTL ? 'هذا الشهر' : 'this month'}</p>
           )}
         </div>
         <div className={cn("flex h-12 w-12 items-center justify-center rounded-xl", color)}>
-          <FontAwesomeIcon icon={icon} className="h-6 w-6 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-6 w-6 text-foreground" />
         </div>
       </div>
     </div>
@@ -135,20 +135,20 @@ const UsersAnalytics: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white">{isRTL ? 'جاري التحميل...' : 'Loading...'}</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground">{isRTL ? 'جاري التحميل...' : 'Loading...'}</div>
       </div>
     );
   }
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 text-white space-y-6 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background text-foreground space-y-6 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-3xl font-bold text-foreground">
           {isRTL ? 'تحليلات المستخدمين' : 'User Analytics'}
         </h1>
-        <p className="text-gray-400 mt-1">
+        <p className="text-muted-foreground mt-1">
           {isRTL ? 'نظرة شاملة على إحصائيات وتفاعل المستخدمين' : 'Overview of user statistics and engagement'}
         </p>
       </div>
@@ -194,8 +194,8 @@ const UsersAnalytics: React.FC = () => {
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {/* User Role Distribution */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'توزيع أدوار المستخدمين' : 'User Roles Distribution'}
           </h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -224,17 +224,17 @@ const UsersAnalytics: React.FC = () => {
                     className={cn("w-3 h-3 rounded-full", isRTL ? "ml-2" : "mr-2")} 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-sm text-gray-400">{item.name}</span>
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
                 </div>
-                <span className="text-sm font-medium text-white">{item.value}</span>
+                <span className="text-sm font-medium text-foreground">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* User Growth */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'نمو المستخدمين' : 'User Growth'}
           </h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -255,8 +255,8 @@ const UsersAnalytics: React.FC = () => {
         </div>
 
         {/* Login Activity */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'نشاط تسجيل الدخول (24 ساعة)' : 'Login Activity (24h)'}
           </h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -277,50 +277,50 @@ const UsersAnalytics: React.FC = () => {
 
       {/* Role Breakdown Cards */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500/20">
               <FontAwesomeIcon icon={faCrown} className="h-5 w-5 text-red-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">{isRTL ? 'المشرفون' : 'Admins'}</p>
-              <p className="text-xl font-bold text-white">{stats?.admins || 0}</p>
+              <p className="text-sm text-muted-foreground">{isRTL ? 'المشرفون' : 'Admins'}</p>
+              <p className="text-xl font-bold text-foreground">{stats?.admins || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20">
               <FontAwesomeIcon icon={faUserTie} className="h-5 w-5 text-green-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">{isRTL ? 'مالكو المعدات' : 'Owners'}</p>
-              <p className="text-xl font-bold text-white">{stats?.owners || 0}</p>
+              <p className="text-sm text-muted-foreground">{isRTL ? 'مالكو المعدات' : 'Owners'}</p>
+              <p className="text-xl font-bold text-foreground">{stats?.owners || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20">
               <FontAwesomeIcon icon={faUserCog} className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">{isRTL ? 'المستأجرون' : 'Renters'}</p>
-              <p className="text-xl font-bold text-white">{stats?.renters || 0}</p>
+              <p className="text-sm text-muted-foreground">{isRTL ? 'المستأجرون' : 'Renters'}</p>
+              <p className="text-xl font-bold text-foreground">{stats?.renters || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/20">
               <FontAwesomeIcon icon={faUserShield} className="h-5 w-5 text-yellow-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">{isRTL ? 'هجين' : 'Hybrid'}</p>
-              <p className="text-xl font-bold text-white">{stats?.hybrid || 0}</p>
+              <p className="text-sm text-muted-foreground">{isRTL ? 'هجين' : 'Hybrid'}</p>
+              <p className="text-xl font-bold text-foreground">{stats?.hybrid || 0}</p>
             </div>
           </div>
         </div>

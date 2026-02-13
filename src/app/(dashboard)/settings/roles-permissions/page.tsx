@@ -266,20 +266,20 @@ const PermissionMatrixModal: React.FC<{
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-6xl max-h-[90vh] overflow-hidden">
+      <div className="bg-card rounded-xl border border-border w-full max-w-6xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-foreground">
               {isEdit ? 'Edit Role' : 'Create New Role'}
             </h2>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {selectedCount} of {availablePermissions} permissions selected
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
           </button>
@@ -289,30 +289,30 @@ const PermissionMatrixModal: React.FC<{
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           {/* Basic Information */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-white mb-4">Basic Information</h3>
+            <h3 className="text-lg font-medium text-foreground mb-4">Basic Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Role Name *
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter role name"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Description
                 </label>
                 <input
                   type="text"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter role description"
                 />
               </div>
@@ -322,28 +322,28 @@ const PermissionMatrixModal: React.FC<{
           {/* Permissions Matrix */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-white">Permissions Matrix</h3>
+              <h3 className="text-lg font-medium text-foreground">Permissions Matrix</h3>
               <button
                 onClick={handleSelectAll}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors text-sm"
               >
                 {selectedCount === availablePermissions ? 'Deselect All' : 'Select All'}
               </button>
             </div>
 
-            <div className="bg-gray-700 rounded-lg overflow-hidden">
+            <div className="bg-muted rounded-lg overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-600">
                     <tr>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         All
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Resource
                       </th>
                       {actions.map((action: string) => (
-                        <th key={action} className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th key={action} className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           <div className="flex flex-col items-center">
                             <span>{action}</span>
                             <button
@@ -369,7 +369,7 @@ const PermissionMatrixModal: React.FC<{
                       ).length;
                       
                       return (
-                        <tr key={resource} className="hover:bg-gray-600">
+                        <tr key={resource} className="hover:bg-muted">
                           <td className="px-4 py-3 text-center">
                             <button
                               onClick={() => handleSelectAllResource(resource)}
@@ -378,10 +378,10 @@ const PermissionMatrixModal: React.FC<{
                               {selectedCount === availableActions.length && availableActions.length > 0 ? 'None' : 'All'}
                             </button>
                           </td>
-                          <td className="px-4 py-3 text-sm font-medium text-white">
+                          <td className="px-4 py-3 text-sm font-medium text-foreground">
                             <div className="flex items-center justify-between">
                               <span className="capitalize">{resource.replace('_', ' ')}</span>
-                              <span className="text-xs text-gray-400">
+                              <span className="text-xs text-muted-foreground">
                                 {selectedCount}/{availableActions.length}
                               </span>
                             </div>
@@ -397,7 +397,7 @@ const PermissionMatrixModal: React.FC<{
                                   checked={isChecked}
                                   onChange={() => handlePermissionToggle(resource, action)}
                                   disabled={!permission}
-                                  className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2 disabled:opacity-50"
+                                  className="w-4 h-4 text-blue-600 bg-muted border-border rounded focus:ring-blue-500 focus:ring-2 disabled:opacity-50"
                                   title={permission ? permission.description : 'Permission not available'}
                                 />
                               </td>
@@ -414,8 +414,8 @@ const PermissionMatrixModal: React.FC<{
 
           {/* Selected Permissions Summary */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-300 mb-2">Selected Permissions ({selectedCount})</h4>
-            <div className="bg-gray-700 rounded-lg p-4 max-h-32 overflow-y-auto">
+            <h4 className="text-sm font-medium text-muted-foreground mb-2">Selected Permissions ({selectedCount})</h4>
+            <div className="bg-muted rounded-lg p-4 max-h-32 overflow-y-auto">
               <div className="flex flex-wrap gap-2">
                 {resources.map((resource: string) => 
                   actions.map((action: string) => {
@@ -423,7 +423,7 @@ const PermissionMatrixModal: React.FC<{
                       return (
                         <span
                           key={`${resource}:${action}`}
-                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white"
+                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-foreground"
                         >
                           {resource}:{action}
                         </span>
@@ -433,7 +433,7 @@ const PermissionMatrixModal: React.FC<{
                   })
                 )}
                 {selectedCount === 0 && (
-                  <span className="text-gray-400 text-sm">No permissions selected</span>
+                  <span className="text-muted-foreground text-sm">No permissions selected</span>
                 )}
               </div>
             </div>
@@ -441,10 +441,10 @@ const PermissionMatrixModal: React.FC<{
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-4 p-6 border-t border-gray-700 bg-gray-750">
+        <div className="flex items-center justify-end gap-4 p-6 border-t border-border bg-gray-750">
           <button
             onClick={onClose}
-            className="px-6 py-2 text-gray-400 hover:text-white transition-colors"
+            className="px-6 py-2 text-muted-foreground hover:text-foreground transition-colors"
             disabled={isSaving}
           >
             Cancel
@@ -452,7 +452,7 @@ const PermissionMatrixModal: React.FC<{
           <button
             onClick={handleSave}
             disabled={isSaving || !formData.name.trim()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isSaving && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
             {isSaving ? 'Saving...' : (isEdit ? 'Update Role' : 'Create Role')}
@@ -611,11 +611,11 @@ const RolesPermissionsPage: React.FC = () => {
     const clientRoles = ['owner', 'renter', 'hybrid'];
     
     if (adminRoles.includes(roleName)) {
-      return 'bg-red-600 text-white';
+      return 'bg-red-600 text-foreground';
     } else if (clientRoles.includes(roleName)) {
-      return 'bg-blue-600 text-white';
+      return 'bg-blue-600 text-foreground';
     }
-    return 'bg-gray-600 text-white';
+    return 'bg-gray-600 text-foreground';
   };
 
   const formatDate = (dateString: string) => {
@@ -652,10 +652,10 @@ const RolesPermissionsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="text-white text-xl mb-4">Loading roles and permissions...</div>
-          <div className="text-gray-400 text-sm">
+          <div className="text-foreground text-xl mb-4">Loading roles and permissions...</div>
+          <div className="text-muted-foreground text-sm">
             If this takes too long, you may need to log in again.
           </div>
         </div>
@@ -665,23 +665,23 @@ const RolesPermissionsPage: React.FC = () => {
 
   return (
     <SuperAdminOnly fallback={
-      <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
-        <div className="max-w-2xl mx-auto p-8 bg-gray-800 border border-gray-700 rounded-xl text-center">
+      <div className="min-h-screen bg-background text-gray-100 p-6">
+        <div className="max-w-2xl mx-auto p-8 bg-card border border-border rounded-xl text-center">
           <h1 className="text-2xl font-bold text-red-400 mb-4">Access Denied</h1>
-          <p className="text-gray-300 mb-4">You need super admin privileges to manage roles and permissions.</p>
+          <p className="text-muted-foreground mb-4">You need super admin privileges to manage roles and permissions.</p>
         </div>
       </div>
     }>
-      <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-white mb-2">
+                <h1 className="text-4xl font-bold text-foreground mb-2">
                   {isRTL ? 'الأدوار والصلاحيات' : 'Roles & Permissions'}
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-muted-foreground">
                   {isRTL ? 'إدارة أدوار النظام والصلاحيات المرتبطة بها' : 'Manage system roles and their associated permissions'}
                 </p>
               </div>
@@ -696,18 +696,18 @@ const RolesPermissionsPage: React.FC = () => {
           </div>
 
           {/* Filters */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg mb-6">
+          <div className="bg-card rounded-xl border border-border shadow-lg mb-6">
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Search */}
                 <div className="relative">
-                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder={isRTL ? 'البحث عن الأدوار...' : 'Search roles...'}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                    className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                   />
                 </div>
 
@@ -715,7 +715,7 @@ const RolesPermissionsPage: React.FC = () => {
                 <select
                   value={roleTypeFilter}
                   onChange={(e) => setRoleTypeFilter(e.target.value)}
-                  className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500"
+                  className="px-4 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-yellow-500"
                 >
                   <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
                   <option value="admin">{isRTL ? 'أدوار الإدارة' : 'Admin Roles'}</option>
@@ -724,7 +724,7 @@ const RolesPermissionsPage: React.FC = () => {
                 </select>
 
                 {/* Stats */}
-                <div className="flex items-center justify-end text-sm text-gray-400">
+                <div className="flex items-center justify-end text-sm text-muted-foreground">
                   {filteredRoles.length} of {roles.length} roles
                 </div>
               </div>
@@ -732,13 +732,13 @@ const RolesPermissionsPage: React.FC = () => {
           </div>
 
           {/* Roles Table */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
+          <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-700">
+                <thead className="bg-muted">
                   <tr>
                     <th 
-                      className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
+                      className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground"
                       onClick={() => handleSort('name')}
                     >
                       <div className="flex items-center space-x-1">
@@ -746,14 +746,14 @@ const RolesPermissionsPage: React.FC = () => {
                         <FontAwesomeIcon icon={getSortIcon('name')} className="h-3 w-3" />
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الوصف' : 'Description'}
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'المستخدمون المعينون' : 'Assigned Users'}
                     </th>
                     <th 
-                      className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
+                      className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground"
                       onClick={() => handleSort('created_at')}
                     >
                       <div className="flex items-center space-x-1">
@@ -761,14 +761,14 @@ const RolesPermissionsPage: React.FC = () => {
                         <FontAwesomeIcon icon={getSortIcon('created_at')} className="h-3 w-3" />
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الإجراءات' : 'Actions'}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {filteredRoles.map((role) => (
-                    <tr key={role.id} className="hover:bg-gray-700 transition-colors">
+                    <tr key={role.id} className="hover:bg-muted transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="flex-shrink-0">
@@ -780,32 +780,32 @@ const RolesPermissionsPage: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-white">{role.description}</div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-sm text-foreground">{role.description}</div>
+                        <div className="text-xs text-muted-foreground">
                           {role.permissions?.length || 0} permissions
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <FontAwesomeIcon icon={faUsers} className="h-4 w-4 text-gray-400 mr-2" />
-                          <span className="text-sm text-white font-medium">{role.userCount}</span>
+                          <FontAwesomeIcon icon={faUsers} className="h-4 w-4 text-muted-foreground mr-2" />
+                          <span className="text-sm text-foreground font-medium">{role.userCount}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-300">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
                         {formatDate(role.createdAt)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => handleEditRole(role)}
-                            className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
+                            className="p-2 text-muted-foreground hover:text-blue-400 transition-colors"
                             title="Edit Role"
                           >
                             <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteRole(role.id)}
-                            className="p-2 text-gray-400 hover:text-red-400 transition-colors"
+                            className="p-2 text-muted-foreground hover:text-red-400 transition-colors"
                             title="Delete Role"
                           >
                             <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />

@@ -198,7 +198,7 @@ const InvoicesPage: React.FC = () => {
         label: isRTL ? 'متأخر' : 'Overdue'
       },
       cancelled: {
-        className: 'border-gray-600 text-gray-600 bg-gray-600/10',
+        className: 'border-border text-gray-600 bg-gray-600/10',
         label: isRTL ? 'ملغي' : 'Cancelled'
       }
     };
@@ -220,20 +220,20 @@ const InvoicesPage: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-purple-600 rounded-2xl">
-                <FontAwesomeIcon icon={faFileInvoice} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faFileInvoice} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">
+                <h1 className="text-3xl font-bold text-foreground">
                   {isRTL ? 'الفواتير' : 'Invoices'}
                 </h1>
-                <p className="text-gray-400 mt-1">
+                <p className="text-muted-foreground mt-1">
                   {isRTL ? 'إدارة جميع الفواتير والمستحقات' : 'Manage all invoices and receivables'}
                 </p>
               </div>
@@ -241,7 +241,7 @@ const InvoicesPage: React.FC = () => {
             <Button
               onClick={() => { fetchInvoices(); fetchStats(); }}
               variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              className="border-border text-muted-foreground hover:bg-muted"
             >
               <FontAwesomeIcon icon={faRefresh} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'تحديث' : 'Refresh'}
@@ -251,14 +251,14 @@ const InvoicesPage: React.FC = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-purple-600 rounded-xl">
-                <FontAwesomeIcon icon={faFileInvoice} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faFileInvoice} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي الفواتير' : 'Total Invoices'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'إجمالي الفواتير' : 'Total Invoices'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.total || 0}
                 </p>
                 <p className="text-sm text-purple-400">
@@ -268,14 +268,14 @@ const InvoicesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-green-600 rounded-xl">
-                <FontAwesomeIcon icon={faCheckCircle} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faCheckCircle} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'المدفوعة' : 'Paid'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'المدفوعة' : 'Paid'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.paid || 0}
                 </p>
                 <p className="text-sm text-green-400">
@@ -285,14 +285,14 @@ const InvoicesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-yellow-600 rounded-xl">
-                <FontAwesomeIcon icon={faClock} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faClock} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'قيد الانتظار' : 'Pending'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'قيد الانتظار' : 'Pending'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : (stats?.draft || 0) + (stats?.sent || 0)}
                 </p>
                 <p className="text-sm text-yellow-400">
@@ -302,14 +302,14 @@ const InvoicesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-red-600 rounded-xl">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'متأخرة' : 'Overdue'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'متأخرة' : 'Overdue'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.overdue || 0}
                 </p>
                 <p className="text-sm text-red-400">{isRTL ? 'فاتورة' : 'invoices'}</p>
@@ -319,13 +319,13 @@ const InvoicesPage: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn('absolute top-3 h-4 w-4 text-gray-400', isRTL ? 'right-3' : 'left-3')} 
+                  className={cn('absolute top-3 h-4 w-4 text-muted-foreground', isRTL ? 'right-3' : 'left-3')} 
                 />
                 <input
                   type="text"
@@ -333,7 +333,7 @@ const InvoicesPage: React.FC = () => {
                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                   placeholder={isRTL ? 'البحث برقم الفاتورة...' : 'Search by invoice number...'}
                   className={cn(
-                    'w-full bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                    'w-full bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                     isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4',
                     'py-2'
                   )}
@@ -345,7 +345,7 @@ const InvoicesPage: React.FC = () => {
               <select 
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value as InvoiceStatus | ''); setPage(1); }}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="draft">{isRTL ? 'مسودة' : 'Draft'}</option>
@@ -379,7 +379,7 @@ const InvoicesPage: React.FC = () => {
         )}
 
         {/* Invoices Table */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 shadow-lg overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-purple-500 animate-spin" />
@@ -388,66 +388,66 @@ const InvoicesPage: React.FC = () => {
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'رقم الفاتورة' : 'Invoice #'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'المبلغ' : 'Amount'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الإجمالي' : 'Total'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'تاريخ الإصدار' : 'Issued'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'تاريخ الاستحقاق' : 'Due Date'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الحالة' : 'Status'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الإجراءات' : 'Actions'}
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {invoices.map((invoice) => {
                       const daysUntilDue = invoicesService.getDaysUntilDue(invoice);
                       const isOverdue = invoicesService.isOverdue(invoice);
                       
                       return (
-                        <tr key={invoice.id} className="hover:bg-gray-700 transition-colors">
+                        <tr key={invoice.id} className="hover:bg-muted transition-colors">
                           <td className="px-6 py-4">
-                            <p className="font-medium text-white">{invoice.invoiceNumber}</p>
+                            <p className="font-medium text-foreground">{invoice.invoiceNumber}</p>
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <p className="text-white">{formatCurrency(invoice.amount, invoice.currency)}</p>
+                              <p className="text-foreground">{formatCurrency(invoice.amount, invoice.currency)}</p>
                               {invoice.taxAmount > 0 && (
-                                <p className="text-sm text-gray-400">
+                                <p className="text-sm text-muted-foreground">
                                   + {formatCurrency(invoice.taxAmount, invoice.currency)} {isRTL ? 'ضريبة' : 'tax'}
                                 </p>
                               )}
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="text-white font-semibold">
+                            <span className="text-foreground font-semibold">
                               {formatCurrency(invoice.totalAmount, invoice.currency)}
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="text-white">{formatDate(invoice.issuedAt)}</span>
+                            <span className="text-foreground">{formatDate(invoice.issuedAt)}</span>
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <span className={cn('text-white', isOverdue && 'text-red-400')}>
+                              <span className={cn('text-foreground', isOverdue && 'text-red-400')}>
                                 {formatDate(invoice.dueDate)}
                               </span>
                               {invoice.status !== 'paid' && invoice.status !== 'cancelled' && (
-                                <p className={cn('text-sm', daysUntilDue < 0 ? 'text-red-400' : 'text-gray-400')}>
+                                <p className={cn('text-sm', daysUntilDue < 0 ? 'text-red-400' : 'text-muted-foreground')}>
                                   {daysUntilDue < 0 
                                     ? (isRTL ? `متأخر ${Math.abs(daysUntilDue)} يوم` : `${Math.abs(daysUntilDue)} days overdue`)
                                     : (isRTL ? `${daysUntilDue} يوم متبقي` : `${daysUntilDue} days left`)
@@ -462,7 +462,7 @@ const InvoicesPage: React.FC = () => {
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
                               <button
-                                className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded transition-colors"
+                                className="p-2 text-blue-400 hover:text-blue-300 hover:bg-muted rounded transition-colors"
                                 title={isRTL ? 'عرض التفاصيل' : 'View Details'}
                               >
                                 <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
@@ -470,7 +470,7 @@ const InvoicesPage: React.FC = () => {
                               
                               <button
                                 onClick={() => handleDownloadPdf(invoice.id, invoice.invoiceNumber)}
-                                className="p-2 text-purple-400 hover:text-purple-300 hover:bg-gray-600 rounded transition-colors"
+                                className="p-2 text-purple-400 hover:text-purple-300 hover:bg-muted rounded transition-colors"
                                 title={isRTL ? 'تحميل PDF' : 'Download PDF'}
                               >
                                 <FontAwesomeIcon icon={faFilePdf} className="h-4 w-4" />
@@ -479,7 +479,7 @@ const InvoicesPage: React.FC = () => {
                               {invoice.status === 'draft' && (
                                 <button
                                   onClick={() => handleSendInvoice(invoice.id)}
-                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors"
                                   title={isRTL ? 'إرسال' : 'Send'}
                                 >
                                   <FontAwesomeIcon icon={faPaperPlane} className="h-4 w-4" />
@@ -489,7 +489,7 @@ const InvoicesPage: React.FC = () => {
                               {(invoice.status === 'sent' || invoice.status === 'overdue') && (
                                 <button
                                   onClick={() => handleMarkPaid(invoice.id)}
-                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors"
                                   title={isRTL ? 'تحديد كمدفوع' : 'Mark as Paid'}
                                 >
                                   <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4" />
@@ -499,7 +499,7 @@ const InvoicesPage: React.FC = () => {
                               {(invoice.status === 'draft' || invoice.status === 'sent') && (
                                 <button
                                   onClick={() => handleVoidInvoice(invoice.id)}
-                                  className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded transition-colors"
+                                  className="p-2 text-red-400 hover:text-red-300 hover:bg-muted rounded transition-colors"
                                   title={isRTL ? 'إلغاء' : 'Void'}
                                 >
                                   <FontAwesomeIcon icon={faBan} className="h-4 w-4" />
@@ -517,7 +517,7 @@ const InvoicesPage: React.FC = () => {
               {invoices.length === 0 && !loading && (
                 <div className="text-center py-12">
                   <FontAwesomeIcon icon={faFileInvoice} className="h-16 w-16 text-gray-600 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-400 mb-2">
+                  <h3 className="text-lg font-medium text-muted-foreground mb-2">
                     {isRTL ? 'لا توجد فواتير' : 'No invoices found'}
                   </h3>
                   <p className="text-gray-500">
@@ -528,8 +528,8 @@ const InvoicesPage: React.FC = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-700">
-                  <p className="text-sm text-gray-400">
+                <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL 
                       ? `عرض ${((page - 1) * limit) + 1}-${Math.min(page * limit, total)} من ${total}`
                       : `Showing ${((page - 1) * limit) + 1}-${Math.min(page * limit, total)} of ${total}`
@@ -541,7 +541,7 @@ const InvoicesPage: React.FC = () => {
                       size="sm"
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="border-gray-600 text-gray-300"
+                      className="border-border text-muted-foreground"
                     >
                       {isRTL ? 'السابق' : 'Previous'}
                     </Button>
@@ -550,7 +550,7 @@ const InvoicesPage: React.FC = () => {
                       size="sm"
                       onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="border-gray-600 text-gray-300"
+                      className="border-border text-muted-foreground"
                     >
                       {isRTL ? 'التالي' : 'Next'}
                     </Button>

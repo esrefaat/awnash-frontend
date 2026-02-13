@@ -198,19 +198,19 @@ export default function EquipmentNamingPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Equipment Naming</h1>
-          <p className="text-gray-400 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Equipment Naming</h1>
+          <p className="text-muted-foreground mt-1">
             Manage equipment type names and market-specific terminology
           </p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-gray-800 rounded-lg p-4 space-y-4">
+      <div className="bg-card rounded-lg p-4 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search equipment types..."
               value={search}
@@ -259,41 +259,41 @@ export default function EquipmentNamingPage() {
       )}
 
       {/* Table */}
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
+      <div className="bg-card rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-700">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Equipment Type
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Category
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Base Name (EN)
                 </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Base Name (AR)
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Market Name (EN)
                 </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Market Name (AR)
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Order
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 // Loading skeleton
                 Array.from({ length: 5 }).map((_, i) => (
@@ -329,7 +329,7 @@ export default function EquipmentNamingPage() {
                 ))
               ) : equipmentTypes.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-8 text-center text-gray-400">
+                  <td colSpan={9} className="px-4 py-8 text-center text-muted-foreground">
                     No equipment types found
                   </td>
                 </tr>
@@ -342,7 +342,7 @@ export default function EquipmentNamingPage() {
                     <tr
                       key={type.id}
                       className={cn(
-                        'hover:bg-gray-700/50 transition-colors',
+                        'hover:bg-muted/50 transition-colors',
                         isEditing && 'bg-blue-900/20',
                         !type.isActive && 'opacity-60'
                       )}
@@ -358,16 +358,16 @@ export default function EquipmentNamingPage() {
                             />
                           ) : (
                             <div className="h-10 w-10 rounded bg-gray-600 flex items-center justify-center">
-                              <span className="text-gray-400 text-xs">
+                              <span className="text-muted-foreground text-xs">
                                 {type.nameEn.charAt(0)}
                               </span>
                             </div>
                           )}
                           <div>
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-foreground">
                               {type.nameEn}
                             </p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted-foreground">
                               {type.descriptionEn || 'No description'}
                             </p>
                           </div>
@@ -383,12 +383,12 @@ export default function EquipmentNamingPage() {
 
                       {/* Base Name EN */}
                       <td className="px-4 py-4">
-                        <span className="text-sm text-gray-300">{type.nameEn}</span>
+                        <span className="text-sm text-muted-foreground">{type.nameEn}</span>
                       </td>
 
                       {/* Base Name AR */}
                       <td className="px-4 py-4 text-right" dir="rtl">
-                        <span className="text-sm text-gray-300">{type.nameAr}</span>
+                        <span className="text-sm text-muted-foreground">{type.nameAr}</span>
                       </td>
 
                       {/* Market Name EN */}
@@ -417,7 +417,7 @@ export default function EquipmentNamingPage() {
                             placeholder="Auto"
                           />
                         ) : (
-                          <span className="text-sm text-gray-400">
+                          <span className="text-sm text-muted-foreground">
                             {type.marketName?.displayOrder ?? type.displayOrder}
                           </span>
                         )}
@@ -496,20 +496,20 @@ export default function EquipmentNamingPage() {
       </div>
 
       {/* Legend */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-sm font-medium text-gray-300 mb-2">Legend</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-gray-400">
+      <div className="bg-card rounded-lg p-4">
+        <h3 className="text-sm font-medium text-muted-foreground mb-2">Legend</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-muted-foreground">
           <div>
-            <strong className="text-gray-300">Base Name:</strong> Standard/textbook name
+            <strong className="text-muted-foreground">Base Name:</strong> Standard/textbook name
           </div>
           <div>
-            <strong className="text-gray-300">Market Name:</strong> Local terminology for {MARKETS.find(m => m.code === selectedMarket)?.name}
+            <strong className="text-muted-foreground">Market Name:</strong> Local terminology for {MARKETS.find(m => m.code === selectedMarket)?.name}
           </div>
           <div>
-            <strong className="text-gray-300">Order:</strong> Display order (lower = first). Empty uses default.
+            <strong className="text-muted-foreground">Order:</strong> Display order (lower = first). Empty uses default.
           </div>
           <div>
-            <strong className="text-gray-300">Status:</strong> Active types appear in app. Hidden types are not selectable.
+            <strong className="text-muted-foreground">Status:</strong> Active types appear in app. Hidden types are not selectable.
           </div>
         </div>
       </div>

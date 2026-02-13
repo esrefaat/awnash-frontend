@@ -143,26 +143,26 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
         disabled={disabled}
         className={cn(
           'w-full flex items-center justify-between px-3 py-2 text-sm rounded-md border transition-colors',
-          'bg-gray-800 border-gray-700 text-white',
-          'hover:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FFCC00] focus:ring-offset-0',
+          'bg-card border-border text-foreground',
+          'hover:border-border focus:outline-none focus:ring-2 focus:ring-[#FFCC00] focus:ring-offset-0',
           disabled && 'opacity-50 cursor-not-allowed',
           error && 'border-red-500 focus:ring-red-500',
           isOpen && 'ring-2 ring-[#FFCC00]'
         )}
       >
-        <span className={cn(!selectedOption && 'text-gray-400')}>
+        <span className={cn(!selectedOption && 'text-muted-foreground')}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <div className="flex items-center gap-1">
           {value && !disabled && (
             <X
-              className="h-4 w-4 text-gray-400 hover:text-white cursor-pointer"
+              className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-pointer"
               onClick={handleClear}
             />
           )}
           <ChevronDown
             className={cn(
-              'h-4 w-4 text-gray-400 transition-transform',
+              'h-4 w-4 text-muted-foreground transition-transform',
               isOpen && 'rotate-180'
             )}
           />
@@ -171,11 +171,11 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg overflow-hidden">
+        <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-md shadow-lg overflow-hidden">
           {/* Search Input */}
-          <div className="p-2 border-b border-gray-700">
+          <div className="p-2 border-b border-border">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 ref={inputRef}
                 type="text"
@@ -186,7 +186,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder={searchPlaceholder}
-                className="w-full pl-9 pr-3 py-2 text-sm bg-gray-900 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#FFCC00] focus:border-[#FFCC00]"
+                className="w-full pl-9 pr-3 py-2 text-sm bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FFCC00] focus:border-[#FFCC00]"
               />
             </div>
           </div>
@@ -194,7 +194,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           {/* Options List */}
           <div ref={listRef} className="max-h-60 overflow-y-auto">
             {filteredOptions.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-gray-400 text-center">
+              <div className="px-4 py-3 text-sm text-muted-foreground text-center">
                 No options found
               </div>
             ) : (
@@ -205,8 +205,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                   className={cn(
                     'flex items-center justify-between px-4 py-2.5 cursor-pointer transition-colors',
                     index === highlightedIndex
-                      ? 'bg-gray-700'
-                      : 'hover:bg-gray-700/50',
+                      ? 'bg-muted'
+                      : 'hover:bg-muted/50',
                     option.value === value && 'bg-[#FFCC00]/10'
                   )}
                 >
@@ -216,18 +216,18 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                         'text-sm',
                         option.value === value
                           ? 'text-[#FFCC00] font-medium'
-                          : 'text-white'
+                          : 'text-foreground'
                       )}
                     >
                       {option.label}
                     </span>
                     {option.labelAr && (
-                      <span className="text-xs text-gray-400 font-cairo" dir="rtl">
+                      <span className="text-xs text-muted-foreground font-cairo" dir="rtl">
                         {option.labelAr}
                       </span>
                     )}
                     {option.description && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {option.description}
                       </span>
                     )}

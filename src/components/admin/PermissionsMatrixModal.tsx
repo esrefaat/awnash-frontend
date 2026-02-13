@@ -191,7 +191,7 @@ function Toggle({ checked, onChange, status }: ToggleProps) {
       <div
         className={cn(
           "relative w-11 h-6 rounded-full transition-colors",
-          "bg-gray-600",
+          "bg-muted",
           bgColor,
           "after:content-[''] after:absolute after:top-[2px] after:left-[2px]",
           "after:bg-white after:border-gray-300 after:border after:rounded-full",
@@ -222,13 +222,13 @@ function ModuleCard({ module, grantedCount, overriddenCount, onClick }: ModuleCa
     <div
       onClick={onClick}
       className={cn(
-        "p-4 bg-gray-900/50 border border-gray-700 rounded-xl cursor-pointer",
+        "p-4 bg-background/50 border border-border rounded-xl cursor-pointer",
         "hover:border-awnash-accent transition-colors"
       )}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold text-white">{module.label}</h3>
-        <Badge variant="outline" className="border-gray-600 text-gray-400 text-xs">
+        <h3 className="font-semibold text-foreground">{module.label}</h3>
+        <Badge variant="outline" className="border-border text-muted-foreground text-xs">
           {grantedCount}/{total}
         </Badge>
       </div>
@@ -246,7 +246,7 @@ function ModuleCard({ module, grantedCount, overriddenCount, onClick }: ModuleCa
         )}
       </div>
 
-      <div className="mt-3 w-full bg-gray-700 rounded-full h-2">
+      <div className="mt-3 w-full bg-muted rounded-full h-2">
         <div
           className="bg-awnash-accent h-2 rounded-full transition-all"
           style={{ width: `${percentage}%` }}
@@ -349,25 +349,25 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden bg-gray-800 border-gray-700 flex flex-col">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden bg-muted border-border flex flex-col">
         {/* Header */}
-        <DialogHeader className="border-b border-gray-700 pb-4 mb-4 flex-shrink-0">
+        <DialogHeader className="border-b border-border pb-4 mb-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
                 <Shield className="h-5 w-5 text-purple-400" />
               </div>
               <div>
-                <DialogTitle className="text-xl font-semibold text-white">
+                <DialogTitle className="text-xl font-semibold text-foreground">
                   Permissions Matrix
                 </DialogTitle>
-                <p className="text-sm text-gray-400 mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Managing permissions for {user.fullName} ({user.role})
                 </p>
               </div>
             </div>
             <div className="text-end">
-              <p className="text-sm text-gray-400">Total Permissions</p>
+              <p className="text-sm text-muted-foreground">Total Permissions</p>
               <p className="text-2xl font-bold text-awnash-primary">
                 {getTotalGrantedPermissions()}
               </p>
@@ -377,10 +377,10 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 overflow-hidden flex flex-col">
-          <TabsList className="grid grid-cols-4 lg:grid-cols-6 gap-2 bg-gray-900/50 p-1 rounded-xl mb-4 flex-shrink-0">
+          <TabsList className="grid grid-cols-4 lg:grid-cols-6 gap-2 bg-background/50 p-1 rounded-xl mb-4 flex-shrink-0">
             <TabsTrigger
               value="overview"
-              className="data-[state=active]:bg-awnash-accent data-[state=active]:text-white text-gray-400"
+              className="data-[state=active]:bg-awnash-accent data-[state=active]:text-foreground text-muted-foreground"
             >
               Overview
             </TabsTrigger>
@@ -388,7 +388,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
               <TabsTrigger
                 key={module.name}
                 value={module.name}
-                className="data-[state=active]:bg-awnash-accent data-[state=active]:text-white text-gray-400 text-xs"
+                className="data-[state=active]:bg-awnash-accent data-[state=active]:text-foreground text-muted-foreground text-xs"
               >
                 {module.label.split(" ")[0]}
               </TabsTrigger>
@@ -418,22 +418,22 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
               })}
             </div>
 
-            <div className="p-4 bg-gray-900/50 border border-gray-700 rounded-xl">
-              <h3 className="font-semibold text-white mb-3">Role Information</h3>
+            <div className="p-4 bg-background/50 border border-border rounded-xl">
+              <h3 className="font-semibold text-foreground mb-3">Role Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
                   <span className="text-gray-500">Current Role:</span>
-                  <p className="text-white font-medium capitalize">
+                  <p className="text-foreground font-medium capitalize">
                     {user.role.replace("_", " ")}
                   </p>
                 </div>
                 <div>
                   <span className="text-gray-500">Default Permissions:</span>
-                  <p className="text-white font-medium">{user.permissions?.length || 0}</p>
+                  <p className="text-foreground font-medium">{user.permissions?.length || 0}</p>
                 </div>
                 <div>
                   <span className="text-gray-500">Custom Permissions:</span>
-                  <p className="text-white font-medium">{getTotalGrantedPermissions()}</p>
+                  <p className="text-foreground font-medium">{getTotalGrantedPermissions()}</p>
                 </div>
               </div>
             </div>
@@ -442,22 +442,22 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
           {/* Module Tabs */}
           {permissionModules.map((module) => (
             <TabsContent key={module.name} value={module.name} className="overflow-y-auto flex-1 pe-2">
-              <div className="bg-gray-900/50 border border-gray-700 rounded-xl overflow-hidden">
-                <div className="bg-gray-900 px-6 py-4 border-b border-gray-700">
-                  <h3 className="text-lg font-semibold text-white">{module.label}</h3>
-                  <p className="text-sm text-gray-400">
+              <div className="bg-background/50 border border-border rounded-xl overflow-hidden">
+                <div className="bg-background px-6 py-4 border-b border-border">
+                  <h3 className="text-lg font-semibold text-foreground">{module.label}</h3>
+                  <p className="text-sm text-muted-foreground">
                     Configure {module.label.toLowerCase()} permissions
                   </p>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-900/50">
+                    <thead className="bg-background/50">
                       <tr>
-                        <th className="text-start p-4 font-semibold text-gray-300">Permission</th>
-                        <th className="text-start p-4 font-semibold text-gray-300">Description</th>
-                        <th className="text-center p-4 font-semibold text-gray-300">Status</th>
-                        <th className="text-center p-4 font-semibold text-gray-300">Toggle</th>
+                        <th className="text-start p-4 font-semibold text-muted-foreground">Permission</th>
+                        <th className="text-start p-4 font-semibold text-muted-foreground">Description</th>
+                        <th className="text-center p-4 font-semibold text-muted-foreground">Status</th>
+                        <th className="text-center p-4 font-semibold text-muted-foreground">Toggle</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -473,11 +473,11 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
                         return (
                           <tr
                             key={permission.action}
-                            className="border-b border-gray-700 hover:bg-gray-900/30"
+                            className="border-b border-border hover:bg-background/30"
                           >
                             <td className="p-4">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-white">{permission.label}</span>
+                                <span className="font-medium text-foreground">{permission.label}</span>
                                 {status === "inherited" && (
                                   <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-xs">
                                     Inherited
@@ -485,7 +485,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
                                 )}
                               </div>
                             </td>
-                            <td className="p-4 text-gray-400 text-sm">{permission.description}</td>
+                            <td className="p-4 text-muted-foreground text-sm">{permission.description}</td>
                             <td className="p-4 text-center">
                               <span className={cn("text-sm capitalize", statusColors[status])}>
                                 {status === "none" ? "No Permission" : status}
@@ -510,11 +510,11 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
         </Tabs>
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-6 border-t border-gray-700 flex-shrink-0">
+        <div className="flex items-center justify-between pt-6 border-t border-border flex-shrink-0">
           <Button
             variant="outline"
             onClick={resetToRoleDefaults}
-            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            className="border-border text-muted-foreground hover:bg-muted"
           >
             <RotateCcw className="h-4 w-4 me-2" />
             Reset to Role Defaults
@@ -524,7 +524,7 @@ const PermissionsMatrixModal: React.FC<PermissionsMatrixModalProps> = ({
             <Button
               variant="outline"
               onClick={handleClose}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               Cancel
             </Button>

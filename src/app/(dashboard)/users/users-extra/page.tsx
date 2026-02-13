@@ -148,7 +148,7 @@ const Users: React.FC = () => {
           <div className={cn("grid grid-cols-1 md:grid-cols-4 gap-4", isRTL && "text-right")}>
             {/* Search */}
             <div className="relative">
-              <Search className={cn("absolute top-2.5 h-4 w-4 text-gray-400", 
+              <Search className={cn("absolute top-2.5 h-4 w-4 text-muted-foreground", 
                 isRTL ? "right-3" : "left-3"
               )} />
               <input

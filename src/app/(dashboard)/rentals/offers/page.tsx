@@ -256,11 +256,11 @@ const OffersManagement: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={cn("min-h-screen bg-background p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="max-w-7xl mx-auto flex items-center justify-center h-64">
           <div className="text-center">
             <div className="loader mb-4"></div>
-            <p className="text-gray-400">{isRTL ? 'جاري تحميل بيانات الطلب...' : 'Loading request data...'}</p>
+            <p className="text-muted-foreground">{isRTL ? 'جاري تحميل بيانات الطلب...' : 'Loading request data...'}</p>
           </div>
         </div>
       </div>
@@ -269,7 +269,7 @@ const OffersManagement: React.FC = () => {
 
   if (error || !requestData) {
     return (
-      <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={cn("min-h-screen bg-background p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-6 text-center">
             <FontAwesomeIcon icon={faExclamationTriangle} className="h-8 w-8 text-red-400 mb-4" />
@@ -284,24 +284,24 @@ const OffersManagement: React.FC = () => {
   }
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-4">
             <button
               onClick={handleBackToRequests}
-              className="flex items-center px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              className="flex items-center px-3 py-2 bg-muted text-foreground rounded-lg hover:bg-muted transition-colors"
               title={isRTL ? 'العودة إلى الطلبات' : 'Back to Requests'}
             >
               <FontAwesomeIcon icon={faArrowLeft} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'العودة' : 'Back'}
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 {isRTL ? 'عروض الطلب' : 'Request Offers'}
         </h1>
-              <p className="text-gray-400 mt-1">
+              <p className="text-muted-foreground mt-1">
                 {isRTL ? 'عرض وإدارة العروض المقدمة على هذا الطلب' : 'View and manage offers submitted for this request'}
               </p>
             </div>
@@ -319,9 +319,9 @@ const OffersManagement: React.FC = () => {
         </div>
 
         {/* Request Information Card */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-foreground">
               {isRTL ? 'تفاصيل الطلب' : 'Request Details'}
             </h2>
             <div className="flex items-center space-x-3">
@@ -335,96 +335,96 @@ const OffersManagement: React.FC = () => {
             <div className="space-y-6">
               {/* Basic Info */}
               <div className="space-y-3">
-                <h3 className="text-lg font-medium text-white mb-3">
+                <h3 className="text-lg font-medium text-foreground mb-3">
                   {isRTL ? 'المعلومات الأساسية' : 'Basic Information'}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faClipboardList} className="h-4 w-4 text-blue-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'معرف الطلب:' : 'Request ID:'}</span>
-                    <span className="text-white font-medium">{requestData.requestId}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'معرف الطلب:' : 'Request ID:'}</span>
+                    <span className="text-foreground font-medium">{requestData.requestId}</span>
                   </div>
                   
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faUser} className="h-4 w-4 text-green-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'مقدم الطلب:' : 'Requester:'}</span>
-                    <span className="text-white font-medium">{requestData.requester?.fullName}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'مقدم الطلب:' : 'Requester:'}</span>
+                    <span className="text-foreground font-medium">{requestData.requester?.fullName}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faTruck} className="h-4 w-4 text-purple-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'نوع المعدة:' : 'Equipment Type:'}</span>
-                    <span className="text-white font-medium capitalize">{requestData.equipmentType}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'نوع المعدة:' : 'Equipment Type:'}</span>
+                    <span className="text-foreground font-medium capitalize">{requestData.equipmentType}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faBuilding} className="h-4 w-4 text-orange-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'الحجم:' : 'Size:'}</span>
-                    <span className="text-white font-medium capitalize">{requestData.size}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الحجم:' : 'Size:'}</span>
+                    <span className="text-foreground font-medium capitalize">{requestData.size}</span>
                   </div>
                 </div>
               </div>
 
               {/* Location & Dates */}
               <div className="space-y-3">
-                <h3 className="text-lg font-medium text-white mb-3">
+                <h3 className="text-lg font-medium text-foreground mb-3">
                   {isRTL ? 'الموقع والتواريخ' : 'Location & Dates'}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faMapMarkerAlt} className="h-4 w-4 text-red-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'الموقع:' : 'Location:'}</span>
-                    <span className="text-white font-medium">{requestData.city}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الموقع:' : 'Location:'}</span>
+                    <span className="text-foreground font-medium">{requestData.city}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-indigo-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'تاريخ البداية:' : 'Start Date:'}</span>
-                    <span className="text-white font-medium">{formatDate(requestData.startDate)}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'تاريخ البداية:' : 'Start Date:'}</span>
+                    <span className="text-foreground font-medium">{formatDate(requestData.startDate)}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-indigo-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'تاريخ النهاية:' : 'End Date:'}</span>
-                    <span className="text-white font-medium">{formatDate(requestData.endDate)}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'تاريخ النهاية:' : 'End Date:'}</span>
+                    <span className="text-foreground font-medium">{formatDate(requestData.endDate)}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faDollarSign} className="h-4 w-4 text-green-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'الميزانية القصوى:' : 'Max Budget:'}</span>
-                    <span className="text-white font-medium">{formatSimpleCurrency(requestData.maxBudget)}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الميزانية القصوى:' : 'Max Budget:'}</span>
+                    <span className="text-foreground font-medium">{formatSimpleCurrency(requestData.maxBudget)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Additional Info */}
               <div className="space-y-3">
-                <h3 className="text-lg font-medium text-white mb-3">
+                <h3 className="text-lg font-medium text-foreground mb-3">
                   {isRTL ? 'معلومات إضافية' : 'Additional Information'}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-yellow-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'الكمية:' : 'Count:'}</span>
-                    <span className="text-white font-medium">{requestData.count}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الكمية:' : 'Count:'}</span>
+                    <span className="text-foreground font-medium">{requestData.count}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faImage} className="h-4 w-4 text-pink-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'الصور:' : 'Images:'}</span>
-                    <span className="text-white font-medium">{requestData.images?.length || 0}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الصور:' : 'Images:'}</span>
+                    <span className="text-foreground font-medium">{requestData.images?.length || 0}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     <FontAwesomeIcon icon={faNoteSticky} className="h-4 w-4 text-cyan-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'الملاحظات:' : 'Notes:'}</span>
-                    <span className="text-white font-medium">{requestData.notes ? 'Yes' : 'No'}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الملاحظات:' : 'Notes:'}</span>
+                    <span className="text-foreground font-medium">{requestData.notes ? 'Yes' : 'No'}</span>
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-gray-400" />
-                    <span className="text-gray-300 text-sm">{isRTL ? 'تاريخ الإنشاء:' : 'Created:'}</span>
-                    <span className="text-white font-medium">{formatDate(requestData.createdAt)}</span>
+                    <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'تاريخ الإنشاء:' : 'Created:'}</span>
+                    <span className="text-foreground font-medium">{formatDate(requestData.createdAt)}</span>
                   </div>
                 </div>
               </div>
@@ -432,10 +432,10 @@ const OffersManagement: React.FC = () => {
               {/* Notes */}
               {requestData.notes && (
                 <div className="space-y-3">
-                  <h3 className="text-lg font-medium text-white mb-3">
+                  <h3 className="text-lg font-medium text-foreground mb-3">
                     {isRTL ? 'الملاحظات' : 'Notes'}
                   </h3>
-                  <p className="text-gray-300 bg-gray-700 rounded-lg p-4">
+                  <p className="text-muted-foreground bg-muted rounded-lg p-4">
                     {requestData.notes}
                   </p>
                 </div>
@@ -444,14 +444,14 @@ const OffersManagement: React.FC = () => {
 
             {/* Images Column */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">
+              <h3 className="text-lg font-medium text-foreground">
                 {isRTL ? 'صور الطلب' : 'Request Images'}
               </h3>
               
               {requestData.images && requestData.images.length > 0 ? (
                 <div className="relative">
                   {/* Main Image Display */}
-                  <div className="relative w-full h-80 bg-gray-700 rounded-lg overflow-hidden">
+                  <div className="relative w-full h-80 bg-muted rounded-lg overflow-hidden">
                     <img 
                       src={requestData.images[currentImageIndex]} 
                       alt={`Request image ${currentImageIndex + 1}`}
@@ -459,7 +459,7 @@ const OffersManagement: React.FC = () => {
                     />
                     
                     {/* Image Counter */}
-                    <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    <div className="absolute top-4 right-4 bg-black/50 text-foreground px-3 py-1 rounded-full text-sm">
                       {currentImageIndex + 1} / {requestData.images.length}
                     </div>
                   </div>
@@ -469,13 +469,13 @@ const OffersManagement: React.FC = () => {
                     <>
                       <button
                         onClick={() => setCurrentImageIndex(prev => prev === 0 ? requestData.images.length - 1 : prev - 1)}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-foreground p-2 rounded-full hover:bg-black/70 transition-colors"
                       >
                         <FontAwesomeIcon icon={faChevronLeft} className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setCurrentImageIndex(prev => prev === requestData.images.length - 1 ? 0 : prev + 1)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-foreground p-2 rounded-full hover:bg-black/70 transition-colors"
                       >
                         <FontAwesomeIcon icon={faChevronRight} className="h-4 w-4" />
                       </button>
@@ -498,10 +498,10 @@ const OffersManagement: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <div className="w-full h-80 bg-gray-700 rounded-lg flex items-center justify-center">
+                <div className="w-full h-80 bg-muted rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <FontAwesomeIcon icon={faImage} className="h-12 w-12 text-gray-500 mb-4" />
-                    <p className="text-gray-400">{isRTL ? 'لا توجد صور' : 'No images available'}</p>
+                    <p className="text-muted-foreground">{isRTL ? 'لا توجد صور' : 'No images available'}</p>
                   </div>
                 </div>
               )}
@@ -511,111 +511,111 @@ const OffersManagement: React.FC = () => {
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي العروض' : 'Total Offers'}</p>
-                <p className="text-2xl font-bold text-white">{offerStats.total}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'إجمالي العروض' : 'Total Offers'}</p>
+                <p className="text-2xl font-bold text-foreground">{offerStats.total}</p>
               </div>
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faClipboardList} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faClipboardList} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'مقبولة' : 'Accepted'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'مقبولة' : 'Accepted'}</p>
                 <p className="text-2xl font-bold text-green-400">{offerStats.accepted}</p>
               </div>
               <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faCheckCircle} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faCheckCircle} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'معلقة' : 'Pending'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'معلقة' : 'Pending'}</p>
                 <p className="text-2xl font-bold text-yellow-400">{offerStats.pending}</p>
               </div>
               <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faClock} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faClock} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'مرفوضة' : 'Rejected'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'مرفوضة' : 'Rejected'}</p>
                 <p className="text-2xl font-bold text-red-400">{offerStats.rejected}</p>
               </div>
               <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faTimes} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faTimes} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'متوسطة' : 'Average'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'متوسطة' : 'Average'}</p>
                 <p className="text-2xl font-bold text-purple-400">{formatSimpleCurrency(offerStats.average)}</p>
               </div>
               <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faHandshake} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faHandshake} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'عاجلة' : 'Urgent'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'عاجلة' : 'Urgent'}</p>
                 <p className="text-2xl font-bold text-orange-400">{offerStats.urgent}</p>
               </div>
               <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faFlag} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faFlag} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Search */}
             <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn('absolute top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4', isRTL ? 'right-3' : 'left-3')} 
+                  className={cn('absolute top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4', isRTL ? 'right-3' : 'left-3')} 
                 />
                 <input
                   type="text"
                   placeholder={isRTL ? 'البحث بالاسم، المعرف، أو نوع المعدة...' : 'Search by name, ID, or equipment type...'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn('w-full py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500', isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3')}
+                  className={cn('w-full py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500', isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3')}
                 />
               </div>
             </div>
 
             {/* Status Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الحالة' : 'Status'}
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="accepted">{isRTL ? 'مقبول' : 'Accepted'}</option>
@@ -626,13 +626,13 @@ const OffersManagement: React.FC = () => {
 
             {/* Category Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الفئة' : 'Category'}
               </label>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الفئات' : 'All Categories'}</option>
                 <option value="excavator">{isRTL ? 'الحفار' : 'Excavator'}</option>
@@ -648,13 +648,13 @@ const OffersManagement: React.FC = () => {
 
             {/* Location Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الموقع' : 'Location'}
               </label>
               <select
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع المواقع' : 'All Locations'}</option>
                 <option value="Riyadh">{isRTL ? 'الرياض' : 'Riyadh'}</option>
@@ -667,14 +667,14 @@ const OffersManagement: React.FC = () => {
           </div>
 
           {/* No Response Toggle */}
-          <div className="mt-4 pt-4 border-t border-gray-700">
+          <div className="mt-4 pt-4 border-t border-border">
             <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-300">
+                <span className="text-sm font-medium text-muted-foreground">
                   {isRTL ? 'إظهار العروض المعلقة فقط' : 'Show pending offers only'}
                 </span>
               <button
                 onClick={() => setShowNoResponse(!showNoResponse)}
-                className={cn('p-2 rounded-full transition-colors', showNoResponse ? 'bg-yellow-600 text-white' : 'bg-gray-600 text-gray-300')}
+                className={cn('p-2 rounded-full transition-colors', showNoResponse ? 'bg-yellow-600 text-foreground' : 'bg-gray-600 text-muted-foreground')}
               >
                 <FontAwesomeIcon icon={showNoResponse ? faToggleOn : faToggleOff} className="h-5 w-5" />
               </button>
@@ -683,13 +683,13 @@ const OffersManagement: React.FC = () => {
         </div>
 
         {/* Main Content - Offers List */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
-          <div className="p-6 border-b border-gray-700">
+        <div className="bg-card rounded-xl border border-border shadow-lg">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-foreground">
                 {isRTL ? 'قائمة العروض' : 'Offers List'}
               </h3>
-              <span className="text-gray-400 text-sm">
+              <span className="text-muted-foreground text-sm">
                 {offers.length} {isRTL ? 'عرض' : 'offers'}
               </span>
             </div>
@@ -699,12 +699,12 @@ const OffersManagement: React.FC = () => {
           {offersLoading ? (
             <div className="text-center py-12">
               <div className="loader mb-4"></div>
-              <p className="text-gray-400">{isRTL ? 'جاري تحميل العروض...' : 'Loading offers...'}</p>
+              <p className="text-muted-foreground">{isRTL ? 'جاري تحميل العروض...' : 'Loading offers...'}</p>
             </div>
           ) : offers.length === 0 ? (
             <div className="text-center py-12">
               <FontAwesomeIcon icon={faClipboardList} className="h-12 w-12 text-gray-500 mb-4" />
-              <h3 className="text-lg font-medium text-gray-400 mb-2">
+              <h3 className="text-lg font-medium text-muted-foreground mb-2">
                 {isRTL ? 'لا توجد عروض' : 'No offers found'}
               </h3>
               <p className="text-gray-500">
@@ -712,7 +712,7 @@ const OffersManagement: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-700">
+            <div className="divide-y divide-border">
               {offers.map((offer, index) => (
                 <div 
                   key={offer.id} 
@@ -722,7 +722,7 @@ const OffersManagement: React.FC = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
-                        <h4 className="text-lg font-semibold text-white">
+                        <h4 className="text-lg font-semibold text-foreground">
                           {offer.equipment?.name || 'Equipment Name'}
                         </h4>
                         {getOfferStatusBadge(offer.status)}
@@ -730,27 +730,27 @@ const OffersManagement: React.FC = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-gray-400 text-sm">{isRTL ? 'مقدم العرض' : 'Owner'}</p>
-                          <p className="text-white font-medium">{offer.bidder?.fullName}</p>
+                          <p className="text-muted-foreground text-sm">{isRTL ? 'مقدم العرض' : 'Owner'}</p>
+                          <p className="text-foreground font-medium">{offer.bidder?.fullName}</p>
                           <p className="text-gray-500 text-sm">{offer.bidder?.email}</p>
                         </div>
                         
                         <div>
-                          <p className="text-gray-400 text-sm">{isRTL ? 'المعدة' : 'Equipment'}</p>
-                          <p className="text-white font-medium capitalize">{offer.equipment?.equipmentType}</p>
+                          <p className="text-muted-foreground text-sm">{isRTL ? 'المعدة' : 'Equipment'}</p>
+                          <p className="text-foreground font-medium capitalize">{offer.equipment?.equipmentType}</p>
                           <p className="text-gray-500 text-sm">{offer.equipment?.city}</p>
                         </div>
                         
                         <div>
-                          <p className="text-gray-400 text-sm">{isRTL ? 'السعر اليومي' : 'Daily Rate'}</p>
-                          <p className="text-white font-medium">
+                          <p className="text-muted-foreground text-sm">{isRTL ? 'السعر اليومي' : 'Daily Rate'}</p>
+                          <p className="text-foreground font-medium">
                             {formatSimpleCurrency(offer.dailyRate, offer.dailyRateCurrency)}/{isRTL ? 'يوم' : 'day'}
                           </p>
                         </div>
                         
                         <div>
-                          <p className="text-gray-400 text-sm">{isRTL ? 'المبلغ الإجمالي' : 'Total Amount'}</p>
-                          <p className="text-white font-medium">
+                          <p className="text-muted-foreground text-sm">{isRTL ? 'المبلغ الإجمالي' : 'Total Amount'}</p>
+                          <p className="text-foreground font-medium">
                             {formatSimpleCurrency(offer.price, offer.currency)}
                           </p>
                         </div>
@@ -758,14 +758,14 @@ const OffersManagement: React.FC = () => {
                       
                       {offer.notes && (
                         <div className="mb-4">
-                          <p className="text-gray-400 text-sm mb-1">{isRTL ? 'الملاحظات' : 'Notes'}</p>
-                          <p className="text-gray-300 text-sm bg-gray-700 rounded-lg p-3">
+                          <p className="text-muted-foreground text-sm mb-1">{isRTL ? 'الملاحظات' : 'Notes'}</p>
+                          <p className="text-muted-foreground text-sm bg-muted rounded-lg p-3">
                             {offer.notes}
                           </p>
                         </div>
                       )}
                       
-                      <div className="flex items-center space-x-4 text-sm text-gray-400">
+                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <span>{isRTL ? 'تاريخ التقديم:' : 'Submitted:'} {formatDate(offer.createdAt)}</span>
                         <span>{isRTL ? 'ينتهي في:' : 'Expires:'} {formatDate(offer.expiresAt)}</span>
                       </div>
@@ -808,14 +808,14 @@ const OffersManagement: React.FC = () => {
                {loadingMore && (
                  <div className="p-6 text-center">
                    <div className="loader mb-2"></div>
-                   <p className="text-gray-400 text-sm">{isRTL ? 'جاري تحميل المزيد من العروض...' : 'Loading more offers...'}</p>
+                   <p className="text-muted-foreground text-sm">{isRTL ? 'جاري تحميل المزيد من العروض...' : 'Loading more offers...'}</p>
                  </div>
                )}
                
                {/* End of results indicator */}
                {!loadingMore && !pagination.hasNextPage && offers.length > 0 && (
                  <div className="p-6 text-center">
-                   <p className="text-gray-400 text-sm">{isRTL ? 'تم عرض جميع العروض' : 'All offers loaded'}</p>
+                   <p className="text-muted-foreground text-sm">{isRTL ? 'تم عرض جميع العروض' : 'All offers loaded'}</p>
                  </div>
                )}
              </div>

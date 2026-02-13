@@ -97,7 +97,7 @@ const TextResources: React.FC = () => {
         <div className="flex-1">
           <div className={cn("relative", isRTL && "text-right")}>
             <Search className={cn(
-              "absolute top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400",
+              "absolute top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground",
               isRTL ? "right-3" : "left-3"
             )} />
             <input
@@ -201,7 +201,7 @@ const TextResources: React.FC = () => {
 
       {filteredResources.length === 0 && (
         <div className="text-center py-12">
-          <FileText className="mx-auto h-12 w-12 text-gray-400" />
+          <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">
             {isRTL ? 'لا توجد نصوص' : 'No text resources'}
           </h3>

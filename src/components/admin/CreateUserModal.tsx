@@ -63,8 +63,8 @@ const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "w-full h-11 px-4 rounded-lg",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -87,8 +87,8 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={cn(
           "w-full h-11 px-4 pe-10 rounded-lg appearance-none cursor-pointer",
-          "bg-[#1a1f2e] border border-gray-700",
-          "text-white",
+          "bg-card border border-border",
+          "text-foreground",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
           "transition-all duration-200",
           className
@@ -97,7 +97,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
     </div>
   )
 );
@@ -115,7 +115,7 @@ interface SectionProps {
 function Section({ title, children }: SectionProps) {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-2">
+      <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
         {title}
       </h3>
       {children}
@@ -138,7 +138,7 @@ interface FormFieldProps {
 function FormField({ label, required, children, error, className }: FormFieldProps) {
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
+      <label className="block text-sm font-medium text-muted-foreground mb-2">
         {label}
         {required && <span className="text-red-400 ms-1">*</span>}
       </label>
@@ -161,9 +161,9 @@ interface ToggleSwitchProps {
 
 function ToggleSwitch({ checked, onChange, label, description }: ToggleSwitchProps) {
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl border border-gray-700">
+    <div className="flex items-center justify-between p-4 bg-background/50 rounded-xl border border-border">
       <div>
-        <p className="text-gray-300 font-medium">{label}</p>
+        <p className="text-muted-foreground font-medium">{label}</p>
         <p className="text-sm text-gray-500 mt-1">{description}</p>
       </div>
       <label className="relative inline-flex items-center cursor-pointer">
@@ -176,7 +176,7 @@ function ToggleSwitch({ checked, onChange, label, description }: ToggleSwitchPro
         <div
           className={cn(
             "relative w-11 h-6 rounded-full transition-colors",
-            "bg-gray-600 peer-checked:bg-awnash-primary",
+            "bg-muted peer-checked:bg-awnash-primary",
             "after:content-[''] after:absolute after:top-[2px] after:left-[2px]",
             "after:bg-white after:border-gray-300 after:border after:rounded-full",
             "after:h-5 after:w-5 after:transition-all",
@@ -208,7 +208,7 @@ const roleColors: Record<string, string> = {
   content_admin: "bg-green-500/10 text-green-400 border-green-500/20",
   support_agent: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   owner: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  renter: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+  renter: "bg-gray-500/10 text-muted-foreground border-gray-500/20",
   hybrid: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
 };
 
@@ -357,18 +357,18 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-muted border-border">
         {/* Header */}
-        <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+        <DialogHeader className="border-b border-border pb-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <UserPlus className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-semibold text-white">
+              <DialogTitle className="text-xl font-semibold text-foreground">
                 Create New User
               </DialogTitle>
-              <p className="text-sm text-gray-400 mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 Add a new user to the system
               </p>
             </div>
@@ -433,12 +433,12 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
             </FormField>
 
             {selectedRole && (
-              <div className="p-4 bg-gray-900/50 rounded-xl border border-gray-700">
+              <div className="p-4 bg-background/50 rounded-xl border border-border">
                 <div className="flex items-center justify-between mb-2">
                   <Badge className={cn("rounded-full px-3 py-1 border", roleColors[form.role])}>
                     {selectedRole.label}
                   </Badge>
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     {selectedRole.permissions} permissions included
                   </span>
                 </div>
@@ -491,13 +491,13 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
           </Section>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-border">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
               disabled={isSubmitting}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               Cancel
             </Button>

@@ -181,13 +181,13 @@ const CommissionReports: React.FC = () => {
   ];
 
   const StatCard = ({ title, value, subtitle, icon, color, bgColor, trend }: any) => (
-    <div className={`bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all ${isRTL ? 'text-right' : 'text-left'}`}>
+    <div className={`bg-card rounded-xl border border-border p-6 shadow-lg hover:shadow-xl transition-all ${isRTL ? 'text-right' : 'text-left'}`}>
       <div className="flex items-center justify-between">
         <div className={isRTL ? 'order-2' : 'order-1'}>
-          <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
-          <p className="text-3xl font-bold text-white mb-2">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
+          <p className="text-3xl font-bold text-foreground mb-2">{value}</p>
           {subtitle && (
-            <p className="text-sm text-gray-400">{subtitle}</p>
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
           )}
           {trend && (
             <div className="flex items-center mt-2 ">
@@ -283,29 +283,29 @@ const CommissionReports: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               {isRTL ? 'تقارير العمولات والمالية' : 'Commission & Financial Reports'}
             </h1>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               {isRTL ? 'تتبع إيرادات المنصة والعمولات والمقاييس المالية الرئيسية' : 'Track platform revenue, commissions, and key financial metrics'}
             </p>
           </div>
           <div className="flex gap-3 mt-4 lg:mt-0 ">
             <button 
               onClick={exportToCSV}
-              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors "
+              className="flex items-center px-4 py-2 bg-green-600 text-foreground rounded-lg hover:bg-green-700 font-medium transition-colors "
             >
               <FontAwesomeIcon icon={faFileExcel} className={isRTL ? 'ml-2' : 'mr-2'} />
               {isRTL ? 'تصدير CSV' : 'Export CSV'}
             </button>
             <button 
               onClick={exportToPDF}
-              className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors "
+              className="flex items-center px-4 py-2 bg-red-600 text-foreground rounded-lg hover:bg-red-700 font-medium transition-colors "
             >
               <FontAwesomeIcon icon={faFilePdf} className={isRTL ? 'ml-2' : 'mr-2'} />
               {isRTL ? 'تصدير PDF' : 'Export PDF'}
@@ -320,7 +320,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.totalRevenue)}
             subtitle={isRTL ? "إيرادات المنصة الكاملة" : "Complete platform revenue"}
             icon={faDollarSign}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-blue-700"
             trend={12.5}
           />
@@ -329,7 +329,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.totalCommission)}
             subtitle={isRTL ? "عمولات من المالكين" : "Commission from Owners"}
             icon={faPercentage}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-yellow-500"
             trend={8.3}
           />
@@ -338,7 +338,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.totalServiceFees)}
             subtitle={isRTL ? "رسوم من المستأجرين" : "Fees from Renters"}
             icon={faHandshake}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-green-600"
             trend={15.7}
           />
@@ -347,7 +347,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.averageBookingValue)}
             subtitle={isRTL ? "متوسط قيمة الحجز" : "Per booking average"}
             icon={faChartLine}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-purple-600"
             trend={-2.1}
           />
@@ -360,7 +360,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.refundsIssued)}
             subtitle={isRTL ? "إجمالي المبالغ المستردة" : "Total refunds processed"}
             icon={faExclamationTriangle}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-red-600"
             trend={-5.2}
           />
@@ -369,7 +369,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.penaltiesCollected)}
             subtitle={isRTL ? "غرامات الإلغاء والتأخير" : "Cancellation & delay penalties"}
             icon={faMoneyBillWave}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-orange-600"
             trend={22.8}
           />
@@ -378,7 +378,7 @@ const CommissionReports: React.FC = () => {
             value={formatCurrency(financialSummary.netProfit)}
             subtitle={isRTL ? "الربح بعد خصم المصاريف" : "After deducting expenses"}
             icon={faChartLine}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-indigo-600"
             trend={18.4}
           />
@@ -387,8 +387,8 @@ const CommissionReports: React.FC = () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Revenue Trend Chart */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-xl font-bold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-xl font-bold text-foreground mb-6">
               {isRTL ? 'اتجاه الإيرادات الشهرية' : 'Monthly Revenue Trend'}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -433,8 +433,8 @@ const CommissionReports: React.FC = () => {
           </div>
 
           {/* Revenue Breakdown Pie Chart */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-xl font-bold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-xl font-bold text-foreground mb-6">
               {isRTL ? 'توزيع الإيرادات حسب الفئة' : 'Revenue Breakdown by Category'}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -470,8 +470,8 @@ const CommissionReports: React.FC = () => {
                     className={`w-4 h-4 rounded-full ${isRTL ? 'ml-2' : 'mr-2'}`}   
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-sm text-gray-300">{item.name}</span>
-                  <span className="text-sm font-bold text-white ml-auto">{item.value}%</span>
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                  <span className="text-sm font-bold text-foreground ml-auto">{item.value}%</span>
                 </div>
               ))}
             </div>
@@ -479,38 +479,38 @@ const CommissionReports: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'من تاريخ' : 'Start Date'}
               </label>
               <input
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'إلى تاريخ' : 'End Date'}
               </label>
               <input
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'المالك' : 'Owner'}
               </label>
               <select
                 value={selectedOwner}
                 onChange={(e) => setSelectedOwner(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع المالكين' : 'All Owners'}</option>
                 <option value="o1">Al-Rashid Heavy Equipment</option>
@@ -519,13 +519,13 @@ const CommissionReports: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الفئة' : 'Category'}
               </label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع الفئات' : 'All Categories'}</option>
                 <option value="Excavators">{isRTL ? 'الحفارات' : 'Excavators'}</option>
@@ -538,49 +538,49 @@ const CommissionReports: React.FC = () => {
         </div>
 
         {/* Bookings Financial Table */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h3 className="text-xl font-bold text-white">
+        <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-xl font-bold text-foreground">
               {isRTL ? 'تفاصيل الحجوزات المالية' : 'Bookings Financial Details'}
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'رقم الحجز' : 'Booking ID'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المعدة' : 'Equipment'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المالك' : 'Owner'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المستأجر' : 'Renter'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'قيمة الحجز' : 'Booking Value'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'العمولة' : 'Commission'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'رسوم الخدمة' : 'Service Fee'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الحالة' : 'Status'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {mockBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={booking.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-400">
                       {booking.id}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {booking.equipmentName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -601,7 +601,7 @@ const CommissionReports: React.FC = () => {
                         {booking.renterName}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                       {formatCurrency(booking.bookingValue)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-yellow-400">

@@ -260,7 +260,7 @@ const UserDashboard: React.FC = () => {
 
     const config = statusConfig[status as keyof typeof statusConfig];
     return (
-      <span className={cn(`px-2 py-1 rounded-full text-xs font-medium text-white`, config.color)}>
+      <span className={cn(`px-2 py-1 rounded-full text-xs font-medium text-foreground`, config.color)}>
         {config.text}
       </span>
     );
@@ -269,17 +269,15 @@ const UserDashboard: React.FC = () => {
   const canSwitchRoles = user.roles.length > 1;
 
   return (
-    <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
-            {/* Role Toggle - Move to top of content */}
-      <div className="max-w-7xl mx-auto px-6 py-4">
+    <div className="space-y-6">
         <div className="flex items-center justify-between mb-6">
           {/* Welcome Section */}
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-              <FontAwesomeIcon icon={faUser} className="h-6 w-6 text-white" />
+              <FontAwesomeIcon icon={faUser} className="h-6 w-6 text-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">
+              <h1 className="text-xl font-bold text-foreground">
                 {isRTL ? `مرحباً، ${user.name}` : `Welcome, ${user.name}`}
               </h1>
               <div className="flex items-center gap-2">
@@ -300,18 +298,18 @@ const UserDashboard: React.FC = () => {
           {/* Role Toggle */}
           {canSwitchRoles && (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-300">
+              <span className="text-sm text-muted-foreground">
                 {isRTL ? 'عرض كـ:' : 'View as:'}
               </span>
               <button
                 onClick={() => setCurrentRole(currentRole === 'owner' ? 'renter' : 'owner')}
-                className="flex items-center gap-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 bg-muted hover:bg-muted rounded-lg transition-colors"
               >
                 <FontAwesomeIcon 
                   icon={currentRole === 'owner' ? faToggleOn : faToggleOff} 
                   className="h-4 w-4 text-blue-500" 
                 />
-                <span className="text-sm text-white">
+                <span className="text-sm text-foreground">
                   {currentRole === 'owner' 
                     ? (isRTL ? 'مالك' : 'Owner')
                     : (isRTL ? 'مستأجر' : 'Renter')
@@ -326,16 +324,16 @@ const UserDashboard: React.FC = () => {
           {currentRole === 'renter' ? (
             <>
               {/* Active Bookings */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'الحجوزات النشطة' : 'Active Bookings'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{renterSummary.activeBookings}</p>
+                    <p className="text-2xl font-bold text-foreground">{renterSummary.activeBookings}</p>
                   </div>
                   <div className="w-12 h-12 bg-awnash-accent rounded-2xl flex items-center justify-center">
-                    <FontAwesomeIcon icon={faCalendarCheck} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faCalendarCheck} className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
                 <div className="flex items-center gap-1 mt-2">
@@ -347,28 +345,28 @@ const UserDashboard: React.FC = () => {
               </div>
 
               {/* Total Rentals */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'إجمالي الإيجارات' : 'Total Rentals'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{renterSummary.totalRentals}</p>
+                    <p className="text-2xl font-bold text-foreground">{renterSummary.totalRentals}</p>
                   </div>
                   <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center">
-                    <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
               </div>
 
               {/* Pending Offers */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'العروض المعلقة' : 'Pending Offers'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{renterSummary.pendingOffers}</p>
+                    <p className="text-2xl font-bold text-foreground">{renterSummary.pendingOffers}</p>
                   </div>
                   <div className="w-12 h-12 bg-awnash-primary rounded-2xl flex items-center justify-center">
                     <FontAwesomeIcon icon={faClock} className="h-6 w-6 text-black" />
@@ -377,16 +375,16 @@ const UserDashboard: React.FC = () => {
               </div>
 
               {/* Total Spent */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'إجمالي المصروفات' : 'Total Spent'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{formatCurrency(renterSummary.totalSpent)}</p>
+                    <p className="text-2xl font-bold text-foreground">{formatCurrency(renterSummary.totalSpent)}</p>
                   </div>
                   <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
-                    <FontAwesomeIcon icon={faDollarSign} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faDollarSign} className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
               </div>
@@ -394,34 +392,34 @@ const UserDashboard: React.FC = () => {
           ) : (
             <>
               {/* Active Equipment */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'المعدات النشطة' : 'Active Equipment'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{ownerSummary.activeEquipment}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-2xl font-bold text-foreground">{ownerSummary.activeEquipment}</p>
+                    <p className="text-xs text-muted-foreground">
                       {isRTL ? `من أصل ${ownerSummary.totalEquipment}` : `of ${ownerSummary.totalEquipment} total`}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
               </div>
 
               {/* Total Revenue */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'إجمالي الإيرادات' : 'Total Revenue'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{formatCurrency(ownerSummary.totalRevenue)}</p>
+                    <p className="text-2xl font-bold text-foreground">{formatCurrency(ownerSummary.totalRevenue)}</p>
                   </div>
                   <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
-                    <FontAwesomeIcon icon={faDollarSign} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faDollarSign} className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
                 <div className="flex items-center gap-1 mt-2">
@@ -433,28 +431,28 @@ const UserDashboard: React.FC = () => {
               </div>
 
               {/* Rentals In Progress */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'الإيجارات الجارية' : 'Rentals In Progress'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{ownerSummary.rentalsInProgress}</p>
+                    <p className="text-2xl font-bold text-foreground">{ownerSummary.rentalsInProgress}</p>
                   </div>
                   <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
-                    <FontAwesomeIcon icon={faHandshake} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faHandshake} className="h-6 w-6 text-foreground" />
                   </div>
                 </div>
               </div>
 
               {/* Documents Verified */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {isRTL ? 'الوثائق المُتحققة' : 'Documents Verified'}
                     </p>
-                    <p className="text-2xl font-bold text-white">{ownerSummary.documentsVerified}</p>
+                    <p className="text-2xl font-bold text-foreground">{ownerSummary.documentsVerified}</p>
                     {ownerSummary.pendingVerification > 0 && (
                       <p className="text-xs text-yellow-500">
                         {isRTL ? `${ownerSummary.pendingVerification} في الانتظار` : `${ownerSummary.pendingVerification} pending`}
@@ -465,7 +463,7 @@ const UserDashboard: React.FC = () => {
                     ownerSummary.pendingVerification > 0 ? 'bg-yellow-500' : 'bg-green-600')}>
                     <FontAwesomeIcon 
                       icon={ownerSummary.pendingVerification > 0 ? faExclamationTriangle : faShieldAlt} 
-                      className={cn('h-6 w-6', ownerSummary.pendingVerification > 0 ? 'text-black' : 'text-white')} 
+                      className={cn('h-6 w-6', ownerSummary.pendingVerification > 0 ? 'text-black' : 'text-foreground')} 
                     />
                   </div>
                 </div>
@@ -475,8 +473,8 @@ const UserDashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg mb-8">
-          <h2 className="text-lg font-semibold text-white mb-4">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg mb-8">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             {isRTL ? 'الإجراءات السريعة' : 'Quick Actions'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -531,16 +529,16 @@ const UserDashboard: React.FC = () => {
           {currentRole === 'renter' ? (
             <>
               {/* Recent Bookings */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   {isRTL ? 'الحجوزات الأخيرة' : 'Recent Bookings'}
                 </h3>
                 <div className="space-y-3">
                   {recentBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                    <div key={booking.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div className="flex-1">
-                        <h4 className="font-medium text-white">{booking.equipmentName}</h4>
-                        <p className="text-sm text-gray-400">{booking.ownerName}</p>
+                        <h4 className="font-medium text-foreground">{booking.equipmentName}</h4>
+                        <p className="text-sm text-muted-foreground">{booking.ownerName}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <FontAwesomeIcon icon={faMapMarkerAlt} className="h-3 w-3 text-gray-500" />
                           <span className="text-xs text-gray-500">{booking.location}</span>
@@ -548,8 +546,8 @@ const UserDashboard: React.FC = () => {
                       </div>
                       <div className="text-right">
                         {getStatusBadge(booking.status)}
-                        <p className="text-sm font-medium text-white mt-1">{formatCurrency(booking.amount)}</p>
-                        <p className="text-xs text-gray-400">{formatDate(booking.startDate)}</p>
+                        <p className="text-sm font-medium text-foreground mt-1">{formatCurrency(booking.amount)}</p>
+                        <p className="text-xs text-muted-foreground">{formatDate(booking.startDate)}</p>
                       </div>
                     </div>
                   ))}
@@ -557,15 +555,15 @@ const UserDashboard: React.FC = () => {
               </div>
 
               {/* Upcoming Rentals */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   {isRTL ? 'الإيجارات القادمة' : 'Upcoming Rentals'}
                 </h3>
                 <div className="space-y-3">
                   {recentBookings.filter(b => b.status === 'confirmed').map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                    <div key={booking.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div className="flex-1">
-                        <h4 className="font-medium text-white">{booking.equipmentName}</h4>
+                        <h4 className="font-medium text-foreground">{booking.equipmentName}</h4>
                         <div className="flex items-center gap-2 mt-1">
                           <FontAwesomeIcon icon={faCalendarAlt} className="h-3 w-3 text-gray-500" />
                           <span className="text-xs text-gray-500">
@@ -586,16 +584,16 @@ const UserDashboard: React.FC = () => {
           ) : (
             <>
               {/* My Equipment */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   {isRTL ? 'معداتي' : 'My Equipment'}
                 </h3>
                 <div className="space-y-3">
                   {myEquipment.map((equipment) => (
-                    <div key={equipment.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                    <div key={equipment.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div className="flex-1">
-                        <h4 className="font-medium text-white">{equipment.name}</h4>
-                        <p className="text-sm text-gray-400">{equipment.category}</p>
+                        <h4 className="font-medium text-foreground">{equipment.name}</h4>
+                        <p className="text-sm text-muted-foreground">{equipment.category}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <FontAwesomeIcon icon={faMapMarkerAlt} className="h-3 w-3 text-gray-500" />
                           <span className="text-xs text-gray-500">{equipment.location}</span>
@@ -608,8 +606,8 @@ const UserDashboard: React.FC = () => {
                       </div>
                       <div className="text-right">
                         {getStatusBadge(equipment.status)}
-                        <p className="text-sm font-medium text-white mt-1">{formatCurrency(equipment.revenue)}</p>
-                        <p className="text-xs text-gray-400">{equipment.totalBookings} bookings</p>
+                        <p className="text-sm font-medium text-foreground mt-1">{formatCurrency(equipment.revenue)}</p>
+                        <p className="text-xs text-muted-foreground">{equipment.totalBookings} bookings</p>
                       </div>
                     </div>
                   ))}
@@ -617,23 +615,23 @@ const UserDashboard: React.FC = () => {
               </div>
 
               {/* Recent Offers */}
-              <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   {isRTL ? 'العروض الواردة' : 'Recent Offers'}
                 </h3>
                 <div className="space-y-3">
                   {recentOffers.map((offer) => (
-                    <div key={offer.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                    <div key={offer.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div className="flex-1">
-                        <h4 className="font-medium text-white">{offer.equipmentName}</h4>
-                        <p className="text-sm text-gray-400">{offer.renterName}</p>
+                        <h4 className="font-medium text-foreground">{offer.equipmentName}</h4>
+                        <p className="text-sm text-muted-foreground">{offer.renterName}</p>
                         <p className="text-xs text-gray-500">
                           {offer.duration} {isRTL ? 'أيام' : 'days'} • {formatDate(offer.date)}
                         </p>
                       </div>
                       <div className="text-right">
                         {getStatusBadge(offer.status)}
-                        <p className="text-sm font-medium text-white mt-1">{formatCurrency(offer.amount)}</p>
+                        <p className="text-sm font-medium text-foreground mt-1">{formatCurrency(offer.amount)}</p>
                         {offer.status === 'pending' && (
                           <div className="flex gap-1 mt-1">
                             <Button variant="success" size="sm" className="px-2 py-1 h-auto text-xs">
@@ -652,7 +650,6 @@ const UserDashboard: React.FC = () => {
             </>
           )}
         </div>
-      </div>
     </div>
   );
 };

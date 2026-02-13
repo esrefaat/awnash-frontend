@@ -347,11 +347,11 @@ const OperationalCalendar: React.FC = () => {
   };
 
   const renderCalendarHeader = () => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 mb-6">
+    <div className="bg-card rounded-xl border border-border p-6 mb-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
         {/* Title and Navigation */}
         <div className={cn("flex items-center space-x-4", isRTL && "space-x-reverse")}>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             {formatDate(currentDate)}
           </h2>
           <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
@@ -388,8 +388,8 @@ const OperationalCalendar: React.FC = () => {
               onClick={() => setViewMode(mode)}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 viewMode === mode
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-blue-600 text-foreground'
+                  : 'bg-muted text-muted-foreground hover:bg-muted'
               }`}
             >
               {isRTL 
@@ -404,8 +404,8 @@ const OperationalCalendar: React.FC = () => {
   );
 
   const renderFilters = () => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 mb-6">
-      <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+    <div className="bg-card rounded-xl border border-border p-6 mb-6">
+      <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
         <FontAwesomeIcon icon={faFilter} className={isRTL ? "ml-2" : "mr-2"} />
         {isRTL ? 'المرشحات' : 'Filters'}
       </h3>
@@ -413,7 +413,7 @@ const OperationalCalendar: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Event Types */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'أنواع الأحداث' : 'Event Types'}
           </label>
           <div className="space-y-2">
@@ -431,7 +431,7 @@ const OperationalCalendar: React.FC = () => {
                     className={`${isRTL ? 'ml-2' : 'mr-2'} text-blue-600 focus:ring-blue-500`}
                   />
                   <FontAwesomeIcon icon={config.icon} className={`${isRTL ? 'ml-1' : 'mr-1'} ${config.color.replace('bg-', 'text-')}`} />
-                  <span className="text-gray-300 text-sm">{config.text}</span>
+                  <span className="text-muted-foreground text-sm">{config.text}</span>
                 </label>
               );
             })}
@@ -440,13 +440,13 @@ const OperationalCalendar: React.FC = () => {
 
         {/* City Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'المدينة' : 'City'}
           </label>
           <select
             value={filters.city}
             onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
           >
             <option value="">{isRTL ? 'جميع المدن' : 'All Cities'}</option>
             <option value="riyadh">{isRTL ? 'الرياض' : 'Riyadh'}</option>
@@ -458,13 +458,13 @@ const OperationalCalendar: React.FC = () => {
 
         {/* Equipment Type Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'نوع المعدة' : 'Equipment Type'}
           </label>
           <select
             value={filters.equipmentType}
             onChange={(e) => setFilters({ ...filters, equipmentType: e.target.value })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
           >
             <option value="">{isRTL ? 'جميع المعدات' : 'All Equipment'}</option>
             <option value="excavator">{isRTL ? 'حفارات' : 'Excavators'}</option>
@@ -476,13 +476,13 @@ const OperationalCalendar: React.FC = () => {
 
         {/* Role Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'الدور' : 'Role'}
           </label>
           <select
             value={filters.role}
             onChange={(e) => setFilters({ ...filters, role: e.target.value })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
           >
             <option value="">{isRTL ? 'جميع الأدوار' : 'All Roles'}</option>
             <option value="owner">{isRTL ? 'مالك' : 'Owner'}</option>
@@ -503,11 +503,11 @@ const OperationalCalendar: React.FC = () => {
       : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return (
-      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         {/* Day headers */}
-        <div className="grid grid-cols-7 bg-gray-700">
+        <div className="grid grid-cols-7 bg-muted">
           {dayNames.map((day) => (
-            <div key={day} className="p-4 text-center text-sm font-medium text-gray-300 border-r border-gray-600 last:border-r-0">
+            <div key={day} className="p-4 text-center text-sm font-medium text-muted-foreground border-r border-border last:border-r-0">
               {day}
             </div>
           ))}
@@ -525,13 +525,13 @@ const OperationalCalendar: React.FC = () => {
             return (
               <div
                 key={index}
-                className={`min-h-[120px] p-2 border-r border-b border-gray-600 last:border-r-0 ${
-                  !isCurrentMonth ? 'bg-gray-750' : 'bg-gray-800'
+                className={`min-h-[120px] p-2 border-r border-b border-border last:border-r-0 ${
+                  !isCurrentMonth ? 'bg-gray-750' : 'bg-card'
                 } ${isToday ? 'ring-2 ring-blue-500' : ''}`}
               >
                 {isCurrentMonth && (
                   <>
-                    <div className={`text-sm font-medium mb-2 ${isToday ? 'text-blue-400' : 'text-gray-300'}`}>
+                    <div className={`text-sm font-medium mb-2 ${isToday ? 'text-blue-400' : 'text-muted-foreground'}`}>
                       {dayNumber}
                     </div>
                     <div className="space-y-1">
@@ -549,7 +549,7 @@ const OperationalCalendar: React.FC = () => {
                         );
                       })}
                       {dayEvents.length > 3 && (
-                        <div className="text-xs text-gray-400 pl-1">
+                        <div className="text-xs text-muted-foreground pl-1">
                           +{dayEvents.length - 3} {isRTL ? 'المزيد' : 'more'}
                         </div>
                       )}
@@ -571,18 +571,18 @@ const OperationalCalendar: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-card rounded-xl border border-border shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
           {/* Modal Header */}
-          <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center">
               <FontAwesomeIcon icon={config.icon} className={`${isRTL ? 'ml-3' : 'mr-3'} ${config.color.replace('bg-', 'text-')}`} />  
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-foreground">
                 {selectedEvent.title}
               </h2>
             </div>
             <button
               onClick={() => setShowEventModal(false)}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
             </button>
@@ -594,28 +594,28 @@ const OperationalCalendar: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'رقم الحجز:' : 'Booking ID:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as BookingEvent).bookingId}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'رقم الحجز:' : 'Booking ID:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as BookingEvent).bookingId}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'المبلغ:' : 'Amount:'}</span>
-                    <div className="text-white">${(selectedEvent.metadata as BookingEvent).amount}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'المبلغ:' : 'Amount:'}</span>
+                    <div className="text-foreground">${(selectedEvent.metadata as BookingEvent).amount}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'المعدة:' : 'Equipment:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as BookingEvent).equipmentName}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'المعدة:' : 'Equipment:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as BookingEvent).equipmentName}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'المدة:' : 'Duration:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as BookingEvent).duration}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'المدة:' : 'Duration:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as BookingEvent).duration}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'المستأجر:' : 'Renter:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as BookingEvent).renterName}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'المستأجر:' : 'Renter:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as BookingEvent).renterName}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'الموقع:' : 'Location:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as BookingEvent).location}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الموقع:' : 'Location:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as BookingEvent).location}</div>
                   </div>
                 </div>
               </div>
@@ -625,21 +625,21 @@ const OperationalCalendar: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'نوع الوثيقة:' : 'Document Type:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as DocumentEvent).documentType}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'نوع الوثيقة:' : 'Document Type:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as DocumentEvent).documentType}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'المالك:' : 'Owner:'}</span>
-                    <div className="text-white">{(selectedEvent.metadata as DocumentEvent).ownerName}</div>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'المالك:' : 'Owner:'}</span>
+                    <div className="text-foreground">{(selectedEvent.metadata as DocumentEvent).ownerName}</div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'تاريخ الانتهاء:' : 'Expiry Date:'}</span>
-                    <div className="text-white">
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'تاريخ الانتهاء:' : 'Expiry Date:'}</span>
+                    <div className="text-foreground">
                       {new Date((selectedEvent.metadata as DocumentEvent).expirationDate).toLocaleDateString()}
                     </div>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-sm">{isRTL ? 'الحالة:' : 'Status:'}</span>
+                    <span className="text-muted-foreground text-sm">{isRTL ? 'الحالة:' : 'Status:'}</span>
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                       (selectedEvent.metadata as DocumentEvent).status === 'expired' 
                         ? 'bg-red-100 text-red-800'
@@ -653,7 +653,7 @@ const OperationalCalendar: React.FC = () => {
             )}
 
             {/* Action buttons */}
-            <div className={cn("flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-700", isRTL && "space-x-reverse")}>
+            <div className={cn("flex justify-end space-x-3 mt-6 pt-4 border-t border-border", isRTL && "space-x-reverse")}>
               <Button variant="success">
                 <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />  
                 {isRTL ? 'عرض التفاصيل' : 'View Details'}
@@ -663,7 +663,7 @@ const OperationalCalendar: React.FC = () => {
                 {isRTL ? 'تعديل' : 'Edit'}
               </Button>
               {selectedEvent.type === 'document' && (
-                <Button variant="default" className="bg-yellow-600 hover:bg-yellow-700 text-white">
+                <Button variant="default" className="bg-yellow-600 hover:bg-yellow-700 text-foreground">
                   <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />  
                   {isRTL ? 'تم المراجعة' : 'Mark Reviewed'}
                 </Button>
@@ -676,15 +676,14 @@ const OperationalCalendar: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 flex items-center">
+        <div>
+          <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center">
             <FontAwesomeIcon icon={faCalendarAlt} className={`${isRTL ? 'ml-3' : 'mr-3'} text-blue-400`} />  
             {isRTL ? 'التقويم التشغيلي' : 'Operational Calendar'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'تتبع الأحداث التشغيلية والمواعيد المهمة' : 'Track operational events and important dates'}
           </p>
         </div>
@@ -700,9 +699,8 @@ const OperationalCalendar: React.FC = () => {
 
         {/* Event Modal */}
         {renderEventModal()}
-      </div>
     </div>
   );
 };
 
-export default OperationalCalendar; 
+export default OperationalCalendar;

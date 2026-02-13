@@ -273,7 +273,7 @@ const AddEquipment: React.FC = () => {
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-accent)' }}
               >
-                <FontAwesomeIcon icon={faUser} className="text-white" />
+                <FontAwesomeIcon icon={faUser} className="text-foreground" />
               </div>
               <h3 className="text-lg font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
                 {isRTL ? 'المالك والموقع' : 'Owner & Location'}
@@ -344,7 +344,7 @@ const AddEquipment: React.FC = () => {
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-success)' }}
               >
-                <FontAwesomeIcon icon={faDollarSign} className="text-white" />
+                <FontAwesomeIcon icon={faDollarSign} className="text-foreground" />
               </div>
               <h3 className="text-lg font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
                 {isRTL ? 'الأسعار' : 'Pricing'}
@@ -407,7 +407,7 @@ const AddEquipment: React.FC = () => {
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-warning)' }}
               >
-                <FontAwesomeIcon icon={faInfo} className="text-white" />
+                <FontAwesomeIcon icon={faInfo} className="text-foreground" />
               </div>
               <h3 className="text-lg font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
                 {isRTL ? 'التفاصيل والمواصفات' : 'Details & Specifications'}
@@ -478,7 +478,7 @@ const AddEquipment: React.FC = () => {
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-info)' }}
               >
-                <FontAwesomeIcon icon={faImage} className="text-white" />
+                <FontAwesomeIcon icon={faImage} className="text-foreground" />
               </div>
               <h3 className="text-lg font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
                 {isRTL ? 'صور المعدة' : 'Equipment Images'}
@@ -515,7 +515,7 @@ const AddEquipment: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-foreground rounded-full flex items-center justify-center text-xs"
                       >
                         <FontAwesomeIcon icon={faTimes} />
                       </button>

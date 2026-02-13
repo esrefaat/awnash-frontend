@@ -178,7 +178,7 @@ const Payments: React.FC = () => {
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-accent)' }}
               >
-                <FontAwesomeIcon icon={faChartLine} className="text-white text-xl" />
+                <FontAwesomeIcon icon={faChartLine} className="text-foreground text-xl" />
               </div>
             </div>
           </div>
@@ -199,7 +199,7 @@ const Payments: React.FC = () => {
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-success)' }}
               >
-                <FontAwesomeIcon icon={faMoneyBillWave} className="text-white text-xl" />
+                <FontAwesomeIcon icon={faMoneyBillWave} className="text-foreground text-xl" />
               </div>
             </div>
           </div>
@@ -220,7 +220,7 @@ const Payments: React.FC = () => {
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-warning)' }}
               >
-                <FontAwesomeIcon icon={faCreditCard} className="text-white text-xl" />
+                <FontAwesomeIcon icon={faCreditCard} className="text-foreground text-xl" />
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@ const Payments: React.FC = () => {
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex flex-col md:flex-row gap-4 items-center">
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder={isRTL ? 'البحث في المدفوعات...' : 'Search payments...'}

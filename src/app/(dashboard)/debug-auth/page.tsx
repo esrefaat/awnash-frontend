@@ -134,11 +134,10 @@ const DebugAuth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="space-y-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-100 mb-4">Authentication Debug</h1>
-          <p className="text-gray-400">Debug authentication state and JWT token parsing</p>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Authentication Debug</h1>
+          <p className="text-muted-foreground">Debug authentication state and JWT token parsing</p>
           <p className="text-xs text-gray-500 mt-2">Last updated: {debugInfo.timestamp}</p>
         </div>
 
@@ -175,8 +174,8 @@ const DebugAuth: React.FC = () => {
         </div>
 
         {/* Current State Summary */}
-        <Card className="bg-gray-800 border-gray-700 p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-white">Current Authentication State</h2>
+        <Card className="bg-card border-border p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-foreground">Current Authentication State</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <h3 className="font-semibold text-green-400">Is Authenticated</h3>
@@ -186,11 +185,11 @@ const DebugAuth: React.FC = () => {
             </div>
             <div>
               <h3 className="font-semibold text-blue-400">User Role</h3>
-              <p className="text-gray-300">{user?.role || 'No role'}</p>
+              <p className="text-muted-foreground">{user?.role || 'No role'}</p>
             </div>
             <div>
               <h3 className="font-semibold text-purple-400">Permissions Count</h3>
-              <p className="text-gray-300">{permissions.length}</p>
+              <p className="text-muted-foreground">{permissions.length}</p>
             </div>
             <div>
               <h3 className="font-semibold text-orange-400">Backend Status</h3>
@@ -200,7 +199,7 @@ const DebugAuth: React.FC = () => {
             </div>
           </div>
           {debugInfo.authError && (
-            <div className="mt-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-300 text-sm">
+            <div className="mt-4 p-3 bg-red-900/50 border border-red-500 rounded text-red-300 text-sm">
               Backend Error: {debugInfo.authError}
             </div>
           )}
@@ -210,27 +209,27 @@ const DebugAuth: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* usePermissions Hook Data */}
-          <Card className="bg-gray-800 border-gray-700 p-6">
+          <Card className="bg-card border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-blue-400">usePermissions Hook Data</h2>
-            <pre className="text-xs bg-gray-900 p-4 rounded overflow-auto max-h-96 text-gray-300">
+            <pre className="text-xs bg-background p-4 rounded overflow-auto max-h-96 text-muted-foreground">
               {JSON.stringify({ user, permissions, roles, isAuthenticated }, null, 2)}
             </pre>
           </Card>
 
           {/* Current User from Backend */}
-          <Card className="bg-gray-800 border-gray-700 p-6">
+          <Card className="bg-card border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-green-400">Backend User Data (HTTP-only Cookies)</h2>
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold text-sm text-gray-300">Authentication Method</h3>
-                <pre className="text-xs bg-gray-900 p-2 rounded text-green-400">
+                <h3 className="font-semibold text-sm text-muted-foreground">Authentication Method</h3>
+                <pre className="text-xs bg-background p-2 rounded text-green-400">
                   {debugInfo.authenticationMethod || 'HTTP-only Cookies'}
                 </pre>
               </div>
               
               <div>
-                <h3 className="font-semibold text-sm text-gray-300">Current User from /auth/me</h3>
-                <pre className="text-xs bg-gray-900 p-2 rounded overflow-auto max-h-48 text-gray-300">
+                <h3 className="font-semibold text-sm text-muted-foreground">Current User from /auth/me</h3>
+                <pre className="text-xs bg-background p-2 rounded overflow-auto max-h-48 text-muted-foreground">
                   {JSON.stringify(debugInfo.currentUser, null, 2)}
                 </pre>
               </div>
@@ -238,12 +237,12 @@ const DebugAuth: React.FC = () => {
           </Card>
 
           {/* Legacy Storage (for cleanup) */}
-          <Card className="bg-gray-800 border-gray-700 p-6">
+          <Card className="bg-card border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-yellow-400">Legacy Storage (Should be Empty)</h2>
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold text-sm text-gray-300">LocalStorage Items</h3>
-                <pre className="text-xs bg-gray-900 p-2 rounded overflow-auto max-h-48 text-gray-300">
+                <h3 className="font-semibold text-sm text-muted-foreground">LocalStorage Items</h3>
+                <pre className="text-xs bg-background p-2 rounded overflow-auto max-h-48 text-muted-foreground">
                   {JSON.stringify(debugInfo.localStorage, null, 2)}
                 </pre>
               </div>
@@ -251,17 +250,17 @@ const DebugAuth: React.FC = () => {
           </Card>
 
           {/* All Cookies */}
-          <Card className="bg-gray-800 border-gray-700 p-6">
+          <Card className="bg-card border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-orange-400">All Cookies</h2>
-            <p className="text-sm text-gray-400 mb-2">Note: HTTP-only cookies are not visible here for security</p>
-            <pre className="text-xs bg-gray-900 p-4 rounded break-all text-gray-300">
+            <p className="text-sm text-muted-foreground mb-2">Note: HTTP-only cookies are not visible here for security</p>
+            <pre className="text-xs bg-background p-4 rounded break-all text-muted-foreground">
               {debugInfo.allCookies || 'No visible cookies (HTTP-only cookies are hidden)'}
             </pre>
           </Card>
         </div>
 
         {/* Test Results */}
-        <Card className="bg-gray-800 border-gray-700 p-6 mt-6">
+        <Card className="bg-card border-border p-6 mt-6">
           <h2 className="text-xl font-semibold mb-4 text-red-400">Diagnostic Results</h2>
           <div className="space-y-2 text-sm">
             {!isAuthenticated && (
@@ -290,7 +289,6 @@ const DebugAuth: React.FC = () => {
             )}
           </div>
         </Card>
-      </div>
     </div>
   );
 };

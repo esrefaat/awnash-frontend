@@ -253,7 +253,7 @@ const EquipmentAddPage: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       {apiError && (apiError.statusCode === 403 || apiError.statusCode === 401) ? (
         <InlineErrorPage
           statusCode={apiError.statusCode}
@@ -266,10 +266,10 @@ const EquipmentAddPage: React.FC = () => {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
                   {isRTL ? 'إضافة معدة جديدة' : 'Add New Equipment'}
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-muted-foreground">
                   {isRTL ? 'إنشاء معدة جديدة للتأجير. يمكن للمالكين والمدراء فقط إنشاء المعدات.' : 'Create a new equipment item for rental. Only owners and admins can create equipment.'}
                 </p>
               </div>
@@ -290,20 +290,20 @@ const EquipmentAddPage: React.FC = () => {
             )}
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-xl p-6 mb-6 border border-gray-700">
+        <div className="bg-card rounded-xl p-6 mb-6 border border-border">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder={isRTL ? 'ابحث عن المعدات...' : 'Search equipment...'}
               />
               </div>
@@ -311,13 +311,13 @@ const EquipmentAddPage: React.FC = () => {
 
             {/* Status Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الحالة' : 'Status'}
               </label>
               <select
                 value={filters.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Statuses'}</option>
                 <option value="active">{isRTL ? 'نشط' : 'Active'}</option>
@@ -330,13 +330,13 @@ const EquipmentAddPage: React.FC = () => {
 
             {/* Equipment Type Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'نوع المعدة' : 'Equipment Type'}
               </label>
               <select
                 value={filters.equipmentType}
                 onChange={(e) => setFilters(prev => ({ ...prev, equipmentType: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 disabled={equipmentTypesLoading}
               >
                 <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
@@ -350,13 +350,13 @@ const EquipmentAddPage: React.FC = () => {
 
             {/* Availability Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'التوفر' : 'Availability'}
               </label>
               <select
                 value={filters.isAvailable}
                 onChange={(e) => setFilters(prev => ({ ...prev, isAvailable: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">{isRTL ? 'الكل' : 'All'}</option>
                 <option value="true">{isRTL ? 'متاح' : 'Available'}</option>
@@ -366,15 +366,15 @@ const EquipmentAddPage: React.FC = () => {
           </div>
 
           {/* Sort */}
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-700">
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border">
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-300">
+              <label className="text-sm text-muted-foreground">
                 {isRTL ? 'ترتيب حسب:' : 'Sort by:'}
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-1 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="created_at">{isRTL ? 'تاريخ الإنشاء' : 'Created Date'}</option>
                 <option value="name">{isRTL ? 'الاسم' : 'Name'}</option>
@@ -383,12 +383,12 @@ const EquipmentAddPage: React.FC = () => {
               </select>
               <button
                 onClick={() => setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC')}
-                className="p-1 text-gray-400 hover:text-white transition-colors"
+                className="p-1 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <FontAwesomeIcon icon={sortOrder === 'ASC' ? faAngleUp : faAngleDown} className="h-4 w-4" />
               </button>
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-muted-foreground">
               {isRTL ? `عرض ${equipment.length} من أصل ${totalItems}` : `Showing ${equipment.length} of ${totalItems}`}
             </div>
           </div>
@@ -415,21 +415,21 @@ const EquipmentAddPage: React.FC = () => {
 
         {/* Equipment Table */}
         {equipmentLoading ? (
-          <div className="bg-gray-800 rounded-xl p-12 text-center border border-gray-700">
+          <div className="bg-card rounded-xl p-12 text-center border border-border">
             <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-blue-400 animate-spin mx-auto mb-4" />
-            <p className="text-gray-400">{isRTL ? 'جاري تحميل المعدات...' : 'Loading equipment...'}</p>
+            <p className="text-muted-foreground">{isRTL ? 'جاري تحميل المعدات...' : 'Loading equipment...'}</p>
           </div>
         ) : equipmentError ? (
-          <div className="bg-gray-800 rounded-xl p-6 border border-red-500/50">
+          <div className="bg-card rounded-xl p-6 border border-red-500/50">
             <p className="text-red-400">{equipmentError}</p>
           </div>
         ) : equipment.length === 0 ? (
-          <div className="bg-gray-800 rounded-xl p-12 text-center border border-gray-700">
+          <div className="bg-card rounded-xl p-12 text-center border border-border">
             <FontAwesomeIcon icon={faPlus} className="h-16 w-16 text-gray-600 mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               {isRTL ? 'لم يتم العثور على معدات' : 'No equipment found'}
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-muted-foreground mb-6">
               {isRTL ? 'ابدأ بإضافة معداتك الأولى' : 'Start by adding your first equipment'}
             </p>
             <button
@@ -441,30 +441,30 @@ const EquipmentAddPage: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-750">
                   <tr>
-                    <th className={cn('px-4 py-4 font-medium text-gray-300', isRTL ? 'text-right' : 'text-left')}>
+                    <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                       {isRTL ? 'المعدة' : 'Equipment'}
                     </th>
-                    <th className={cn('px-4 py-4 font-medium text-gray-300', isRTL ? 'text-right' : 'text-left')}>
+                    <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                       {isRTL ? 'النوع' : 'Type'}
                     </th>
-                    <th className={cn('px-4 py-4 font-medium text-gray-300', isRTL ? 'text-right' : 'text-left')}>
+                    <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                       {isRTL ? 'الحالة' : 'Status'}
                     </th>
-                                         <th className={cn('px-4 py-4 font-medium text-gray-300', isRTL ? 'text-right' : 'text-left')}>
+                                         <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                        {isRTL ? 'السعر اليومي' : 'Daily Rate'}
                     </th>
-                     <th className={cn('px-4 py-4 font-medium text-gray-300', isRTL ? 'text-right' : 'text-left')}>
+                     <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                        {isRTL ? 'الإحصائيات' : 'Stats'}
                     </th>
-                    <th className={cn('px-4 py-4 font-medium text-gray-300', isRTL ? 'text-right' : 'text-left')}>
+                    <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                        {isRTL ? 'تاريخ الإنشاء' : 'Created'}
                     </th>
-                    <th className="px-4 py-4 text-center font-medium text-gray-300">
+                    <th className="px-4 py-4 text-center font-medium text-muted-foreground">
                       {isRTL ? 'الإجراءات' : 'Actions'}
                     </th>
                   </tr>
@@ -473,39 +473,39 @@ const EquipmentAddPage: React.FC = () => {
                   {equipment.map((item) => {
                     const statusBadge = getStatusBadge(item.status);
                     return (
-                      <tr key={item.id} className="border-b border-gray-700 hover:bg-gray-800/50">
+                      <tr key={item.id} className="border-b border-border hover:bg-card/50">
                         <td className="px-4 py-4">
                           <div>
-                            <div className="font-medium text-white">{item.name}</div>
-                            <div className="text-sm text-gray-400">{item.city}</div>
+                            <div className="font-medium text-foreground">{item.name}</div>
+                            <div className="text-sm text-muted-foreground">{item.city}</div>
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-gray-300 capitalize">
+                        <td className="px-4 py-4 text-muted-foreground capitalize">
                           {item.equipmentType}
                         </td>
                         <td className="px-4 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${statusBadge.color}`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium text-foreground ${statusBadge.color}`}>
                             <FontAwesomeIcon icon={statusBadge.icon} className="h-3 w-3 mr-1" />
                             {statusBadge.text}
                           </span>
                         </td>
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           ${parseFloat(item.dailyRate || '0').toFixed(2)}/day
                         </td>
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           <div className="text-sm">
                             <div>{isRTL ? 'التأجيرات:' : 'Rentals:'} {item.totalRentals}</div>
                             <div>{isRTL ? 'الإيرادات:' : 'Revenue:'} ${parseFloat(item.totalRevenue || '0').toFixed(2)}</div>
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {formatDate(item.createdAt)}
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => handleViewEquipment(item.id)}
-                              className="p-2 text-gray-400 hover:text-white transition-colors"
+                              className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                               title={isRTL ? 'عرض' : 'View'}
                             >
                               <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
@@ -538,7 +538,7 @@ const EquipmentAddPage: React.FC = () => {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-6">
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-muted-foreground">
               {isRTL 
                 ? `عرض ${(currentPage - 1) * itemsPerPage + 1} إلى ${Math.min(currentPage * itemsPerPage, totalItems)} من أصل ${totalItems}`
                 : `Showing ${(currentPage - 1) * itemsPerPage + 1} to ${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems}`
@@ -548,7 +548,7 @@ const EquipmentAddPage: React.FC = () => {
               <button
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-2 bg-gray-700 text-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                className="px-3 py-2 bg-muted text-muted-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
               >
                 {isRTL ? 'السابق' : 'Previous'}
               </button>
@@ -559,8 +559,8 @@ const EquipmentAddPage: React.FC = () => {
                   className={cn(
                     'px-3 py-2 rounded-lg transition-colors',
                     page === currentPage
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      ? 'bg-blue-600 text-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted'
                   )}
                 >
                   {page}
@@ -569,7 +569,7 @@ const EquipmentAddPage: React.FC = () => {
               <button
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-2 bg-gray-700 text-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                className="px-3 py-2 bg-muted text-muted-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
               >
                 {isRTL ? 'التالي' : 'Next'}
               </button>

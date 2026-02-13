@@ -117,8 +117,8 @@ const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "w-full h-11 px-4 rounded-lg",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-gray-500",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -141,8 +141,8 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={cn(
           "w-full h-11 px-4 pr-10 rounded-lg appearance-none cursor-pointer",
-          "bg-[#1a1f2e] border border-gray-700",
-          "text-white",
+          "bg-card border border-border",
+          "text-foreground",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
           "transition-all duration-200",
           "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -155,7 +155,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
     </div>
   )
 );
@@ -199,7 +199,7 @@ interface FormFieldProps {
 function FormField({ label, required, hint, children }: FormFieldProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
+      <label className="block text-sm font-medium text-muted-foreground mb-2">
         {label}
         {required && <span className="text-red-400 ml-1">*</span>}
         {hint && <span className="text-gray-500 ml-2 text-xs">({hint})</span>}
@@ -294,7 +294,7 @@ const SortableCategoryRow: React.FC<{
       ref={setNodeRef}
       style={style}
       className={cn(
-        'hover:bg-gray-700/50 transition-colors',
+        'hover:bg-muted/50 transition-colors',
         isEditing && 'bg-blue-900/20',
         !category.isActive && 'opacity-60',
         isDragging && 'bg-gray-600'
@@ -306,10 +306,10 @@ const SortableCategoryRow: React.FC<{
           <button
             {...attributes}
             {...listeners}
-            className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-600 rounded"
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
             title="Drag to reorder"
           >
-            <GripVertical className="h-4 w-4 text-gray-400" />
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
           </button>
           <span className="text-sm text-gray-500 w-6 text-center">{category.displayOrder}</span>
         </div>
@@ -317,7 +317,7 @@ const SortableCategoryRow: React.FC<{
 
       {/* Slug */}
       <td className="px-6 py-4 whitespace-nowrap">
-        <code className="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">
+        <code className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground">
           {category.slug}
         </code>
       </td>
@@ -331,7 +331,7 @@ const SortableCategoryRow: React.FC<{
             className="w-full text-sm"
           />
         ) : (
-          <span className="text-sm font-medium text-white">{category.nameEn}</span>
+          <span className="text-sm font-medium text-foreground">{category.nameEn}</span>
         )}
       </td>
 
@@ -345,7 +345,7 @@ const SortableCategoryRow: React.FC<{
             dir="rtl"
           />
         ) : (
-          <span className="text-sm text-gray-300 font-cairo">{category.nameAr}</span>
+          <span className="text-sm text-muted-foreground font-cairo">{category.nameAr}</span>
         )}
       </td>
 
@@ -407,7 +407,7 @@ const SortableCategoryRow: React.FC<{
               size="sm"
               variant="outline"
               onClick={onStartEditing}
-              className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-white"
+              className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-foreground"
             >
               <Edit2 className="h-4 w-4" />
             </Button>
@@ -539,11 +539,11 @@ const CategoriesTab: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-white">Equipment Categories</h2>
-          <p className="text-sm text-gray-400">Drag to reorder categories. Changes are saved automatically.</p>
+          <h2 className="text-lg font-semibold text-foreground">Equipment Categories</h2>
+          <p className="text-sm text-muted-foreground">Drag to reorder categories. Changes are saved automatically.</p>
         </div>
         {reordering && (
-          <div className="flex items-center gap-2 text-sm text-gray-400">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
             Saving order...
           </div>
@@ -562,32 +562,32 @@ const CategoriesTab: React.FC = () => {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-24">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-24">
                     Order
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Slug
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     English Name
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Arabic Name
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {loading ? (
                   <>
                     <TableRowSkeleton cols={6} />
@@ -596,7 +596,7 @@ const CategoriesTab: React.FC = () => {
                   </>
                 ) : categories.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
+                    <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
                       No categories found
                     </td>
                   </tr>
@@ -628,8 +628,8 @@ const CategoriesTab: React.FC = () => {
       </DndContext>
 
       {/* Info */}
-      <div className="bg-gray-800 rounded-lg p-4 text-sm text-gray-400">
-        <strong className="text-gray-300">Tip:</strong> Drag the handle on the left to reorder categories. 
+      <div className="bg-card rounded-lg p-4 text-sm text-muted-foreground">
+        <strong className="text-muted-foreground">Tip:</strong> Drag the handle on the left to reorder categories. 
         The order affects how categories appear in the app and admin interface.
       </div>
     </div>
@@ -669,7 +669,7 @@ const SortableEquipmentTypeRow: React.FC<{
       ref={setNodeRef}
       style={style}
       className={cn(
-        'hover:bg-gray-700 transition-colors',
+        'hover:bg-muted transition-colors',
         isDragging && 'bg-gray-600',
         !type.isActive && 'opacity-60'
       )}
@@ -680,10 +680,10 @@ const SortableEquipmentTypeRow: React.FC<{
           <button
             {...attributes}
             {...listeners}
-            className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-600 rounded"
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
             title="Drag to reorder"
           >
-            <GripVertical className="h-4 w-4 text-gray-400" />
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
           </button>
           <span className="text-xs text-gray-500 w-6">{type.displayOrder}</span>
         </div>
@@ -694,38 +694,38 @@ const SortableEquipmentTypeRow: React.FC<{
           <img 
             src={type.imageUrl} 
             alt={type.nameEn} 
-            className="h-10 w-10 rounded object-cover bg-gray-700"
+            className="h-10 w-10 rounded object-cover bg-muted"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
         ) : (
-          <div className="h-10 w-10 rounded bg-gray-700 flex items-center justify-center">
+          <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
             <ImageIcon className="h-5 w-5 text-gray-500" />
           </div>
         )}
       </td>
       <td className="px-4 py-4 whitespace-nowrap">
         <div>
-          <div className="text-sm font-medium text-white">{type.nameEn}</div>
-          <div className="text-sm text-gray-400 font-cairo">{type.nameAr}</div>
+          <div className="text-sm font-medium text-foreground">{type.nameEn}</div>
+          <div className="text-sm text-muted-foreground font-cairo">{type.nameAr}</div>
         </div>
       </td>
       <td className="px-4 py-4 whitespace-nowrap">
-        <Badge variant="secondary" className="bg-gray-600 text-gray-200">
+        <Badge variant="secondary" className="bg-gray-600 text-foreground">
           {getCategoryName(type.categoryId, type.category)}
         </Badge>
       </td>
       <td className="px-4 py-4 whitespace-nowrap">
         <div className="flex items-center gap-2">
-          {type.locationMode === 'single' && <MapPin className="h-4 w-4 text-gray-400" />}
-          {type.locationMode === 'from_to' && <Navigation className="h-4 w-4 text-gray-400" />}
-          {type.locationMode === 'none' && <X className="h-4 w-4 text-gray-400" />}
-          <span className="text-sm text-gray-300">{getLocationModeLabel(type.locationMode)}</span>
+          {type.locationMode === 'single' && <MapPin className="h-4 w-4 text-muted-foreground" />}
+          {type.locationMode === 'from_to' && <Navigation className="h-4 w-4 text-muted-foreground" />}
+          {type.locationMode === 'none' && <X className="h-4 w-4 text-muted-foreground" />}
+          <span className="text-sm text-muted-foreground">{getLocationModeLabel(type.locationMode)}</span>
         </div>
       </td>
       <td className="px-4 py-4 whitespace-nowrap">
-        <span className="text-sm text-gray-300">{type.attributes?.length || 0}</span>
+        <span className="text-sm text-muted-foreground">{type.attributes?.length || 0}</span>
       </td>
       <td className="px-4 py-4 whitespace-nowrap text-center">
         <button
@@ -1230,12 +1230,12 @@ const EquipmentTypesTab: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-white">Equipment Types</h2>
-          <p className="text-sm text-gray-400">Drag to reorder equipment types. Changes are saved automatically.</p>
+          <h2 className="text-lg font-semibold text-foreground">Equipment Types</h2>
+          <p className="text-sm text-muted-foreground">Drag to reorder equipment types. Changes are saved automatically.</p>
         </div>
         <div className="flex items-center gap-4">
           {reordering && (
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
               Saving order...
             </div>
@@ -1254,13 +1254,13 @@ const EquipmentTypesTab: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               type="text"
               placeholder="Search equipment types..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+              className="pl-10 dark:bg-card dark:border-border dark:text-foreground"
             />
           </div>
         </div>
@@ -1268,7 +1268,7 @@ const EquipmentTypesTab: React.FC = () => {
           <Select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+            className="dark:bg-card dark:border-border dark:text-foreground"
           >
             <option value="">All Categories</option>
             {categories.filter(c => c.isActive).map((category) => (
@@ -1286,22 +1286,22 @@ const EquipmentTypesTab: React.FC = () => {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-16">Order</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-14">Image</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Category</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Location Mode</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-20">Attrs</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase w-24">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase w-24">Actions</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-16">Order</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-14">Image</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Category</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Location Mode</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-20">Attrs</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase w-24">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-24">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {loading ? (
                   <>
                     <TableRowSkeleton />
@@ -1311,9 +1311,9 @@ const EquipmentTypesTab: React.FC = () => {
                 ) : filteredTypes.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="px-6 py-12 text-center">
-                      <Settings className="mx-auto h-12 w-12 text-gray-400" />
-                      <h3 className="mt-2 text-sm font-medium text-white">No equipment types</h3>
-                      <p className="mt-1 text-sm text-gray-400">Get started by adding a new equipment type</p>
+                      <Settings className="mx-auto h-12 w-12 text-muted-foreground" />
+                      <h3 className="mt-2 text-sm font-medium text-foreground">No equipment types</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">Get started by adding a new equipment type</p>
                     </td>
                   </tr>
                 ) : (
@@ -1343,19 +1343,19 @@ const EquipmentTypesTab: React.FC = () => {
       {/* Add/Edit Modal - Matching EquipmentFormModal structure */}
       <Dialog open={isModalOpen} onOpenChange={(open) => !open && setIsModalOpen(false)}>
         <DialogContent
-          className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700"
+          className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border"
         >
           {/* Header */}
-          <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+          <DialogHeader className="border-b border-border pb-4 mb-6">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-awnash-primary/10 flex items-center justify-center">
                 <Settings className="h-5 w-5 text-awnash-primary" />
               </div>
               <div>
-                <DialogTitle className="text-xl font-semibold text-white">
+                <DialogTitle className="text-xl font-semibold text-foreground">
                   {isEditMode ? "Edit Equipment Type" : "Add New Equipment Type"}
                 </DialogTitle>
-                <p className="text-sm text-gray-400 mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Enter the equipment type details below
                 </p>
               </div>
@@ -1439,9 +1439,9 @@ const EquipmentTypesTab: React.FC = () => {
             </div>
 
             {/* Image Upload Section */}
-            <div className="space-y-4 border border-gray-700 rounded-xl p-4 bg-gray-900/20">
+            <div className="space-y-4 border border-border rounded-xl p-4 bg-background/20">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-gray-300">
+                <label className="block text-sm font-medium text-muted-foreground">
                   <ImageIcon className="inline-block h-4 w-4 mr-2" />
                   Equipment Type Image
                 </label>
@@ -1453,7 +1453,7 @@ const EquipmentTypesTab: React.FC = () => {
                       'px-3 py-1 text-xs rounded-l-lg border transition-colors',
                       imageInputMode === 'upload'
                         ? 'bg-awnash-primary text-black border-awnash-primary'
-                        : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
+                        : 'bg-muted text-muted-foreground border-border hover:bg-muted'
                     )}
                   >
                     <Upload className="inline-block h-3 w-3 mr-1" />
@@ -1466,7 +1466,7 @@ const EquipmentTypesTab: React.FC = () => {
                       'px-3 py-1 text-xs rounded-r-lg border transition-colors',
                       imageInputMode === 'url'
                         ? 'bg-awnash-primary text-black border-awnash-primary'
-                        : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
+                        : 'bg-muted text-muted-foreground border-border hover:bg-muted'
                     )}
                   >
                     <LinkIcon className="inline-block h-3 w-3 mr-1" />
@@ -1477,7 +1477,7 @@ const EquipmentTypesTab: React.FC = () => {
 
               {/* Image Preview */}
               {(form.imageUrl || form.imageFile) && (
-                <div className="relative w-full h-40 bg-gray-800 rounded-lg overflow-hidden">
+                <div className="relative w-full h-40 bg-card rounded-lg overflow-hidden">
                   <img
                     src={form.imageFile ? URL.createObjectURL(form.imageFile) : form.imageUrl}
                     alt="Equipment type preview"
@@ -1492,7 +1492,7 @@ const EquipmentTypesTab: React.FC = () => {
                       handleInputChange('imageUrl', '');
                       handleInputChange('imageFile', null);
                     }}
-                    className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 rounded-full text-white"
+                    className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 rounded-full text-foreground"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -1517,10 +1517,10 @@ const EquipmentTypesTab: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-8 border-2 border-dashed border-gray-600 rounded-lg hover:border-awnash-primary transition-colors flex flex-col items-center gap-2"
+                    className="w-full py-8 border-2 border-dashed border-border rounded-lg hover:border-awnash-primary transition-colors flex flex-col items-center gap-2"
                   >
-                    <Upload className="h-8 w-8 text-gray-400" />
-                    <span className="text-sm text-gray-400">Click to upload image</span>
+                    <Upload className="h-8 w-8 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">Click to upload image</span>
                     <span className="text-xs text-gray-500">JPG, PNG, WebP, GIF (max 50MB)</span>
                   </button>
                 </div>
@@ -1543,7 +1543,7 @@ const EquipmentTypesTab: React.FC = () => {
             </div>
 
           {/* Support Equipment Section */}
-          <div className="space-y-4 border border-gray-700 rounded-xl p-4 bg-gray-900/20">
+          <div className="space-y-4 border border-border rounded-xl p-4 bg-background/20">
             <div className="flex items-center gap-3">
               <Switch
                 checked={form.requires_support_equipment}
@@ -1554,7 +1554,7 @@ const EquipmentTypesTab: React.FC = () => {
                   }
                 }}
               />
-              <label className="text-sm font-medium text-gray-300">
+              <label className="text-sm font-medium text-muted-foreground">
                 Requires Support Equipment
               </label>
             </div>
@@ -1566,7 +1566,7 @@ const EquipmentTypesTab: React.FC = () => {
                 </p>
                 
                 {form.support_requirements.length === 0 && (
-                  <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-xl">
+                  <div className="text-center py-6 border-2 border-dashed border-border rounded-xl">
                     <Settings className="mx-auto h-6 w-6 text-gray-500" />
                     <p className="text-sm text-gray-500 mt-2">No support equipment added yet</p>
                   </div>
@@ -1575,10 +1575,10 @@ const EquipmentTypesTab: React.FC = () => {
                 {form.support_requirements.map((requirement, index) => (
                   <div 
                     key={requirement.id} 
-                    className="border border-gray-600 rounded-lg p-3 space-y-3 bg-gray-800/50"
+                    className="border border-border rounded-lg p-3 space-y-3 bg-card/50"
                   >
                     <div className="flex justify-between items-start">
-                      <span className="text-xs text-gray-400">Equipment {index + 1}</span>
+                      <span className="text-xs text-muted-foreground">Equipment {index + 1}</span>
                       <Button
                         type="button"
                         onClick={() => removeSupportRequirement(index)}
@@ -1593,7 +1593,7 @@ const EquipmentTypesTab: React.FC = () => {
                     <Select
                       value={requirement.supportEquipmentTypeId}
                       onChange={(e) => updateSupportRequirement(index, 'supportEquipmentTypeId', e.target.value)}
-                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                      className="dark:bg-muted dark:border-border dark:text-foreground text-sm"
                     >
                       <option value="">Select equipment type...</option>
                       {availableSupportTypes.map((type) => (
@@ -1603,13 +1603,13 @@ const EquipmentTypesTab: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs text-gray-400 mb-1 block">Quantity</label>
+                        <label className="text-xs text-muted-foreground mb-1 block">Quantity</label>
                         <Input
                           type="number"
                           min={1}
                           value={requirement.quantity}
                           onChange={(e) => updateSupportRequirement(index, 'quantity', parseInt(e.target.value) || 1)}
-                          className="dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                          className="dark:bg-muted dark:border-border dark:text-foreground text-sm"
                         />
                       </div>
                       <div className="flex items-end pb-2">
@@ -1618,7 +1618,7 @@ const EquipmentTypesTab: React.FC = () => {
                             checked={requirement.isRequired}
                             onChange={(checked) => updateSupportRequirement(index, 'isRequired', checked)}
                           />
-                          <span className="text-xs text-gray-400">Required</span>
+                          <span className="text-xs text-muted-foreground">Required</span>
                         </label>
                       </div>
                     </div>
@@ -1630,7 +1630,7 @@ const EquipmentTypesTab: React.FC = () => {
                   onClick={addSupportRequirement}
                   variant="outline"
                   size="sm"
-                  className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-white w-full"
+                  className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-foreground w-full"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Support Equipment
@@ -1642,13 +1642,13 @@ const EquipmentTypesTab: React.FC = () => {
           {/* Attributes */}
           <div>
             <div className="flex justify-between items-center mb-4">
-              <label className="block text-sm font-medium text-gray-300">Attributes</label>
+              <label className="block text-sm font-medium text-muted-foreground">Attributes</label>
               <Button
                 type="button"
                 onClick={addAttribute}
                 variant="outline"
                 size="sm"
-                className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-white"
+                className="text-[#0073E6] border-[#0073E6] hover:bg-[#0073E6] hover:text-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Attribute
@@ -1656,9 +1656,9 @@ const EquipmentTypesTab: React.FC = () => {
             </div>
 
             {form.attributes.map((attribute, index) => (
-              <div key={attribute.id} className="border border-gray-600 rounded-lg p-4 mb-4 space-y-4">
+              <div key={attribute.id} className="border border-border rounded-lg p-4 mb-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-sm font-medium text-gray-300">Attribute {index + 1}</h4>
+                  <h4 className="text-sm font-medium text-muted-foreground">Attribute {index + 1}</h4>
                   <Button
                     type="button"
                     onClick={() => removeAttribute(index)}
@@ -1678,7 +1678,7 @@ const EquipmentTypesTab: React.FC = () => {
                       onChange={(e) => updateAttribute(index, 'label', e.target.value)}
                       placeholder="Attribute label *"
                       className={cn(
-                        "dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                        "dark:bg-card dark:border-border dark:text-foreground",
                         errors.attributes?.[index]?.label && "border-red-500"
                       )}
                     />
@@ -1692,7 +1692,7 @@ const EquipmentTypesTab: React.FC = () => {
                       value={attribute.unit || ''}
                       onChange={(e) => updateAttribute(index, 'unit', e.target.value)}
                       placeholder="Unit (optional)"
-                      className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      className="dark:bg-card dark:border-border dark:text-foreground"
                     />
                   </div>
                 </div>
@@ -1702,11 +1702,11 @@ const EquipmentTypesTab: React.FC = () => {
                     checked={attribute.is_required}
                     onChange={(checked) => updateAttribute(index, 'is_required', checked)}
                   />
-                  <label className="text-sm text-gray-300">Required</label>
+                  <label className="text-sm text-muted-foreground">Required</label>
                 </div>
 
                 <div>
-                  <label className="text-xs text-gray-400 mb-2 block">
+                  <label className="text-xs text-muted-foreground mb-2 block">
                     Predefined Options (comma-separated)
                   </label>
                   <Input
@@ -1714,12 +1714,12 @@ const EquipmentTypesTab: React.FC = () => {
                     value={attribute.optionsInput}
                     onChange={(e) => handleOptionsInputChange(index, e.target.value)}
                     placeholder="e.g., Option 1, Option 2, Option 3"
-                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    className="dark:bg-card dark:border-border dark:text-foreground"
                   />
                   {attribute.options.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
                       {attribute.options.map((opt, optIdx) => (
-                        <Badge key={optIdx} variant="secondary" className="bg-gray-700 text-gray-300 text-xs">
+                        <Badge key={optIdx} variant="secondary" className="bg-muted text-muted-foreground text-xs">
                           {opt}
                         </Badge>
                       ))}
@@ -1731,13 +1731,13 @@ const EquipmentTypesTab: React.FC = () => {
           </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsModalOpen(false)}
                 disabled={formLoading}
-                className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Cancel
               </Button>
@@ -1922,15 +1922,15 @@ const MarketNamingTab: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-white">Market Naming</h2>
-        <p className="text-sm text-gray-400">Manage market-specific equipment terminology</p>
+        <h2 className="text-lg font-semibold text-foreground">Market Naming</h2>
+        <p className="text-sm text-muted-foreground">Manage market-specific equipment terminology</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-gray-800 rounded-lg p-4">
+      <div className="bg-card rounded-lg p-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search equipment types..."
               value={search}
@@ -1973,29 +1973,29 @@ const MarketNamingTab: React.FC = () => {
       )}
 
       {/* Table */}
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
+      <div className="bg-card rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-700">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Equipment Type</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Category</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Base Name (EN)</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase">Base Name (AR)</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Market Name (EN)</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase">Market Name (AR)</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase">Status</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Equipment Type</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Category</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Base Name (EN)</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Base Name (AR)</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Market Name (EN)</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Market Name (AR)</th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Status</th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRowSkeleton key={i} cols={8} />
                 ))
               ) : equipmentTypes.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-400">
+                  <td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
                     No equipment types found
                   </td>
                 </tr>
@@ -2008,7 +2008,7 @@ const MarketNamingTab: React.FC = () => {
                     <tr
                       key={type.id}
                       className={cn(
-                        'hover:bg-gray-700/50 transition-colors',
+                        'hover:bg-muted/50 transition-colors',
                         isEditing && 'bg-blue-900/20',
                         !type.isActive && 'opacity-60'
                       )}
@@ -2019,12 +2019,12 @@ const MarketNamingTab: React.FC = () => {
                             <img src={type.imageUrl} alt={type.nameEn} className="h-10 w-10 rounded object-cover" />
                           ) : (
                             <div className="h-10 w-10 rounded bg-gray-600 flex items-center justify-center">
-                              <span className="text-gray-400 text-xs">{type.nameEn.charAt(0)}</span>
+                              <span className="text-muted-foreground text-xs">{type.nameEn.charAt(0)}</span>
                             </div>
                           )}
                           <div>
-                            <p className="text-sm font-medium text-white">{type.nameEn}</p>
-                            <p className="text-xs text-gray-400">{type.descriptionEn || 'No description'}</p>
+                            <p className="text-sm font-medium text-foreground">{type.nameEn}</p>
+                            <p className="text-xs text-muted-foreground">{type.descriptionEn || 'No description'}</p>
                           </div>
                         </div>
                       </td>
@@ -2032,10 +2032,10 @@ const MarketNamingTab: React.FC = () => {
                         <Badge variant="default" className="text-xs">{getCategoryName(type.category)}</Badge>
                       </td>
                       <td className="px-4 py-4">
-                        <span className="text-sm text-gray-300">{type.nameEn}</span>
+                        <span className="text-sm text-muted-foreground">{type.nameEn}</span>
                       </td>
                       <td className="px-4 py-4 text-right" dir="rtl">
-                        <span className="text-sm text-gray-300">{type.nameAr}</span>
+                        <span className="text-sm text-muted-foreground">{type.nameAr}</span>
                       </td>
                       <td className="px-4 py-4">{renderMarketNameCell(type, 'nameEn')}</td>
                       <td className="px-4 py-4 text-right" dir="rtl">{renderMarketNameCell(type, 'nameAr')}</td>
@@ -2081,13 +2081,13 @@ const MarketNamingTab: React.FC = () => {
       </div>
 
       {/* Legend */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-sm font-medium text-gray-300 mb-2">Legend</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-gray-400">
-          <div><strong className="text-gray-300">Base Name:</strong> Standard/textbook name</div>
-          <div><strong className="text-gray-300">Market Name:</strong> Local terminology for {MARKETS.find(m => m.code === selectedMarket)?.name}</div>
-          <div><strong className="text-gray-300">Order:</strong> Display order (lower = first)</div>
-          <div><strong className="text-gray-300">Status:</strong> Active types appear in app</div>
+      <div className="bg-card rounded-lg p-4">
+        <h3 className="text-sm font-medium text-muted-foreground mb-2">Legend</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-muted-foreground">
+          <div><strong className="text-muted-foreground">Base Name:</strong> Standard/textbook name</div>
+          <div><strong className="text-muted-foreground">Market Name:</strong> Local terminology for {MARKETS.find(m => m.code === selectedMarket)?.name}</div>
+          <div><strong className="text-muted-foreground">Order:</strong> Display order (lower = first)</div>
+          <div><strong className="text-muted-foreground">Status:</strong> Active types appear in app</div>
         </div>
       </div>
     </div>
@@ -2111,12 +2111,12 @@ export default function EquipmentConfigPage() {
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white font-montserrat">Equipment Configuration</h1>
-        <p className="text-gray-400 mt-1">Manage equipment categories, types, and market-specific naming</p>
+        <h1 className="text-2xl font-bold text-foreground font-montserrat">Equipment Configuration</h1>
+        <p className="text-muted-foreground mt-1">Manage equipment categories, types, and market-specific naming</p>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-700">
+      <div className="border-b border-border">
         <nav className="-mb-px flex space-x-8">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -2128,12 +2128,12 @@ export default function EquipmentConfigPage() {
                   'group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors',
                   activeTab === tab.id
                     ? 'border-[#FFCC00] text-[#FFCC00]'
-                    : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                    : 'border-transparent text-muted-foreground hover:text-muted-foreground hover:border-border'
                 )}
               >
                 <Icon className={cn(
                   'h-5 w-5 mr-2',
-                  activeTab === tab.id ? 'text-[#FFCC00]' : 'text-gray-500 group-hover:text-gray-400'
+                  activeTab === tab.id ? 'text-[#FFCC00]' : 'text-gray-500 group-hover:text-muted-foreground'
                 )} />
                 {tab.label}
               </button>

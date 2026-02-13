@@ -123,7 +123,7 @@ const CommissionSettingsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <FontAwesomeIcon icon={faSpinner} className="text-4xl animate-spin text-gray-400" />
+        <FontAwesomeIcon icon={faSpinner} className="text-4xl animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -199,7 +199,7 @@ const CommissionSettingsPage: React.FC = () => {
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-accent)' }}
               >
-                <FontAwesomeIcon icon={faBuilding} className="text-white" />
+                <FontAwesomeIcon icon={faBuilding} className="text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
@@ -226,7 +226,7 @@ const CommissionSettingsPage: React.FC = () => {
                 />
                 <FontAwesomeIcon 
                   icon={faPercent} 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
                 />
               </div>
             </div>
@@ -241,7 +241,7 @@ const CommissionSettingsPage: React.FC = () => {
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-success)' }}
               >
-                <FontAwesomeIcon icon={faUsers} className="text-white" />
+                <FontAwesomeIcon icon={faUsers} className="text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
@@ -268,7 +268,7 @@ const CommissionSettingsPage: React.FC = () => {
                 />
                 <FontAwesomeIcon 
                   icon={faPercent} 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
                 />
               </div>
             </div>
@@ -283,7 +283,7 @@ const CommissionSettingsPage: React.FC = () => {
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-warning)' }}
               >
-                <FontAwesomeIcon icon={faMoneyBill} className="text-white" />
+                <FontAwesomeIcon icon={faMoneyBill} className="text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
@@ -310,7 +310,7 @@ const CommissionSettingsPage: React.FC = () => {
                 />
                 <FontAwesomeIcon 
                   icon={faPercent} 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
                 />
               </div>
             </div>
@@ -325,7 +325,7 @@ const CommissionSettingsPage: React.FC = () => {
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-info)' }}
               >
-                <FontAwesomeIcon icon={faShieldAlt} className="text-white" />
+                <FontAwesomeIcon icon={faShieldAlt} className="text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
@@ -352,7 +352,7 @@ const CommissionSettingsPage: React.FC = () => {
                 />
                 <FontAwesomeIcon 
                   icon={faPercent} 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
                 />
               </div>
             </div>
@@ -406,7 +406,7 @@ const CommissionSettingsPage: React.FC = () => {
               className="w-10 h-10 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: 'var(--awnash-secondary)' }}
             >
-              <FontAwesomeIcon icon={faCalculator} className="text-white" />
+              <FontAwesomeIcon icon={faCalculator} className="text-foreground" />
             </div>
             <h3 className="text-lg font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
               {isRTL ? 'حاسبة الرسوم' : 'Fee Calculator'}
@@ -435,7 +435,7 @@ const CommissionSettingsPage: React.FC = () => {
             <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--awnash-gray-50)' }}>
               {previewLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <FontAwesomeIcon icon={faSpinner} className="text-2xl animate-spin text-gray-400" />
+                  <FontAwesomeIcon icon={faSpinner} className="text-2xl animate-spin text-muted-foreground" />
                 </div>
               ) : feePreview ? (
                 <div className="space-y-3">

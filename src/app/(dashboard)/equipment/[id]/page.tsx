@@ -190,10 +190,10 @@ const EquipmentView: React.FC = () => {
             {isRTL ? 'العودة' : 'Back'}
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">
               {equipment.name}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-gray-600 dark:text-muted-foreground mt-1">
               {isRTL ? 'تفاصيل المعدة والأداء' : 'Equipment Details & Performance'}
             </p>
           </div>
@@ -201,7 +201,7 @@ const EquipmentView: React.FC = () => {
         <div className="flex space-x-3">
           <Button
             onClick={handleBookNow}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-foreground"
           >
             <FontAwesomeIcon icon={faCalendarCheck} className={cn("w-4 h-4", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'احجز الآن' : 'Book Now'}
@@ -253,7 +253,7 @@ const EquipmentView: React.FC = () => {
                     </div>
                   ) : (
                     <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <FontAwesomeIcon icon={faCog} className="text-4xl text-gray-400" />
+                      <FontAwesomeIcon icon={faCog} className="text-4xl text-muted-foreground" />
                     </div>
                   )}
                 </div>
@@ -430,7 +430,7 @@ const EquipmentView: React.FC = () => {
               <div className="space-y-3">
                 <Button 
                   onClick={handleBookNow}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-foreground"
                 >
                   <FontAwesomeIcon icon={faCalendarCheck} className="w-4 h-4 mr-2" />
                   {isRTL ? 'احجز الآن' : 'Book Now'}

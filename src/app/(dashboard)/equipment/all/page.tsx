@@ -453,50 +453,50 @@ const AllEquipmentListing: React.FC = () => {
 
   // Table View Component
   const TableView = () => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
+    <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-700">
+          <thead className="bg-muted">
             <tr>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL ? 'text-right' : 'text-left')}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider", isRTL ? 'text-right' : 'text-left')}>
                 {isRTL ? 'المعدة' : 'Equipment'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL ? 'text-right' : 'text-left')}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider", isRTL ? 'text-right' : 'text-left')}>
                 {isRTL ? 'المالك' : 'Owner'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider", isRTL ? 'text-right' : 'text-left')}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider", isRTL ? 'text-right' : 'text-left')}>
                 {isRTL ? 'الموقع' : 'Location'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider text-center")}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider text-center")}>
                 {isRTL ? 'الحجوزات' : 'Rentals'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider text-center")}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider text-center")}>
                 {isRTL ? 'الإيرادات' : 'Revenue'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider text-center")}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider text-center")}>
                 {isRTL ? 'الحالة' : 'Status'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider text-center")}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider text-center")}>
                 {isRTL ? 'التوثيق' : 'Verification'}
               </th>
-              <th className={cn("px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider text-center")}>
+              <th className={cn("px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider text-center")}>
                 {isRTL ? 'الإجراءات' : 'Actions'}
               </th>
             </tr>
           </thead>
-                     <tbody className="bg-gray-800 divide-y divide-gray-700">
+                     <tbody className="bg-card divide-y divide-border">
              {currentEquipment.map((equipment) => (
-              <tr key={equipment.id} className="hover:bg-gray-700 transition-colors">
+              <tr key={equipment.id} className="hover:bg-muted transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className={cn("flex-shrink-0 h-10 w-10 bg-gray-600 rounded-lg flex items-center justify-center", isRTL ? "ml-4" : "mr-4")}>
                       <FontAwesomeIcon icon={faTruck} className="h-5 w-5 text-awnash-primary" />
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-white">
+                      <div className="text-sm font-medium text-foreground">
                         {isRTL ? equipment.nameAr : equipment.name}
                       </div>
-                      <div className="text-sm text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         {equipment.id} • {equipment.size}
                       </div>
                     </div>
@@ -504,10 +504,10 @@ const AllEquipmentListing: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm">
-                    <div className="font-medium text-white">
+                    <div className="font-medium text-foreground">
                       {isRTL ? equipment.owner.nameAr : equipment.owner.name}
                     </div>
-                    <div className="text-gray-400">
+                    <div className="text-muted-foreground">
                       {isRTL ? equipment.owner.cityAr : equipment.owner.city}
                     </div>
                     <div className="mt-1">
@@ -516,13 +516,13 @@ const AllEquipmentListing: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-muted-foreground">
                     <FontAwesomeIcon icon={faMapMarkerAlt} className={cn("h-3 w-3 text-gray-500", isRTL ? "ml-1" : "mr-1")} />
                     {isRTL ? equipment.locationAr : equipment.location}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-center">
-                  <div className="text-sm font-medium text-white">
+                  <div className="text-sm font-medium text-foreground">
                     {equipment.rentals.toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
                   </div>
                 </td>
@@ -542,14 +542,14 @@ const AllEquipmentListing: React.FC = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
                     >
                       <FontAwesomeIcon icon={faEye} className="h-3 w-3" />
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
                     >
                       <FontAwesomeIcon icon={faEdit} className="h-3 w-3" />
                     </Button>
@@ -567,19 +567,19 @@ const AllEquipmentListing: React.FC = () => {
   const GridView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {currentEquipment.map((equipment) => (
-        <Card key={equipment.id} className="bg-gray-800 border-gray-700 hover:shadow-xl transition-all duration-200">
+        <Card key={equipment.id} className="bg-card border-border hover:shadow-xl transition-all duration-200">
           <CardContent className="p-6">
             {/* Equipment Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <div className={cn("w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center", isRTL ? "ml-3" : "mr-3")}>
+                <div className={cn("w-12 h-12 bg-muted rounded-lg flex items-center justify-center", isRTL ? "ml-3" : "mr-3")}>
                   <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-awnash-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {isRTL ? equipment.nameAr : equipment.name}
                   </h3>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {equipment.id} • {equipment.size}
                   </p>
                 </div>
@@ -592,28 +592,28 @@ const AllEquipmentListing: React.FC = () => {
             {/* Equipment Details */}
             <div className="space-y-3 mb-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   {isRTL ? 'الفئة:' : 'Category:'}
                 </span>
-                <span className="text-sm text-white">
+                <span className="text-sm text-foreground">
                   {isRTL ? equipment.categoryAr : equipment.category}
                 </span>
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   {isRTL ? 'النوع:' : 'Type:'}
                 </span>
-                <span className="text-sm text-white">
+                <span className="text-sm text-foreground">
                   {isRTL ? equipment.typeAr : equipment.type}
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   {isRTL ? 'الموقع:' : 'Location:'}
                 </span>
-                <span className="text-sm text-white flex items-center">
+                <span className="text-sm text-foreground flex items-center">
                   <FontAwesomeIcon icon={faMapMarkerAlt} className={cn("h-3 w-3 text-gray-500", isRTL ? "ml-1" : "mr-1")} />
                   {isRTL ? equipment.locationAr : equipment.location}
                 </span>
@@ -621,15 +621,15 @@ const AllEquipmentListing: React.FC = () => {
             </div>
 
             {/* Owner Information */}
-            <div className="border-t border-gray-700 pt-4 mb-4">
+            <div className="border-t border-border pt-4 mb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <FontAwesomeIcon icon={faUser} className={cn("h-4 w-4 text-gray-500", isRTL ? "ml-2" : "mr-2")} />
                   <div>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {isRTL ? equipment.owner.nameAr : equipment.owner.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {isRTL ? equipment.owner.cityAr : equipment.owner.city}
                     </p>
                   </div>
@@ -644,7 +644,7 @@ const AllEquipmentListing: React.FC = () => {
                 <div className="text-2xl font-bold text-awnash-primary">
                   {equipment.rentals.toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
                 </div>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-muted-foreground">
                   {isRTL ? 'حجز' : 'Rentals'}
                 </div>
               </div>
@@ -652,7 +652,7 @@ const AllEquipmentListing: React.FC = () => {
                 <div className="text-2xl font-bold text-green-400">
                   {formatCurrency(equipment.revenue)}
                 </div>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-muted-foreground">
                   {isRTL ? 'الإيرادات' : 'Revenue'}
                 </div>
               </div>
@@ -660,7 +660,7 @@ const AllEquipmentListing: React.FC = () => {
 
             {/* Verification Status */}
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-gray-400">
+              <span className="text-sm text-muted-foreground">
                 {isRTL ? 'حالة التوثيق:' : 'Verification:'}
               </span>
               {getVerificationBadge(equipment.verification)}
@@ -671,7 +671,7 @@ const AllEquipmentListing: React.FC = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="flex-1 bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                className="flex-1 bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <FontAwesomeIcon icon={faEye} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
                 {isRTL ? 'عرض' : 'View'}
@@ -679,7 +679,7 @@ const AllEquipmentListing: React.FC = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="flex-1 bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                className="flex-1 bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <FontAwesomeIcon icon={faEdit} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
                 {isRTL ? 'تعديل' : 'Edit'}
@@ -687,7 +687,7 @@ const AllEquipmentListing: React.FC = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <FontAwesomeIcon icon={faFlag} className="h-4 w-4" />
               </Button>
@@ -699,14 +699,14 @@ const AllEquipmentListing: React.FC = () => {
   );
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 space-y-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background space-y-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'جميع المعدات' : 'All Equipment'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'إدارة شاملة لجميع المعدات على المنصة' : 'Comprehensive management of all platform equipment'}
           </p>
           <div className="mt-2">
@@ -718,7 +718,7 @@ const AllEquipmentListing: React.FC = () => {
         
         {/* View Toggle */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-gray-800 rounded-lg border border-gray-700 p-1">
+          <div className="flex items-center bg-card rounded-lg border border-border p-1">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
@@ -727,7 +727,7 @@ const AllEquipmentListing: React.FC = () => {
                 "px-3 py-2",
                 viewMode === 'grid' 
                   ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                  : "text-gray-400 hover:text-white hover:bg-gray-700"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
               <FontAwesomeIcon icon={faTh} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
@@ -741,7 +741,7 @@ const AllEquipmentListing: React.FC = () => {
                 "px-3 py-2",
                 viewMode === 'table' 
                   ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                  : "text-gray-400 hover:text-white hover:bg-gray-700"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
               <FontAwesomeIcon icon={faList} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
@@ -752,18 +752,18 @@ const AllEquipmentListing: React.FC = () => {
       </div>
 
       {/* Search and Sort Controls */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1">
             <div className="relative">
               <div className={cn("absolute inset-y-0 flex items-center pointer-events-none", isRTL ? "right-0 pr-3" : "left-0 pl-3")}>
-                <FontAwesomeIcon icon={faSearch} className="h-4 w-4 text-gray-400" />
+                <FontAwesomeIcon icon={faSearch} className="h-4 w-4 text-muted-foreground" />
               </div>
               <input
                 type="text"
                 className={cn(
-                  "block w-full py-3 border border-gray-600 rounded-lg bg-gray-700 text-white placeholder-gray-400",
+                  "block w-full py-3 border border-border rounded-lg bg-muted text-foreground placeholder:text-muted-foreground",
                   "focus:ring-2 focus:ring-awnash-primary focus:border-awnash-primary",
                   isRTL ? "pr-10 pl-3 text-right" : "pl-10 pr-3"
                 )}
@@ -776,7 +776,7 @@ const AllEquipmentListing: React.FC = () => {
 
           {/* Sort Controls */}
           <div className={cn("flex items-center space-x-3", isRTL && "space-x-reverse")}>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-muted-foreground">
               {isRTL ? 'ترتيب حسب:' : 'Sort by:'}
             </span>
             <Button
@@ -787,7 +787,7 @@ const AllEquipmentListing: React.FC = () => {
                 "flex items-center space-x-1",  
                 sortBy === 'revenue' 
                   ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                  : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white",
+                  : "bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground",
                 isRTL && "space-x-reverse"
               )}
             >
@@ -807,7 +807,7 @@ const AllEquipmentListing: React.FC = () => {
                 "flex items-center space-x-1",
                 sortBy === 'rentals' 
                   ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                  : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white",
+                  : "bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground",
                 isRTL && "space-x-reverse"
               )}
             >
@@ -827,7 +827,7 @@ const AllEquipmentListing: React.FC = () => {
                 "flex items-center space-x-1",
                 sortBy === 'newest' 
                   ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                  : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white",
+                  : "bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground",
                 isRTL && "space-x-reverse"
               )}
             >
@@ -847,13 +847,13 @@ const AllEquipmentListing: React.FC = () => {
       <div className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground">
                   {isRTL ? 'إجمالي المعدات' : 'Total Equipment'}
                 </p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-3xl font-bold text-foreground">
                   {mockEquipment.length.toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
                 </p>
                 <div className="flex items-center mt-1">
@@ -863,18 +863,18 @@ const AllEquipmentListing: React.FC = () => {
                 </div>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600">
-                <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faTruck} className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground">
                   {isRTL ? 'إجمالي الإيرادات' : 'Total Revenue'}
                 </p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-3xl font-bold text-foreground">
                   {formatCurrency(mockEquipment.reduce((sum, eq) => sum + eq.revenue, 0))}
                 </p>
                 <div className="flex items-center mt-1">
@@ -884,18 +884,18 @@ const AllEquipmentListing: React.FC = () => {
                 </div>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-600">
-                <FontAwesomeIcon icon={faDollarSign} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faDollarSign} className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground">
                   {isRTL ? 'إجمالي الحجوزات' : 'Total Rentals'}
                 </p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-3xl font-bold text-foreground">
                   {mockEquipment.reduce((sum, eq) => sum + eq.rentals, 0).toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
                 </p>
                 <div className="flex items-center mt-1">
@@ -905,18 +905,18 @@ const AllEquipmentListing: React.FC = () => {
                 </div>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600">
-                <FontAwesomeIcon icon={faChartLine} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faChartLine} className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">
+                <p className="text-sm font-medium text-muted-foreground">
                   {isRTL ? 'المعدات المتاحة' : 'Available Equipment'}
                 </p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-3xl font-bold text-foreground">
                   {(statusAnalytics.active || 0).toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
                 </p>
                 <div className="flex items-center mt-1">
@@ -926,7 +926,7 @@ const AllEquipmentListing: React.FC = () => {
                 </div>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600">
-                <FontAwesomeIcon icon={faCheckCircle} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faCheckCircle} className="h-6 w-6 text-foreground" />
               </div>
             </div>
           </div>
@@ -935,8 +935,8 @@ const AllEquipmentListing: React.FC = () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Equipment by Category */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-lg font-semibold text-foreground mb-6">
               {isRTL ? 'توزيع المعدات حسب الفئة' : 'Equipment by Category'}
             </h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -970,17 +970,17 @@ const AllEquipmentListing: React.FC = () => {
                       className={cn("w-3 h-3 rounded-full", isRTL ? "ml-2" : "mr-2")} 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm text-gray-400">{item.name}</span>
+                    <span className="text-sm text-muted-foreground">{item.name}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">{item.value}</span>
+                  <span className="text-sm font-medium text-foreground">{item.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Equipment Status */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-lg font-semibold text-foreground mb-6">
               {isRTL ? 'حالة المعدات' : 'Equipment Status'}
             </h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -1014,17 +1014,17 @@ const AllEquipmentListing: React.FC = () => {
                       className={cn("w-3 h-3 rounded-full", isRTL ? "ml-2" : "mr-2")} 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm text-gray-400">{item.name}</span>
+                    <span className="text-sm text-muted-foreground">{item.name}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">{item.value}</span>
+                  <span className="text-sm font-medium text-foreground">{item.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Revenue by City */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-lg font-semibold text-foreground mb-6">
               {isRTL ? 'الإيرادات حسب المدينة' : 'Revenue by City'}
             </h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -1051,8 +1051,8 @@ const AllEquipmentListing: React.FC = () => {
         </div>
 
         {/* Top Revenue Equipment */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'أعلى المعدات إيراداً' : 'Top Revenue Equipment'}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -1083,8 +1083,8 @@ const AllEquipmentListing: React.FC = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between bg-gray-800 rounded-xl border border-gray-700 p-4">
-          <div className="text-sm text-gray-400">
+        <div className="flex items-center justify-between bg-card rounded-xl border border-border p-4">
+          <div className="text-sm text-muted-foreground">
                          {isRTL 
                ? `عرض ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredAndSortedEquipment.length)} من ${filteredAndSortedEquipment.length}`
                : `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredAndSortedEquipment.length)} of ${filteredAndSortedEquipment.length}`
@@ -1097,7 +1097,7 @@ const AllEquipmentListing: React.FC = () => {
               size="sm"
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white disabled:opacity-50"
+              className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
             >
               <FontAwesomeIcon 
                 icon={isRTL ? faChevronRight : faChevronLeft} 
@@ -1116,7 +1116,7 @@ const AllEquipmentListing: React.FC = () => {
                     "w-10 h-10",
                     currentPage === page 
                       ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                      : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      : "bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
                   {page.toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
@@ -1129,7 +1129,7 @@ const AllEquipmentListing: React.FC = () => {
               size="sm"
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white disabled:opacity-50"
+              className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
             >
               <FontAwesomeIcon 
                 icon={isRTL ? faChevronLeft : faChevronRight} 

@@ -303,19 +303,19 @@ const DocumentsVerification: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
             <div className="p-3 bg-blue-600 rounded-2xl">
-              <FontAwesomeIcon icon={faIdCard} className="h-6 w-6 text-white" />
+              <FontAwesomeIcon icon={faIdCard} className="h-6 w-6 text-foreground" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 {isRTL ? 'التحقق من الوثائق' : 'Document Verification'}
               </h1>
-              <p className="text-gray-400 mt-1">
+              <p className="text-muted-foreground mt-1">
                 {isRTL ? 'مراجعة والتحقق من الوثائق القانونية المرفوعة من قبل الملاك' : 'Review and verify legal documents uploaded by equipment owners'}
               </p>
             </div>
@@ -330,14 +330,14 @@ const DocumentsVerification: React.FC = () => {
               <div className={cn('flex items-center gap-3', isRTL && 'space-x-reverse')}>
                 <Button
                   onClick={handleBulkApprove}
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-foreground"
                 >
                   <FontAwesomeIcon icon={faCheck} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                   {isRTL ? 'قبول الجميع' : 'Approve All'}
                 </Button>
                 <Button
                   onClick={handleBulkReject}
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  className="bg-red-600 hover:bg-red-700 text-foreground"
                 >
                   <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                   {isRTL ? 'رفض الجميع' : 'Reject All'}
@@ -348,14 +348,14 @@ const DocumentsVerification: React.FC = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search */}
             <div>
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn('absolute top-3 h-4 w-4 text-gray-400', isRTL ? 'right-3' : 'left-3')} 
+                  className={cn('absolute top-3 h-4 w-4 text-muted-foreground', isRTL ? 'right-3' : 'left-3')} 
                 />
                 <input
                   type="text"
@@ -363,7 +363,7 @@ const DocumentsVerification: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn(
-                    'w-full bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                    'w-full bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                     isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4',
                     'py-2'
                   )}
@@ -376,7 +376,7 @@ const DocumentsVerification: React.FC = () => {
               <select
                 value={documentTypeFilter}
                 onChange={(e) => setDocumentTypeFilter(e.target.value)}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع أنواع الوثائق' : 'All Document Types'}</option>
                 <option value="license">{isRTL ? 'رخصة المعدة' : 'Equipment License'}</option>
@@ -391,7 +391,7 @@ const DocumentsVerification: React.FC = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="pending">{isRTL ? 'قيد المراجعة' : 'Pending'}</option>
@@ -411,15 +411,15 @@ const DocumentsVerification: React.FC = () => {
         </div>
 
         {/* Documents Table */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 shadow-lg overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
                   <th className="px-4 py-4">
                     <button
                       onClick={handleSelectAll}
-                      className="text-white hover:text-awnash-primary transition-colors"
+                      className="text-foreground hover:text-awnash-primary transition-colors"
                     >
                       <FontAwesomeIcon 
                         icon={selectedDocuments.length === filteredDocuments.length ? faCheckSquare : faSquare} 
@@ -428,7 +428,7 @@ const DocumentsVerification: React.FC = () => {
                     </button>
                   </th>
                   <th 
-                    className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                    className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                     onClick={() => handleSort('ownerName')}
                   >
                     <div className="flex items-center gap-2">
@@ -436,14 +436,14 @@ const DocumentsVerification: React.FC = () => {
                       <FontAwesomeIcon icon={getSortIcon('ownerName')} className="h-3 w-3" />
                     </div>
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'نوع الوثيقة' : 'Document Type'}
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'المعدة' : 'Equipment'}
                   </th>
                   <th 
-                    className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                    className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                     onClick={() => handleSort('uploadDate')}
                   >
                     <div className="flex items-center gap-2">
@@ -452,7 +452,7 @@ const DocumentsVerification: React.FC = () => {
                     </div>
                   </th>
                   <th 
-                    className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                    className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                     onClick={() => handleSort('expirationDate')}
                   >
                     <div className="flex items-center gap-2">
@@ -460,27 +460,27 @@ const DocumentsVerification: React.FC = () => {
                       <FontAwesomeIcon icon={getSortIcon('expirationDate')} className="h-3 w-3" />
                     </div>
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'الحالة' : 'Status'}
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredDocuments.map((document) => (
                   <tr 
                     key={document.id} 
                     className={cn(
-                      'hover:bg-gray-700 transition-colors',
+                      'hover:bg-muted transition-colors',
                       isDocumentExpiringSoon(document.expirationDate) && 'bg-red-900/20 border-red-500/30'
                     )}
                   >
                     <td className="px-4 py-4">
                       <button
                         onClick={() => handleSelectDocument(document.id)}
-                        className="text-white hover:text-awnash-primary transition-colors"
+                        className="text-foreground hover:text-awnash-primary transition-colors"
                       >
                         <FontAwesomeIcon 
                           icon={selectedDocuments.includes(document.id) ? faCheckSquare : faSquare} 
@@ -491,11 +491,11 @@ const DocumentsVerification: React.FC = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                          <FontAwesomeIcon icon={faUser} className="h-4 w-4 text-white" />
+                          <FontAwesomeIcon icon={faUser} className="h-4 w-4 text-foreground" />
                         </div>
                         <div>
-                          <p className="font-medium text-white">{document.ownerName}</p>
-                          <p className="text-sm text-gray-400">{document.ownerEmail}</p>
+                          <p className="font-medium text-foreground">{document.ownerName}</p>
+                          <p className="text-sm text-muted-foreground">{document.ownerEmail}</p>
                         </div>
                       </div>
                     </td>
@@ -505,29 +505,29 @@ const DocumentsVerification: React.FC = () => {
                           icon={document.documentType === 'license' ? faFileAlt : 
                                 document.documentType === 'tax_doc' ? faBuilding :
                                 document.documentType === 'operator_permit' ? faClipboardCheck : faFileAlt} 
-                          className="h-4 w-4 text-gray-400" 
+                          className="h-4 w-4 text-muted-foreground" 
                         />
-                        <span className="text-white">{getDocumentTypeLabel(document.documentType)}</span>
+                        <span className="text-foreground">{getDocumentTypeLabel(document.documentType)}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       {document.equipmentName ? (
                         <div className="flex items-center gap-2">
-                          <FontAwesomeIcon icon={faTruck} className="h-4 w-4 text-gray-400" />
-                          <span className="text-white">{document.equipmentName}</span>
+                          <FontAwesomeIcon icon={faTruck} className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-foreground">{document.equipmentName}</span>
                         </div>
                       ) : (
                         <span className="text-gray-500">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-white">{formatDate(document.uploadDate)}</span>
+                      <span className="text-foreground">{formatDate(document.uploadDate)}</span>
                     </td>
                     <td className="px-6 py-4">
                       {document.expirationDate ? (
                         <div className="flex items-center gap-2">
                           <span className={cn(
-                            'text-white',
+                            'text-foreground',
                             isDocumentExpiringSoon(document.expirationDate) && 'text-red-400 font-semibold'
                           )}>
                             {formatDate(document.expirationDate)}
@@ -547,7 +547,7 @@ const DocumentsVerification: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handlePreviewDocument(document)}
-                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded transition-colors"
+                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-muted rounded transition-colors"
                           title={isRTL ? 'معاينة الوثيقة' : 'Preview Document'}
                         >
                           <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
@@ -557,14 +557,14 @@ const DocumentsVerification: React.FC = () => {
                           <>
                             <button
                               onClick={() => handleApproveDocument(document)}
-                              className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                              className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors"
                               title={isRTL ? 'قبول' : 'Approve'}
                             >
                               <FontAwesomeIcon icon={faCheck} className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => handleRejectDocument(document)}
-                              className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded transition-colors"
+                              className="p-2 text-red-400 hover:text-red-300 hover:bg-muted rounded transition-colors"
                               title={isRTL ? 'رفض' : 'Reject'}
                             >
                               <FontAwesomeIcon icon={faTimes} className="h-4 w-4" />
@@ -582,7 +582,7 @@ const DocumentsVerification: React.FC = () => {
           {filteredDocuments.length === 0 && (
             <div className="text-center py-12">
               <FontAwesomeIcon icon={faFileAlt} className="h-16 w-16 text-gray-600 mb-4" />
-              <h3 className="text-lg font-medium text-gray-400 mb-2">
+              <h3 className="text-lg font-medium text-muted-foreground mb-2">
                 {isRTL ? 'لا توجد وثائق' : 'No documents found'}
               </h3>
               <p className="text-gray-500">
@@ -636,7 +636,7 @@ const DocumentsVerification: React.FC = () => {
 
             {/* Document Viewer */}
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <FontAwesomeIcon icon={faFileAlt} className="h-16 w-16 text-gray-400 mb-4" />
+              <FontAwesomeIcon icon={faFileAlt} className="h-16 w-16 text-muted-foreground mb-4" />
               <p className="text-gray-600 mb-4">
                 {isRTL ? 'معاينة الوثيقة' : 'Document Preview'}
               </p>
@@ -644,7 +644,7 @@ const DocumentsVerification: React.FC = () => {
                 {selectedDocument.fileName}
               </p>
               <div className={cn('flex justify-center gap-3', isRTL && 'space-x-reverse')}>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-foreground">
                   <FontAwesomeIcon icon={faEye} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                   {isRTL ? 'فتح الوثيقة' : 'Open Document'}
                 </Button>
@@ -725,7 +725,7 @@ const DocumentsVerification: React.FC = () => {
               <Button
                 onClick={submitRejection}
                 disabled={!rejectionReason.trim()}
-                className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
+                className="bg-red-600 hover:bg-red-700 text-foreground disabled:opacity-50"
               >
                 <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                 {isRTL ? 'رفض الوثيقة' : 'Reject Document'}

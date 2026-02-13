@@ -56,8 +56,8 @@ const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "w-full h-11 px-4 rounded-lg",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -77,8 +77,8 @@ const StyledTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       ref={ref}
       className={cn(
         "w-full px-4 py-3 rounded-lg resize-none",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -101,8 +101,8 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={cn(
           "w-full h-11 px-4 pe-10 rounded-lg appearance-none cursor-pointer",
-          "bg-[#1a1f2e] border border-gray-700",
-          "text-white",
+          "bg-card border border-border",
+          "text-foreground",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
           "transition-all duration-200",
           "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -116,7 +116,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
     </div>
   )
 );
@@ -169,7 +169,7 @@ interface FormFieldProps {
 function FormField({ label, required, children, hint, className }: FormFieldProps) {
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
+      <label className="block text-sm font-medium text-muted-foreground mb-2">
         {label}
         {required && <span className="text-awnash-primary ms-1">*</span>}
       </label>
@@ -240,8 +240,8 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
           disabled={isLoading}
           className={cn(
             "w-full h-11 ps-10 pe-4 rounded-lg",
-            "bg-gray-900/50 border border-gray-700",
-            "text-white placeholder:text-gray-500",
+            "bg-background/50 border border-border",
+            "text-foreground placeholder:text-muted-foreground",
             "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
             "transition-all duration-200"
           )}
@@ -249,14 +249,14 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
       </div>
 
       {isOpen && !isLoading && (
-        <div className="absolute z-50 w-full mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl max-h-60 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-2 bg-muted border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto">
           {filteredOwners.length > 0 ? (
             filteredOwners.map((owner) => (
               <div
                 key={owner.id}
                 className={cn(
                   "px-4 py-3 cursor-pointer transition-colors",
-                  "hover:bg-gray-700/50",
+                  "hover:bg-muted/50",
                   selectedOwnerId === owner.id && "bg-awnash-primary/10 border-s-2 border-awnash-primary"
                 )}
                 onClick={() => {
@@ -265,9 +265,9 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
                   setSearchTerm("");
                 }}
               >
-                <div className="font-medium text-white">{owner.fullName || "Unknown"}</div>
+                <div className="font-medium text-foreground">{owner.fullName || "Unknown"}</div>
                 {owner.email && (
-                  <div className="text-xs text-gray-400 mt-0.5">{owner.email}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{owner.email}</div>
                 )}
               </div>
             ))
@@ -309,8 +309,8 @@ function ImageUpload({ images, onUpload, onRemove, isUploading, isRTL }: ImageUp
       {/* Upload Zone */}
       <div
         className={cn(
-          "border-2 border-dashed border-gray-700 rounded-xl p-8 text-center",
-          "bg-gray-900/30 hover:bg-gray-900/50 transition-colors cursor-pointer"
+          "border-2 border-dashed border-border rounded-xl p-8 text-center",
+          "bg-background/30 hover:bg-background/50 transition-colors cursor-pointer"
         )}
         onClick={() => !isUploading && fileInputRef.current?.click()}
       >
@@ -331,7 +331,7 @@ function ImageUpload({ images, onUpload, onRemove, isUploading, isRTL }: ImageUp
             </div>
           )}
           <div>
-            <p className="text-white font-medium">
+            <p className="text-foreground font-medium">
               {isUploading
                 ? isRTL ? "جاري الرفع..." : "Uploading..."
                 : isRTL ? "اختر الصور" : "Choose Images"}
@@ -351,14 +351,14 @@ function ImageUpload({ images, onUpload, onRemove, isUploading, isRTL }: ImageUp
               <img
                 src={src}
                 alt={`Preview ${index + 1}`}
-                className="w-full h-full object-cover rounded-lg border border-gray-700"
+                className="w-full h-full object-cover rounded-lg border border-border"
               />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
               <button
                 type="button"
                 onClick={() => onRemove(index)}
                 className={cn(
-                  "absolute top-2 bg-red-500 hover:bg-red-600 text-white",
+                  "absolute top-2 bg-red-500 hover:bg-red-600 text-foreground",
                   "rounded-full w-7 h-7 flex items-center justify-center",
                   "opacity-0 group-hover:opacity-100 transition-all",
                   "shadow-lg",
@@ -660,22 +660,22 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent
-        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700"
+        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-muted border-border"
         dir={isRTL ? "rtl" : "ltr"}
       >
         {/* Header */}
-        <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+        <DialogHeader className="border-b border-border pb-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-awnash-primary/10 flex items-center justify-center">
               <Upload className="h-5 w-5 text-awnash-primary" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-semibold text-white">
+              <DialogTitle className="text-xl font-semibold text-foreground">
                 {isEditMode
                   ? isRTL ? "تعديل المعدة" : "Edit Equipment"
                   : isRTL ? "إضافة معدة جديدة" : "Add New Equipment"}
               </DialogTitle>
-              <p className="text-sm text-gray-400 mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {isRTL ? "أدخل تفاصيل المعدة أدناه" : "Enter the equipment details below"}
               </p>
             </div>
@@ -815,13 +815,13 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
           </FormField>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-border">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
               disabled={loading}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               {isRTL ? "إلغاء" : "Cancel"}
             </Button>

@@ -208,35 +208,34 @@ const DisputesManagement: React.FC = () => {
   };
 
   const StatCard = ({ title, value, subtitle, icon, bgColor, textColor }: any) => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+    <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
           <p className={`text-3xl font-bold mb-2 ${textColor}`}>{value}</p>
-          {subtitle && <p className="text-sm text-gray-400">{subtitle}</p>}
+          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         </div>
         <div className={`flex h-16 w-16 items-center justify-center rounded-xl ${bgColor}`}>
-          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-foreground" />
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+        <div>
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'مركز النزاعات' : 'Dispute Center'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'إدارة النزاعات المثارة من المستأجرين والمالكين' : 'Handle disputes raised by renters and owners'}
           </p>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StatCard
             title={isRTL ? "النزاعات المفتوحة" : "Open Disputes"}
             value={disputes.filter(d => d.status === 'open').length}
@@ -272,34 +271,34 @@ const DisputesManagement: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {/* Search */}
             <div className="xl:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder={isRTL ? 'البحث برقم الحجز أو اسم المستخدم...' : 'Search by booking ID or user name...'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             {/* Status Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الحالة' : 'Status'}
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="open">{isRTL ? 'مفتوح' : 'Open'}</option>
@@ -310,13 +309,13 @@ const DisputesManagement: React.FC = () => {
 
             {/* Raised By Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'مُثار من' : 'Raised By'}
               </label>
               <select
                 value={raisedByFilter}
                 onChange={(e) => setRaisedByFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'الجميع' : 'All'}</option>
                 <option value="owner">{isRTL ? 'المالك' : 'Owner'}</option>
@@ -326,13 +325,13 @@ const DisputesManagement: React.FC = () => {
 
             {/* Reason Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'السبب' : 'Reason'}
               </label>
               <select
                 value={reasonFilter}
                 onChange={(e) => setReasonFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الأسباب' : 'All Reasons'}</option>
                 <option value="damage">{isRTL ? 'ضرر' : 'Damage'}</option>
@@ -344,56 +343,56 @@ const DisputesManagement: React.FC = () => {
 
             {/* Date Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'من تاريخ' : 'Date From'}
               </label>
               <input
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
         </div>
 
         {/* Disputes Table */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h3 className="text-xl font-bold text-white">
+        <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-xl font-bold text-foreground">
               {isRTL ? 'جدول النزاعات' : 'Disputes Table'}
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'رقم النزاع' : 'Dispute ID'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المعدة' : 'Equipment'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الأطراف' : 'Parties'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'السبب' : 'Reason'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الحالة' : 'Status'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'تاريخ الإرسال' : 'Submitted'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredDisputes.map((dispute) => (
-                  <tr key={dispute.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={dispute.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <FontAwesomeIcon 
@@ -401,7 +400,7 @@ const DisputesManagement: React.FC = () => {
                           className={`h-4 w-4 text-blue-400 ${isRTL ? 'ml-2' : 'mr-2'}`}  
                         />
                         <div>
-                          <div className="text-sm font-medium text-white">{dispute.id}</div>
+                          <div className="text-sm font-medium text-foreground">{dispute.id}</div>
                           <div className="text-xs text-blue-400 cursor-pointer hover:underline">
                             {dispute.bookingId}
                           </div>
@@ -416,20 +415,20 @@ const DisputesManagement: React.FC = () => {
                           className={`h-12 w-12 rounded-lg object-cover ${isRTL ? 'ml-3' : 'mr-3'}`}  
                         />
                         <div>
-                          <div className="text-sm font-medium text-white truncate max-w-32">
+                          <div className="text-sm font-medium text-foreground truncate max-w-32">
                             {dispute.equipmentName}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       <div>
                         <div className="font-medium">{dispute.renterName}</div>
-                        <div className="text-xs text-gray-400">vs {dispute.ownerName}</div>
+                        <div className="text-xs text-muted-foreground">vs {dispute.ownerName}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 bg-gray-600 text-gray-200 rounded-full text-xs font-medium">
+                      <span className="px-2 py-1 bg-gray-600 text-foreground rounded-full text-xs font-medium">
                         {getReasonLabel(dispute.reason)}
                       </span>
                     </td>
@@ -440,7 +439,7 @@ const DisputesManagement: React.FC = () => {
                         {dispute.status === 'resolved' && (isRTL ? 'تم الحل' : 'Resolved')}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {new Date(dispute.submissionDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -463,15 +462,15 @@ const DisputesManagement: React.FC = () => {
         {/* Dispute Detail Modal */}
         {selectedDispute && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               {/* Modal Header */}
-              <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'تفاصيل النزاع' : 'Dispute Details'} - {selectedDispute.id}
                 </h2>
                 <button
                   onClick={() => setSelectedDispute(null)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
                 </button>
@@ -481,22 +480,22 @@ const DisputesManagement: React.FC = () => {
                 {/* Dispute Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {isRTL ? 'ملخص النزاع' : 'Dispute Summary'}
                     </h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-400">{isRTL ? 'رقم الحجز:' : 'Booking ID:'}</span>
+                        <span className="text-muted-foreground">{isRTL ? 'رقم الحجز:' : 'Booking ID:'}</span>
                         <span className="text-blue-400 font-medium">{selectedDispute.bookingId}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-400">{isRTL ? 'مُثار من:' : 'Raised by:'}</span>
-                        <span className="text-white">
+                        <span className="text-muted-foreground">{isRTL ? 'مُثار من:' : 'Raised by:'}</span>
+                        <span className="text-foreground">
                           {selectedDispute.raisedBy === 'owner' ? selectedDispute.ownerName : selectedDispute.renterName}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-400">{isRTL ? 'المهلة الزمنية:' : 'Deadline:'}</span>
+                        <span className="text-muted-foreground">{isRTL ? 'المهلة الزمنية:' : 'Deadline:'}</span>
                         <span className={`font-medium ${selectedDispute.deadline && new Date(selectedDispute.deadline) < new Date() ? 'text-red-400' : 'text-yellow-400'}`}>
                           {selectedDispute.deadline ? new Date(selectedDispute.deadline).toLocaleDateString() : 'N/A'}
                         </span>
@@ -505,7 +504,7 @@ const DisputesManagement: React.FC = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {isRTL ? 'تفاصيل المعدة' : 'Equipment Details'}
                     </h3>
                     <div className={cn("flex items-center space-x-4", isRTL && "space-x-reverse")}>
@@ -515,8 +514,8 @@ const DisputesManagement: React.FC = () => {
                         className="h-16 w-16 rounded-lg object-cover"
                       />
                       <div>
-                        <div className="font-medium text-white">{selectedDispute.equipmentName}</div>
-                        <div className="text-sm text-gray-400">
+                        <div className="font-medium text-foreground">{selectedDispute.equipmentName}</div>
+                        <div className="text-sm text-muted-foreground">
                           {isRTL ? 'السبب:' : 'Reason:'} {getReasonLabel(selectedDispute.reason)}
                         </div>
                       </div>
@@ -526,18 +525,18 @@ const DisputesManagement: React.FC = () => {
 
                 {/* Full Description */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-3">
+                  <h3 className="text-lg font-semibold text-foreground mb-3">
                     {isRTL ? 'وصف النزاع' : 'Dispute Description'}
                   </h3>
-                  <div className="bg-gray-700 rounded-lg p-4">
-                    <p className="text-gray-300">{selectedDispute.description}</p>
+                  <div className="bg-muted rounded-lg p-4">
+                    <p className="text-muted-foreground">{selectedDispute.description}</p>
                   </div>
                 </div>
 
                 {/* Attachments */}
                 {selectedDispute.attachments.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-3">
+                    <h3 className="text-lg font-semibold text-foreground mb-3">
                       {isRTL ? 'المرفقات' : 'Attachments'}
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -546,9 +545,9 @@ const DisputesManagement: React.FC = () => {
                           <img 
                             src={attachment} 
                             alt={`Attachment ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-lg border border-gray-600"
+                            className="w-full h-24 object-cover rounded-lg border border-border"
                           />
-                          <button className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-1 rounded">
+                          <button className="absolute top-2 right-2 bg-black bg-opacity-50 text-foreground p-1 rounded">
                             <FontAwesomeIcon icon={faEye} />
                           </button>
                         </div>
@@ -558,38 +557,38 @@ const DisputesManagement: React.FC = () => {
                 )}
 
                 {/* Admin Actions */}
-                <div className="border-t border-gray-700 pt-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">
+                <div className="border-t border-border pt-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     {isRTL ? 'إجراءات الإدارة' : 'Admin Actions'}
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Financial Actions */}
                     <div className="space-y-4">
-                      <h4 className="font-medium text-gray-300">
+                      <h4 className="font-medium text-muted-foreground">
                         {isRTL ? 'الإجراءات المالية' : 'Financial Actions'}
                       </h4>
                       <div>
-                        <label className="block text-sm text-gray-400 mb-2">
+                        <label className="block text-sm text-muted-foreground mb-2">
                           {isRTL ? 'مبلغ الاسترداد (ريال سعودي)' : 'Refund Amount (SAR)'}
                         </label>
                         <input
                           type="number"
                           value={refundAmount}
                           onChange={(e) => setRefundAmount(e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                           placeholder="0"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm text-gray-400 mb-2">
+                        <label className="block text-sm text-muted-foreground mb-2">
                           {isRTL ? 'مبلغ الغرامة (ريال سعودي)' : 'Penalty Amount (SAR)'}
                         </label>
                         <input
                           type="number"
                           value={penaltyAmount}
                           onChange={(e) => setPenaltyAmount(e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                           placeholder="0"
                         />
                       </div>
@@ -597,14 +596,14 @@ const DisputesManagement: React.FC = () => {
 
                     {/* Administrative Actions */}
                     <div className="space-y-4">
-                      <h4 className="font-medium text-gray-300">
+                      <h4 className="font-medium text-muted-foreground">
                         {isRTL ? 'ملاحظات الإدارة' : 'Admin Notes'}
                       </h4>
                       <textarea
                         value={adminNotes}
                         onChange={(e) => setAdminNotes(e.target.value)}
                         rows={4}
-                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                         placeholder={isRTL ? 'أضف ملاحظات داخلية...' : 'Add internal notes...'}
                       />
                     </div>
@@ -619,7 +618,7 @@ const DisputesManagement: React.FC = () => {
                       <FontAwesomeIcon icon={faCheckCircle} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'حل النزاع' : 'Resolve Dispute'}
                     </Button>
-                    <Button variant="default" className="bg-yellow-600 hover:bg-yellow-700 text-white">
+                    <Button variant="default" className="bg-yellow-600 hover:bg-yellow-700 text-foreground">
                       <FontAwesomeIcon icon={faUser} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                       {isRTL ? 'إسناد للمراجع' : 'Assign Reviewer'}
                     </Button>
@@ -637,9 +636,8 @@ const DisputesManagement: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 };
 
-export default DisputesManagement; 
+export default DisputesManagement;

@@ -264,9 +264,9 @@ const TriggerRulesBuilder: React.FC = () => {
   };
 
   const renderConditionBuilder = () => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+    <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-foreground">
           {isRTL ? 'منشئ الشروط' : 'Condition Builder'}
         </h3>
         <button
@@ -284,13 +284,13 @@ const TriggerRulesBuilder: React.FC = () => {
           const selectedTemplate = availableConditions.find(t => t.key === condition.type);
 
           return (
-            <div key={condition.id} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+            <div key={condition.id} className="bg-muted rounded-lg p-4 border border-border">
               {index > 0 && (
                 <div className="flex items-center mb-4">
                   <select
                     value={condition.logic}
                     onChange={(e) => updateCondition(condition.id, { logic: e.target.value as 'AND' | 'OR' })}
-                    className="px-3 py-1 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="AND">AND</option>
                     <option value="OR">OR</option>
@@ -300,7 +300,7 @@ const TriggerRulesBuilder: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     {isRTL ? 'الشرط' : 'Condition'}
                   </label>
                   <select
@@ -314,7 +314,7 @@ const TriggerRulesBuilder: React.FC = () => {
                         value: ''
                       });
                     }}
-                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     {availableConditions.map(template => (
                       <option key={template.key} value={template.key}>
@@ -325,13 +325,13 @@ const TriggerRulesBuilder: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     {isRTL ? 'المشغل' : 'Operator'}
                   </label>
                   <select
                     value={condition.operator}
                     onChange={(e) => updateCondition(condition.id, { operator: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     {selectedTemplate?.operators.map(op => (
                       <option key={op} value={op}>{op}</option>
@@ -340,14 +340,14 @@ const TriggerRulesBuilder: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     {isRTL ? 'القيمة' : 'Value'}
                   </label>
                   <input
                     type="number"
                     value={condition.value}
                     onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                     placeholder={isRTL ? 'أدخل القيمة...' : 'Enter value...'}
                   />
                 </div>
@@ -356,7 +356,7 @@ const TriggerRulesBuilder: React.FC = () => {
                   {rule.conditions.length > 1 && (
                     <button
                       onClick={() => removeCondition(condition.id)}
-                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                      className="p-2 bg-red-600 text-foreground rounded hover:bg-red-700 transition-colors"
                       title={isRTL ? 'حذف الشرط' : 'Remove condition'}
                     >
                       <FontAwesomeIcon icon={faTimes} className="text-sm" />
@@ -367,13 +367,13 @@ const TriggerRulesBuilder: React.FC = () => {
 
               {selectedTemplate?.hasCity && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     {isRTL ? 'المدينة' : 'City'}
                   </label>
                   <select
                     value={condition.city || ''}
                     onChange={(e) => updateCondition(condition.id, { city: e.target.value })}
-                    className="w-full md:w-1/3 px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full md:w-1/3 px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">{isRTL ? 'اختر مدينة...' : 'Select city...'}</option>
                     <option value="Riyadh">Riyadh</option>
@@ -393,9 +393,9 @@ const TriggerRulesBuilder: React.FC = () => {
   );
 
   const renderActionBuilder = () => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+    <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-foreground">
           {isRTL ? 'منشئ الإجراءات' : 'Action Builder'}
         </h3>
         <button
@@ -412,16 +412,16 @@ const TriggerRulesBuilder: React.FC = () => {
           const actionType = actionTypes.find(a => a.key === action.type);
 
           return (
-            <div key={action.id} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+            <div key={action.id} className="bg-muted rounded-lg p-4 border border-border">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     {isRTL ? 'نوع الإجراء' : 'Action Type'}
                   </label>
                   <select
                     value={action.type}
                     onChange={(e) => updateAction(action.id, { type: e.target.value, config: {} })}
-                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     {actionTypes.map(type => (
                       <option key={type.key} value={type.key}>
@@ -432,7 +432,7 @@ const TriggerRulesBuilder: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     {isRTL ? 'التكوين' : 'Configuration'}
                   </label>
                   {action.type === 'launch_campaign' ? (
@@ -441,7 +441,7 @@ const TriggerRulesBuilder: React.FC = () => {
                       onChange={(e) => updateAction(action.id, { 
                         config: { ...action.config, campaignId: e.target.value }
                       })}
-                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">{isRTL ? 'اختر حملة...' : 'Select campaign...'}</option>
                       {savedCampaigns.map(campaign => (
@@ -457,7 +457,7 @@ const TriggerRulesBuilder: React.FC = () => {
                       onChange={(e) => updateAction(action.id, {
                         config: { ...action.config, messageTemplate: e.target.value }
                       })}
-                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                       placeholder={isRTL ? 'نص الرسالة...' : 'Message text...'}
                     />
                   ) : action.type === 'flag_users' ? (
@@ -467,7 +467,7 @@ const TriggerRulesBuilder: React.FC = () => {
                       onChange={(e) => updateAction(action.id, {
                         config: { ...action.config, flagReason: e.target.value }
                       })}
-                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                       placeholder={isRTL ? 'سبب العلامة...' : 'Flag reason...'}
                     />
                   ) : (
@@ -477,7 +477,7 @@ const TriggerRulesBuilder: React.FC = () => {
                       onChange={(e) => updateAction(action.id, {
                         config: { ...action.config, notificationText: e.target.value }
                       })}
-                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                       placeholder={isRTL ? 'نص التنبيه...' : 'Alert text...'}
                     />
                   )}
@@ -487,7 +487,7 @@ const TriggerRulesBuilder: React.FC = () => {
                   {rule.actions.length > 1 && (
                     <button
                       onClick={() => removeAction(action.id)}
-                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                      className="p-2 bg-red-600 text-foreground rounded hover:bg-red-700 transition-colors"
                       title={isRTL ? 'حذف الإجراء' : 'Remove action'}
                     >
                       <FontAwesomeIcon icon={faTimes} className="text-sm" />
@@ -497,7 +497,7 @@ const TriggerRulesBuilder: React.FC = () => {
               </div>
 
               {actionType && (
-                <div className="mt-2 text-gray-400 text-xs flex items-center">
+                <div className="mt-2 text-muted-foreground text-xs flex items-center">
                   <FontAwesomeIcon icon={actionType.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                   {actionType.description}
                 </div>
@@ -510,14 +510,14 @@ const TriggerRulesBuilder: React.FC = () => {
   );
 
   const renderScheduling = () => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-      <h3 className="text-lg font-semibold text-white mb-6">
+    <div className="bg-card rounded-xl border border-border p-6">
+      <h3 className="text-lg font-semibold text-foreground mb-6">
         {isRTL ? 'إعدادات الجدولة' : 'Scheduling Options'}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'تكرار التشغيل' : 'Run Frequency'}
           </label>
           <select
@@ -525,7 +525,7 @@ const TriggerRulesBuilder: React.FC = () => {
             onChange={(e) => updateRule({
               schedule: { ...rule.schedule, frequency: e.target.value }
             })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
           >
             {scheduleOptions.map(option => (
               <option key={option.key} value={option.key}>
@@ -536,7 +536,7 @@ const TriggerRulesBuilder: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'الحد الأقصى للتنفيذ' : 'Max Per Execution'}
           </label>
           <input
@@ -545,7 +545,7 @@ const TriggerRulesBuilder: React.FC = () => {
             onChange={(e) => updateRule({
               schedule: { ...rule.schedule, limitPerExecution: parseInt(e.target.value) || 1 }
             })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
             min="1"
             max="1000"
           />
@@ -555,15 +555,15 @@ const TriggerRulesBuilder: React.FC = () => {
   );
 
   const renderPreview = () => (
-    <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
+    <div className="bg-muted rounded-lg p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white flex items-center">
+        <h3 className="text-lg font-semibold text-foreground flex items-center">
           <FontAwesomeIcon icon={faCode} className={`${isRTL ? 'ml-2' : 'mr-2'} text-purple-400`} />
           {isRTL ? 'معاينة القاعدة' : 'Rule Preview'}
         </h3>
         <button
           onClick={() => setShowPreview(!showPreview)}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
           <FontAwesomeIcon icon={showPreview ? faChevronUp : faChevronDown} />
         </button>
@@ -571,8 +571,8 @@ const TriggerRulesBuilder: React.FC = () => {
 
       {showPreview && (
         <div className="space-y-4">
-          <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
-            <h4 className="text-gray-300 font-medium mb-2">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <h4 className="text-muted-foreground font-medium mb-2">
               {isRTL ? 'منطق القاعدة' : 'Rule Logic'}
             </h4>
             <p className="text-blue-200 text-sm leading-relaxed">
@@ -581,23 +581,23 @@ const TriggerRulesBuilder: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
-              <h4 className="text-gray-300 font-medium mb-2">
+            <div className="bg-card border border-border rounded-lg p-4">
+              <h4 className="text-muted-foreground font-medium mb-2">
                 {isRTL ? 'الحالة' : 'Status'}
               </h4>
               <div className="flex items-center">
                 <div className={`w-3 h-3 rounded-full ${isRTL ? 'ml-2' : 'mr-2'} ${rule.isActive ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                <span className="text-gray-200 text-sm">
+                <span className="text-foreground text-sm">
                   {rule.isActive ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'غير نشط' : 'Inactive')}
                 </span>
               </div>
             </div>
 
-            <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
-              <h4 className="text-gray-300 font-medium mb-2">
+            <div className="bg-card border border-border rounded-lg p-4">
+              <h4 className="text-muted-foreground font-medium mb-2">
                 {isRTL ? 'التكرار' : 'Frequency'}
               </h4>
-              <p className="text-gray-200 text-sm">
+              <p className="text-foreground text-sm">
                 {scheduleOptions.find(s => s.key === rule.schedule.frequency)?.label}
               </p>
             </div>
@@ -608,15 +608,15 @@ const TriggerRulesBuilder: React.FC = () => {
   );
 
   const renderExecutionLog = () => (
-    <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
+    <div className="bg-muted rounded-lg p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white flex items-center">
+        <h3 className="text-lg font-semibold text-foreground flex items-center">
           <FontAwesomeIcon icon={faHistory} className={`${isRTL ? 'ml-2' : 'mr-2'} text-green-400`} />  
           {isRTL ? 'سجل التنفيذ' : 'Execution Log'}
         </h3>
         <button
           onClick={() => setShowExecutionLog(!showExecutionLog)}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
           <FontAwesomeIcon icon={showExecutionLog ? faChevronUp : faChevronDown} />
         </button>
@@ -625,40 +625,40 @@ const TriggerRulesBuilder: React.FC = () => {
       {showExecutionLog && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 text-center">
+            <div className="bg-card border border-border rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-blue-400">{rule.executionCount}</div>
-              <div className="text-gray-400 text-sm">{isRTL ? 'مرات التنفيذ' : 'Total Executions'}</div>
+              <div className="text-muted-foreground text-sm">{isRTL ? 'مرات التنفيذ' : 'Total Executions'}</div>
             </div>
-            <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 text-center">
+            <div className="bg-card border border-border rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-green-400">156</div>
-              <div className="text-gray-400 text-sm">{isRTL ? 'المستخدمون المتأثرون' : 'Users Affected'}</div>
+              <div className="text-muted-foreground text-sm">{isRTL ? 'المستخدمون المتأثرون' : 'Users Affected'}</div>
             </div>
-            <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 text-center">
+            <div className="bg-card border border-border rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-yellow-400">92%</div>
-              <div className="text-gray-400 text-sm">{isRTL ? 'معدل النجاح' : 'Success Rate'}</div>
+              <div className="text-muted-foreground text-sm">{isRTL ? 'معدل النجاح' : 'Success Rate'}</div>
             </div>
           </div>
 
           <div>
-            <h4 className="text-gray-300 font-medium mb-3">
+            <h4 className="text-muted-foreground font-medium mb-3">
               {isRTL ? 'آخر التنفيذات' : 'Recent Executions'}
             </h4>
             <div className="space-y-2">
               {mockExecutions.map((execution, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg">
                   <div className="flex items-center">
                     <FontAwesomeIcon 
                       icon={execution.triggered ? faCheckCircle : faTimesCircle} 
                       className={`${isRTL ? 'ml-3' : 'mr-3'} ${execution.triggered ? 'text-green-400' : 'text-gray-500'}`}  
                     />
                     <div>
-                      <div className="text-white text-sm">{execution.action}</div>
-                      <div className="text-gray-400 text-xs">{execution.date}</div>
+                      <div className="text-foreground text-sm">{execution.action}</div>
+                      <div className="text-muted-foreground text-xs">{execution.date}</div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-blue-400 font-medium">{execution.affected}</div>
-                    <div className="text-gray-400 text-xs">{isRTL ? 'متأثر' : 'affected'}</div>
+                    <div className="text-muted-foreground text-xs">{isRTL ? 'متأثر' : 'affected'}</div>
                   </div>
                 </div>
               ))}
@@ -670,15 +670,15 @@ const TriggerRulesBuilder: React.FC = () => {
   );
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 flex items-center">
+          <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center">
             <FontAwesomeIcon icon={faCogs} className={`${isRTL ? 'ml-3' : 'mr-3'} text-blue-400`} />  
             {isRTL ? 'منشئ قواعد التحفيز' : 'Trigger Rules Builder'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'إنشاء قواعد تلقائية للحملات والإجراءات' : 'Create automated rules for campaigns and actions'}
           </p>
         </div>
@@ -687,34 +687,34 @@ const TriggerRulesBuilder: React.FC = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Rule Setup */}
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-white mb-6">
+            <div className="bg-card rounded-xl border border-border p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-6">
                 {isRTL ? 'إعداد القاعدة' : 'Rule Setup'}
               </h3>
 
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'اسم القاعدة' : 'Rule Name'}
                     </label>
                     <input
                       type="text"
                       value={rule.name}
                       onChange={(e) => updateRule({ name: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                       placeholder={isRTL ? 'أدخل اسم القاعدة...' : 'Enter rule name...'}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'نوع المحفز' : 'Trigger Type'}
                     </label>
                     <select
                       value={rule.triggerType}
                       onChange={(e) => updateRule({ triggerType: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                     >
                       {triggerTypes.map(type => (
                         <option key={type.key} value={type.key}>
@@ -729,12 +729,12 @@ const TriggerRulesBuilder: React.FC = () => {
                   <button
                     onClick={() => updateRule({ isActive: !rule.isActive })}
                     className={`p-2 rounded-full transition-colors ${isRTL ? 'ml-3' : 'mr-3'} ${
-                      rule.isActive ? 'bg-green-600 text-white' : 'bg-gray-600 text-gray-300'
+                      rule.isActive ? 'bg-green-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
                     }`}
                   >
                     <FontAwesomeIcon icon={rule.isActive ? faToggleOn : faToggleOff} />
                   </button>
-                  <span className="text-gray-300">
+                  <span className="text-muted-foreground">
                     {rule.isActive ? (isRTL ? 'القاعدة نشطة' : 'Rule Active') : (isRTL ? 'القاعدة غير نشطة' : 'Rule Inactive')}
                   </span>
                 </div>

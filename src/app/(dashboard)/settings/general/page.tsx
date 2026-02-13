@@ -199,7 +199,7 @@ const Settings: React.FC = () => {
                 </div>
                 <FontAwesomeIcon 
                   icon={faChevronRight} 
-                  className={`text-gray-400 group-hover:text-gray-600 transition-colors ${isRTL ? 'rotate-180' : ''}`}
+                  className={`text-muted-foreground group-hover:text-gray-600 transition-colors ${isRTL ? 'rotate-180' : ''}`}
                 />
               </div>
             </div>

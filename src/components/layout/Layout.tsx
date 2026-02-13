@@ -34,10 +34,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Main Content */}
         <main
-          className="p-0 bg-background text-foreground"
+          className="p-6 bg-background text-foreground"
           style={{ fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)' }}
         >
-          <div className="mx-auto max-w-full">
+          <div className="mx-auto max-w-[1600px]">
             {children}
           </div>
         </main>

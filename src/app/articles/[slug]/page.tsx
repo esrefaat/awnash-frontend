@@ -87,10 +87,10 @@ const ArticlePreviewPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-awnash-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">{isRTL ? 'جاري تحميل المقال...' : 'Loading article...'}</p>
+          <p className="text-gray-600 dark:text-muted-foreground">{isRTL ? 'جاري تحميل المقال...' : 'Loading article...'}</p>
         </div>
       </div>
     );
@@ -98,13 +98,13 @@ const ArticlePreviewPage: React.FC = () => {
 
   if (error || !article) {
     return (
-      <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">404</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <Link 
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-foreground mb-4">404</h1>
+          <p className="text-gray-600 dark:text-muted-foreground mb-6">{error}</p>
+          <Link
             href="/articles"
-            className="inline-flex items-center px-4 py-2 bg-awnash-primary text-black rounded-lg hover:bg-awnash-primary-hover transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-awnash-primary text-black dark:text-foreground rounded-lg hover:bg-awnash-primary-hover transition-colors"
           >
             <FontAwesomeIcon icon={faArrowLeft} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
             {isRTL ? 'العودة للمقالات' : 'Back to Articles'}
@@ -115,14 +115,14 @@ const ArticlePreviewPage: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-white ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-white dark:bg-card ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Navigation Header */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white dark:bg-card border-b border-gray-200 dark:border-border sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link 
               href="/articles"
-              className="inline-flex items-center text-gray-600 hover:text-awnash-primary transition-colors font-medium"
+              className="inline-flex items-center text-gray-600 dark:text-muted-foreground hover:text-awnash-primary transition-colors font-medium"
             >
               <FontAwesomeIcon icon={faArrowLeft} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               {isRTL ? 'العودة للمقالات' : 'Back to Articles'}
@@ -131,7 +131,7 @@ const ArticlePreviewPage: React.FC = () => {
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => i18n.changeLanguage(isRTL ? 'en' : 'ar')}
-                className="text-gray-600 hover:text-awnash-primary transition-colors"
+                className="text-gray-600 dark:text-muted-foreground hover:text-awnash-primary transition-colors"
               >
                 {isRTL ? 'English' : 'العربية'}
               </button>
@@ -143,7 +143,7 @@ const ArticlePreviewPage: React.FC = () => {
       {/* Article Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
         {/* Article Header */}
-        <header className="py-12 border-b border-gray-200">
+        <header className="py-12 border-b border-gray-200 dark:border-border">
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-6">
             {article.category.map((cat, index) => (
@@ -157,26 +157,26 @@ const ArticlePreviewPage: React.FC = () => {
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-foreground mb-6 leading-tight">
             {article.title}
           </h1>
 
           {/* Subtitle */}
           {article.subtitle && (
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-muted-foreground mb-8 leading-relaxed">
               {article.subtitle}
             </p>
           )}
 
           {/* Author and Meta Info */}
-          <div className="flex flex-wrap items-center gap-6 text-gray-600">
+          <div className="flex flex-wrap items-center gap-6 text-gray-600 dark:text-muted-foreground">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-awnash-primary/20 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faUser} className="h-5 w-5 text-awnash-primary" />
               </div>
               <div>
-                <div className="font-semibold text-gray-900">{article.author}</div>
-                <div className="text-sm text-gray-500">
+                <div className="font-semibold text-gray-900 dark:text-foreground">{article.author}</div>
+                <div className="text-sm text-gray-500 dark:text-muted-foreground">
                   {new Date(article.publishDate).toLocaleDateString(isRTL ? 'ar' : 'en', {
                     year: 'numeric',
                     month: 'long',
@@ -204,7 +204,7 @@ const ArticlePreviewPage: React.FC = () => {
               {article.tags.map((tag, index) => (
                 <span 
                   key={index}
-                  className="text-sm text-gray-500 hover:text-awnash-primary cursor-pointer transition-colors"
+                  className="text-sm text-gray-500 dark:text-muted-foreground hover:text-awnash-primary cursor-pointer transition-colors"
                 >
                   #{tag}
                 </span>
@@ -224,7 +224,7 @@ const ArticlePreviewPage: React.FC = () => {
               />
             </div>
             {article.imageCaption && (
-              <p className="text-sm text-gray-500 italic mt-3 text-center">
+              <p className="text-sm text-gray-500 dark:text-muted-foreground italic mt-3 text-center">
                 {article.imageCaption}
               </p>
             )}
@@ -234,7 +234,7 @@ const ArticlePreviewPage: React.FC = () => {
         {/* Article Body */}
         <article className="py-8">
           {/* Excerpt as highlighted intro */}
-          <div className="text-xl text-gray-700 mb-12 p-6 bg-gradient-to-r from-awnash-primary/5 to-awnash-accent/5 rounded-xl border-l-4 border-awnash-primary">
+          <div className="text-xl text-gray-700 dark:text-muted-foreground mb-12 p-6 bg-gradient-to-r from-awnash-primary/5 to-awnash-accent/5 rounded-xl border-l-4 border-awnash-primary">
             <p className="font-medium leading-relaxed">{article.excerpt}</p>
           </div>
 
@@ -249,10 +249,10 @@ const ArticlePreviewPage: React.FC = () => {
         </article>
 
         {/* Article Footer */}
-        <footer className="py-12 border-t border-gray-200">
+        <footer className="py-12 border-t border-gray-200 dark:border-border">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-muted-foreground">
                 {isRTL ? 'آخر تحديث:' : 'Last updated:'} {new Date(article.updatedAt).toLocaleDateString(isRTL ? 'ar' : 'en')}
               </div>
             </div>

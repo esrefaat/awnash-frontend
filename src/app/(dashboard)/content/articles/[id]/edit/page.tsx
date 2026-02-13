@@ -309,25 +309,25 @@ const EditArticlePage: React.FC = () => {
 
   if (initialLoading) {
     return (
-      <div className={`min-h-screen bg-gray-900 flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-background flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-awnash-primary mx-auto mb-4"></div>
-          <p className="text-gray-400">{isRTL ? 'جاري تحميل المقال...' : 'Loading article...'}</p>
+          <p className="text-muted-foreground">{isRTL ? 'جاري تحميل المقال...' : 'Loading article...'}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               {isRTL ? 'تحرير المقال' : 'Edit Article'}
             </h1>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               {isRTL ? 'تحرير مقال موجود في منصة أونش' : 'Edit an existing article for the Awnash platform'}
             </p>
           </div>
@@ -343,16 +343,16 @@ const EditArticlePage: React.FC = () => {
           )}
 
           {/* Basic Information */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? 'المعلومات الأساسية' : 'Basic Information'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Title */}
               <div>
-                <Label htmlFor="title" className="text-gray-300">
+                <Label htmlFor="title" className="text-muted-foreground">
                   {isRTL ? 'العنوان' : 'Headline'} <span className="text-red-400">*</span>
                 </Label>
                 <Input
@@ -360,7 +360,7 @@ const EditArticlePage: React.FC = () => {
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   placeholder={isRTL ? 'أدخل عنوان المقال' : 'Enter article headline'}
                 />
                 {errors.title && (
@@ -370,7 +370,7 @@ const EditArticlePage: React.FC = () => {
 
               {/* Subtitle */}
               <div>
-                <Label htmlFor="subtitle" className="text-gray-300">
+                <Label htmlFor="subtitle" className="text-muted-foreground">
                   {isRTL ? 'العنوان الفرعي' : 'Sub-headline'}
                 </Label>
                 <Input
@@ -378,7 +378,7 @@ const EditArticlePage: React.FC = () => {
                   type="text"
                   value={formData.subtitle}
                   onChange={(e) => handleInputChange('subtitle', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   placeholder={isRTL ? 'أدخل العنوان الفرعي' : 'Enter sub-headline'}
                 />
               </div>
@@ -386,14 +386,14 @@ const EditArticlePage: React.FC = () => {
               {/* Language and Status */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="language" className="text-gray-300">
+                  <Label htmlFor="language" className="text-muted-foreground">
                     {isRTL ? 'اللغة' : 'Language'}
                   </Label>
                   <Select
                     id="language"
                     value={formData.language}
                     onChange={(e) => handleInputChange('language', e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white mt-1"
+                    className="bg-muted border-border text-foreground mt-1"
                   >
                     <option value="en">English</option>
                     <option value="ar">العربية</option>
@@ -401,14 +401,14 @@ const EditArticlePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="status" className="text-gray-300">
+                  <Label htmlFor="status" className="text-muted-foreground">
                     {isRTL ? 'الحالة' : 'Status'}
                   </Label>
                   <Select
                     id="status"
                     value={formData.status}
                     onChange={(e) => handleInputChange('status', e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white mt-1"
+                    className="bg-muted border-border text-foreground mt-1"
                   >
                     <option value="draft">{isRTL ? 'مسودة' : 'Draft'}</option>
                     <option value="published">{isRTL ? 'منشور' : 'Published'}</option>
@@ -420,16 +420,16 @@ const EditArticlePage: React.FC = () => {
           </Card>
 
           {/* Categories and Tags */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? 'التصنيف والعلامات' : 'Categories and Tags'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Categories */}
               <div>
-                <Label className="text-gray-300 mb-3 block">
+                <Label className="text-muted-foreground mb-3 block">
                   {isRTL ? 'الفئات' : 'Categories'}
                 </Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -439,9 +439,9 @@ const EditArticlePage: React.FC = () => {
                         type="checkbox"
                         checked={formData.category.includes(category)}
                         onChange={() => handleCategoryChange(category)}
-                        className="rounded border-gray-600 bg-gray-700"
+                        className="rounded border-border bg-muted"
                       />
-                      <span className="text-sm text-gray-300">{category}</span>
+                      <span className="text-sm text-muted-foreground">{category}</span>
                     </label>
                   ))}
                 </div>
@@ -449,7 +449,7 @@ const EditArticlePage: React.FC = () => {
 
               {/* Tags */}
               <div>
-                <Label htmlFor="tags" className="text-gray-300">
+                <Label htmlFor="tags" className="text-muted-foreground">
                   {isRTL ? 'العلامات' : 'Tags'}
                 </Label>
                 <div className="mt-1">
@@ -480,10 +480,10 @@ const EditArticlePage: React.FC = () => {
                     value={currentTag}
                     onChange={(e) => setCurrentTag(e.target.value)}
                     onKeyPress={handleTagKeyPress}
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-muted border-border text-foreground"
                     placeholder={isRTL ? 'اكتب علامة واضغط Enter' : 'Type a tag and press Enter'}
                   />
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {isRTL ? 'اكتب علامة واضغط Enter لإضافتها' : 'Type a tag and press Enter to add it'}
                   </p>
                 </div>
@@ -492,16 +492,16 @@ const EditArticlePage: React.FC = () => {
           </Card>
 
           {/* Media */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? 'الوسائط' : 'Media'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Image Upload */}
               <div>
-                <Label htmlFor="coverImage" className="text-gray-300">
+                <Label htmlFor="coverImage" className="text-muted-foreground">
                   {isRTL ? 'صورة الغلاف' : 'Cover Image'}
                 </Label>
                 <div className="mt-1">
@@ -516,7 +516,7 @@ const EditArticlePage: React.FC = () => {
                     type="button"
                     onClick={() => document.getElementById('coverImage')?.click()}
                     variant="outline"
-                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                    className="border-border text-muted-foreground hover:bg-muted"
                   >
                     <FontAwesomeIcon icon={faUpload} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {isRTL ? 'رفع صورة' : 'Upload Image'}
@@ -542,7 +542,7 @@ const EditArticlePage: React.FC = () => {
                           </div>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-400">{formData.coverImage?.name}</p>
+                        <p className="text-sm text-muted-foreground">{formData.coverImage?.name}</p>
                       )}
                     </div>
                   )}
@@ -551,7 +551,7 @@ const EditArticlePage: React.FC = () => {
 
               {/* Image Caption */}
               <div>
-                <Label htmlFor="imageCaption" className="text-gray-300">
+                <Label htmlFor="imageCaption" className="text-muted-foreground">
                   {isRTL ? 'تسمية الصورة' : 'Image Caption'}
                 </Label>
                 <Input
@@ -559,7 +559,7 @@ const EditArticlePage: React.FC = () => {
                   type="text"
                   value={formData.imageCaption}
                   onChange={(e) => handleInputChange('imageCaption', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   placeholder={isRTL ? 'وصف للصورة' : 'Description for the image'}
                 />
               </div>
@@ -567,16 +567,16 @@ const EditArticlePage: React.FC = () => {
           </Card>
 
           {/* Content */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? 'محتوى المقال' : 'Article Content'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Article Body */}
               <div>
-                <Label htmlFor="content" className="text-gray-300">
+                <Label htmlFor="content" className="text-muted-foreground">
                   {isRTL ? 'محتوى المقال' : 'Article Body'} <span className="text-red-400">*</span>
                 </Label>
                 <div className="mt-1">
@@ -584,7 +584,7 @@ const EditArticlePage: React.FC = () => {
                     content={formData.content}
                     onChange={(content) => handleInputChange('content', content)}
                     placeholder={isRTL ? 'اكتب محتوى المقال هنا...' : 'Write your article content here...'}
-                    className="bg-gray-800"
+                    className="bg-card"
                   />
                 </div>
                 {errors.content && (
@@ -594,14 +594,14 @@ const EditArticlePage: React.FC = () => {
 
               {/* Excerpt */}
               <div>
-                <Label htmlFor="excerpt" className="text-gray-300">
+                <Label htmlFor="excerpt" className="text-muted-foreground">
                   {isRTL ? 'مقتطف' : 'Excerpt'}
                 </Label>
                 <Textarea
                   id="excerpt"
                   value={formData.excerpt}
                   onChange={(e) => handleInputChange('excerpt', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   rows={3}
                   placeholder={isRTL ? 'ملخص قصير للمقال' : 'Short summary of the article'}
                 />
@@ -610,9 +610,9 @@ const EditArticlePage: React.FC = () => {
           </Card>
 
           {/* Publishing Details */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? 'تفاصيل النشر' : 'Publishing Details'}
               </CardTitle>
             </CardHeader>
@@ -620,14 +620,14 @@ const EditArticlePage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Author */}
                 <div>
-                  <Label htmlFor="author" className="text-gray-300">
+                  <Label htmlFor="author" className="text-muted-foreground">
                     {isRTL ? 'المؤلف' : 'Author'}
                   </Label>
                   <Select
                     id="author"
                     value={formData.author}
                     onChange={(e) => handleInputChange('author', e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white mt-1"
+                    className="bg-muted border-border text-foreground mt-1"
                   >
                     <option value="">{isRTL ? 'اختر المؤلف' : 'Select Author'}</option>
                     {authors.map((author) => (
@@ -638,7 +638,7 @@ const EditArticlePage: React.FC = () => {
 
                 {/* Publish Date */}
                 <div>
-                  <Label htmlFor="publishDate" className="text-gray-300">
+                  <Label htmlFor="publishDate" className="text-muted-foreground">
                     {isRTL ? 'تاريخ النشر' : 'Publish Date'}
                   </Label>
                   <Input
@@ -646,14 +646,14 @@ const EditArticlePage: React.FC = () => {
                     type="date"
                     value={formData.publishDate}
                     onChange={(e) => handleInputChange('publishDate', e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white mt-1"
+                    className="bg-muted border-border text-foreground mt-1"
                   />
                 </div>
               </div>
 
               {/* Slug */}
               <div>
-                <Label htmlFor="slug" className="text-gray-300">
+                <Label htmlFor="slug" className="text-muted-foreground">
                   {isRTL ? 'الرابط (Slug)' : 'Slug'}
                 </Label>
                 <Input
@@ -661,7 +661,7 @@ const EditArticlePage: React.FC = () => {
                   type="text"
                   value={formData.slug}
                   onChange={(e) => handleInputChange('slug', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   placeholder={isRTL ? 'رابط-المقال' : 'article-slug'}
                 />
               </div>
@@ -669,16 +669,16 @@ const EditArticlePage: React.FC = () => {
           </Card>
 
           {/* SEO */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? 'تحسين محركات البحث (SEO)' : 'SEO Optimization'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* SEO Title */}
               <div>
-                <Label htmlFor="metaTitle" className="text-gray-300">
+                <Label htmlFor="metaTitle" className="text-muted-foreground">
                   {isRTL ? 'عنوان SEO' : 'SEO Title'}
                 </Label>
                 <Input
@@ -686,21 +686,21 @@ const EditArticlePage: React.FC = () => {
                   type="text"
                   value={formData.metaTitle}
                   onChange={(e) => handleInputChange('metaTitle', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   placeholder={isRTL ? 'عنوان محسن لمحركات البحث' : 'SEO optimized title'}
                 />
               </div>
 
               {/* SEO Description */}
               <div>
-                <Label htmlFor="metaDescription" className="text-gray-300">
+                <Label htmlFor="metaDescription" className="text-muted-foreground">
                   {isRTL ? 'وصف SEO' : 'SEO Description'}
                 </Label>
                 <Textarea
                   id="metaDescription"
                   value={formData.metaDescription}
                   onChange={(e) => handleInputChange('metaDescription', e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white mt-1"
+                  className="bg-muted border-border text-foreground mt-1"
                   rows={3}
                   placeholder={isRTL ? 'وصف محسن لمحركات البحث (150-160 حرف)' : 'SEO optimized description (150-160 characters)'}
                 />
@@ -714,7 +714,7 @@ const EditArticlePage: React.FC = () => {
               type="button"
               onClick={handleCancel}
               variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700 rounded-2xl"
+              className="border-border text-muted-foreground hover:bg-muted rounded-2xl"
             >
               <FontAwesomeIcon icon={faTimes} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               {isRTL ? 'إلغاء' : 'Cancel'}

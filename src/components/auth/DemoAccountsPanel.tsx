@@ -123,16 +123,16 @@ export const DemoAccountsPanel: React.FC<DemoAccountsPanelProps> = ({
   return (
     <div
       className={cn(
-        "w-full lg:w-72 bg-white dark:bg-[#18181b] rounded-2xl shadow-lg p-4 space-y-3 h-fit",
-        "border border-gray-200 dark:border-gray-800"
+        "w-full lg:w-72 bg-white dark:bg-card rounded-2xl shadow-lg p-4 space-y-3 h-fit",
+        "border border-gray-200 dark:border-border"
       )}
     >
       {/* Header */}
-      <div className="text-center border-b border-gray-200 dark:border-gray-700 pb-2">
-        <h2 className="text-sm font-bold text-gray-900 dark:text-white">
+      <div className="text-center border-b border-gray-200 dark:border-border pb-2">
+        <h2 className="text-sm font-bold text-gray-900 dark:text-foreground">
           {isRTL ? "حسابات تجريبية" : "Demo Accounts"}
         </h2>
-        <p className="text-[10px] text-gray-500 dark:text-gray-400">
+        <p className="text-[10px] text-gray-500 dark:text-muted-foreground">
           {isRTL ? "انقر للتسجيل السريع" : "Click to quick login"}
         </p>
       </div>
@@ -143,8 +143,8 @@ export const DemoAccountsPanel: React.FC<DemoAccountsPanelProps> = ({
           <div
             key={account.roleKey}
             className={cn(
-              "group relative p-2 rounded-lg border border-gray-200 dark:border-gray-700",
-              "hover:border-[#0073E6] hover:bg-gray-50 dark:hover:bg-gray-800/50",
+              "group relative p-2 rounded-lg border border-gray-200 dark:border-border",
+              "hover:border-[#0073E6] hover:bg-gray-50 dark:hover:bg-muted/50",
               "transition-all cursor-pointer"
             )}
             onClick={() => onSelectAccount(account.email, account.password)}
@@ -166,7 +166,7 @@ export const DemoAccountsPanel: React.FC<DemoAccountsPanelProps> = ({
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-xs font-semibold text-gray-900 dark:text-foreground">
                     {account.role}
                   </h3>
                   <button
@@ -175,7 +175,7 @@ export const DemoAccountsPanel: React.FC<DemoAccountsPanelProps> = ({
                       e.stopPropagation();
                       handleCopyEmail(account.email);
                     }}
-                    className="p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                    className="p-0.5 hover:bg-gray-200 dark:hover:bg-muted rounded transition-colors"
                     title={isRTL ? "نسخ البريد" : "Copy email"}
                   >
                     <FontAwesomeIcon
@@ -189,7 +189,7 @@ export const DemoAccountsPanel: React.FC<DemoAccountsPanelProps> = ({
                     />
                   </button>
                 </div>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-[10px] text-gray-500 dark:text-muted-foreground truncate">
                   {isRTL ? account.descriptionAr : account.description}
                 </p>
               </div>
@@ -211,8 +211,8 @@ export const DemoAccountsPanel: React.FC<DemoAccountsPanelProps> = ({
       </div>
 
       {/* Footer Note */}
-      <div className="text-center pt-1.5 border-t border-gray-200 dark:border-gray-700">
-        <p className="text-[10px] text-gray-400 dark:text-gray-500">
+      <div className="text-center pt-1.5 border-t border-gray-200 dark:border-border">
+        <p className="text-[10px] text-gray-400 dark:text-muted-foreground">
           {isRTL ? "كلمة المرور: Demo@123" : "Password: Demo@123"}
         </p>
       </div>

@@ -333,9 +333,9 @@ export default function LiveRentalsMap() {
 
   const getStatusBadge = (status: ActiveRental['status']) => {
     const statusConfig = {
-      active: { color: 'bg-green-500', text: 'Active', textColor: 'text-white' },
+      active: { color: 'bg-green-500', text: 'Active', textColor: 'text-foreground' },
       'ending-soon': { color: 'bg-yellow-500', text: 'Ending Soon', textColor: 'text-black' },
-      overdue: { color: 'bg-red-500', text: 'Overdue', textColor: 'text-white' }
+      overdue: { color: 'bg-red-500', text: 'Overdue', textColor: 'text-foreground' }
     };
     
     const config = statusConfig[status];
@@ -406,18 +406,18 @@ export default function LiveRentalsMap() {
 
   if (!leafletLoaded) {
     return (
-      <div className="min-h-screen bg-gray-900 p-6 font-montserrat" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="min-h-screen bg-background p-6 font-montserrat" dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-white">Live Rental Map</h1>
-              <p className="text-gray-400 mt-1">Real-time tracking of active equipment rentals</p>
+              <h1 className="text-3xl font-bold text-foreground">Live Rental Map</h1>
+              <p className="text-muted-foreground mt-1">Real-time tracking of active equipment rentals</p>
             </div>
           </div>
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 flex items-center justify-center h-96">
+          <div className="bg-card rounded-2xl border border-border p-6 flex items-center justify-center h-96">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-awnash-primary mx-auto mb-4"></div>
-              <p className="text-gray-400">Loading map...</p>
+              <p className="text-muted-foreground">Loading map...</p>
             </div>
           </div>
         </div>
@@ -426,13 +426,13 @@ export default function LiveRentalsMap() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6 font-montserrat" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-background p-6 font-montserrat" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold text-white">Live Rental Map</h1>
-            <p className="text-gray-400 mt-1">Real-time tracking of active equipment rentals</p>
+            <h1 className="text-3xl font-bold text-foreground">Live Rental Map</h1>
+            <p className="text-muted-foreground mt-1">Real-time tracking of active equipment rentals</p>
           </div>
           
           <div className="flex gap-4">
@@ -453,10 +453,10 @@ export default function LiveRentalsMap() {
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
           <div className="flex flex-wrap gap-4 items-center">
             <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
-              <label className="text-sm font-medium text-gray-300">Filters:</label>
+              <label className="text-sm font-medium text-muted-foreground">Filters:</label>
             </div>
             
             <label className={cn("flex items-center space-x-2 cursor-pointer", isRTL && "space-x-reverse")}>
@@ -464,54 +464,54 @@ export default function LiveRentalsMap() {
                 type="checkbox"
                 checked={showFlaggedOnly}
                 onChange={(e) => setShowFlaggedOnly(e.target.checked)}
-                className="rounded border-gray-600 bg-gray-700 text-awnash-primary focus:ring-awnash-primary"
+                className="rounded border-border bg-muted text-awnash-primary focus:ring-awnash-primary"
               />
-              <span className="text-sm text-gray-300">Flagged Only</span>
+              <span className="text-sm text-muted-foreground">Flagged Only</span>
             </label>
 
             <div className="flex gap-2">
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search by city..."
                   value={searchCity}
                   onChange={(e) => setSearchCity(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+                  className="pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                 />
               </div>
               
               <div className="relative">
-                <FontAwesomeIcon icon={faUser} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <FontAwesomeIcon icon={faUser} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search by driver..."
                   value={searchDriver}
                   onChange={(e) => setSearchDriver(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+                  className="pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                 />
               </div>
               
               <div className="relative">
-                <FontAwesomeIcon icon={faTruck} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <FontAwesomeIcon icon={faTruck} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search by equipment..."
                   value={searchEquipment}
                   onChange={(e) => setSearchEquipment(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+                  className="pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                 />
               </div>
             </div>
 
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-muted-foreground">
               Showing {filteredRentals.length} of {activeRentals.length} active rentals
             </div>
           </div>
         </div>
 
         {/* Map Container */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-lg">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-lg">
           <div className="h-[70vh] relative">
             {leafletLoaded && (
               <MapContainer
@@ -596,7 +596,7 @@ export default function LiveRentalsMap() {
         {/* Command Drawer */}
         <div 
           className={cn(
-            "fixed inset-y-0 right-0 z-[9999] w-96 bg-gray-800 border-l border-gray-700 shadow-xl transform transition-transform duration-300",
+            "fixed inset-y-0 right-0 z-[9999] w-96 bg-card border-l border-border shadow-xl transform transition-transform duration-300",
             drawerOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
@@ -604,17 +604,17 @@ export default function LiveRentalsMap() {
             <div className="p-6 h-full overflow-y-auto">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">Rental Control</h2>
+                <h2 className="text-xl font-bold text-foreground">Rental Control</h2>
                 <button 
                   onClick={() => setDrawerOpen(false)}
-                  className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                  className="p-2 hover:bg-muted rounded-lg transition-colors"
                 >
-                  <FontAwesomeIcon icon={faTimes} className="h-5 w-5 text-gray-400" />
+                  <FontAwesomeIcon icon={faTimes} className="h-5 w-5 text-muted-foreground" />
                 </button>
               </div>
 
               {/* Equipment Info */}
-              <div className="bg-gray-700 rounded-lg p-4 mb-6">
+              <div className="bg-muted rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3 mb-3">
                   <img 
                     src={selectedRental.equipmentImage} 
@@ -622,8 +622,8 @@ export default function LiveRentalsMap() {
                     className="w-16 h-12 object-cover rounded"
                   />
                   <div>
-                    <h3 className="font-semibold text-white">{selectedRental.equipmentName}</h3>
-                    <p className="text-sm text-gray-400">{selectedRental.bookingId}</p>
+                    <h3 className="font-semibold text-foreground">{selectedRental.equipmentName}</h3>
+                    <p className="text-sm text-muted-foreground">{selectedRental.bookingId}</p>
                   </div>
                 </div>
                 
@@ -640,90 +640,90 @@ export default function LiveRentalsMap() {
 
               {/* Driver & Owner Info */}
               <div className="space-y-4 mb-6">
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-medium text-white mb-2 flex items-center gap-2">
+                <div className="bg-muted rounded-lg p-4">
+                  <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
                     <FontAwesomeIcon icon={faUser} className="h-4 w-4" />
                     Driver Information
                   </h4>
                   <div className="space-y-2 text-sm">
-                    <p className="text-gray-300">{selectedRental.driverName}</p>
+                    <p className="text-muted-foreground">{selectedRental.driverName}</p>
                     <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faPhone} className="h-3 w-3 text-gray-400" />
-                      <span className="text-gray-400">{selectedRental.driverPhone}</span>
+                      <FontAwesomeIcon icon={faPhone} className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-muted-foreground">{selectedRental.driverPhone}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faEnvelope} className="h-3 w-3 text-gray-400" />
-                      <span className="text-gray-400">{selectedRental.driverEmail}</span>
+                      <FontAwesomeIcon icon={faEnvelope} className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-muted-foreground">{selectedRental.driverEmail}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-medium text-white mb-2 flex items-center gap-2">
+                <div className="bg-muted rounded-lg p-4">
+                  <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
                     <FontAwesomeIcon icon={faBuilding} className="h-4 w-4" />
                     Owner & Renter
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div>
-                      <p className="text-gray-400">Owner:</p>
-                      <p className="text-gray-300">{selectedRental.ownerName}</p>
+                      <p className="text-muted-foreground">Owner:</p>
+                      <p className="text-muted-foreground">{selectedRental.ownerName}</p>
                     </div>
                     <div>
-                      <p className="text-gray-400">Renter:</p>
-                      <p className="text-gray-300">{selectedRental.renterName}</p>
+                      <p className="text-muted-foreground">Renter:</p>
+                      <p className="text-muted-foreground">{selectedRental.renterName}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Location Info */}
-              <div className="bg-gray-700 rounded-lg p-4 mb-6">
-                <h4 className="font-medium text-white mb-2 flex items-center gap-2">
+              <div className="bg-muted rounded-lg p-4 mb-6">
+                <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
                   <FontAwesomeIcon icon={faMapMarkerAlt} className="h-4 w-4" />
                   Current Location
                 </h4>
                 <div className="text-sm">
-                  <p className="text-gray-300">{selectedRental.location.address}</p>
-                  <p className="text-gray-400">{selectedRental.location.city}</p>
+                  <p className="text-muted-foreground">{selectedRental.location.address}</p>
+                  <p className="text-muted-foreground">{selectedRental.location.city}</p>
                 </div>
               </div>
 
               {/* Rental Period */}
-              <div className="bg-gray-700 rounded-lg p-4 mb-6">
-                <h4 className="font-medium text-white mb-2 flex items-center gap-2">
+              <div className="bg-muted rounded-lg p-4 mb-6">
+                <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
                   <FontAwesomeIcon icon={faCalendarAlt} className="h-4 w-4" />
                   Rental Period
                 </h4>
                 <div className="space-y-2 text-sm">
                   <div>
-                    <p className="text-gray-400">Start:</p>
-                    <p className="text-gray-300">{new Date(selectedRental.rentalPeriod.start).toLocaleString()}</p>
+                    <p className="text-muted-foreground">Start:</p>
+                    <p className="text-muted-foreground">{new Date(selectedRental.rentalPeriod.start).toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400">End:</p>
-                    <p className="text-gray-300">{new Date(selectedRental.rentalPeriod.end).toLocaleString()}</p>
+                    <p className="text-muted-foreground">End:</p>
+                    <p className="text-muted-foreground">{new Date(selectedRental.rentalPeriod.end).toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400">Daily Rate:</p>
-                    <p className="text-gray-300">SAR {selectedRental.dailyRate.toLocaleString()}</p>
+                    <p className="text-muted-foreground">Daily Rate:</p>
+                    <p className="text-muted-foreground">SAR {selectedRental.dailyRate.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
 
               {/* Flag Rental Section */}
               {!selectedRental.flagged && (
-                <div className="bg-gray-700 rounded-lg p-4 mb-6">
-                  <h4 className="font-medium text-white mb-3 flex items-center gap-2">
+                <div className="bg-muted rounded-lg p-4 mb-6">
+                  <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                     <FontAwesomeIcon icon={faFlag} className="h-4 w-4" />
                     Flag Rental
                   </h4>
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-1">Reason</label>
+                      <label className="block text-sm font-medium text-muted-foreground mb-1">Reason</label>
                       <select
                         value={flagReason}
                         onChange={(e) => setFlagReason(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+                        className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                       >
                         <option value="">Select reason...</option>
                         <option value="Equipment damage">Equipment damage</option>
@@ -734,13 +734,13 @@ export default function LiveRentalsMap() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-1">Note</label>
+                      <label className="block text-sm font-medium text-muted-foreground mb-1">Note</label>
                       <textarea
                         value={flagNote}
                         onChange={(e) => setFlagNote(e.target.value)}
                         placeholder="Additional details..."
                         rows={3}
-                        className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+                        className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                       />
                     </div>
                     <Button 
@@ -776,13 +776,13 @@ export default function LiveRentalsMap() {
                   </Button>
                 </div>
 
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-medium text-white mb-3">Extend Rental</h4>
+                <div className="bg-muted rounded-lg p-4">
+                  <h4 className="font-medium text-foreground mb-3">Extend Rental</h4>
                   <div className="flex gap-2">
                     <select
                       value={extendDuration}
                       onChange={(e) => setExtendDuration(Number(e.target.value))}
-                      className="flex-1 px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+                      className="flex-1 px-3 py-2 bg-gray-600 border border-gray-500 rounded text-foreground focus:outline-none focus:ring-2 focus:ring-awnash-primary"
                     >
                       <option value={1}>1 day</option>
                       <option value={2}>2 days</option>

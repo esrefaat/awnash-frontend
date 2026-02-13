@@ -77,11 +77,11 @@ const ModernDashboard: React.FC = () => {
   };
 
   const StatCard = ({ title, value, growth, icon, color }: any) => (
-    <div className={cn("bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all", isRTL ? 'text-right' : 'text-left')}>
+    <div className={cn("bg-card rounded-xl border border-border p-6 shadow-lg hover:shadow-xl transition-all", isRTL ? 'text-right' : 'text-left')}>
       <div className="flex items-center justify-between">
         <div className={isRTL ? 'order-2' : 'order-1'}>
-          <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
-          <p className="text-3xl font-bold text-white mb-2">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
+          <p className="text-3xl font-bold text-foreground mb-2">{value}</p>
           <div className="flex items-center">
             <span className={cn("text-sm font-medium", growth >= 0 ? 'text-green-400' : 'text-red-400')}>
               {growth >= 0 ? '+' : ''}{growth}%
@@ -92,17 +92,17 @@ const ModernDashboard: React.FC = () => {
           </div>
         </div>
         <div className={cn("flex h-16 w-16 items-center justify-center rounded-xl", color, isRTL ? 'order-1' : 'order-2')}>
-          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-foreground" />
         </div>
       </div>
     </div>
   );
 
   const WorkflowCard = ({ title, description, status, type, icon }: any) => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+    <div className="bg-card rounded-xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
       <div className="flex items-center justify-between mb-4">
         <div className={cn("flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600", isRTL ? 'order-2' : 'order-1')}>
-          <FontAwesomeIcon icon={icon} className="h-6 w-6 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-6 w-6 text-foreground" />
         </div>
         <div className={cn(isRTL ? 'order-1' : 'order-2')}>
           <span className={cn(
@@ -115,8 +115,8 @@ const ModernDashboard: React.FC = () => {
           </span>
         </div>
       </div>
-      <h3 className={cn("text-lg font-bold text-white mb-2", isRTL ? 'text-right' : 'text-left')}>{title}</h3>
-      <p className={cn("text-gray-400", isRTL ? 'text-right' : 'text-left')}>{description}</p>
+      <h3 className={cn("text-lg font-bold text-foreground mb-2", isRTL ? 'text-right' : 'text-left')}>{title}</h3>
+      <p className={cn("text-muted-foreground", isRTL ? 'text-right' : 'text-left')}>{description}</p>
     </div>
   );
 
@@ -158,19 +158,19 @@ const ModernDashboard: React.FC = () => {
   ];
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 space-y-8", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'لوحة التحكم الحديثة' : 'Modern Dashboard'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'نظرة شاملة على أداء المنصة والمقاييس الرئيسية' : 'Comprehensive overview of platform performance and key metrics'}
           </p>
         </div>
         <div className={cn("flex items-center space-x-3", isRTL && "space-x-reverse")}>
-          <Button variant="outline" className="text-gray-300 border-gray-600 hover:bg-gray-700">
+          <Button variant="outline" className="text-muted-foreground border-border hover:bg-muted">
             <FontAwesomeIcon icon={faFilter} className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'تصفية' : 'Filter'}
           </Button>
@@ -220,12 +220,12 @@ const ModernDashboard: React.FC = () => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Revenue Chart */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-lg font-semibold text-foreground">
               {isRTL ? 'اتجاهات الإيرادات' : 'Revenue Trends'}
             </h3>
-            <select className="text-sm border border-gray-600 bg-gray-700 text-white rounded-lg px-3 py-1">
+            <select className="text-sm border border-border bg-muted text-foreground rounded-lg px-3 py-1">
               <option>{isRTL ? 'آخر 6 أشهر' : 'Last 6 months'}</option>
               <option>{isRTL ? 'السنة الماضية' : 'Last year'}</option>
             </select>
@@ -267,8 +267,8 @@ const ModernDashboard: React.FC = () => {
         </div>
 
         {/* Equipment Categories */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'فئات المعدات' : 'Equipment Categories'}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -304,8 +304,8 @@ const ModernDashboard: React.FC = () => {
                   className={cn("w-3 h-3 rounded-full", isRTL ? "ml-2" : "mr-2")}
                   style={{ backgroundColor: item.color }}
                 ></div>
-                <span className="text-sm text-gray-400">{item.name}</span>
-                <span className={cn("text-sm font-medium text-white", isRTL ? "mr-auto" : "ml-auto")}>{item.value}%</span>
+                <span className="text-sm text-muted-foreground">{item.name}</span>
+                <span className={cn("text-sm font-medium text-foreground", isRTL ? "mr-auto" : "ml-auto")}>{item.value}%</span>
               </div>
             ))}
           </div>
@@ -313,8 +313,8 @@ const ModernDashboard: React.FC = () => {
       </div>
 
       {/* User Growth Chart */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-        <h3 className="text-lg font-semibold text-white mb-6">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-foreground mb-6">
           {isRTL ? 'نمو المستخدمين' : 'User Growth'}
         </h3>
         <ResponsiveContainer width="100%" height={200}>
@@ -349,7 +349,7 @@ const ModernDashboard: React.FC = () => {
 
       {/* Workflow Cards */}
       <div>
-        <h2 className="text-2xl font-bold text-white mb-6">
+        <h2 className="text-2xl font-bold text-foreground mb-6">
           {isRTL ? 'سير العمل الإداري' : 'Management Workflows'}
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

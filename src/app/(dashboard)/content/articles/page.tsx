@@ -312,15 +312,14 @@ const ArticlesManagement: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               {isRTL ? 'إدارة المقالات' : 'Articles Management'}
             </h1>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               {isRTL ? 'إنشاء وتحرير ونشر المقالات المتعلقة بصناعة تأجير المعدات' : 'Create, edit, and publish articles related to equipment rental industry'}
             </p>
           </div>
@@ -334,54 +333,54 @@ const ArticlesManagement: React.FC = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-          <Card className="bg-gray-800 border-gray-700">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <Card className="bg-card border-border">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-white">{statsData.total}</div>
-              <div className="text-sm text-gray-400">{isRTL ? 'إجمالي المقالات' : 'Total Articles'}</div>
+              <div className="text-2xl font-bold text-foreground">{statsData.total}</div>
+              <div className="text-sm text-muted-foreground">{isRTL ? 'إجمالي المقالات' : 'Total Articles'}</div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-green-400">{statsData.published}</div>
-              <div className="text-sm text-gray-400">{isRTL ? 'منشورة' : 'Published'}</div>
+              <div className="text-sm text-muted-foreground">{isRTL ? 'منشورة' : 'Published'}</div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-gray-400">{statsData.drafts}</div>
-              <div className="text-sm text-gray-400">{isRTL ? 'مسودات' : 'Drafts'}</div>
+              <div className="text-2xl font-bold text-muted-foreground">{statsData.drafts}</div>
+              <div className="text-sm text-muted-foreground">{isRTL ? 'مسودات' : 'Drafts'}</div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-yellow-400">{statsData.scheduled}</div>
-              <div className="text-sm text-gray-400">{isRTL ? 'مجدولة' : 'Scheduled'}</div>
+              <div className="text-sm text-muted-foreground">{isRTL ? 'مجدولة' : 'Scheduled'}</div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-blue-400">{statsData.totalViews.toLocaleString()}</div>
-              <div className="text-sm text-gray-400">{isRTL ? 'إجمالي المشاهدات' : 'Total Views'}</div>
+              <div className="text-sm text-muted-foreground">{isRTL ? 'إجمالي المشاهدات' : 'Total Views'}</div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-purple-400">{statsData.totalShares.toLocaleString()}</div>
-              <div className="text-sm text-gray-400">{isRTL ? 'إجمالي المشاركات' : 'Total Shares'}</div>
+              <div className="text-sm text-muted-foreground">{isRTL ? 'إجمالي المشاركات' : 'Total Shares'}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Filters */}
-        <Card className="mb-6 bg-gray-800 border-gray-700">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               {/* Search */}
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn("absolute top-2.5 h-4 w-4 text-gray-400", isRTL ? "right-3" : "left-3")} 
+                  className={cn("absolute top-2.5 h-4 w-4 text-muted-foreground", isRTL ? "right-3" : "left-3")} 
                 />
                 <input
                   type="text"
@@ -389,7 +388,7 @@ const ArticlesManagement: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn(
-                    "w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400 rounded-md py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
+                    "w-full bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-md py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500",
                     isRTL ? "pr-10 pl-3" : "pl-10 pr-3"
                   )}
                 />
@@ -399,7 +398,7 @@ const ArticlesManagement: React.FC = () => {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="published">{isRTL ? 'منشورة' : 'Published'}</option>
@@ -411,7 +410,7 @@ const ArticlesManagement: React.FC = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع الفئات' : 'All Categories'}</option>
                 {categories.map(category => (
@@ -423,7 +422,7 @@ const ArticlesManagement: React.FC = () => {
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع اللغات' : 'All Languages'}</option>
                 <option value="en">English</option>
@@ -436,7 +435,7 @@ const ArticlesManagement: React.FC = () => {
               <select
                 value={selectedAuthor}
                 onChange={(e) => setSelectedAuthor(e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع المؤلفين' : 'All Authors'}</option>
                 {authors.map(author => (
@@ -449,23 +448,23 @@ const ArticlesManagement: React.FC = () => {
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <input
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             {/* Sort Options */}
             <div className="flex items-center gap-4 mt-4">
-              <label className="text-sm text-gray-300">{isRTL ? 'ترتيب بواسطة:' : 'Sort by:'}</label>
+              <label className="text-sm text-muted-foreground">{isRTL ? 'ترتيب بواسطة:' : 'Sort by:'}</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-gray-700 border-gray-600 text-white rounded-md px-3 py-1 text-sm"
+                className="bg-muted border-border text-foreground rounded-md px-3 py-1 text-sm"
               >
                 <option value="publishDate">{isRTL ? 'تاريخ النشر' : 'Publish Date'}</option>
                 <option value="viewCount">{isRTL ? 'عدد المشاهدات' : 'View Count'}</option>
@@ -482,41 +481,41 @@ const ArticlesManagement: React.FC = () => {
         </Card>
 
         {/* Articles Table */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-card border-border">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-700">
+                <thead className="bg-muted">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'المقال' : 'Article'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'المؤلف' : 'Author'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الحالة' : 'Status'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الفئات' : 'Categories'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'اللغة' : 'Language'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'تاريخ النشر' : 'Publish Date'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الإحصائيات' : 'Stats'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الإجراءات' : 'Actions'}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-gray-800 divide-y divide-gray-700">
+                <tbody className="bg-card divide-y divide-border">
                   {sortedArticles.map((article) => (
-                    <tr key={article.id} className="hover:bg-gray-700 transition-colors">
+                    <tr key={article.id} className="hover:bg-muted transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-12 bg-gray-600 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -527,17 +526,17 @@ const ArticlesManagement: React.FC = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <FontAwesomeIcon icon={faFileAlt} className="h-6 w-6 text-gray-400" />
+                              <FontAwesomeIcon icon={faFileAlt} className="h-6 w-6 text-muted-foreground" />
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="font-medium text-white text-sm mb-1 line-clamp-2">
+                            <div className="font-medium text-foreground text-sm mb-1 line-clamp-2">
                               {article.title}
                               {article.featured && (
                                 <FontAwesomeIcon icon={faBell} className={`h-3 w-3 text-yellow-400 ${isRTL ? 'ml-2' : 'mr-2'}`} />  
                               )}
                             </div>
-                            <div className="text-xs text-gray-400 line-clamp-2">
+                            <div className="text-xs text-muted-foreground line-clamp-2">
                               {article.excerpt}
                             </div>
                           </div>
@@ -545,8 +544,8 @@ const ArticlesManagement: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <FontAwesomeIcon icon={faUser} className={`h-4 w-4 text-gray-400 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                          <span className="text-sm text-gray-300">{article.author}</span>
+                          <FontAwesomeIcon icon={faUser} className={`h-4 w-4 text-muted-foreground ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                          <span className="text-sm text-muted-foreground">{article.author}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -565,7 +564,7 @@ const ArticlesManagement: React.FC = () => {
                             </Badge>
                           ))}
                           {article.category.length > 2 && (
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-muted-foreground">
                               +{article.category.length - 2}
                             </span>
                           )}
@@ -573,16 +572,16 @@ const ArticlesManagement: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <FontAwesomeIcon icon={faLanguage} className={`h-4 w-4 text-gray-400 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                          <span className="text-sm text-gray-300">
+                          <FontAwesomeIcon icon={faLanguage} className={`h-4 w-4 text-muted-foreground ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                          <span className="text-sm text-muted-foreground">
                             {article.language === 'en' ? 'English' : 'العربية'}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <FontAwesomeIcon icon={faCalendarAlt} className={`h-4 w-4 text-gray-400 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                          <span className="text-sm text-gray-300">{article.publishDate}</span>
+                          <FontAwesomeIcon icon={faCalendarAlt} className={`h-4 w-4 text-muted-foreground ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                          <span className="text-sm text-muted-foreground">{article.publishDate}</span>
                         </div>
                         {article.status === 'scheduled' && article.scheduledDate && (
                           <div className="text-xs text-yellow-400 mt-1">
@@ -591,9 +590,9 @@ const ArticlesManagement: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">
+                        <div className="text-sm text-muted-foreground">
                           <div>{article.viewCount.toLocaleString()} views</div>
-                          <div className="text-xs text-gray-400">{article.shareCount} shares</div>
+                          <div className="text-xs text-muted-foreground">{article.shareCount} shares</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -602,7 +601,7 @@ const ArticlesManagement: React.FC = () => {
                             onClick={() => window.open(`/articles/${article.slug}`, '_blank')}
                             variant="outline"
                             size="sm"
-                            className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-white rounded-2xl"
+                            className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-foreground rounded-2xl"
                             title={isRTL ? 'معاينة المقال' : 'Preview Article'}
                           >
                             <FontAwesomeIcon icon={faEye} className="h-3 w-3" />
@@ -611,7 +610,7 @@ const ArticlesManagement: React.FC = () => {
                             onClick={() => router.push(`/content/articles/${article.id}/edit`)}
                             variant="outline"
                             size="sm"
-                            className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-white rounded-2xl"
+                            className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-foreground rounded-2xl"
                             title={isRTL ? 'تحرير المقال' : 'Edit Article'}
                           >
                             <FontAwesomeIcon icon={faEdit} className="h-3 w-3" />
@@ -620,7 +619,7 @@ const ArticlesManagement: React.FC = () => {
                             onClick={() => handleDuplicateArticle(article.id)}
                             variant="outline"
                             size="sm"
-                            className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-white rounded-2xl"
+                            className="border-awnash-accent text-awnash-accent hover:bg-awnash-accent hover:text-foreground rounded-2xl"
                           >
                             <FontAwesomeIcon icon={faFileAlt} className="h-3 w-3" />
                           </Button>
@@ -629,25 +628,25 @@ const ArticlesManagement: React.FC = () => {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white rounded-2xl"
+                                className="border-red-600 text-red-400 hover:bg-red-600 hover:text-foreground rounded-2xl"
                               >
                                 <FontAwesomeIcon icon={faTrash} className="h-3 w-3" />
                               </Button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent className="bg-gray-800 border-gray-700 text-white">
+                            <AlertDialogContent className="bg-card border-border text-foreground">
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Delete Article</AlertDialogTitle>
-                                <AlertDialogDescription className="text-gray-300">
+                                <AlertDialogDescription className="text-muted-foreground">
                                   Are you sure you want to delete "{article.title}"? This action cannot be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600">
+                                <AlertDialogCancel className="bg-muted border-border text-muted-foreground hover:bg-muted">
                                   Cancel
                                 </AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDeleteArticle(article.id)}
-                                  className="bg-red-600 hover:bg-red-700 text-white"
+                                  className="bg-red-600 hover:bg-red-700 text-foreground"
                                 >
                                   Delete
                                 </AlertDialogAction>
@@ -666,13 +665,13 @@ const ArticlesManagement: React.FC = () => {
 
         {/* Empty State */}
         {sortedArticles.length === 0 && (
-          <Card className="bg-gray-800 border-gray-700 mt-6">
+          <Card className="bg-card border-border">
             <CardContent className="p-12 text-center">
               <FontAwesomeIcon icon={faFileAlt} className="h-16 w-16 text-gray-600 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+              <h3 className="text-lg font-semibold text-muted-foreground mb-2">
                 {isRTL ? 'لا توجد مقالات' : 'No Articles Found'}
               </h3>
-              <p className="text-gray-400 mb-4">
+              <p className="text-muted-foreground mb-4">
                 {isRTL ? 'لم يتم العثور على مقالات تطابق المرشحات المحددة' : 'No articles found matching the selected filters'}
               </p>
               <Button
@@ -685,7 +684,6 @@ const ArticlesManagement: React.FC = () => {
             </CardContent>
           </Card>
         )}
-      </div>
     </div>
   );
 };

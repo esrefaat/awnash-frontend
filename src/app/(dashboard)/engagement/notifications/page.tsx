@@ -163,7 +163,7 @@ const NotificationsCenter: React.FC = () => {
       case 'high': return 'text-orange-400';
       case 'medium': return 'text-yellow-400';
       case 'low': return 'text-blue-400';
-      default: return 'text-gray-400';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -227,15 +227,15 @@ const NotificationsCenter: React.FC = () => {
   };
 
   const StatCard = ({ title, value, subtitle, icon, bgColor, textColor }: any) => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+    <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
           <p className={`text-3xl font-bold mb-2 ${textColor}`}>{value}</p>
-          {subtitle && <p className="text-sm text-gray-400">{subtitle}</p>}
+          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         </div>
         <div className={`flex h-16 w-16 items-center justify-center rounded-xl ${bgColor}`}>
-          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-foreground" />
         </div>
       </div>
     </div>
@@ -246,14 +246,14 @@ const NotificationsCenter: React.FC = () => {
       {filteredNotifications.map((notification) => (
         <div 
           key={notification.id} 
-          className={`bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer ${
+          className={`bg-card rounded-xl border border-border p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer ${
             notification.status === 'unread' ? 'border-blue-500' : ''
           }`}
           onClick={() => setSelectedNotification(notification)}
         >
           <div className="flex items-start justify-between">
             <div className={cn("flex items-start space-x-4 flex-1", isRTL && "space-x-reverse")}>
-              <div className={`p-3 rounded-lg bg-gray-700`}>
+              <div className={`p-3 rounded-lg bg-muted`}>
                 <FontAwesomeIcon 
                   icon={getNotificationIcon(notification.type)} 
                   className={`h-5 w-5 ${getNotificationColor(notification.priority)}`}
@@ -262,7 +262,7 @@ const NotificationsCenter: React.FC = () => {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className={`text-lg font-semibold ${notification.status === 'unread' ? 'text-white' : 'text-gray-300'}`}>
+                  <h3 className={`text-lg font-semibold ${notification.status === 'unread' ? 'text-foreground' : 'text-muted-foreground'}`}>
                     {notification.title}
                   </h3>
                   <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
@@ -275,7 +275,7 @@ const NotificationsCenter: React.FC = () => {
                   </div>
                 </div>
                 
-                <p className="text-gray-400 mb-3 line-clamp-2">
+                <p className="text-muted-foreground mb-3 line-clamp-2">
                   {notification.message}
                 </p>
                 
@@ -296,7 +296,7 @@ const NotificationsCenter: React.FC = () => {
                         e.stopPropagation();
                         markAsRead(notification.id);
                       }}
-                      className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
+                      className="p-2 text-muted-foreground hover:text-blue-400 transition-colors"
                       title={isRTL ? 'تحديد كمقروء' : 'Mark as read'}
                     >
                       <FontAwesomeIcon icon={faCheck} />
@@ -306,7 +306,7 @@ const NotificationsCenter: React.FC = () => {
                         e.stopPropagation();
                         markAsArchived(notification.id);
                       }}
-                      className="p-2 text-gray-400 hover:text-yellow-400 transition-colors"
+                      className="p-2 text-muted-foreground hover:text-yellow-400 transition-colors"
                       title={isRTL ? 'أرشفة' : 'Archive'}
                     >
                       <FontAwesomeIcon icon={faArchive} />
@@ -323,15 +323,15 @@ const NotificationsCenter: React.FC = () => {
 
   const renderSettingsTab = () => (
     <div className="space-y-6">
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-        <h3 className="text-xl font-bold text-white mb-6">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-foreground mb-6">
           {isRTL ? 'إعدادات الإشعارات' : 'Notification Preferences'}
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Notification Types */}
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-300">
+            <h4 className="font-medium text-muted-foreground">
               {isRTL ? 'أنواع الإشعارات' : 'Notification Types'}
             </h4>
             
@@ -342,7 +342,7 @@ const NotificationsCenter: React.FC = () => {
               { key: 'systemAlerts', label: isRTL ? 'تنبيهات النظام' : 'System Alerts' }
             ].map((setting) => (
               <div key={setting.key} className="flex items-center justify-between">
-                <span className="text-gray-300">{setting.label}</span>
+                <span className="text-muted-foreground">{setting.label}</span>
                 <button
                   onClick={() => setNotificationSettings({
                     ...notificationSettings,
@@ -350,8 +350,8 @@ const NotificationsCenter: React.FC = () => {
                   })}
                   className={`p-2 rounded-full transition-colors ${
                     notificationSettings[setting.key as keyof NotificationSettings]
-                      ? 'bg-yellow-600 text-white'
-                      : 'bg-gray-600 text-gray-300'
+                      ? 'bg-yellow-600 text-foreground'
+                      : 'bg-gray-600 text-muted-foreground'
                   }`}
                 >
                   <FontAwesomeIcon 
@@ -364,7 +364,7 @@ const NotificationsCenter: React.FC = () => {
 
           {/* Delivery Methods */}
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-300">
+            <h4 className="font-medium text-muted-foreground">
               {isRTL ? 'طرق التوصيل' : 'Delivery Methods'}
             </h4>
             
@@ -375,8 +375,8 @@ const NotificationsCenter: React.FC = () => {
             ].map((setting) => (
               <div key={setting.key} className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <FontAwesomeIcon icon={setting.icon} className={`h-4 w-4 text-gray-400 ${isRTL ? 'ml-3' : 'mr-3'}`} />  
-                  <span className="text-gray-300">{setting.label}</span>
+                  <FontAwesomeIcon icon={setting.icon} className={`h-4 w-4 text-muted-foreground ${isRTL ? 'ml-3' : 'mr-3'}`} />  
+                  <span className="text-muted-foreground">{setting.label}</span>
                 </div>
                 <button
                   onClick={() => setNotificationSettings({
@@ -385,8 +385,8 @@ const NotificationsCenter: React.FC = () => {
                   })}
                   className={`p-2 rounded-full transition-colors ${
                     notificationSettings[setting.key as keyof NotificationSettings]
-                      ? 'bg-yellow-600 text-white'
-                      : 'bg-gray-600 text-gray-300'
+                      ? 'bg-yellow-600 text-foreground'
+                      : 'bg-gray-600 text-muted-foreground'
                   }`}
                 >
                   <FontAwesomeIcon 
@@ -398,7 +398,7 @@ const NotificationsCenter: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-gray-700">
+        <div className="mt-6 pt-6 border-t border-border">
           <Button variant="default">
             {isRTL ? 'حفظ الإعدادات' : 'Save Settings'}
           </Button>
@@ -408,14 +408,14 @@ const NotificationsCenter: React.FC = () => {
   );
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'مركز الإشعارات' : 'Notifications Center'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'عرض وإدارة جميع تنبيهات النظام والأنشطة التشغيلية' : 'View and manage all system alerts and operational notifications'}
           </p>
         </div>
@@ -452,13 +452,13 @@ const NotificationsCenter: React.FC = () => {
             subtitle={isRTL ? "إشعارات مؤرشفة" : "Archived notifications"}
             icon={faArchive}
             bgColor="bg-gray-600"
-            textColor="text-gray-400"
+            textColor="text-muted-foreground"
           />
         </div>
 
         {/* Tabs */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
-          <div className="border-b border-gray-700">
+        <div className="bg-card rounded-xl border border-border shadow-lg">
+          <div className="border-b border-border">
             <nav className={cn("-mb-px flex space-x-4 px-6 overflow-x-auto", isRTL && "space-x-reverse")}>
               {[
                 { id: 'all', label: isRTL ? 'الكل' : 'All', icon: faBell },
@@ -475,13 +475,13 @@ const NotificationsCenter: React.FC = () => {
                   className={`py-4 px-3 border-b-2 font-medium text-sm flex items-center whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'border-blue-700 text-blue-400'
-                      : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                      : 'border-transparent text-muted-foreground hover:text-muted-foreground hover:border-border'
                   }`}
                 >
                   <FontAwesomeIcon icon={tab.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                   {tab.label}
                   {tab.id !== 'settings' && (
-                    <span className={`px-2 py-1 bg-gray-600 text-gray-200 rounded-full text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>  
+                    <span className={`px-2 py-1 bg-gray-600 text-foreground rounded-full text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>  
                       {getTabCount(tab.id)}
                     </span>
                   )}
@@ -494,34 +494,34 @@ const NotificationsCenter: React.FC = () => {
             {activeTab === 'settings' ? renderSettingsTab() : (
               <>
                 {/* Filters */}
-                <div className="bg-gray-700 rounded-xl p-6 mb-8">
+                <div className="bg-muted rounded-xl p-6 mb-8">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Search */}
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         {isRTL ? 'البحث' : 'Search'}
                       </label>
                       <div className="relative">
-                        <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                         <input
                           type="text"
                           placeholder={isRTL ? 'البحث في الإشعارات...' : 'Search notifications...'}
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full pl-10 pr-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                          className="w-full pl-10 pr-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
 
                     {/* Status Filter */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         {isRTL ? 'الحالة' : 'Status'}
                       </label>
                       <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                         <option value="unread">{isRTL ? 'غير مقروءة' : 'Unread'}</option>
@@ -542,15 +542,15 @@ const NotificationsCenter: React.FC = () => {
         {/* Notification Detail Modal */}
         {selectedNotification && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               {/* Modal Header */}
-              <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'تفاصيل الإشعار' : 'Notification Details'}
                 </h2>
                 <button
                   onClick={() => setSelectedNotification(null)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
                 </button>
@@ -559,7 +559,7 @@ const NotificationsCenter: React.FC = () => {
               <div className="p-6 space-y-6">
                 {/* Notification Header */}
                 <div className={cn("flex items-start space-x-4", isRTL && "space-x-reverse")}>
-                  <div className={`p-3 rounded-lg bg-gray-700`}>
+                  <div className={`p-3 rounded-lg bg-muted`}>
                     <FontAwesomeIcon 
                       icon={getNotificationIcon(selectedNotification.type)} 
                       className={`h-6 w-6 ${getNotificationColor(selectedNotification.priority)}`}
@@ -568,7 +568,7 @@ const NotificationsCenter: React.FC = () => {
                   
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xl font-semibold text-white">
+                      <h3 className="text-xl font-semibold text-foreground">
                         {selectedNotification.title}
                       </h3>
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityBadgeColor(selectedNotification.priority)}`}>
@@ -576,52 +576,52 @@ const NotificationsCenter: React.FC = () => {
                       </span>
                     </div>
                     
-                    <p className="text-gray-300 text-lg">
+                    <p className="text-muted-foreground text-lg">
                       {selectedNotification.message}
                     </p>
                   </div>
                 </div>
 
                 {/* Metadata */}
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-medium text-white mb-3">
+                <div className="bg-muted rounded-lg p-4">
+                  <h4 className="font-medium text-foreground mb-3">
                     {isRTL ? 'المعلومات' : 'Information'}
                   </h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-400">{isRTL ? 'الوقت:' : 'Time:'}</span>
-                      <span className={`text-white ${isRTL ? 'mr-2' : 'ml-2'}`}>{new Date(selectedNotification.timestamp).toLocaleString()}</span>
+                      <span className="text-muted-foreground">{isRTL ? 'الوقت:' : 'Time:'}</span>
+                      <span className={`text-foreground ${isRTL ? 'mr-2' : 'ml-2'}`}>{new Date(selectedNotification.timestamp).toLocaleString()}</span>
                     </div>
                     {selectedNotification.triggeredBy && (
                       <div>
-                        <span className="text-gray-400">{isRTL ? 'بواسطة:' : 'Triggered by:'}</span>
-                        <span className={`text-white ${isRTL ? 'mr-2' : 'ml-2'}`}>{selectedNotification.triggeredBy}</span>
+                        <span className="text-muted-foreground">{isRTL ? 'بواسطة:' : 'Triggered by:'}</span>
+                        <span className={`text-foreground ${isRTL ? 'mr-2' : 'ml-2'}`}>{selectedNotification.triggeredBy}</span>
                       </div>
                     )}
                     {selectedNotification.linkedEntityId && (
                       <div>
-                        <span className="text-gray-400">{isRTL ? 'مرتبط بـ:' : 'Linked to:'}</span>
+                        <span className="text-muted-foreground">{isRTL ? 'مرتبط بـ:' : 'Linked to:'}</span>
                         <span className={`text-blue-400 ${isRTL ? 'mr-2' : 'ml-2'}`}>{selectedNotification.linkedEntityId}</span>
                       </div>
                     )}
                     <div>
-                      <span className="text-gray-400">{isRTL ? 'النوع:' : 'Type:'}</span>
-                      <span className={`text-white ${isRTL ? 'mr-2' : 'ml-2'} capitalize`}>{selectedNotification.type.replace('_', ' ')}</span>
+                      <span className="text-muted-foreground">{isRTL ? 'النوع:' : 'Type:'}</span>
+                      <span className={`text-foreground ${isRTL ? 'mr-2' : 'ml-2'} capitalize`}>{selectedNotification.type.replace('_', ' ')}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Additional Metadata */}
                 {selectedNotification.metadata && (
-                  <div className="bg-gray-700 rounded-lg p-4">
-                    <h4 className="font-medium text-white mb-3">
+                  <div className="bg-muted rounded-lg p-4">
+                    <h4 className="font-medium text-foreground mb-3">
                       {isRTL ? 'تفاصيل إضافية' : 'Additional Details'}
                     </h4>
                     <div className="space-y-2">
                       {Object.entries(selectedNotification.metadata).map(([key, value]) => (
                         <div key={key} className="flex justify-between text-sm">
-                          <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                          <span className="text-white">{String(value)}</span>
+                          <span className="text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                          <span className="text-foreground">{String(value)}</span>
                         </div>
                       ))}
                     </div>
@@ -629,7 +629,7 @@ const NotificationsCenter: React.FC = () => {
                 )}
 
                 {/* Action Buttons */}
-                <div className={cn("flex space-x-3 pt-4 border-t border-gray-700", isRTL && "space-x-reverse")}>
+                <div className={cn("flex space-x-3 pt-4 border-t border-border", isRTL && "space-x-reverse")}>
                   {selectedNotification.linkedEntityId && (
                     <Button variant="default">
                       <FontAwesomeIcon icon={faExternalLink} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  

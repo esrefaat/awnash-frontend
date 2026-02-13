@@ -190,26 +190,26 @@ const CampaignCreator: React.FC = () => {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'اسم الحملة' : 'Campaign Name'}
           </label>
           <input
             type="text"
             value={campaign.name}
             onChange={(e) => updateCampaign({ name: e.target.value })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
             placeholder={isRTL ? 'أدخل اسم الحملة...' : 'Enter campaign name...'}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'نوع الحملة' : 'Campaign Type'}
           </label>
           <select
             value={campaign.type}
             onChange={(e) => updateCampaign({ type: e.target.value as 'manual' | 'triggered' })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
           >
             <option value="manual">{isRTL ? 'يدوي' : 'Manual'}</option>
             <option value="triggered">{isRTL ? 'مُشغل تلقائياً' : 'Triggered'}</option>
@@ -218,7 +218,7 @@ const CampaignCreator: React.FC = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-3">
+        <label className="block text-sm font-medium text-muted-foreground mb-3">
           {isRTL ? 'قنوات الإرسال' : 'Channels'}
         </label>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -227,7 +227,7 @@ const CampaignCreator: React.FC = () => {
             { key: 'email', icon: faEnvelope, label: isRTL ? 'البريد الإلكتروني' : 'Email' },
             { key: 'sms', icon: faSms, label: isRTL ? 'الرسائل النصية' : 'SMS' }
           ].map((channel) => (
-            <label key={channel.key} className="flex items-center p-4 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors">
+            <label key={channel.key} className="flex items-center p-4 bg-muted rounded-lg cursor-pointer hover:bg-muted transition-colors">
               <input
                 type="checkbox"
                 checked={campaign.channels.includes(channel.key as any)}
@@ -245,11 +245,11 @@ const CampaignCreator: React.FC = () => {
                 campaign.channels.includes(channel.key as any) ? 'bg-blue-600 border-blue-600' : 'border-gray-400'
               )}>
                 {campaign.channels.includes(channel.key as any) && (
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-white text-xs" />
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-foreground text-xs" />
                 )}
               </div>
               <FontAwesomeIcon icon={channel.icon} className={cn("text-blue-400", isRTL ? "ml-3" : "mr-3")} />
-              <span className="text-white">{channel.label}</span>
+              <span className="text-foreground">{channel.label}</span>
             </label>
           ))}
         </div>
@@ -257,7 +257,7 @@ const CampaignCreator: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'وقت البدء' : 'Start Time'}
           </label>
           <input
@@ -265,19 +265,19 @@ const CampaignCreator: React.FC = () => {
             value={campaign.startTime}
             onChange={(e) => updateCampaign({ startTime: e.target.value })}
             disabled={campaign.runImmediately}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             {isRTL ? 'وقت الانتهاء' : 'Expiry Time'}
           </label>
           <input
             type="datetime-local"
             value={campaign.expiryTime}
             onChange={(e) => updateCampaign({ expiryTime: e.target.value })}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -287,12 +287,12 @@ const CampaignCreator: React.FC = () => {
           onClick={() => updateCampaign({ runImmediately: !campaign.runImmediately })}
           className={cn("p-2 rounded-full transition-colors", 
             isRTL ? "ml-3" : "mr-3",
-            campaign.runImmediately ? 'bg-yellow-600 text-white' : 'bg-gray-600 text-gray-300'
+            campaign.runImmediately ? 'bg-yellow-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
           )}
         >
           <FontAwesomeIcon icon={campaign.runImmediately ? faToggleOn : faToggleOff} />
         </button>
-        <span className="text-gray-300">
+        <span className="text-muted-foreground">
           {isRTL ? 'تشغيل فوري' : 'Run Immediately'}
         </span>
       </div>
@@ -302,14 +302,14 @@ const CampaignCreator: React.FC = () => {
   const renderMessageBuilder = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-foreground">
           {isRTL ? 'منشئ الرسائل' : 'Message Builder'}
         </h3>
         <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
           <button
             onClick={() => setCurrentLanguage('en')}
             className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-              currentLanguage === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-600 text-gray-300'
+              currentLanguage === 'en' ? 'bg-blue-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
             }`}
           >
             EN
@@ -317,7 +317,7 @@ const CampaignCreator: React.FC = () => {
           <button
             onClick={() => setCurrentLanguage('ar')}
             className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-              currentLanguage === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-600 text-gray-300'
+              currentLanguage === 'ar' ? 'bg-blue-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
             }`}
           >
             AR
@@ -326,33 +326,33 @@ const CampaignCreator: React.FC = () => {
       </div>
 
       {campaign.channels.includes('push') && (
-        <div className="bg-gray-700 rounded-lg p-6">
-          <h4 className="text-md font-medium text-white mb-4 flex items-center">
+        <div className="bg-muted rounded-lg p-6">
+          <h4 className="text-md font-medium text-foreground mb-4 flex items-center">
             <FontAwesomeIcon icon={faBell} className={cn("text-purple-400", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'الإشعارات الفورية' : 'Push Notifications'}
           </h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'العنوان' : 'Title'}
               </label>
               <input
                 type="text"
                 value={campaign.messages[currentLanguage].push?.title || ''}
                 onChange={(e) => updateMessage('push', 'title', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 placeholder={isRTL ? 'عنوان الإشعار...' : 'Notification title...'}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'النص' : 'Body'}
               </label>
               <textarea
                 rows={3}
                 value={campaign.messages[currentLanguage].push?.body || ''}
                 onChange={(e) => updateMessage('push', 'body', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 placeholder={isRTL ? 'نص الإشعار...' : 'Notification body...'}
               />
             </div>
@@ -361,33 +361,33 @@ const CampaignCreator: React.FC = () => {
       )}
 
       {campaign.channels.includes('email') && (
-        <div className="bg-gray-700 rounded-lg p-6">
-          <h4 className="text-md font-medium text-white mb-4 flex items-center">
+        <div className="bg-muted rounded-lg p-6">
+          <h4 className="text-md font-medium text-foreground mb-4 flex items-center">
             <FontAwesomeIcon icon={faEnvelope} className={cn("text-blue-400", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'البريد الإلكتروني' : 'Email'}
           </h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الموضوع' : 'Subject'}
               </label>
               <input
                 type="text"
                 value={campaign.messages[currentLanguage].email?.subject || ''}
                 onChange={(e) => updateMessage('email', 'subject', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 placeholder={isRTL ? 'موضوع الرسالة...' : 'Email subject...'}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'نص الرسالة' : 'Body'}
               </label>
               <textarea
                 rows={6}
                 value={campaign.messages[currentLanguage].email?.body || ''}
                 onChange={(e) => updateMessage('email', 'body', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 placeholder={isRTL ? 'نص الرسالة الإلكترونية...' : 'Email body...'}
               />
             </div>
@@ -396,24 +396,24 @@ const CampaignCreator: React.FC = () => {
       )}
 
       {campaign.channels.includes('sms') && (
-        <div className="bg-gray-700 rounded-lg p-6">
-          <h4 className="text-md font-medium text-white mb-4 flex items-center">
+        <div className="bg-muted rounded-lg p-6">
+          <h4 className="text-md font-medium text-foreground mb-4 flex items-center">
             <FontAwesomeIcon icon={faSms} className={cn("text-green-400", isRTL ? "ml-2" : "mr-2")} />
             {isRTL ? 'الرسائل النصية' : 'SMS'}
           </h4>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               {isRTL ? 'النص' : 'Message'}
             </label>
             <textarea
               rows={3}
               value={campaign.messages[currentLanguage].sms?.body || ''}
               onChange={(e) => updateMessage('sms', 'body', e.target.value)}
-              className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               placeholder={isRTL ? 'نص الرسالة النصية...' : 'SMS message...'}
               maxLength={160}
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {campaign.messages[currentLanguage].sms?.body?.length || 0}/160 {isRTL ? 'حرف' : 'characters'}
             </p>
           </div>
@@ -439,10 +439,10 @@ const CampaignCreator: React.FC = () => {
   const renderTargetAudience = () => (
     <div className="space-y-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white mb-4">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           {isRTL ? 'استهداف الجمهور' : 'Audience Targeting'}
         </h3>
-        <p className="text-gray-400 text-sm mb-4">
+        <p className="text-muted-foreground text-sm mb-4">
           {isRTL ? 'استخدم منشئ الشرائح لتحديد الجمهور المستهدف بدقة' : 'Use the segment builder to precisely define your target audience'}
         </p>
       </div>
@@ -498,21 +498,21 @@ const CampaignCreator: React.FC = () => {
             }
           })}
           className={`p-2 rounded-full transition-colors ${isRTL ? 'ml-3' : 'mr-3'} ${  
-            campaign.incentive?.enabled ? 'bg-yellow-600 text-white' : 'bg-gray-600 text-gray-300'
+            campaign.incentive?.enabled ? 'bg-yellow-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
           }`}
         >
           <FontAwesomeIcon icon={campaign.incentive?.enabled ? faToggleOn : faToggleOff} />
         </button>
-        <span className="text-gray-300">
+        <span className="text-muted-foreground">
           {isRTL ? 'تضمين خصم' : 'Include Discount'}
         </span>
       </div>
 
       {campaign.incentive?.enabled && (
-        <div className="space-y-6 bg-gray-700 rounded-lg p-6">
+        <div className="space-y-6 bg-muted rounded-lg p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'نوع الخصم' : 'Discount Type'}
               </label>
               <select
@@ -523,7 +523,7 @@ const CampaignCreator: React.FC = () => {
                     type: e.target.value as 'percentage' | 'fixed'
                   }
                 })}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="percentage">{isRTL ? 'نسبة مئوية' : 'Percentage'}</option>
                 <option value="fixed">{isRTL ? 'مبلغ ثابت' : 'Fixed Amount'}</option>
@@ -531,7 +531,7 @@ const CampaignCreator: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'ينطبق على' : 'Applies To'}
               </label>
               <select
@@ -542,7 +542,7 @@ const CampaignCreator: React.FC = () => {
                     appliesTo: e.target.value as 'commission' | 'rental' | 'both'
                   }
                 })}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="rental">{isRTL ? 'رسوم الإيجار' : 'Rental Fee'}</option>
                 <option value="commission">{isRTL ? 'العمولة' : 'Commission'}</option>
@@ -553,7 +553,7 @@ const CampaignCreator: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'القيمة' : 'Value'}
               </label>
               <div className="relative">
@@ -566,20 +566,20 @@ const CampaignCreator: React.FC = () => {
                       value: parseFloat(e.target.value) || 0
                     }
                   })}
-                  className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                   placeholder="0"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                   <FontAwesomeIcon 
                     icon={campaign.incentive?.type === 'percentage' ? faPercent : faDollarSign} 
-                    className="text-gray-400" 
+                    className="text-muted-foreground" 
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'مدة الصلاحية (أيام)' : 'Validity (Days)'}
               </label>
               <input
@@ -591,7 +591,7 @@ const CampaignCreator: React.FC = () => {
                     validityDays: parseInt(e.target.value) || 30
                   }
                 })}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 placeholder="30"
               />
             </div>
@@ -609,14 +609,14 @@ const CampaignCreator: React.FC = () => {
   ];
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'منشئ الحملات' : 'Campaign Creator'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'إنشاء وإطلاق حملات تسويقية مستهدفة' : 'Create and launch targeted marketing campaigns'}
           </p>
         </div>
@@ -631,8 +631,8 @@ const CampaignCreator: React.FC = () => {
                   onClick={() => setActiveSection(section.key)}
                   className={`w-full flex items-center px-4 py-3 rounded-lg text-left transition-colors ${
                     activeSection === section.key
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                      ? 'bg-blue-600 text-foreground'
+                      : 'bg-card text-muted-foreground hover:bg-muted'
                   }`}
                 >
                   <FontAwesomeIcon icon={section.icon} className={cn(isRTL ? "ml-3" : "mr-3")} />
@@ -664,7 +664,7 @@ const CampaignCreator: React.FC = () => {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg p-6">
+            <div className="bg-card rounded-xl border border-border shadow-lg p-6">
               {activeSection === 'setup' && renderCampaignSetup()}
               {activeSection === 'messages' && renderMessageBuilder()}
               {activeSection === 'audience' && renderTargetAudience()}
@@ -676,14 +676,14 @@ const CampaignCreator: React.FC = () => {
         {/* Preview Modal */}
         {showPreview && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">
+            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'معاينة الحملة' : 'Campaign Preview'}
                 </h2>
                 <button
                   onClick={() => setShowPreview(false)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
                 </button>
@@ -691,31 +691,31 @@ const CampaignCreator: React.FC = () => {
 
               <div className="p-6 space-y-6">
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">{campaign.name || 'Untitled Campaign'}</h3>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{campaign.name || 'Untitled Campaign'}</h3>
                   <div className="flex flex-wrap gap-2">
                     {campaign.channels.map((channel) => (
-                      <span key={channel} className="px-2 py-1 bg-blue-600 text-white rounded text-sm">
+                      <span key={channel} className="px-2 py-1 bg-blue-600 text-foreground rounded text-sm">
                         {channel.charAt(0).toUpperCase() + channel.slice(1)}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="border-t border-gray-700 pt-4">
-                  <h4 className="font-medium text-gray-300 mb-2">
+                <div className="border-t border-border pt-4">
+                  <h4 className="font-medium text-muted-foreground mb-2">
                     {isRTL ? 'الجمهور المستهدف' : 'Target Audience'}
                   </h4>
-                  <p className="text-gray-400">
+                  <p className="text-muted-foreground">
                     {campaign.estimatedReach.toLocaleString()} {isRTL ? 'مستخدم' : 'users'}
                   </p>
                 </div>
 
                 {campaign.incentive?.enabled && (
-                  <div className="border-t border-gray-700 pt-4">
-                    <h4 className="font-medium text-gray-300 mb-2">
+                  <div className="border-t border-border pt-4">
+                    <h4 className="font-medium text-muted-foreground mb-2">
                       {isRTL ? 'الحافز' : 'Incentive'}
                     </h4>
-                    <p className="text-gray-400">
+                    <p className="text-muted-foreground">
                       {campaign.incentive.value}
                       {campaign.incentive.type === 'percentage' ? '%' : ' SAR'} 
                       {isRTL ? ' خصم' : ' discount'} 

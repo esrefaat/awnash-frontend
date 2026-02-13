@@ -222,13 +222,13 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
     const operators = getOperators(field?.type || 'select');
 
     return (
-      <div key={condition.id} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+      <div key={condition.id} className="bg-muted rounded-lg p-4 border border-border">
         {index > 0 && (
           <div className="flex items-center mb-4">
             <select
               value={condition.logic}
               onChange={(e) => updateCondition(condition.id, { logic: e.target.value as 'AND' | 'OR' })}
-              className="px-3 py-1 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-1 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
             >
               <option value="AND">AND</option>
               <option value="OR">OR</option>
@@ -239,7 +239,7 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           {/* Field Selection */}
           <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               {isRTL ? 'الحقل' : 'Field'}
             </label>
             <select
@@ -249,7 +249,7 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
                 operator: getOperators(filterFields.find(f => f.key === e.target.value)?.type || 'select')[0].key,
                 value: ''
               })}
-              className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
             >
               {filterFields.map(field => (
                 <option key={field.key} value={field.key}>
@@ -261,13 +261,13 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
 
           {/* Operator Selection */}
           <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               {isRTL ? 'المشغل' : 'Operator'}
             </label>
             <select
               value={condition.operator}
               onChange={(e) => updateCondition(condition.id, { operator: e.target.value, value: '' })}
-              className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
             >
               {operators.map(op => (
                 <option key={op.key} value={op.key}>
@@ -279,14 +279,14 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
 
           {/* Value Input */}
           <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               {isRTL ? 'القيمة' : 'Value'}
             </label>
             {field?.type === 'select' ? (
               <select
                 value={condition.value}
                 onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'اختر...' : 'Select...'}</option>
                 {field.options?.map(option => (
@@ -298,7 +298,7 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
                 type={condition.operator === 'in_last_days' ? 'number' : 'date'}
                 value={condition.value}
                 onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                 placeholder={condition.operator === 'in_last_days' ? 'Days' : ''}
               />
             ) : (
@@ -306,7 +306,7 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
                 type={field?.type === 'number' ? 'number' : 'text'}
                 value={condition.value}
                 onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
                 placeholder={isRTL ? 'أدخل القيمة...' : 'Enter value...'}
               />
             )}
@@ -329,14 +329,14 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
         {/* Second value for "between" operations */}
         {condition.operator === 'between' && (
           <div className="mt-4">
-            <label className="block text-xs font-medium text-gray-300 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               {isRTL ? 'القيمة الثانية' : 'Second Value'}
             </label>
             <input
               type={field?.type === 'number' ? 'number' : field?.type === 'date' ? 'date' : 'text'}
               value={condition.secondValue || ''}
               onChange={(e) => updateCondition(condition.id, { secondValue: e.target.value })}
-              className="w-full md:w-1/4 px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full md:w-1/4 px-3 py-2 bg-muted border border-border rounded text-foreground text-sm focus:ring-2 focus:ring-blue-500"
               placeholder={isRTL ? 'القيمة النهائية...' : 'End value...'}
             />
           </div>
@@ -346,15 +346,15 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
   };
 
   const renderPreview = () => (
-    <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
+    <div className="bg-muted rounded-lg p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white flex items-center">
+        <h3 className="text-lg font-semibold text-foreground flex items-center">
           <FontAwesomeIcon icon={faUsers} className={`${isRTL ? 'ml-2' : 'mr-2'} text-blue-400`} />
           {isRTL ? 'معاينة الجمهور' : 'Audience Preview'}
         </h3>
         <button
           onClick={() => setShowPreview(!showPreview)}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
           <FontAwesomeIcon icon={showPreview ? faChevronUp : faChevronDown} />
         </button>
@@ -379,15 +379,15 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
 
           {/* Sample Users */}
           <div>
-            <h4 className="text-gray-300 font-medium mb-3">
+            <h4 className="text-muted-foreground font-medium mb-3">
               {isRTL ? 'عينة من المستخدمين المطابقين' : 'Sample Matched Users'}
             </h4>
             <div className="space-y-2">
               {mockUsers.slice(0, 5).map(user => (
                 <div key={user.id} className="flex items-center justify-between p-3 bg-gray-600 rounded-lg">
                   <div>
-                    <div className="text-white font-medium">{user.name}</div>
-                    <div className="text-gray-400 text-sm">
+                    <div className="text-foreground font-medium">{user.name}</div>
+                    <div className="text-muted-foreground text-sm">
                       {user.role} • {user.city} • {user.bookings} {isRTL ? 'حجوزات' : 'bookings'}
                     </div>
                   </div>
@@ -404,14 +404,14 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
   );
 
   const renderExistingSegments = () => (
-    <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
+    <div className="bg-muted rounded-lg p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-foreground">
           {isRTL ? 'الشرائح الموجودة' : 'Existing Segments'}
         </h3>
         <button
           onClick={() => setShowExistingSegments(!showExistingSegments)}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
           <FontAwesomeIcon icon={showExistingSegments ? faChevronUp : faChevronDown} />
         </button>
@@ -420,7 +420,7 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
       {showExistingSegments && (
         <div className="space-y-3">
           {existingSegments.length === 0 ? (
-            <p className="text-gray-400 text-center py-4">
+            <p className="text-muted-foreground text-center py-4">
               {isRTL ? 'لا توجد شرائح محفوظة' : 'No saved segments'}
             </p>
           ) : (
@@ -436,15 +436,15 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-white font-medium flex items-center">
+                    <h4 className="text-foreground font-medium flex items-center">
                       {existingSegment.name}
                       <FontAwesomeIcon 
                         icon={existingSegment.visibility === 'public' ? faGlobe : faLock} 
                         className={`${isRTL ? 'mr-2' : 'ml-2'} text-xs ${existingSegment.visibility === 'public' ? 'text-green-400' : 'text-yellow-400'}`}
                       />
                     </h4>
-                    <p className="text-gray-300 text-sm">{existingSegment.description}</p>
-                    <p className="text-gray-400 text-xs">
+                    <p className="text-muted-foreground text-sm">{existingSegment.description}</p>
+                    <p className="text-muted-foreground text-xs">
                       ~{existingSegment.estimatedReach.toLocaleString()} {isRTL ? 'مستخدم' : 'users'}
                     </p>
                   </div>
@@ -483,14 +483,14 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
     <div className={`space-y-6 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white flex items-center">
+        <h2 className="text-2xl font-bold text-foreground flex items-center">
           <FontAwesomeIcon icon={faFilter} className={`${isRTL ? 'ml-3' : 'mr-3'} text-blue-400`} />
           {isRTL ? 'منشئ شرائح الجمهور' : 'Audience Segment Builder'}
         </h2>
         <div className={cn("flex items-center space-x-3", isRTL && "space-x-reverse")}>
           <button
             onClick={duplicateSegment}
-            className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors"
+            className="flex items-center px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 font-medium transition-colors"
           >
             <FontAwesomeIcon icon={faCopy} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
             {isRTL ? 'نسخ' : 'Duplicate'}
@@ -509,8 +509,8 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
         {/* Main Builder */}
         <div className="xl:col-span-2 space-y-6">
           {/* Segment Setup */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               {isRTL ? 'إعداد الشريحة' : 'Segment Setup'}
             </h3>
 
@@ -589,9 +589,9 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
           </div>
 
           {/* Filter Builder */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-foreground">
                 {isRTL ? 'منشئ الفلاتر' : 'Filter Builder'}
               </h3>
               <button
@@ -608,8 +608,8 @@ const AudienceSegmentBuilder: React.FC<AudienceSegmentBuilderProps> = ({
             </div>
 
             {segment.conditions.length > 0 && (
-              <div className="mt-6 p-4 bg-gray-900 border border-gray-600 rounded-lg">
-                <h4 className="text-gray-300 font-medium mb-2 flex items-center">
+              <div className="mt-6 p-4 bg-background border border-border rounded-lg">
+                <h4 className="text-muted-foreground font-medium mb-2 flex items-center">
                   <FontAwesomeIcon icon={faCode} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {isRTL ? 'معاينة الاستعلام' : 'Query Preview'}
                 </h4>

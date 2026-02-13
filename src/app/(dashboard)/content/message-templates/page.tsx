@@ -276,29 +276,29 @@ const SystemMessageTemplates: React.FC = () => {
   };
 
   const StatCard = ({ title, value, subtitle, icon, bgColor, textColor }: any) => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+    <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
           <p className={`text-3xl font-bold mb-2 ${textColor}`}>{value}</p>
-          {subtitle && <p className="text-sm text-gray-400">{subtitle}</p>}
+          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         </div>
         <div className={`flex h-16 w-16 items-center justify-center rounded-xl ${bgColor}`}>
-          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-8 w-8 text-foreground" />
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'قوالب رسائل النظام' : 'System Message Templates'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'إدارة وتحرير الرسائل الآلية المرسلة للمستخدمين' : 'Manage and edit automated messages sent to users'}
           </p>
         </div>
@@ -340,8 +340,8 @@ const SystemMessageTemplates: React.FC = () => {
         </div>
 
         {/* Tabs and Search */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
-          <div className="border-b border-gray-700">
+        <div className="bg-card rounded-xl border border-border shadow-lg">
+          <div className="border-b border-border">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-6">
               {/* Channel Tabs */}
               <nav className={cn("-mb-px flex space-x-4 overflow-x-auto", isRTL && "space-x-reverse")}>
@@ -357,12 +357,12 @@ const SystemMessageTemplates: React.FC = () => {
                     className={`py-4 px-3 border-b-2 font-medium text-sm flex items-center whitespace-nowrap ${
                       activeChannel === tab.id
                         ? 'border-blue-700 text-blue-400'
-                        : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                        : 'border-transparent text-muted-foreground hover:text-muted-foreground hover:border-border'
                     }`}
                   >
                     <FontAwesomeIcon icon={tab.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                     {tab.label}
-                    <span className={`px-2 py-1 bg-gray-600 text-gray-200 rounded-full text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>    
+                    <span className={`px-2 py-1 bg-gray-600 text-foreground rounded-full text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>    
                       {getChannelCount(tab.id)}
                     </span>
                   </button>
@@ -372,13 +372,13 @@ const SystemMessageTemplates: React.FC = () => {
               {/* Search */}
               <div className={`mt-4 lg:mt-0 ${isRTL ? 'lg:mr-6' : 'lg:ml-6'}`}>
                 <div className="relative max-w-md">
-                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder={isRTL ? 'البحث في القوالب...' : 'Search templates...'}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -388,28 +388,28 @@ const SystemMessageTemplates: React.FC = () => {
           {/* Templates Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'اسم القالب' : 'Template Name'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'حدث التشغيل' : 'Trigger Event'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'القناة' : 'Channel'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'آخر تحديث' : 'Last Updated'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredTemplates.map((template) => (
-                  <tr key={template.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={template.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <FontAwesomeIcon 
@@ -417,13 +417,13 @@ const SystemMessageTemplates: React.FC = () => {
                           className={`h-5 w-5 text-blue-400 ${isRTL ? 'ml-3' : 'mr-3'}`} 
                         />
                         <div>
-                          <div className="text-sm font-medium text-white">{template.name}</div>
-                          <div className="text-xs text-gray-400">{template.id}</div>
+                          <div className="text-sm font-medium text-foreground">{template.name}</div>
+                          <div className="text-xs text-muted-foreground">{template.id}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-300 max-w-xs">
+                      <div className="text-sm text-muted-foreground max-w-xs">
                         {template.triggerEvent}
                       </div>
                     </td>
@@ -433,7 +433,7 @@ const SystemMessageTemplates: React.FC = () => {
                         {template.channel.charAt(0).toUpperCase() + template.channel.slice(1).replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {new Date(template.lastUpdated).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -470,9 +470,9 @@ const SystemMessageTemplates: React.FC = () => {
         {/* Edit Template Modal */}
         {editingTemplate && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">
+            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'تحرير القالب' : 'Edit Template'} - {editingTemplate.name}
                 </h2>
                 <div className={cn("flex items-center space-x-4", isRTL && "space-x-reverse")}>
@@ -481,7 +481,7 @@ const SystemMessageTemplates: React.FC = () => {
                     <button
                       onClick={() => setEditLanguage('en')}
                       className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                        editLanguage === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-600 text-gray-300'
+                        editLanguage === 'en' ? 'bg-blue-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
                       }`}
                     >
                       EN
@@ -489,7 +489,7 @@ const SystemMessageTemplates: React.FC = () => {
                     <button
                       onClick={() => setEditLanguage('ar')}
                       className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                        editLanguage === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-600 text-gray-300'
+                        editLanguage === 'ar' ? 'bg-blue-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
                       }`}
                     >
                       AR
@@ -497,7 +497,7 @@ const SystemMessageTemplates: React.FC = () => {
                   </div>
                   <button
                     onClick={() => setEditingTemplate(null)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
                   </button>
@@ -511,7 +511,7 @@ const SystemMessageTemplates: React.FC = () => {
                     {/* Subject Line (for email) */}
                     {editingTemplate.channel === 'email' && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
                           {isRTL ? 'موضوع الرسالة' : 'Subject Line'}
                         </label>
                         <input
@@ -527,7 +527,7 @@ const SystemMessageTemplates: React.FC = () => {
                               }
                             }
                           })}
-                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                           placeholder={isRTL ? 'أدخل موضوع الرسالة...' : 'Enter subject line...'}
                         />
                       </div>
@@ -535,7 +535,7 @@ const SystemMessageTemplates: React.FC = () => {
 
                     {/* Title */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         {isRTL ? 'العنوان' : 'Title'}
                       </label>
                       <input
@@ -551,14 +551,14 @@ const SystemMessageTemplates: React.FC = () => {
                             }
                           }
                         })}
-                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                         placeholder={isRTL ? 'أدخل العنوان...' : 'Enter title...'}
                       />
                     </div>
 
                     {/* Message Body */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         {isRTL ? 'نص الرسالة' : 'Message Body'}
                       </label>
                       <textarea
@@ -574,11 +574,11 @@ const SystemMessageTemplates: React.FC = () => {
                             }
                           }
                         })}
-                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                         placeholder={isRTL ? 'أدخل نص الرسالة...' : 'Enter message body...'}
                       />
                       {editingTemplate.channel === 'sms' && (
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {isRTL ? `الأحرف: ${editingTemplate.content[editLanguage].body.length}/160` : `Characters: ${editingTemplate.content[editLanguage].body.length}/160`}
                         </p>
                       )}
@@ -589,7 +589,7 @@ const SystemMessageTemplates: React.FC = () => {
                   <div className="space-y-6">
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-foreground">
                           {isRTL ? 'المتغيرات المتاحة' : 'Available Placeholders'}
                         </h3>
                         <button
@@ -613,13 +613,13 @@ const SystemMessageTemplates: React.FC = () => {
                           <div
                             key={placeholder.key}
                             onClick={() => insertPlaceholder(placeholder.key)}
-                            className="bg-gray-700 rounded-lg p-3 cursor-pointer hover:bg-gray-600 transition-colors"
+                            className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted transition-colors"
                           >
                             <div className="flex items-center justify-between">
                               <code className="text-yellow-400 text-sm">{`{${placeholder.key}}`}</code>
-                              <FontAwesomeIcon icon={faPlus} className="text-gray-400 h-3 w-3" />
+                              <FontAwesomeIcon icon={faPlus} className="text-muted-foreground h-3 w-3" />
                             </div>
-                            <p className="text-gray-300 text-xs mt-1">{placeholder.description}</p>
+                            <p className="text-muted-foreground text-xs mt-1">{placeholder.description}</p>
                             <p className="text-gray-500 text-xs">{isRTL ? 'مثال:' : 'e.g.:'} {placeholder.example}</p>
                           </div>
                         ))}
@@ -629,7 +629,7 @@ const SystemMessageTemplates: React.FC = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className={cn("flex space-x-3 pt-6 border-t border-gray-700", isRTL && "space-x-reverse")}>
+                <div className={cn("flex space-x-3 pt-6 border-t border-border", isRTL && "space-x-reverse")}>
                   <button
                     onClick={handleSaveTemplate}
                     className="flex items-center px-6 py-3 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg"
@@ -639,14 +639,14 @@ const SystemMessageTemplates: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setSelectedTemplate(editingTemplate)}
-                    className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors"
+                    className="flex items-center px-6 py-3 bg-green-600 text-foreground rounded-lg hover:bg-green-700 font-medium transition-colors"
                   >
                     <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
                     {isRTL ? 'معاينة' : 'Preview'}
                   </button>
                   <button
                     onClick={() => setEditingTemplate(null)}
-                    className="flex items-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors"
+                    className="flex items-center px-6 py-3 bg-gray-600 text-foreground rounded-lg hover:bg-muted font-medium transition-colors"
                   >
                     {isRTL ? 'إلغاء' : 'Cancel'}
                   </button>
@@ -659,14 +659,14 @@ const SystemMessageTemplates: React.FC = () => {
         {/* Preview Modal */}
         {selectedTemplate && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl max-w-2xl w-full">
-              <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">
+            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-2xl w-full">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'معاينة القالب' : 'Template Preview'}
                 </h2>
                 <button
                   onClick={() => setSelectedTemplate(null)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <FontAwesomeIcon icon={faTimes} className="h-6 w-6" />
                 </button>
@@ -706,8 +706,8 @@ const SystemMessageTemplates: React.FC = () => {
                   </div>
                 )}
 
-                <div className="mt-6 pt-4 border-t border-gray-600">
-                  <p className="text-sm text-gray-400">
+                <div className="mt-6 pt-4 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL ? 'هذه معاينة لكيفية ظهور الرسالة للمستخدمين' : 'This is a preview of how the message will appear to users'}
                   </p>
                 </div>

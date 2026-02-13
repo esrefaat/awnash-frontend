@@ -251,19 +251,18 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className="sticky top-0 z-30 border-b border-gray-700 px-6 py-4"
+      className="sticky top-0 z-30 border-b border-border bg-card px-6 py-4"
       style={{
-        backgroundColor: 'var(--awnash-secondary)',
         fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)'
       }}
     >
       <div className="flex items-center justify-between">
         {/* Page Title */}
         <div>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             {getPageTitle()}
           </h2>
-          <p className="text-sm text-gray-300 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {isRTL ? 'إدارة منصة أوناش للمعدات الثقيلة' : 'Heavy Equipment Rental Platform Management'}
           </p>
         </div>
@@ -277,18 +276,17 @@ const Header: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="p-2 rounded-lg border border-gray-600 hover:bg-gray-700 transition-colors flex items-center gap-2"
+              className="p-2 rounded-lg border border-border hover:bg-muted transition-colors flex items-center gap-2"
             >
-              <FontAwesomeIcon icon={faGlobe} className="text-gray-300" />
-              <span className="text-sm font-medium text-gray-300">
+              <FontAwesomeIcon icon={faGlobe} className="text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">
                 {getCurrentLanguageLabel()}
               </span>
             </button>
 
             {isLangMenuOpen && (
               <div
-                className="absolute top-full mt-2 end-0 w-40 rounded-lg shadow-lg border border-gray-600 py-2 z-50"
-                style={{ backgroundColor: 'var(--awnash-secondary)' }}
+                className="absolute top-full mt-2 end-0 w-40 rounded-lg shadow-lg border border-border bg-card py-2 z-50"
               >
                 {SUPPORTED_LANGUAGES.map((lang) => (
                   <button
@@ -299,8 +297,8 @@ const Header: React.FC = () => {
                     }}
                     className={`w-full text-start px-4 py-2 text-sm transition-colors ${
                       language === lang.code
-                        ? 'text-white bg-gray-700 font-semibold'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        ? 'text-foreground bg-muted font-semibold'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     }`}
                   >
                     {lang.name}
@@ -311,8 +309,8 @@ const Header: React.FC = () => {
           </div>
 
           {/* Notifications */}
-          <button className="p-2 rounded-lg hover:bg-gray-700 transition-colors relative">
-            <FontAwesomeIcon icon={faBell} className="text-gray-300 text-lg" />
+          <button className="p-2 rounded-lg hover:bg-muted transition-colors relative">
+            <FontAwesomeIcon icon={faBell} className="text-muted-foreground text-lg" />
             <span
               className="absolute -top-1 -end-1 w-5 h-5 rounded-full text-xs font-bold text-black flex items-center justify-center"
               style={{ backgroundColor: 'var(--awnash-primary)' }}
@@ -325,43 +323,42 @@ const Header: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors"
             >
               <div>
-                <p className="text-sm font-semibold text-white text-end">
+                <p className="text-sm font-semibold text-foreground text-end">
                   {getUserDisplayName()}
                 </p>
-                <p className="text-xs text-gray-300 text-end">
+                <p className="text-xs text-muted-foreground text-end">
                   {getUserRoleDisplay()}
                 </p>
               </div>
-              <FontAwesomeIcon icon={faUserCircle} className="text-2xl text-gray-300" />
+              <FontAwesomeIcon icon={faUserCircle} className="text-2xl text-muted-foreground" />
             </button>
 
             {/* User Dropdown Menu */}
             {isUserMenuOpen && (
               <div
-                className="absolute top-full mt-2 end-0 w-48 rounded-lg shadow-lg border border-gray-600 py-2 z-50"
+                className="absolute top-full mt-2 end-0 w-48 rounded-lg shadow-lg border border-border bg-card py-2 z-50"
                 style={{
-                  backgroundColor: 'var(--awnash-secondary)',
                   fontFamily: isRTL ? 'var(--awnash-font-arabic)' : 'var(--awnash-font-english)'
                 }}
               >
                 <Link
                   href="/profile"
-                  className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-muted"
                 >
                   <FontAwesomeIcon icon={faUserCircle} />
                   <span>{isRTL ? 'الملف الشخصي' : 'Profile'}</span>
                 </Link>
                 <Link
                   href="/settings/general"
-                  className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:bg-muted"
                 >
                   <FontAwesomeIcon icon={faCog} />
                   <span>{isRTL ? 'الإعدادات' : 'Settings'}</span>
                 </Link>
-                <hr className="my-2 border-gray-600" />
+                <hr className="my-2 border-border" />
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 w-full text-start"

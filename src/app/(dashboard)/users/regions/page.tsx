@@ -208,13 +208,13 @@ const RegionManagement: React.FC = () => {
   };
 
   const StatCard = ({ title, value, subtitle, icon, color, bgColor, trend }: any) => (
-    <div className={`bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all ${isRTL ? 'text-right' : 'text-left'}`}>
+    <div className={`bg-card rounded-xl border border-border p-6 shadow-lg hover:shadow-xl transition-all ${isRTL ? 'text-right' : 'text-left'}`}>
       <div className="flex items-center justify-between">
         <div className={isRTL ? 'order-2' : 'order-1'}>
-          <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
-          <p className="text-3xl font-bold text-white mb-2">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
+          <p className="text-3xl font-bold text-foreground mb-2">{value}</p>
           {subtitle && (
-            <p className="text-sm text-gray-400">{subtitle}</p>
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
           )}
         </div>
         <div className={`flex h-16 w-16 items-center justify-center rounded-xl ${bgColor} ${isRTL ? 'order-1' : 'order-2'}`}>
@@ -225,29 +225,29 @@ const RegionManagement: React.FC = () => {
   );
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'إدارة المناطق الجغرافية' : 'Region Management'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'تتبع التوزيع الجغرافي للمعدات والأداء حسب المدينة' : 'Track geographic distribution of equipment rentals and performance by city'}
           </p>
         </div>
 
         {/* Map View Placeholder */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-foreground">
               {isRTL ? 'خريطة منطقة الخليج' : 'Gulf Region Map'}
             </h2>
             <div className={cn("flex items-center space-x-4", isRTL && "space-x-reverse")}>
               <select
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
-                className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع المناطق' : 'All Regions'}</option>
                 <option value="Central Region">{isRTL ? 'المنطقة الوسطى' : 'Central Region'}</option>
@@ -261,10 +261,10 @@ const RegionManagement: React.FC = () => {
           </div>
           
           {/* Map Placeholder */}
-          <div className="bg-gray-700 rounded-lg h-64 flex items-center justify-center border-2 border-dashed border-gray-600">
+          <div className="bg-muted rounded-lg h-64 flex items-center justify-center border-2 border-dashed border-border">
             <div className="text-center">
-              <FontAwesomeIcon icon={faGlobe} className="h-16 w-16 text-gray-400 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-400 mb-2">
+              <FontAwesomeIcon icon={faGlobe} className="h-16 w-16 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold text-muted-foreground mb-2">
                 {isRTL ? 'خريطة تفاعلية' : 'Interactive Map'}
               </h3>
               <p className="text-sm text-gray-500">
@@ -281,7 +281,7 @@ const RegionManagement: React.FC = () => {
             value={regionSummary.totalBookings.toLocaleString()}
             subtitle={isRTL ? "في المناطق المحددة" : "In selected regions"}
             icon={faHandshake}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-blue-700"
           />
           <StatCard
@@ -289,7 +289,7 @@ const RegionManagement: React.FC = () => {
             value={formatCurrency(regionSummary.totalRevenue)}
             subtitle={isRTL ? "إيرادات الإيجارات" : "From rentals"}
             icon={faDollarSign}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-green-600"
           />
           <StatCard
@@ -297,7 +297,7 @@ const RegionManagement: React.FC = () => {
             value={regionSummary.activeRenters}
             subtitle={isRTL ? "مستأجرون مسجلون" : "Registered renters"}
             icon={faUsers}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-purple-600"
           />
           <StatCard
@@ -305,7 +305,7 @@ const RegionManagement: React.FC = () => {
             value={regionSummary.activeOwners}
             subtitle={isRTL ? "مالكو معدات" : "Equipment owners"}
             icon={faBuilding}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-yellow-500"
           />
           <StatCard
@@ -313,7 +313,7 @@ const RegionManagement: React.FC = () => {
             value={isRTL ? "الحفارات" : "Excavators"}
             subtitle={isRTL ? "نوع المعدة" : "Equipment type"}
             icon={faTruck}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-orange-600"
           />
           <StatCard
@@ -321,7 +321,7 @@ const RegionManagement: React.FC = () => {
             value={`${regionSummary.averageRentalDuration} ${isRTL ? 'يوم' : 'days'}`}
             subtitle={isRTL ? "مدة الإيجار" : "Rental period"}
             icon={faClock}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-indigo-600"
           />
         </div>
@@ -329,8 +329,8 @@ const RegionManagement: React.FC = () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Revenue by City Chart */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-xl font-bold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-xl font-bold text-foreground mb-6">
               {isRTL ? 'الإيرادات حسب المدينة' : 'Revenue by City'}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -358,8 +358,8 @@ const RegionManagement: React.FC = () => {
           </div>
 
           {/* Equipment Type Distribution */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-xl font-bold text-white mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-xl font-bold text-foreground mb-6">
               {isRTL ? 'توزيع أنواع المعدات' : 'Equipment Type Distribution'}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -395,8 +395,8 @@ const RegionManagement: React.FC = () => {
                     className={`w-4 h-4 rounded-full`}   
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-sm text-gray-300">{item.name}</span>
-                  <span className={`text-sm font-bold text-white ${isRTL ? 'ml-auto' : 'mr-auto'}`}>{item.value}%</span>   
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                  <span className={`text-sm font-bold text-foreground ${isRTL ? 'ml-auto' : 'mr-auto'}`}>{item.value}%</span>   
                 </div>
               ))}
             </div>
@@ -404,20 +404,20 @@ const RegionManagement: React.FC = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder={isRTL ? 'البحث بالمدينة أو المنطقة...' : 'Search by city or region...'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -434,10 +434,10 @@ const RegionManagement: React.FC = () => {
         </div>
 
         {/* Regions Table */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
+        <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-xl font-bold text-foreground">
                 {isRTL ? 'جدول المناطق والمدن' : 'Regions & Cities Table'}
               </h3>
               <Button variant="default">
@@ -448,44 +448,44 @@ const RegionManagement: React.FC = () => {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المدينة' : 'City'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المنطقة' : 'Region'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'إجمالي الإيرادات' : 'Total Revenue'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'عدد الحجوزات' : 'Bookings Count'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الأكثر إيجاراً' : 'Most Rented'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المالكون/المستأجرون' : 'Owners/Renters'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الحالة' : 'Status'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredRegions.map((region) => (
-                  <tr key={region.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={region.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <FontAwesomeIcon icon={faCity} className={`h-4 w-4 text-blue-400 ${isRTL ? 'ml-2' : 'mr-2'}`} />  
-                        <span className="text-sm font-medium text-white">{region.cityName}</span>
+                        <span className="text-sm font-medium text-foreground">{region.cityName}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {region.regionName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-400">
@@ -496,13 +496,13 @@ const RegionManagement: React.FC = () => {
                         {region.bookingsCount}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       <div>
                         <div className="font-medium">{region.mostRentedCategory}</div>
-                        <div className="text-xs text-gray-400">{region.topEquipmentSize}</div>
+                        <div className="text-xs text-muted-foreground">{region.topEquipmentSize}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
                         <span className="flex items-center">
                           <FontAwesomeIcon icon={faBuilding} className={`h-3 w-3 text-yellow-400 ${isRTL ? 'ml-1' : 'mr-1'}`} />  
@@ -557,13 +557,13 @@ const RegionManagement: React.FC = () => {
 
         {/* Region Settings Panel */}
         {showSettings && (
-          <div className="mt-8 bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-xl font-bold text-white mb-6">
+          <div className="mt-8 bg-card rounded-xl border border-border p-6 shadow-lg">
+            <h3 className="text-xl font-bold text-foreground mb-6">
               {isRTL ? 'إعدادات المناطق' : 'Region Settings'}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   {isRTL ? 'ضريبة القيمة المضافة الافتراضية' : 'Default VAT Rate'}
                 </label>
                 <div className="relative">
@@ -572,14 +572,14 @@ const RegionManagement: React.FC = () => {
                     min="0"
                     max="50"
                     step="0.1"
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                     placeholder="15.0"
                   />
-                  <FontAwesomeIcon icon={faPercentage} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <FontAwesomeIcon icon={faPercentage} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   {isRTL ? 'الرسوم الإضافية' : 'Additional Surcharges'}
                 </label>
                 <div className="relative">
@@ -587,10 +587,10 @@ const RegionManagement: React.FC = () => {
                     type="number"
                     min="0"
                     step="0.01"
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                     placeholder="0.00"
                   />
-                  <FontAwesomeIcon icon={faDollarSign} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <FontAwesomeIcon icon={faDollarSign} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 </div>
               </div>
               <div className="flex items-end">

@@ -133,10 +133,10 @@ const ArticlesLandingPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-awnash-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">{isRTL ? 'جاري تحميل المقالات...' : 'Loading articles...'}</p>
+          <p className="text-gray-600 dark:text-muted-foreground">{isRTL ? 'جاري تحميل المقالات...' : 'Loading articles...'}</p>
         </div>
       </div>
     );
@@ -144,12 +144,12 @@ const ArticlesLandingPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-foreground mb-4">
             {isRTL ? 'خطأ' : 'Error'}
           </h1>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <p className="text-gray-600 dark:text-muted-foreground mb-6">{error}</p>
           <Button 
             onClick={() => window.location.reload()}
             variant="default"
@@ -162,29 +162,29 @@ const ArticlesLandingPage: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-white ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-white dark:bg-card ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Navigation Header */}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <nav className="bg-white dark:bg-card shadow-sm border-b dark:border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link href="/" className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-awnash-primary to-awnash-accent rounded-xl flex items-center justify-center">
-                  <span className="text-black font-bold text-xl">A</span>
+                  <span className="text-black dark:text-foreground font-bold text-xl">A</span>
                 </div>
-                <span className="text-2xl font-bold text-gray-900">Awnash</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-foreground">Awnash</span>
               </Link>
               <div className="hidden md:flex items-center gap-6">
-                <Link href="/equipment" className="text-gray-600 hover:text-awnash-primary transition-colors">
+                <Link href="/equipment" className="text-gray-600 dark:text-muted-foreground hover:text-awnash-primary transition-colors">
                   {isRTL ? 'المعدات' : 'Equipment'}
                 </Link>
-                <Link href="/services" className="text-gray-600 hover:text-awnash-primary transition-colors">
+                <Link href="/services" className="text-gray-600 dark:text-muted-foreground hover:text-awnash-primary transition-colors">
                   {isRTL ? 'الخدمات' : 'Services'}
                 </Link>
                 <Link href="/articles" className="text-awnash-primary font-semibold">
                   {isRTL ? 'المقالات' : 'Articles'}
                 </Link>
-                <Link href="/contact" className="text-gray-600 hover:text-awnash-primary transition-colors">
+                <Link href="/contact" className="text-gray-600 dark:text-muted-foreground hover:text-awnash-primary transition-colors">
                   {isRTL ? 'اتصل بنا' : 'Contact'}
                 </Link>
               </div>
@@ -192,13 +192,13 @@ const ArticlesLandingPage: React.FC = () => {
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => i18n.changeLanguage(isRTL ? 'en' : 'ar')}
-                className="text-gray-600 hover:text-awnash-primary transition-colors"
+                className="text-gray-600 dark:text-muted-foreground hover:text-awnash-primary transition-colors"
               >
                 {isRTL ? 'English' : 'العربية'}
               </button>
-              <Link 
+              <Link
                 href="/auth/login"
-                className="bg-awnash-primary text-black px-6 py-2 rounded-full font-semibold hover:bg-awnash-primary-hover transition-colors"
+                className="bg-awnash-primary text-black dark:text-foreground px-6 py-2 rounded-full font-semibold hover:bg-awnash-primary-hover transition-colors"
               >
                 {isRTL ? 'تسجيل الدخول' : 'Login'}
               </Link>
@@ -275,7 +275,7 @@ const ArticlesLandingPage: React.FC = () => {
                 {isRTL ? 'استكشف المقالات' : 'Explore Articles'}
                 <FontAwesomeIcon icon={faChevronRight} className={`h-5 w-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
               </Button>
-              <Button variant="outline" size="lg" className="rounded-full font-bold text-lg border-2 border-white text-white hover:bg-white hover:text-black">
+              <Button variant="outline" size="lg" className="rounded-full font-bold text-lg border-2 border-white dark:border-border text-white hover:bg-white dark:hover:bg-muted hover:text-black dark:hover:text-white">
                 <FontAwesomeIcon icon={faPlay} className={`h-5 w-5 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                 {isRTL ? 'شاهد الفيديو' : 'Watch Video'}
               </Button>
@@ -290,17 +290,17 @@ const ArticlesLandingPage: React.FC = () => {
 
       {/* Featured Articles */}
       {featuredArticles.length > 0 && (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-gray-50 dark:bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 bg-awnash-primary/10 text-awnash-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
                 <FontAwesomeIcon icon={faFire} className="h-4 w-4" />
                 {isRTL ? 'الأكثر قراءة' : 'Most Popular'}
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-foreground mb-4">
                 {isRTL ? 'المقالات المميزة' : 'Featured Articles'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-gray-600 dark:text-muted-foreground max-w-3xl mx-auto">
                 {isRTL 
                   ? 'اكتشف أهم المقالات التي يقرأها المتخصصون في صناعة تأجير المعدات'
                   : 'Discover the most important articles read by professionals in the equipment rental industry'
@@ -312,7 +312,7 @@ const ArticlesLandingPage: React.FC = () => {
               {featuredArticles.map((article, index) => (
                 <article 
                   key={article.id} 
-                  className={`group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
+                  className={`group relative bg-white dark:bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
                     index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
                   }`}
                 >
@@ -325,7 +325,7 @@ const ArticlesLandingPage: React.FC = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       <div className="absolute top-4 left-4">
-                        <span className="inline-flex items-center gap-1 bg-awnash-primary text-black px-3 py-1 rounded-full text-xs font-bold">
+                        <span className="inline-flex items-center gap-1 bg-awnash-primary text-black dark:text-foreground px-3 py-1 rounded-full text-xs font-bold">
                           <FontAwesomeIcon icon={faAward} className="h-3 w-3" />
                           {isRTL ? 'مميز' : 'Featured'}
                         </span>
@@ -343,20 +343,20 @@ const ArticlesLandingPage: React.FC = () => {
                   )}
                   
                   <div className={`p-6 ${index === 0 ? 'lg:p-8' : ''}`}>
-                    <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-awnash-primary transition-colors ${
+                    <h3 className={`font-bold text-gray-900 dark:text-foreground mb-3 line-clamp-2 group-hover:text-awnash-primary transition-colors ${
                       index === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'
                     }`} dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
                       {article.title}
                     </h3>
-                    
-                    <p className={`text-gray-600 mb-4 line-clamp-3 ${
+
+                    <p className={`text-gray-600 dark:text-muted-foreground mb-4 line-clamp-3 ${
                       index === 0 ? 'text-lg' : 'text-base'
                     }`} dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
                       {article.excerpt}
                     </p>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
                           <span>{article.viewCount.toLocaleString()}</span>
@@ -387,14 +387,14 @@ const ArticlesLandingPage: React.FC = () => {
       )}
 
       {/* Search and Filters */}
-      <section id="articles-section" className="py-12 bg-white border-t">
+      <section id="articles-section" className="py-12 bg-white dark:bg-card border-t dark:border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-8 shadow-inner">
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-background dark:to-card rounded-2xl p-8 shadow-inner">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-2">
                 {isRTL ? 'ابحث في مكتبة المعرفة' : 'Search Our Knowledge Library'}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-muted-foreground">
                 {isRTL ? 'اعثر على المقال المناسب لاحتياجاتك' : 'Find the perfect article for your needs'}
               </p>
             </div>
@@ -411,7 +411,7 @@ const ArticlesLandingPage: React.FC = () => {
                   placeholder={isRTL ? "البحث في المقالات..." : "Search articles..."}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={`w-full bg-white border-2 border-gray-200 rounded-xl py-3 text-sm focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+                  className={`w-full bg-white dark:bg-card border-2 border-gray-200 dark:border-border rounded-xl py-3 text-sm text-gray-900 dark:text-foreground focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
                 />
               </div>
 
@@ -419,7 +419,7 @@ const ArticlesLandingPage: React.FC = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm"
+                className="bg-white dark:bg-card border-2 border-gray-200 dark:border-border rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-foreground focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm"
               >
                 <option value="">{isRTL ? 'جميع الفئات' : 'All Categories'}</option>
                 {categories.map(category => (
@@ -431,7 +431,7 @@ const ArticlesLandingPage: React.FC = () => {
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm"
+                className="bg-white dark:bg-card border-2 border-gray-200 dark:border-border rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-foreground focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm"
               >
                 <option value="">{isRTL ? 'جميع اللغات' : 'All Languages'}</option>
                 <option value="en">English</option>
@@ -442,7 +442,7 @@ const ArticlesLandingPage: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm"
+                className="bg-white dark:bg-card border-2 border-gray-200 dark:border-border rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-foreground focus:border-awnash-primary focus:outline-none focus:ring-0 transition-colors shadow-sm"
               >
                 <option value="publishDate">{isRTL ? 'الأحدث' : 'Latest'}</option>
                 <option value="viewCount">{isRTL ? 'الأكثر مشاهدة' : 'Most Viewed'}</option>
@@ -454,39 +454,39 @@ const ArticlesLandingPage: React.FC = () => {
       </section>
 
       {/* Articles Grid */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-2">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-foreground mb-2">
                 {isRTL ? 'جميع المقالات' : 'All Articles'}
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-muted-foreground">
                 {isRTL ? 'استكشف مجموعتنا الكاملة من المقالات المتخصصة' : 'Explore our complete collection of expert articles'}
               </p>
             </div>
             <div className="text-right">
               <div className="text-3xl font-bold text-awnash-primary">{sortedArticles.length}</div>
-              <div className="text-sm text-gray-500">{isRTL ? 'مقال متاح' : 'Articles Available'}</div>
+              <div className="text-sm text-gray-500 dark:text-muted-foreground">{isRTL ? 'مقال متاح' : 'Articles Available'}</div>
             </div>
           </div>
 
           {sortedArticles.length === 0 ? (
             <div className="text-center py-20">
-              <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-24 h-24 bg-gray-200 dark:bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                 <FontAwesomeIcon icon={faNewspaper} className="h-12 w-12 text-gray-400" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-600 mb-4">
+              <h3 className="text-2xl font-bold text-gray-600 dark:text-muted-foreground mb-4">
                 {isRTL ? 'لا توجد مقالات' : 'No Articles Found'}
               </h3>
-              <p className="text-gray-500 text-lg max-w-md mx-auto">
+              <p className="text-gray-500 dark:text-muted-foreground text-lg max-w-md mx-auto">
                 {isRTL ? 'لم يتم العثور على مقالات تطابق البحث المحدد. جرب تغيير المرشحات.' : 'No articles found matching your search criteria. Try adjusting your filters.'}
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {sortedArticles.map((article) => (
-                <article key={article.id} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 border overflow-hidden transform hover:-translate-y-1">
+                <article key={article.id} className="group bg-white dark:bg-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 border dark:border-border overflow-hidden transform hover:-translate-y-1">
                   {article.coverImage && (
                     <div className="relative h-48 overflow-hidden">
                       <img 
@@ -497,7 +497,7 @@ const ArticlesLandingPage: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       {article.featured && (
                         <div className="absolute top-3 right-3">
-                          <span className="inline-flex items-center gap-1 bg-awnash-primary text-black px-2 py-1 rounded-full text-xs font-bold">
+                          <span className="inline-flex items-center gap-1 bg-awnash-primary text-black dark:text-foreground px-2 py-1 rounded-full text-xs font-bold">
                             <FontAwesomeIcon icon={faFire} className="h-3 w-3" />
                             {isRTL ? 'مميز' : 'Featured'}
                           </span>
@@ -509,12 +509,12 @@ const ArticlesLandingPage: React.FC = () => {
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
                       <FontAwesomeIcon icon={faLanguage} className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-gray-500 dark:text-muted-foreground">
                         {article.language === 'ar' ? 'العربية' : 'English'}
                       </span>
-                      <span className="text-gray-300">•</span>
+                      <span className="text-gray-300 dark:text-muted-foreground">•</span>
                       <FontAwesomeIcon icon={faUser} className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">{article.author}</span>
+                      <span className="text-sm text-gray-500 dark:text-muted-foreground">{article.author}</span>
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-4">
@@ -527,22 +527,22 @@ const ArticlesLandingPage: React.FC = () => {
                         </span>
                       ))}
                       {article.category.length > 2 && (
-                        <span className="text-xs text-gray-400 px-2 py-1">
+                        <span className="text-xs text-gray-400 dark:text-muted-foreground px-2 py-1">
                           +{article.category.length - 2} more
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-awnash-primary transition-colors" dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-foreground mb-3 line-clamp-2 group-hover:text-awnash-primary transition-colors" dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
                       {article.title}
                     </h3>
-                    
-                    <p className="text-gray-600 mb-6 line-clamp-3 leading-relaxed" dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
+
+                    <p className="text-gray-600 dark:text-muted-foreground mb-6 line-clamp-3 leading-relaxed" dir={article.language === 'ar' ? 'rtl' : 'ltr'}>
                       {article.excerpt}
                     </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-border">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <FontAwesomeIcon icon={faCalendarAlt} className="h-4 w-4" />
                           <span>{new Date(article.publishDate).toLocaleDateString(isRTL ? 'ar' : 'en')}</span>
@@ -595,7 +595,7 @@ const ArticlesLandingPage: React.FC = () => {
             <input
               type="email"
               placeholder={isRTL ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
-              className="flex-1 px-6 py-4 rounded-full text-black focus:outline-none focus:ring-2 focus:ring-awnash-primary"
+              className="flex-1 px-6 py-4 rounded-full text-black dark:text-foreground bg-white dark:bg-card focus:outline-none focus:ring-2 focus:ring-awnash-primary"
             />
             <Button variant="default" size="lg" className="rounded-full font-bold whitespace-nowrap">
               {isRTL ? 'اشترك الآن' : 'Subscribe Now'}
@@ -615,7 +615,7 @@ const ArticlesLandingPage: React.FC = () => {
             <div className="col-span-1 md:col-span-2">
               <Link href="/" className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-awnash-primary to-awnash-accent rounded-xl flex items-center justify-center">
-                  <span className="text-black font-bold text-2xl">A</span>
+                  <span className="text-black dark:text-foreground font-bold text-2xl">A</span>
                 </div>
                 <span className="text-3xl font-bold">Awnash</span>
               </Link>

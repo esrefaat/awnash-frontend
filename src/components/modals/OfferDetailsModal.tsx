@@ -75,7 +75,7 @@ interface SectionHeaderProps {
 
 function SectionHeader({ icon, title }: SectionHeaderProps) {
   return (
-    <h4 className="text-md font-medium text-white flex items-center gap-2 mb-4">
+    <h4 className="text-md font-medium text-foreground flex items-center gap-2 mb-4">
       {icon}
       {title}
     </h4>
@@ -94,8 +94,8 @@ interface InfoRowProps {
 function InfoRow({ label, value }: InfoRowProps) {
   return (
     <div className="flex justify-between">
-      <span className="text-gray-400">{label}</span>
-      <span className="font-medium text-white">{value}</span>
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground">{value}</span>
     </div>
   );
 }
@@ -127,7 +127,7 @@ function ImageCarousel({ images, isRTL }: ImageCarouselProps) {
       />
 
       <div className="relative">
-        <div className="relative w-full h-64 bg-gray-900 rounded-xl overflow-hidden">
+        <div className="relative w-full h-64 bg-background rounded-xl overflow-hidden">
           <img
             src={images[currentIndex]}
             alt={`Image ${currentIndex + 1}`}
@@ -135,7 +135,7 @@ function ImageCarousel({ images, isRTL }: ImageCarouselProps) {
           />
 
           {/* Counter */}
-          <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+          <div className="absolute top-4 right-4 bg-black/60 text-foreground px-3 py-1 rounded-full text-sm">
             {currentIndex + 1} / {images.length}
           </div>
         </div>
@@ -145,13 +145,13 @@ function ImageCarousel({ images, isRTL }: ImageCarouselProps) {
           <>
             <button
               onClick={prevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-foreground p-2 rounded-full transition-colors"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-foreground p-2 rounded-full transition-colors"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -167,7 +167,7 @@ function ImageCarousel({ images, isRTL }: ImageCarouselProps) {
                 onClick={() => setCurrentIndex(index)}
                 className={cn(
                   "w-2.5 h-2.5 rounded-full transition-colors",
-                  index === currentIndex ? "bg-awnash-primary" : "bg-gray-600 hover:bg-gray-500"
+                  index === currentIndex ? "bg-awnash-primary" : "bg-muted hover:bg-muted"
                 )}
               />
             ))}
@@ -215,17 +215,17 @@ function DocumentsSection({ documents, isRTL }: DocumentsSectionProps) {
         {documents.map((doc, index) => (
           <div
             key={index}
-            className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl border border-gray-700"
+            className="flex items-center justify-between p-4 bg-background/50 rounded-xl border border-border"
           >
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-red-500/10 flex items-center justify-center">
                 <FileText className="h-5 w-5 text-red-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-medium text-foreground">
                   {isRTL ? "مستند" : "Document"} {index + 1}
                 </p>
-                <p className="text-xs text-gray-400">PDF</p>
+                <p className="text-xs text-muted-foreground">PDF</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -268,17 +268,17 @@ export const OfferDetailsModal: React.FC<OfferDetailsModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700"
+        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-muted border-border"
         dir={isRTL ? "rtl" : "ltr"}
       >
         {/* Header */}
-        <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+        <DialogHeader className="border-b border-border pb-4 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle className="text-xl font-semibold text-white">
+              <DialogTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? "تفاصيل العرض" : "Offer Details"}
               </DialogTitle>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {isRTL ? "عرض من" : "Offer from"}{" "}
                 {offer.bidder?.fullName || offer.owner?.name}
               </p>
@@ -302,7 +302,7 @@ export const OfferDetailsModal: React.FC<OfferDetailsModalProps> = ({
                 icon={<DollarSign className="h-4 w-4 text-green-400" />}
                 title={isRTL ? "المعلومات المالية" : "Financial Information"}
               />
-              <div className="space-y-3 p-4 bg-gray-900/50 rounded-xl border border-gray-700">
+              <div className="space-y-3 p-4 bg-background/50 rounded-xl border border-border">
                 <InfoRow
                   label={isRTL ? "السعر اليومي:" : "Daily Rate:"}
                   value={`${formatSimpleCurrency(offer.dailyRate, offer.dailyRateCurrency)}/${isRTL ? "يوم" : "day"}`}
@@ -320,7 +320,7 @@ export const OfferDetailsModal: React.FC<OfferDetailsModalProps> = ({
                 icon={<Calendar className="h-4 w-4 text-blue-400" />}
                 title={isRTL ? "التواريخ" : "Timeline"}
               />
-              <div className="space-y-3 p-4 bg-gray-900/50 rounded-xl border border-gray-700">
+              <div className="space-y-3 p-4 bg-background/50 rounded-xl border border-border">
                 <InfoRow
                   label={isRTL ? "تاريخ التقديم:" : "Submitted:"}
                   value={formatDate(offer.createdAt)}
@@ -340,36 +340,36 @@ export const OfferDetailsModal: React.FC<OfferDetailsModalProps> = ({
                 icon={<User className="h-4 w-4 text-purple-400" />}
                 title={isRTL ? "معلومات الطلب" : "Request Information"}
               />
-              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-900/50 rounded-xl border border-gray-700">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-background/50 rounded-xl border border-border">
                 <div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL ? "نوع المعدة:" : "Equipment Type:"}
                   </p>
-                  <p className="font-medium text-white capitalize">
+                  <p className="font-medium text-foreground capitalize">
                     {offer.request.equipmentType}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL ? "مقدم الطلب:" : "Requester:"}
                   </p>
-                  <p className="font-medium text-white">
+                  <p className="font-medium text-foreground">
                     {offer.request.requester.fullName || offer.request.requester.name}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL ? "تاريخ البداية:" : "Start Date:"}
                   </p>
-                  <p className="font-medium text-white">
+                  <p className="font-medium text-foreground">
                     {formatDate(offer.request.startDate)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL ? "تاريخ النهاية:" : "End Date:"}
                   </p>
-                  <p className="font-medium text-white">
+                  <p className="font-medium text-foreground">
                     {formatDate(offer.request.endDate)}
                   </p>
                 </div>
@@ -384,18 +384,18 @@ export const OfferDetailsModal: React.FC<OfferDetailsModalProps> = ({
                 icon={<StickyNote className="h-4 w-4 text-yellow-400" />}
                 title={isRTL ? "الملاحظات" : "Notes"}
               />
-              <div className="p-4 bg-gray-900/50 rounded-xl border border-gray-700">
-                <p className="text-gray-300">{offer.note}</p>
+              <div className="p-4 bg-background/50 rounded-xl border border-border">
+                <p className="text-muted-foreground">{offer.note}</p>
               </div>
             </div>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end pt-6 border-t border-gray-700 mt-6">
+        <div className="flex justify-end pt-6 border-t border-border mt-6">
           <Button
             onClick={onClose}
-            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+            className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             variant="outline"
           >
             {isRTL ? "إغلاق" : "Close"}

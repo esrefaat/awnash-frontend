@@ -185,7 +185,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       </div>
 
       {/* Editor */}
-      <div className="bg-gray-800 text-white min-h-[300px]">
+      <div className="bg-card text-foreground min-h-[300px]">
         <EditorContent 
           editor={editor} 
           className="h-full"

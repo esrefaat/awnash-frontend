@@ -342,15 +342,14 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               {isRTL ? 'لوحة التحكم الرئيسية' : 'Dashboard Overview'}
             </h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               {isRTL ? 'نظرة سريعة على نشاط المنصة وأداء الإيجارات والرؤى التشغيلية' : 'Quick snapshot of platform activity, rental performance, and operational insights'}
             </p>
           </div>
@@ -368,11 +367,11 @@ const Dashboard: React.FC = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
-                <p className="text-2xl font-bold text-white">{stats.totalBookings.toLocaleString()}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalBookings.toLocaleString()}</p>
                 <div className="flex items-center mt-1">
                   {getTrendIcon(stats.bookingsTrend)}
                   <span className={cn('text-xs ml-1', getTrendColor(stats.bookingsTrend))}>
@@ -381,15 +380,15 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div className="w-12 h-12 bg-awnash-accent rounded-2xl flex items-center justify-center">
-                <FontAwesomeIcon icon={faCalendarAlt} className="text-white h-6 w-6" />
+                <FontAwesomeIcon icon={faCalendarAlt} className="text-foreground h-6 w-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'الإيجارات النشطة' : 'Active Rentals'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'الإيجارات النشطة' : 'Active Rentals'}</p>
                 <p className="text-2xl font-bold text-green-400">{stats.activeRentals}</p>
                 <div className="flex items-center mt-1">
                   {getTrendIcon(stats.rentalsTrend)}
@@ -399,15 +398,15 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center">
-                <FontAwesomeIcon icon={faPlay} className="text-white h-6 w-6" />
+                <FontAwesomeIcon icon={faPlay} className="text-foreground h-6 w-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'المعدات المدرجة' : 'Equipment Listed'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'المعدات المدرجة' : 'Equipment Listed'}</p>
                 <p className="text-2xl font-bold text-purple-400">{stats.equipmentListed}</p>
                 <div className="flex items-center mt-1">
                   {getTrendIcon(stats.equipmentTrend)}
@@ -417,15 +416,15 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div className="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center">
-                <FontAwesomeIcon icon={faTruck} className="text-white h-6 w-6" />
+                <FontAwesomeIcon icon={faTruck} className="text-foreground h-6 w-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'الملاك المعتمدون' : 'Verified Owners'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'الملاك المعتمدون' : 'Verified Owners'}</p>
                 <p className="text-2xl font-bold text-orange-400">{stats.verifiedOwners}</p>
                 <div className="flex items-center mt-1">
                   {getTrendIcon(stats.ownersTrend)}
@@ -435,15 +434,15 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center">
-                <FontAwesomeIcon icon={faUserCheck} className="text-white h-6 w-6" />
+                <FontAwesomeIcon icon={faUserCheck} className="text-foreground h-6 w-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'الإيرادات الشهرية' : 'Monthly Revenue'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'الإيرادات الشهرية' : 'Monthly Revenue'}</p>
                 <p className="text-lg font-bold text-awnash-primary">{formatCurrency(stats.monthlyRevenue)}</p>
                 <div className="flex items-center mt-1">
                   {getTrendIcon(stats.revenueTrend)}
@@ -458,10 +457,10 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'متوسط قيمة الحجز' : 'Avg. Booking Value'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'متوسط قيمة الحجز' : 'Avg. Booking Value'}</p>
                 <p className="text-lg font-bold text-indigo-400">{formatCurrency(stats.avgBookingValue)}</p>
                 <div className="flex items-center mt-1">
                   {getTrendIcon(stats.avgBookingTrend)}
@@ -471,7 +470,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center">
-                <FontAwesomeIcon icon={faChartLine} className="text-white h-6 w-6" />
+                <FontAwesomeIcon icon={faChartLine} className="text-foreground h-6 w-6" />
               </div>
             </div>
           </div>
@@ -480,9 +479,9 @@ const Dashboard: React.FC = () => {
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Daily Bookings Line Chart */}
-          <div className="lg:col-span-2 bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
+          <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-foreground">
                 {isRTL ? 'الحجوزات اليومية خلال آخر 30 يوم' : 'Daily Bookings (Last 30 Days)'}
               </h3>
               <div className="flex gap-2">
@@ -518,8 +517,8 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Equipment Categories Pie Chart */}
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-white mb-6">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
+            <h3 className="text-lg font-semibold text-foreground mb-6">
               {isRTL ? 'فئات المعدات المؤجرة' : 'Equipment Categories Rented'}
             </h3>
             <div className="h-64">
@@ -554,9 +553,9 @@ const Dashboard: React.FC = () => {
                       className={`w-3 h-3 rounded-full ${isRTL ? 'ml-2' : 'mr-2'}`} 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm text-gray-300">{item.name}</span>
+                    <span className="text-sm text-muted-foreground">{item.name}</span>
                   </div>
-                  <span className="text-sm text-white font-medium">{item.value}%</span>
+                  <span className="text-sm text-foreground font-medium">{item.value}%</span>
                 </div>
               ))}
             </div>
@@ -564,8 +563,8 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Top Cities Bar Chart */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'أفضل المدن أداءً' : 'Top Performing Cities'}
           </h3>
           <div className="h-80">
@@ -596,10 +595,10 @@ const Dashboard: React.FC = () => {
         {/* Tables Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Bookings */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700">
-            <div className="p-6 border-b border-gray-700">
+          <div className="bg-card rounded-xl border border-border">
+            <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   {isRTL ? 'الحجوزات الأخيرة' : 'Recent Bookings'}
                 </h3>
                 <Button variant="link" className="text-blue-400 hover:text-blue-300">
@@ -611,12 +610,12 @@ const Dashboard: React.FC = () => {
               {recentBookings.map((booking) => (
                 <div key={booking.id} className="flex items-center justify-between">
                   <div className="flex-1">
-                    <div className="text-sm font-medium text-white">{booking.equipmentName}</div>
-                    <div className="text-xs text-gray-400">{booking.renterName}</div>
+                    <div className="text-sm font-medium text-foreground">{booking.equipmentName}</div>
+                    <div className="text-xs text-muted-foreground">{booking.renterName}</div>
                     <div className="text-xs text-gray-500">{formatDate(booking.date)}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium text-white">{formatCurrency(booking.amount)}</div>
+                    <div className="text-sm font-medium text-foreground">{formatCurrency(booking.amount)}</div>
                     <div className="mt-1">{getStatusBadge(booking.status)}</div>
                   </div>
                 </div>
@@ -625,10 +624,10 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* New Users This Week */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700">
-            <div className="p-6 border-b border-gray-700">
+          <div className="bg-card rounded-xl border border-border">
+            <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   {isRTL ? 'المستخدمون الجدد هذا الأسبوع' : 'New Users This Week'}
                 </h3>
                 <Button variant="link" className="text-blue-400 hover:text-blue-300">
@@ -641,11 +640,11 @@ const Dashboard: React.FC = () => {
                 <div key={user.id} className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <FontAwesomeIcon icon={user.type === 'owner' ? faBuilding : faUsers} className="text-white h-3 w-3" />
+                      <FontAwesomeIcon icon={user.type === 'owner' ? faBuilding : faUsers} className="text-foreground h-3 w-3" />
                     </div>
                     <div className={cn('', isRTL ? 'mr-3' : 'ml-3')}>
-                      <div className="text-sm font-medium text-white">{user.name}</div>
-                      <div className="text-xs text-gray-400">{user.type === 'owner' ? (isRTL ? 'مالك' : 'Owner') : (isRTL ? 'مستأجر' : 'Renter')}</div>
+                      <div className="text-sm font-medium text-foreground">{user.name}</div>
+                      <div className="text-xs text-muted-foreground">{user.type === 'owner' ? (isRTL ? 'مالك' : 'Owner') : (isRTL ? 'مستأجر' : 'Renter')}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -660,10 +659,10 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Expiring Documents */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700">
-            <div className="p-6 border-b border-gray-700">
+          <div className="bg-card rounded-xl border border-border">
+            <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   {isRTL ? 'الوثائق منتهية الصلاحية' : 'Expiring Documents'}
                 </h3>
                 <Button variant="link" className="text-yellow-400 hover:text-yellow-300">
@@ -677,11 +676,11 @@ const Dashboard: React.FC = () => {
                   <div className="flex items-center">
                     <div className={cn('w-8 h-8 rounded-full flex items-center justify-center', 
                       doc.daysLeft <= 7 ? 'bg-red-600' : doc.daysLeft <= 14 ? 'bg-yellow-600' : 'bg-orange-600')}>
-                      <FontAwesomeIcon icon={faFileAlt} className="text-white h-3 w-3" />
+                      <FontAwesomeIcon icon={faFileAlt} className="text-foreground h-3 w-3" />
                     </div>
                     <div className={cn('', isRTL ? 'mr-3' : 'ml-3')}>
-                      <div className="text-sm font-medium text-white">{doc.ownerName}</div>
-                      <div className="text-xs text-gray-400">{doc.documentType}</div>
+                      <div className="text-sm font-medium text-foreground">{doc.ownerName}</div>
+                      <div className="text-xs text-muted-foreground">{doc.documentType}</div>
                     </div>
                   </div>
                   <div className="text-right">
@@ -698,8 +697,8 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-          <h3 className="text-lg font-semibold text-white mb-6">
+        <div className="bg-card rounded-xl border border-border p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             {isRTL ? 'إجراءات سريعة' : 'Quick Actions'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -736,9 +735,8 @@ const Dashboard: React.FC = () => {
             </Button>
           </div>
         </div>
-      </div>
     </div>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

@@ -190,20 +190,20 @@ const PaymentManagement: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-600 rounded-2xl">
-                <FontAwesomeIcon icon={faCreditCard} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faCreditCard} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">
+                <h1 className="text-3xl font-bold text-foreground">
                   {isRTL ? 'إدارة المدفوعات' : 'Payment Management'}
                 </h1>
-                <p className="text-gray-400 mt-1">
+                <p className="text-muted-foreground mt-1">
                   {isRTL ? 'إدارة جميع المعاملات المالية والمدفوعات' : 'Manage all financial transactions and payments'}
                 </p>
               </div>
@@ -211,7 +211,7 @@ const PaymentManagement: React.FC = () => {
             <Button
               onClick={() => { fetchTransactions(); fetchStats(); }}
               variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              className="border-border text-muted-foreground hover:bg-muted"
             >
               <FontAwesomeIcon icon={faRefresh} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
               {isRTL ? 'تحديث' : 'Refresh'}
@@ -221,14 +221,14 @@ const PaymentManagement: React.FC = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-600 rounded-xl">
-                <FontAwesomeIcon icon={faReceipt} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faReceipt} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي المعاملات' : 'Total Transactions'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'إجمالي المعاملات' : 'Total Transactions'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.total || 0}
                 </p>
                 <p className="text-sm text-blue-400">
@@ -238,14 +238,14 @@ const PaymentManagement: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-green-600 rounded-xl">
-                <FontAwesomeIcon icon={faMoneyBillWave} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faMoneyBillWave} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'المكتملة' : 'Completed'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'المكتملة' : 'Completed'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.completed || 0}
                 </p>
                 <p className="text-sm text-green-400">{isRTL ? 'معاملة' : 'transactions'}</p>
@@ -253,14 +253,14 @@ const PaymentManagement: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-yellow-600 rounded-xl">
-                <FontAwesomeIcon icon={faClock} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faClock} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'قيد الانتظار' : 'Pending'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'قيد الانتظار' : 'Pending'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.pending || 0}
                 </p>
                 <p className="text-sm text-yellow-400">{isRTL ? 'معاملة' : 'transactions'}</p>
@@ -268,14 +268,14 @@ const PaymentManagement: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-red-600 rounded-xl">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6 text-white" />
+                <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6 text-foreground" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'الفاشلة' : 'Failed'}</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-muted-foreground text-sm">{isRTL ? 'الفاشلة' : 'Failed'}</p>
+                <p className="text-2xl font-bold text-foreground">
                   {statsLoading ? '...' : stats?.failed || 0}
                 </p>
                 <p className="text-sm text-red-400">{isRTL ? 'معاملة' : 'transactions'}</p>
@@ -285,13 +285,13 @@ const PaymentManagement: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn('absolute top-3 h-4 w-4 text-gray-400', isRTL ? 'right-3' : 'left-3')} 
+                  className={cn('absolute top-3 h-4 w-4 text-muted-foreground', isRTL ? 'right-3' : 'left-3')} 
                 />
                 <input
                   type="text"
@@ -299,7 +299,7 @@ const PaymentManagement: React.FC = () => {
                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                   placeholder={isRTL ? 'البحث...' : 'Search...'}
                   className={cn(
-                    'w-full bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                    'w-full bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                     isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4',
                     'py-2'
                   )}
@@ -311,7 +311,7 @@ const PaymentManagement: React.FC = () => {
               <select 
                 value={typeFilter}
                 onChange={(e) => { setTypeFilter(e.target.value as TransactionType | ''); setPage(1); }}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
                 <option value="payment">{isRTL ? 'دفع' : 'Payment'}</option>
@@ -325,7 +325,7 @@ const PaymentManagement: React.FC = () => {
               <select 
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value as TransactionStatus | ''); setPage(1); }}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="completed">{isRTL ? 'مكتمل' : 'Completed'}</option>
@@ -356,7 +356,7 @@ const PaymentManagement: React.FC = () => {
         )}
 
         {/* Payments Table */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 shadow-lg overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-blue-500 animate-spin" />
@@ -365,62 +365,62 @@ const PaymentManagement: React.FC = () => {
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'المعاملة' : 'Transaction'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'النوع' : 'Type'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'المبلغ' : 'Amount'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'المستخدم' : 'User'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'التاريخ' : 'Date'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الحالة' : 'Status'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الإجراءات' : 'Actions'}
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {transactions.map((transaction) => (
-                      <tr key={transaction.id} className="hover:bg-gray-700 transition-colors">
+                      <tr key={transaction.id} className="hover:bg-muted transition-colors">
                         <td className="px-6 py-4">
                           <div>
-                            <p className="font-medium text-white font-mono text-sm">
+                            <p className="font-medium text-foreground font-mono text-sm">
                               {transaction.id.substring(0, 8)}...
                             </p>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-muted-foreground">
                               {paymentsService.getMethodLabel(transaction.method, isRTL)}
                             </p>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-white">
+                          <span className="text-foreground">
                             {paymentsService.getTypeLabel(transaction.type, isRTL)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-white font-semibold">
+                          <span className="text-foreground font-semibold">
                             {formatCurrency(transaction.amount, transaction.currency)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm">
-                            <p className="text-white">{transaction.user?.fullName || 'N/A'}</p>
-                            <p className="text-gray-400">{transaction.user?.email || ''}</p>
+                            <p className="text-foreground">{transaction.user?.fullName || 'N/A'}</p>
+                            <p className="text-muted-foreground">{transaction.user?.email || ''}</p>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-white">{formatDate(transaction.createdAt)}</span>
+                          <span className="text-foreground">{formatDate(transaction.createdAt)}</span>
                         </td>
                         <td className="px-6 py-4">
                           {getStatusBadge(transaction.status)}
@@ -428,7 +428,7 @@ const PaymentManagement: React.FC = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <button
-                              className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded transition-colors"
+                              className="p-2 text-blue-400 hover:text-blue-300 hover:bg-muted rounded transition-colors"
                               title={isRTL ? 'عرض التفاصيل' : 'View Details'}
                             >
                               <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
@@ -438,14 +438,14 @@ const PaymentManagement: React.FC = () => {
                               <>
                                 <button
                                   onClick={() => handleApprove(transaction.id)}
-                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors"
                                   title={isRTL ? 'تأكيد' : 'Approve'}
                                 >
                                   <FontAwesomeIcon icon={faCheck} className="h-4 w-4" />
                                 </button>
                                 <button
                                   onClick={() => handleReject(transaction.id)}
-                                  className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded transition-colors"
+                                  className="p-2 text-red-400 hover:text-red-300 hover:bg-muted rounded transition-colors"
                                   title={isRTL ? 'رفض' : 'Reject'}
                                 >
                                   <FontAwesomeIcon icon={faTimes} className="h-4 w-4" />
@@ -463,7 +463,7 @@ const PaymentManagement: React.FC = () => {
               {transactions.length === 0 && !loading && (
                 <div className="text-center py-12">
                   <FontAwesomeIcon icon={faCreditCard} className="h-16 w-16 text-gray-600 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-400 mb-2">
+                  <h3 className="text-lg font-medium text-muted-foreground mb-2">
                     {isRTL ? 'لا توجد معاملات' : 'No transactions found'}
                   </h3>
                   <p className="text-gray-500">
@@ -474,8 +474,8 @@ const PaymentManagement: React.FC = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-700">
-                  <p className="text-sm text-gray-400">
+                <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
                     {isRTL 
                       ? `عرض ${((page - 1) * limit) + 1}-${Math.min(page * limit, total)} من ${total}`
                       : `Showing ${((page - 1) * limit) + 1}-${Math.min(page * limit, total)} of ${total}`
@@ -487,7 +487,7 @@ const PaymentManagement: React.FC = () => {
                       size="sm"
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="border-gray-600 text-gray-300"
+                      className="border-border text-muted-foreground"
                     >
                       {isRTL ? 'السابق' : 'Previous'}
                     </Button>
@@ -496,7 +496,7 @@ const PaymentManagement: React.FC = () => {
                       size="sm"
                       onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="border-gray-600 text-gray-300"
+                      className="border-border text-muted-foreground"
                     >
                       {isRTL ? 'التالي' : 'Next'}
                     </Button>

@@ -339,20 +339,20 @@ const UsersManagement: React.FC = () => {
   const getRoleBadge = (role: string) => {
     const roleConfig: Record<string, { bg: string; text: string; labelEn: string; labelAr: string }> = {
       owner: { bg: 'bg-yellow-500', text: 'text-black', labelEn: 'Owner', labelAr: 'مالك' },
-      requester: { bg: 'bg-blue-500', text: 'text-white', labelEn: 'Requester', labelAr: 'طالب' },
-      renter: { bg: 'bg-blue-500', text: 'text-white', labelEn: 'Renter', labelAr: 'مستأجر' },
-      hybrid: { bg: 'bg-purple-500', text: 'text-white', labelEn: 'Hybrid', labelAr: 'هجين' },
-      super_admin: { bg: 'bg-red-500', text: 'text-white', labelEn: 'Super Admin', labelAr: 'مشرف عام' },
-      booking_admin: { bg: 'bg-green-500', text: 'text-white', labelEn: 'Booking Admin', labelAr: 'مشرف حجوزات' },
-      content_admin: { bg: 'bg-teal-500', text: 'text-white', labelEn: 'Content Admin', labelAr: 'مشرف محتوى' },
-      support_agent: { bg: 'bg-orange-500', text: 'text-white', labelEn: 'Support', labelAr: 'دعم' },
-      admin: { bg: 'bg-green-500', text: 'text-white', labelEn: 'Admin', labelAr: 'مشرف' },
+      requester: { bg: 'bg-blue-500', text: 'text-foreground', labelEn: 'Requester', labelAr: 'طالب' },
+      renter: { bg: 'bg-blue-500', text: 'text-foreground', labelEn: 'Renter', labelAr: 'مستأجر' },
+      hybrid: { bg: 'bg-purple-500', text: 'text-foreground', labelEn: 'Hybrid', labelAr: 'هجين' },
+      super_admin: { bg: 'bg-red-500', text: 'text-foreground', labelEn: 'Super Admin', labelAr: 'مشرف عام' },
+      booking_admin: { bg: 'bg-green-500', text: 'text-foreground', labelEn: 'Booking Admin', labelAr: 'مشرف حجوزات' },
+      content_admin: { bg: 'bg-teal-500', text: 'text-foreground', labelEn: 'Content Admin', labelAr: 'مشرف محتوى' },
+      support_agent: { bg: 'bg-orange-500', text: 'text-foreground', labelEn: 'Support', labelAr: 'دعم' },
+      admin: { bg: 'bg-green-500', text: 'text-foreground', labelEn: 'Admin', labelAr: 'مشرف' },
     };
 
     const config = roleConfig[role?.toLowerCase()];
     if (!config) {
       return (
-        <span className="px-2 py-1 bg-gray-500 text-white text-xs rounded-full font-medium">
+        <span className="px-2 py-1 bg-gray-500 text-foreground text-xs rounded-full font-medium">
           {role || 'Unknown'}
         </span>
       );
@@ -381,14 +381,14 @@ const UsersManagement: React.FC = () => {
     if (!config) {
       // Default fallback for unknown status
       return (
-        <span className="px-2 py-1 rounded-full text-xs font-medium text-white bg-gray-500">
+        <span className="px-2 py-1 rounded-full text-xs font-medium text-foreground bg-gray-500">
           {status}
         </span>
       );
     }
 
     return (
-      <span className={cn("px-2 py-1 rounded-full text-xs font-medium text-white", config.color)}>
+      <span className={cn("px-2 py-1 rounded-full text-xs font-medium text-foreground", config.color)}>
         {config.text}
       </span>
     );
@@ -409,15 +409,15 @@ const UsersManagement: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header with Add User and Export Buttons */}
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold text-foreground">
               {isRTL ? 'إدارة المستخدمين' : 'User Management'}
             </h1>
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-muted-foreground text-sm mt-1">
               {isRTL ? `${totalUsers} مستخدم مسجل` : `${totalUsers} registered users`}
             </p>
           </div>
@@ -441,14 +441,14 @@ const UsersManagement: React.FC = () => {
         </div>
       
         {/* Filters and Search */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Search */}
             <div className="lg:col-span-2">
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn('absolute top-3 h-4 w-4 text-gray-400', isRTL ? 'right-3' : 'left-3')} 
+                  className={cn('absolute top-3 h-4 w-4 text-muted-foreground', isRTL ? 'right-3' : 'left-3')} 
                 />
                 <input
                   type="text"
@@ -456,7 +456,7 @@ const UsersManagement: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn(
-                    'w-full bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                    'w-full bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                     isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4',
                     'py-2'
                   )}
@@ -469,7 +469,7 @@ const UsersManagement: React.FC = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الأدوار' : 'All Roles'}</option>
                 <option value="owner">{isRTL ? 'مالك' : 'Owner'}</option>
@@ -482,7 +482,7 @@ const UsersManagement: React.FC = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="active">{isRTL ? 'نشط' : 'Active'}</option>
@@ -497,7 +497,7 @@ const UsersManagement: React.FC = () => {
               <select
                 value={activityFilter}
                 onChange={(e) => setActivityFilter(e.target.value)}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع المستخدمين' : 'All Users'}</option>
                 <option value="recent">{isRTL ? 'نشط مؤخراً' : 'Recently Active'}</option>
@@ -507,75 +507,75 @@ const UsersManagement: React.FC = () => {
         </div>
 
         {/* Users Table */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 shadow-lg overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                  <th className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                       onClick={() => handleSort('name')}>
                     <div className="flex items-center gap-2">
                       <span>{isRTL ? 'الاسم' : 'Name'}</span>
                       <FontAwesomeIcon icon={getSortIcon('name')} className="h-3 w-3" />
                     </div>
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'التواصل' : 'Contact'}
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'الدور' : 'Role'}
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                  <th className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                       onClick={() => handleSort('status')}>
                     <div className="flex items-center gap-2">
                       <span>{isRTL ? 'الحالة' : 'Status'}</span>
                       <FontAwesomeIcon icon={getSortIcon('status')} className="h-3 w-3" />
                     </div>
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                  <th className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                       onClick={() => handleSort('createdAt')}>
                     <div className="flex items-center gap-2">
                       <span>{isRTL ? 'تاريخ التسجيل' : 'Registration Date'}</span>
                       <FontAwesomeIcon icon={getSortIcon('createdAt')} className="h-3 w-3" />
                     </div>
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                  <th className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                       onClick={() => handleSort('lastLogin')}>
                     <div className="flex items-center gap-2">
                       <span>{isRTL ? 'آخر تسجيل دخول' : 'Last Login'}</span>
                       <FontAwesomeIcon icon={getSortIcon('lastLogin')} className="h-3 w-3" />
                     </div>
                   </th>
-                  <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={user.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                          <span className="text-white font-medium text-sm">
+                          <span className="text-foreground font-medium text-sm">
                             {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-white">{user.fullName || 'Unknown User'}</p>
+                          <p className="font-medium text-foreground">{user.fullName || 'Unknown User'}</p>
                           <div className="flex items-center gap-2 mt-1">
                             {/* {user.verificationStatus === 'verified' && (
                               <FontAwesomeIcon icon={faCheckCircle} className="h-3 w-3 text-green-500" />
                             )} */}
-                            <span className="text-xs text-gray-400">{user.email}</span>
+                            <span className="text-xs text-muted-foreground">{user.email}</span>
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-sm text-white">{user.email || '-'}</p>
-                        <p className="text-sm text-gray-400">{user.mobileNumber}</p>
+                        <p className="text-sm text-foreground">{user.email || '-'}</p>
+                        <p className="text-sm text-muted-foreground">{user.mobileNumber}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -585,7 +585,7 @@ const UsersManagement: React.FC = () => {
                       <div className="space-y-1">
                         {getStatusBadge(user.isActive ? 'active' : 'inactive')}
                         {user.isVerified && (
-                          <span className="block px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500 w-fit">
+                          <span className="block px-2 py-1 rounded-full text-xs font-medium text-foreground bg-blue-500 w-fit">
                             {isRTL ? 'موثق' : 'Verified'}
                           </span>
                         )}
@@ -593,44 +593,44 @@ const UsersManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-xs text-gray-400">{formatDate(user.createdAt)}</p>
+                        <p className="text-xs text-muted-foreground">{formatDate(user.createdAt)}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-xs text-gray-400">{user.lastLogin ? formatDate(user.lastLogin) : '-'}</p>
+                        <p className="text-xs text-muted-foreground">{user.lastLogin ? formatDate(user.lastLogin) : '-'}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setSelectedUser(user)}
-                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded transition-colors"
+                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-muted rounded transition-colors"
                           title={isRTL ? 'عرض الملف' : 'View Profile'}
                         >
                           <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleEditUser(user)}
-                          className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                          className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors"
                           title={isRTL ? 'تعديل' : 'Edit'}
                         >
                           <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
                         </button>
                         <button
-                          className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-gray-600 rounded transition-colors"
+                          className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-muted rounded transition-colors"
                           title={isRTL ? 'إيقاف' : 'Suspend'}
                         >
                           <FontAwesomeIcon icon={faUserSlash} className="h-4 w-4" />
                         </button>
                         <button
-                          className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded transition-colors"
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-muted rounded transition-colors"
                           title={isRTL ? 'إبلاغ' : 'Flag'}
                         >
                           <FontAwesomeIcon icon={faFlag} className="h-4 w-4" />
                         </button>
                         <button
-                          className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors"
+                          className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors"
                           title={isRTL ? 'رسالة' : 'Message'}
                         >
                           <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4" />
@@ -644,16 +644,16 @@ const UsersManagement: React.FC = () => {
           </div>
           
           {/* Infinite Scroll Sentinel */}
-          <div ref={sentinelRef} className="bg-gray-700 px-6 py-4 border-t border-gray-600">
+          <div ref={sentinelRef} className="bg-muted px-6 py-4 border-t border-border">
             {loadingMore ? (
               <div className="flex justify-center items-center py-2">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
-                <span className={cn("text-gray-400 text-sm", isRTL ? "mr-2" : "ml-2")}>
+                <span className={cn("text-muted-foreground text-sm", isRTL ? "mr-2" : "ml-2")}>
                   {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
                 </span>
               </div>
             ) : (
-              <div className="text-sm text-gray-400 text-center">
+              <div className="text-sm text-muted-foreground text-center">
                 {hasMore 
                   ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
                   : (isRTL 
@@ -668,30 +668,30 @@ const UsersManagement: React.FC = () => {
       {/* Profile Drawer */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={cn('bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-4xl h-[90vh] flex flex-col', isRTL ? 'font-arabic' : 'font-montserrat')}>
+          <div className={cn('bg-card rounded-2xl border border-border w-full max-w-4xl h-[90vh] flex flex-col', isRTL ? 'font-arabic' : 'font-montserrat')}>
             {/* Drawer Header */}
-            <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-gray-700">
+            <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-border">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-medium">
+                  <span className="text-foreground font-medium">
                     {selectedUser.fullName ? selectedUser.fullName.charAt(0).toUpperCase() : 'U'}
                   </span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-white">{selectedUser.fullName || 'Unknown User'}</h2>
-                  <p className="text-sm text-gray-400">{selectedUser.email}</p>
+                  <h2 className="text-lg font-semibold text-foreground">{selectedUser.fullName || 'Unknown User'}</h2>
+                  <p className="text-sm text-muted-foreground">{selectedUser.email}</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedUser(null)}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
               >
                 <FontAwesomeIcon icon={faTimes} className="h-5 w-5" />
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex-shrink-0 border-b border-gray-700">
+            <div className="flex-shrink-0 border-b border-border">
               <div className="flex overflow-x-auto">
                 {[
                   { id: 'details', label: isRTL ? 'التفاصيل' : 'Details', icon: faUsers },
@@ -707,7 +707,7 @@ const UsersManagement: React.FC = () => {
                       'flex items-center gap-2 px-6 py-3 font-medium border-b-2 transition-colors',
                       activeTab === tab.id
                         ? 'border-blue-500 text-blue-400'
-                        : 'border-transparent text-gray-400 hover:text-white'
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
                     )}
                   >
                     <FontAwesomeIcon icon={tab.icon} className="h-4 w-4" />
@@ -721,66 +721,66 @@ const UsersManagement: React.FC = () => {
             <div className="flex-1 p-6 overflow-y-auto">
               {activeTab === 'details' && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {isRTL ? 'معلومات المستخدم' : 'User Information'}
                   </h3>
                   
                   {/* User Details Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الاسم الكامل' : 'Full Name'}</p>
-                      <p className="text-white font-medium">{selectedUser.fullName || '-'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'الاسم الكامل' : 'Full Name'}</p>
+                      <p className="text-foreground font-medium">{selectedUser.fullName || '-'}</p>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'البريد الإلكتروني' : 'Email'}</p>
-                      <p className="text-white font-medium">{selectedUser.email || '-'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'البريد الإلكتروني' : 'Email'}</p>
+                      <p className="text-foreground font-medium">{selectedUser.email || '-'}</p>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'رقم الجوال' : 'Mobile Number'}</p>
-                      <p className="text-white font-medium">{selectedUser.mobileNumber || '-'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'رقم الجوال' : 'Mobile Number'}</p>
+                      <p className="text-foreground font-medium">{selectedUser.mobileNumber || '-'}</p>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الدور' : 'Role'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'الدور' : 'Role'}</p>
                       <div className="mt-1">{getRoleBadge(selectedUser.role)}</div>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'الحالة' : 'Status'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'الحالة' : 'Status'}</p>
                       <div className="flex gap-2 mt-1">
                         {getStatusBadge(selectedUser.isActive ? 'active' : 'inactive')}
                         {selectedUser.isVerified && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500">
+                          <span className="px-2 py-1 rounded-full text-xs font-medium text-foreground bg-blue-500">
                             {isRTL ? 'موثق' : 'Verified'}
                           </span>
                         )}
                       </div>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'تاريخ التسجيل' : 'Registered'}</p>
-                      <p className="text-white font-medium">{formatDate(selectedUser.createdAt)}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'تاريخ التسجيل' : 'Registered'}</p>
+                      <p className="text-foreground font-medium">{formatDate(selectedUser.createdAt)}</p>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'آخر تسجيل دخول' : 'Last Login'}</p>
-                      <p className="text-white font-medium">{selectedUser.lastLogin ? formatDate(selectedUser.lastLogin) : '-'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'آخر تسجيل دخول' : 'Last Login'}</p>
+                      <p className="text-foreground font-medium">{selectedUser.lastLogin ? formatDate(selectedUser.lastLogin) : '-'}</p>
                     </div>
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <p className="text-sm text-gray-400 mb-1">{isRTL ? 'المدينة' : 'City'}</p>
-                      <p className="text-white font-medium">{selectedUser.city || '-'}</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground mb-1">{isRTL ? 'المدينة' : 'City'}</p>
+                      <p className="text-foreground font-medium">{selectedUser.city || '-'}</p>
                     </div>
                   </div>
 
                   {/* Statistics */}
                   <div className="mt-6">
-                    <h4 className="text-md font-semibold text-white mb-4">
+                    <h4 className="text-md font-semibold text-foreground mb-4">
                       {isRTL ? 'الإحصائيات' : 'Statistics'}
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-gray-700 rounded-lg p-4 text-center">
+                      <div className="bg-muted rounded-lg p-4 text-center">
                         <p className="text-2xl font-bold text-blue-400">{selectedUser.totalBookings || 0}</p>
-                        <p className="text-sm text-gray-400">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
+                        <p className="text-sm text-muted-foreground">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
                       </div>
-                      <div className="bg-gray-700 rounded-lg p-4 text-center">
+                      <div className="bg-muted rounded-lg p-4 text-center">
                         <p className="text-2xl font-bold text-green-400">{selectedUser.totalEquipment || 0}</p>
-                        <p className="text-sm text-gray-400">{isRTL ? 'المعدات' : 'Equipment'}</p>
+                        <p className="text-sm text-muted-foreground">{isRTL ? 'المعدات' : 'Equipment'}</p>
                       </div>
                     </div>
                   </div>
@@ -789,21 +789,21 @@ const UsersManagement: React.FC = () => {
 
               {activeTab === 'bookings' && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {isRTL ? 'سجل الحجوزات' : 'Booking History'}
                   </h3>
                   {userBookings.map((booking) => (
-                    <div key={booking.id} className="bg-gray-700 rounded-lg p-4">
+                    <div key={booking.id} className="bg-muted rounded-lg p-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="font-medium text-white">{booking.equipmentName}</h4>
-                          <p className="text-sm text-gray-400">
+                          <h4 className="font-medium text-foreground">{booking.equipmentName}</h4>
+                          <p className="text-sm text-muted-foreground">
                             {formatDate(booking.startDate)} - {formatDate(booking.endDate)}
                           </p>
                         </div>
                         <div className="text-right">
                           {getStatusBadge(booking.status)}
-                          <p className="text-white font-medium mt-1">{formatCurrency(booking.amount)}</p>
+                          <p className="text-foreground font-medium mt-1">{formatCurrency(booking.amount)}</p>
                         </div>
                       </div>
                     </div>
@@ -813,20 +813,20 @@ const UsersManagement: React.FC = () => {
 
               {activeTab === 'equipment' && selectedUser.role === 'owner' && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {isRTL ? 'المعدات المملوكة' : 'Owned Equipment'}
                   </h3>
                   {userEquipment.map((equipment) => (
-                    <div key={equipment.id} className="bg-gray-700 rounded-lg p-4">
+                    <div key={equipment.id} className="bg-muted rounded-lg p-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="font-medium text-white">{equipment.name}</h4>
-                          <p className="text-sm text-gray-400">{equipment.category}</p>
+                          <h4 className="font-medium text-foreground">{equipment.name}</h4>
+                          <p className="text-sm text-muted-foreground">{equipment.category}</p>
                         </div>
                         <div className="text-right">
                           {getStatusBadge(equipment.status)}
-                          <p className="text-white font-medium mt-1">{formatCurrency(equipment.revenue)}</p>
-                          <p className="text-xs text-gray-400">{equipment.bookings} bookings</p>
+                          <p className="text-foreground font-medium mt-1">{formatCurrency(equipment.revenue)}</p>
+                          <p className="text-xs text-muted-foreground">{equipment.bookings} bookings</p>
                         </div>
                       </div>
                     </div>
@@ -836,19 +836,19 @@ const UsersManagement: React.FC = () => {
 
               {activeTab === 'documents' && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {isRTL ? 'الوثائق المرفوعة' : 'Uploaded Documents'}
                   </h3>
                   {userDocuments.map((doc) => (
-                    <div key={doc.id} className="bg-gray-700 rounded-lg p-4">
+                    <div key={doc.id} className="bg-muted rounded-lg p-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="font-medium text-white">{doc.name}</h4>
-                          <p className="text-sm text-gray-400 capitalize">{doc.type}</p>
+                          <h4 className="font-medium text-foreground">{doc.name}</h4>
+                          <p className="text-sm text-muted-foreground capitalize">{doc.type}</p>
                         </div>
                         <div className="text-right">
                           {getStatusBadge(doc.status)}
-                          <p className="text-xs text-gray-400 mt-1">{formatDate(doc.uploadDate)}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{formatDate(doc.uploadDate)}</p>
                         </div>
                       </div>
                     </div>
@@ -859,7 +859,7 @@ const UsersManagement: React.FC = () => {
               {activeTab === 'notes' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {isRTL ? 'ملاحظات الإدارة' : 'Admin Notes'}
                     </h3>
                     <Button variant="accent" size="sm">
@@ -870,21 +870,21 @@ const UsersManagement: React.FC = () => {
                     </Button>
                   </div>
                   {userNotes.map((note) => (
-                    <div key={note.id} className="bg-gray-700 rounded-lg p-4">
+                    <div key={note.id} className="bg-muted rounded-lg p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <p className="text-white text-sm">{note.text}</p>
+                          <p className="text-foreground text-sm">{note.text}</p>
                           <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs text-gray-400">{note.author}</span>
+                            <span className="text-xs text-muted-foreground">{note.author}</span>
                             <span className="text-xs text-gray-500">•</span>
-                            <span className="text-xs text-gray-400">{formatDate(note.date)}</span>
+                            <span className="text-xs text-muted-foreground">{formatDate(note.date)}</span>
                           </div>
                         </div>
                         <span className={cn(
                           'px-2 py-1 rounded text-xs font-medium',
-                          note.type === 'success' ? 'bg-green-500 text-white' :
+                          note.type === 'success' ? 'bg-green-500 text-foreground' :
                           note.type === 'warning' ? 'bg-yellow-500 text-black' :
-                          'bg-blue-500 text-white'
+                          'bg-blue-500 text-foreground'
                         )}>
                           {note.type === 'success' ? (isRTL ? 'إيجابي' : 'Success') :
                            note.type === 'warning' ? (isRTL ? 'تحذير' : 'Warning') :

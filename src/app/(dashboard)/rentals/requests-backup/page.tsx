@@ -208,7 +208,7 @@ const EquipmentRequests: React.FC = () => {
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-warning)' }}
               >
-                <FontAwesomeIcon icon={faClock} className="text-white text-xl" />
+                <FontAwesomeIcon icon={faClock} className="text-foreground text-xl" />
               </div>
             </div>
           </div>
@@ -229,7 +229,7 @@ const EquipmentRequests: React.FC = () => {
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-success)' }}
               >
-                <FontAwesomeIcon icon={faCheck} className="text-white text-xl" />
+                <FontAwesomeIcon icon={faCheck} className="text-foreground text-xl" />
               </div>
             </div>
           </div>
@@ -250,7 +250,7 @@ const EquipmentRequests: React.FC = () => {
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'var(--awnash-accent)' }}
               >
-                <FontAwesomeIcon icon={faTruck} className="text-white text-xl" />
+                <FontAwesomeIcon icon={faTruck} className="text-foreground text-xl" />
               </div>
             </div>
           </div>
@@ -263,7 +263,7 @@ const EquipmentRequests: React.FC = () => {
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex flex-col md:flex-row gap-4 items-center">
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder={isRTL ? 'البحث في الطلبات...' : 'Search requests...'}
@@ -332,14 +332,14 @@ const EquipmentRequests: React.FC = () => {
                   <td>{request.requesterName}</td>
                   <td>
                     <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faTruck} className="text-gray-400" />
+                      <FontAwesomeIcon icon={faTruck} className="text-muted-foreground" />
                       <span>{request.equipmentType}</span>
                       <span className="text-xs text-gray-500">({request.size})</span>
                     </div>
                   </td>
                   <td>
                     <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400" />
+                      <FontAwesomeIcon icon={faMapMarkerAlt} className="text-muted-foreground" />
                       <span>{request.location}</span>
                     </div>
                   </td>

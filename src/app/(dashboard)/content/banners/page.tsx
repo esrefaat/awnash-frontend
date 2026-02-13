@@ -174,7 +174,7 @@ const ContentManager: React.FC = () => {
       case 'web': return 'text-blue-400';
       case 'app': return 'text-green-400';
       case 'both': return 'text-purple-400';
-      default: return 'text-gray-400';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -196,31 +196,31 @@ const ContentManager: React.FC = () => {
   const renderTextSnippetsTab = () => (
     <div className="space-y-6">
       {/* Search and Filters */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               {isRTL ? 'البحث' : 'Search'}
             </label>
             <div className="relative">
-              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder={isRTL ? 'البحث بالمفتاح أو النص...' : 'Search by key or text...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               {isRTL ? 'الموقع' : 'Location'}
             </label>
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value as any)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">{isRTL ? 'جميع المواقع' : 'All Locations'}</option>
               <option value="web">{isRTL ? 'الموقع الإلكتروني' : 'Website'}</option>
@@ -233,8 +233,8 @@ const ContentManager: React.FC = () => {
               onClick={() => setGroupByScreen(!groupByScreen)}
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
                 groupByScreen 
-                  ? 'bg-yellow-600 text-white hover:bg-yellow-700' 
-                  : 'bg-gray-600 text-gray-300 hover:bg-gray-700'
+                  ? 'bg-yellow-600 text-foreground hover:bg-yellow-700' 
+                  : 'bg-gray-600 text-muted-foreground hover:bg-muted'
               }`}
             >
               <FontAwesomeIcon icon={faFilter} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -246,48 +246,48 @@ const ContentManager: React.FC = () => {
 
       {/* Text Snippets Table */}
       {Object.entries(groupedSnippets).map(([screenName, snippets]) => (
-        <div key={screenName} className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-700">
-            <h3 className="text-xl font-bold text-white">
+        <div key={screenName} className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-xl font-bold text-foreground">
               {groupByScreen ? screenName : (isRTL ? 'جميع النصوص' : 'All Text Snippets')}
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'المفتاح' : 'Key'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'النص (إنجليزي)' : 'Text (English)'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'النص (عربي)' : 'Text (Arabic)'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الموقع' : 'Location'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'آخر تحديث' : 'Last Updated'}
                   </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {snippets.map((snippet) => (
-                  <tr key={snippet.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={snippet.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-blue-400">
                       {snippet.key}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-300 max-w-xs">
+                    <td className="px-6 py-4 text-sm text-muted-foreground max-w-xs">
                       <div className="truncate" title={snippet.textEn}>
                         {snippet.textEn}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-300 max-w-xs" dir="rtl">
+                    <td className="px-6 py-4 text-sm text-muted-foreground max-w-xs" dir="rtl">
                       <div className="truncate" title={snippet.textAr}>
                         {snippet.textAr}
                       </div>
@@ -298,10 +298,10 @@ const ContentManager: React.FC = () => {
                           icon={getLocationIcon(snippet.location)} 
                           className={`h-4 w-4 ${getLocationColor(snippet.location)} ${isRTL ? 'ml-2' : 'mr-2'}`}  
                         />
-                        <span className="text-sm text-gray-300 capitalize">{snippet.location}</span>
+                        <span className="text-sm text-muted-foreground capitalize">{snippet.location}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       <div>
                         <div>{snippet.lastEditedBy}</div>
                         <div className="text-xs">{snippet.lastEditedDate}</div>
@@ -317,7 +317,7 @@ const ContentManager: React.FC = () => {
                           <FontAwesomeIcon icon={faEdit} />
                         </button>
                         <button
-                          className="text-gray-400 hover:text-gray-300"
+                          className="text-muted-foreground hover:text-muted-foreground"
                           title={isRTL ? 'التاريخ' : 'History'}
                         >
                           <FontAwesomeIcon icon={faHistory} />
@@ -347,7 +347,7 @@ const ContentManager: React.FC = () => {
       {/* Banner Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {banners.map((banner) => (
-          <div key={banner.id} className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
+          <div key={banner.id} className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
             <div className="relative">
               <img
                 src={banner.imageUrl}
@@ -363,8 +363,8 @@ const ContentManager: React.FC = () => {
                   }}
                   className={`p-2 rounded-full ${
                     banner.enabled 
-                      ? 'bg-yellow-600 text-white' 
-                      : 'bg-gray-600 text-gray-300'
+                      ? 'bg-yellow-600 text-foreground' 
+                      : 'bg-gray-600 text-muted-foreground'
                   } hover:bg-opacity-80 transition-colors`}
                 >
                   <FontAwesomeIcon icon={banner.enabled ? faToggleOn : faToggleOff} />
@@ -373,7 +373,7 @@ const ContentManager: React.FC = () => {
             </div>
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">{banner.name}</h3>
+                <h3 className="text-lg font-semibold text-foreground">{banner.name}</h3>
                 <div className="flex items-center">
                   <FontAwesomeIcon 
                     icon={getLocationIcon(banner.location)} 
@@ -384,19 +384,19 @@ const ContentManager: React.FC = () => {
               
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-gray-400 uppercase">
+                  <label className="text-xs text-muted-foreground uppercase">
                     {isRTL ? 'نص الدعوة للعمل' : 'CTA Text'}
                   </label>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-muted-foreground">
                     {isRTL ? banner.ctaTextAr : banner.ctaTextEn}
                   </div>
                 </div>
                 
                 <div>
-                  <label className="text-xs text-gray-400 uppercase">
+                  <label className="text-xs text-muted-foreground uppercase">
                     {isRTL ? 'الفترة' : 'Duration'}
                   </label>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-muted-foreground">
                     {banner.startDate} - {banner.endDate}
                   </div>
                 </div>
@@ -419,10 +419,10 @@ const ContentManager: React.FC = () => {
         ))}
         
         {/* Add New Banner Card */}
-        <div className="bg-gray-800 rounded-xl border-2 border-dashed border-gray-600 shadow-lg flex items-center justify-center min-h-[400px] hover:border-blue-500 transition-colors cursor-pointer">
+        <div className="bg-card rounded-xl border-2 border-dashed border-border shadow-lg flex items-center justify-center min-h-[400px] hover:border-blue-500 transition-colors cursor-pointer">
           <div className="text-center">
-            <FontAwesomeIcon icon={faPlus} className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-400 mb-2">
+            <FontAwesomeIcon icon={faPlus} className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
               {isRTL ? 'إضافة بانر جديد' : 'Add New Banner'}
             </h3>
             <p className="text-sm text-gray-500">
@@ -433,8 +433,8 @@ const ContentManager: React.FC = () => {
       </div>
 
       {/* Preview Controls */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-lg">
-        <h3 className="text-lg font-semibold text-white mb-4">
+      <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           {isRTL ? 'عناصر التحكم في المعاينة' : 'Preview Controls'}
         </h3>
         <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
@@ -456,21 +456,20 @@ const ContentManager: React.FC = () => {
   );
 
   return (
-    <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+        <div>
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {isRTL ? 'مدير محتوى الموقع والتطبيق' : 'Website & App Content Manager'}
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isRTL ? 'إدارة النصوص والبانرات الظاهرة للمستخدمين بدون تغيير الكود' : 'Manage user-facing texts and banners without code changes'}
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
-          <div className="border-b border-gray-700">
+        <div className="bg-card rounded-xl border border-border shadow-lg">
+          <div className="border-b border-border">
             <nav className={cn("-mb-px flex space-x-4 px-6 overflow-x-auto", isRTL && "space-x-reverse")}>
               {[
                 { id: 'snippets', label: isRTL ? 'إدارة النصوص' : 'Text Snippets', icon: faLanguage },
@@ -482,7 +481,7 @@ const ContentManager: React.FC = () => {
                   className={`py-4 px-3 border-b-2 font-medium text-sm flex items-center whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'border-blue-700 text-blue-400'
-                      : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                      : 'border-transparent text-muted-foreground hover:text-muted-foreground hover:border-border'
                   }`}
                 >
                   <FontAwesomeIcon icon={tab.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -497,9 +496,8 @@ const ContentManager: React.FC = () => {
             {activeTab === 'banners' && renderBannersTab()}
           </div>
         </div>
-      </div>
     </div>
   );
 };
 
-export default ContentManager; 
+export default ContentManager;

@@ -319,7 +319,7 @@ const MediaModeration: React.FC = () => {
   };
 
   const getModerationScoreColor = (score?: number) => {
-    if (score === undefined || score === null) return 'text-gray-400';
+    if (score === undefined || score === null) return 'text-muted-foreground';
     if (score < 50) return 'text-green-400';
     if (score < 90) return 'text-orange-400';
     return 'text-red-400';
@@ -497,7 +497,7 @@ const MediaModeration: React.FC = () => {
               'text-xs px-2 py-0.5 rounded',
               label.confidence >= 90 ? 'bg-red-500/20 text-red-400' :
               label.confidence >= 70 ? 'bg-orange-500/20 text-orange-400' :
-              'bg-gray-500/20 text-gray-400'
+              'bg-gray-500/20 text-muted-foreground'
             )}
           >
             {label.name} ({label.confidence.toFixed(0)}%)
@@ -515,11 +515,11 @@ const MediaModeration: React.FC = () => {
   const flaggedCount = mediaFiles.filter(m => m.status === MediaStatus.FLAGGED).length;
 
   return (
-    <div className={cn("min-h-screen bg-gray-900", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={cn("min-h-screen bg-background", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Success Message */}
         {successMessage && (
-          <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-slide-in">
+          <div className="fixed top-4 right-4 z-50 bg-green-600 text-foreground px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-slide-in">
             <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
             <span>{successMessage}</span>
           </div>
@@ -529,13 +529,13 @@ const MediaModeration: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
             <div className="p-3 bg-purple-600 rounded-2xl">
-              <FontAwesomeIcon icon={faShieldHalved} className="h-6 w-6 text-white" />
+              <FontAwesomeIcon icon={faShieldHalved} className="h-6 w-6 text-foreground" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 {isRTL ? 'إشراف على المحتوى' : 'Content Moderation'}
               </h1>
-              <p className="text-gray-400 mt-1">
+              <p className="text-muted-foreground mt-1">
                 {isRTL 
                   ? 'مراجعة والموافقة على الوسائط المرفوعة من المستخدمين' 
                   : 'Review and approve user-uploaded media content'}
@@ -545,36 +545,36 @@ const MediaModeration: React.FC = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-yellow-500/20 rounded-lg">
                   <FontAwesomeIcon icon={faClockRotateLeft} className="h-5 w-5 text-yellow-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{pendingCount}</p>
-                  <p className="text-sm text-gray-400">{isRTL ? 'قيد المراجعة' : 'Pending Review'}</p>
+                  <p className="text-2xl font-bold text-foreground">{pendingCount}</p>
+                  <p className="text-sm text-muted-foreground">{isRTL ? 'قيد المراجعة' : 'Pending Review'}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-orange-500/20 rounded-lg">
                   <FontAwesomeIcon icon={faFlag} className="h-5 w-5 text-orange-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{flaggedCount}</p>
-                  <p className="text-sm text-gray-400">{isRTL ? 'مُعلَّم للمراجعة' : 'Flagged for Review'}</p>
+                  <p className="text-2xl font-bold text-foreground">{flaggedCount}</p>
+                  <p className="text-sm text-muted-foreground">{isRTL ? 'مُعلَّم للمراجعة' : 'Flagged for Review'}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-purple-500/20 rounded-lg">
                   <FontAwesomeIcon icon={faRobot} className="h-5 w-5 text-purple-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{totalCount}</p>
-                  <p className="text-sm text-gray-400">{isRTL ? 'إجمالي في القائمة' : 'Total in Queue'}</p>
+                  <p className="text-2xl font-bold text-foreground">{totalCount}</p>
+                  <p className="text-sm text-muted-foreground">{isRTL ? 'إجمالي في القائمة' : 'Total in Queue'}</p>
                 </div>
               </div>
             </div>
@@ -589,7 +589,7 @@ const MediaModeration: React.FC = () => {
               <div className={cn('flex items-center gap-3', isRTL && 'space-x-reverse')}>
                 <Button
                   onClick={handleBulkApprove}
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-foreground"
                   disabled={processingIds.size > 0}
                 >
                   {processingIds.size > 0 ? (
@@ -601,7 +601,7 @@ const MediaModeration: React.FC = () => {
                 </Button>
                 <Button
                   onClick={handleBulkReject}
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  className="bg-red-600 hover:bg-red-700 text-foreground"
                   disabled={processingIds.size > 0}
                 >
                   <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
@@ -613,14 +613,14 @@ const MediaModeration: React.FC = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-lg mb-8">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             {/* Search */}
             <div className="lg:col-span-2">
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className={cn('absolute top-3 h-4 w-4 text-gray-400', isRTL ? 'right-3' : 'left-3')}
+                  className={cn('absolute top-3 h-4 w-4 text-muted-foreground', isRTL ? 'right-3' : 'left-3')}
                 />
                 <input
                   type="text"
@@ -628,7 +628,7 @@ const MediaModeration: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn(
-                    'w-full bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent',
+                    'w-full bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-500 focus:border-transparent',
                     isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4',
                     'py-2'
                   )}
@@ -641,7 +641,7 @@ const MediaModeration: React.FC = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value as StatusFilter); setPage(1); }}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-purple-500"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="pending">{isRTL ? 'قيد المراجعة' : 'Pending'}</option>
@@ -656,7 +656,7 @@ const MediaModeration: React.FC = () => {
               <select
                 value={contextFilter}
                 onChange={(e) => { setContextFilter(e.target.value as MediaContext | 'all'); setPage(1); }}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-purple-500"
               >
                 <option value="all">{isRTL ? 'جميع السياقات' : 'All Contexts'}</option>
                 <option value="request">{isRTL ? 'طلبات الحجز' : 'Booking Requests'}</option>
@@ -673,7 +673,7 @@ const MediaModeration: React.FC = () => {
               <select
                 value={mediaTypeFilter}
                 onChange={(e) => setMediaTypeFilter(e.target.value as MediaTypeFilter)}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-purple-500"
               >
                 <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
                 <option value="image">{isRTL ? 'صور' : 'Images'}</option>
@@ -685,18 +685,18 @@ const MediaModeration: React.FC = () => {
 
             {/* Group By Context Toggle + Refresh */}
             <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-muted-foreground">
                 <input
                   type="checkbox"
                   checked={groupByContext}
                   onChange={(e) => setGroupByContext(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-purple-600 focus:ring-purple-500"
+                  className="w-4 h-4 rounded border-border bg-muted text-purple-600 focus:ring-purple-500"
                 />
                 {isRTL ? 'تجميع' : 'Group'}
               </label>
               <Button 
                 onClick={() => fetchMedia(1, false)}
-                className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
+                className="bg-purple-600 hover:bg-purple-700 text-foreground flex-1"
                 disabled={loading}
               >
                 {loading ? (
@@ -726,9 +726,9 @@ const MediaModeration: React.FC = () => {
             <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-purple-500 animate-spin" />
           </div>
         ) : filteredMedia.length === 0 ? (
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-12 text-center">
+          <div className="bg-card rounded-2xl border border-border p-12 text-center">
             <FontAwesomeIcon icon={faImage} className="h-16 w-16 text-gray-600 mb-4" />
-            <h3 className="text-lg font-medium text-gray-400 mb-2">
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">
               {isRTL ? 'لا توجد وسائط' : 'No media found'}
             </h3>
             <p className="text-gray-500">
@@ -738,15 +738,15 @@ const MediaModeration: React.FC = () => {
         ) : (
           <>
             {/* Media Table */}
-            <div className="bg-gray-800 rounded-2xl border border-gray-700 shadow-lg overflow-hidden mb-6">
+            <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden mb-6">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-700">
+                  <thead className="bg-muted">
                     <tr>
                       <th className="px-4 py-4">
                         <button
                           onClick={handleSelectAll}
-                          className="text-white hover:text-purple-400 transition-colors"
+                          className="text-foreground hover:text-purple-400 transition-colors"
                         >
                           <FontAwesomeIcon
                             icon={selectedMedia.length === filteredMedia.filter(m => m.status === MediaStatus.PENDING || m.status === MediaStatus.FLAGGED).length && selectedMedia.length > 0 ? faCheckSquare : faSquare}
@@ -754,11 +754,11 @@ const MediaModeration: React.FC = () => {
                           />
                         </button>
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'معاينة' : 'Preview'}
                       </th>
                       <th
-                        className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                        className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                         onClick={() => handleSort('originalName')}
                       >
                         <div className="flex items-center gap-2">
@@ -766,14 +766,14 @@ const MediaModeration: React.FC = () => {
                           <FontAwesomeIcon icon={getSortIcon('originalName')} className="h-3 w-3" />
                         </div>
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'المستخدم' : 'User'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'السياق' : 'Context'}
                       </th>
                       <th
-                        className={cn('px-6 py-4 text-white font-semibold cursor-pointer hover:bg-gray-600', isRTL ? 'text-right' : 'text-left')}
+                        className={cn('px-6 py-4 text-foreground font-semibold cursor-pointer hover:bg-muted', isRTL ? 'text-right' : 'text-left')}
                         onClick={() => handleSort('createdAt')}
                       >
                         <div className="flex items-center gap-2">
@@ -781,23 +781,23 @@ const MediaModeration: React.FC = () => {
                           <FontAwesomeIcon icon={getSortIcon('createdAt')} className="h-3 w-3" />
                         </div>
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الحالة' : 'Status'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'تصنيف آلي' : 'Auto Labels'}
                       </th>
-                      <th className={cn('px-6 py-4 text-white font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'الإجراءات' : 'Actions'}
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {filteredMedia.map((media) => (
                       <tr
                         key={media.id}
                         className={cn(
-                          'hover:bg-gray-700 transition-colors',
+                          'hover:bg-muted transition-colors',
                           media.status === MediaStatus.FLAGGED && 'bg-orange-900/10 border-orange-500/30',
                           processingIds.has(media.id) && 'opacity-50'
                         )}
@@ -806,7 +806,7 @@ const MediaModeration: React.FC = () => {
                           {(media.status === MediaStatus.PENDING || media.status === MediaStatus.FLAGGED) && (
                             <button
                               onClick={() => handleSelectMedia(media.id)}
-                              className="text-white hover:text-purple-400 transition-colors"
+                              className="text-foreground hover:text-purple-400 transition-colors"
                               disabled={processingIds.has(media.id)}
                             >
                               <FontAwesomeIcon
@@ -822,7 +822,7 @@ const MediaModeration: React.FC = () => {
                             className="relative group"
                           >
                             {media.mediaType === MediaType.IMAGE ? (
-                              <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-700">
+                              <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
                                 <img
                                   src={media.thumbnailUrl || media.url}
                                   alt={media.originalName}
@@ -833,22 +833,22 @@ const MediaModeration: React.FC = () => {
                                   }}
                                 />
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-lg">
-                                  <FontAwesomeIcon icon={faExpand} className="h-5 w-5 text-white" />
+                                  <FontAwesomeIcon icon={faExpand} className="h-5 w-5 text-foreground" />
                                 </div>
                               </div>
                             ) : (
-                              <div className="w-16 h-16 rounded-lg bg-gray-700 flex items-center justify-center">
-                                <FontAwesomeIcon icon={getMediaTypeIcon(media.mediaType)} className="h-6 w-6 text-gray-400" />
+                              <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
+                                <FontAwesomeIcon icon={getMediaTypeIcon(media.mediaType)} className="h-6 w-6 text-muted-foreground" />
                               </div>
                             )}
                           </button>
                         </td>
                         <td className="px-6 py-4">
                           <div>
-                            <p className="font-medium text-white truncate max-w-[200px]" title={media.originalName}>
+                            <p className="font-medium text-foreground truncate max-w-[200px]" title={media.originalName}>
                               {media.originalName}
                             </p>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-muted-foreground">
                               {getMediaTypeLabel(media.mediaType)} • {formatFileSize(media.size)}
                             </p>
                           </div>
@@ -857,11 +857,11 @@ const MediaModeration: React.FC = () => {
                           {media.user ? (
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                                <FontAwesomeIcon icon={faUser} className="h-3 w-3 text-white" />
+                                <FontAwesomeIcon icon={faUser} className="h-3 w-3 text-foreground" />
                               </div>
                               <div>
-                                <p className="font-medium text-white">{media.user.name}</p>
-                                <p className="text-sm text-gray-400">{media.user.email}</p>
+                                <p className="font-medium text-foreground">{media.user.name}</p>
+                                <p className="text-sm text-muted-foreground">{media.user.email}</p>
                               </div>
                             </div>
                           ) : (
@@ -872,7 +872,7 @@ const MediaModeration: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <span className="text-lg">{getContextLabel(media.context).icon}</span>
                             <div>
-                              <p className="text-white text-sm">{getContextLabel(media.context).label}</p>
+                              <p className="text-foreground text-sm">{getContextLabel(media.context).label}</p>
                               {media.contextId && (
                                 <p className="text-gray-500 text-xs font-mono truncate max-w-[120px]" title={media.contextId}>
                                   {media.contextId.slice(0, 8)}...
@@ -882,7 +882,7 @@ const MediaModeration: React.FC = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-white">{formatDate(media.createdAt)}</span>
+                          <span className="text-foreground">{formatDate(media.createdAt)}</span>
                         </td>
                         <td className="px-6 py-4">
                           {getStatusBadge(media.status, media.moderationScore)}
@@ -894,7 +894,7 @@ const MediaModeration: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handlePreviewMedia(media)}
-                              className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded transition-colors"
+                              className="p-2 text-blue-400 hover:text-blue-300 hover:bg-muted rounded transition-colors"
                               title={isRTL ? 'معاينة' : 'Preview'}
                             >
                               <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
@@ -904,7 +904,7 @@ const MediaModeration: React.FC = () => {
                               <>
                                 <button
                                   onClick={() => handleApproveMedia(media)}
-                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+                                  className="p-2 text-green-400 hover:text-green-300 hover:bg-muted rounded transition-colors disabled:opacity-50"
                                   title={isRTL ? 'قبول' : 'Approve'}
                                   disabled={processingIds.has(media.id)}
                                 >
@@ -916,7 +916,7 @@ const MediaModeration: React.FC = () => {
                                 </button>
                                 <button
                                   onClick={() => handleRejectMedia(media)}
-                                  className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+                                  className="p-2 text-red-400 hover:text-red-300 hover:bg-muted rounded transition-colors disabled:opacity-50"
                                   title={isRTL ? 'رفض' : 'Reject'}
                                   disabled={processingIds.has(media.id)}
                                 >
@@ -938,12 +938,12 @@ const MediaModeration: React.FC = () => {
               {loadingMore ? (
                 <div className="flex justify-center items-center py-2">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
-                  <span className={`text-gray-400 text-sm ${isRTL ? 'mr-2' : 'ml-2'}`}>
+                  <span className={`text-muted-foreground text-sm ${isRTL ? 'mr-2' : 'ml-2'}`}>
                     {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
                   </span>
                 </div>
               ) : (
-                <div className="text-sm text-gray-400 text-center">
+                <div className="text-sm text-muted-foreground text-center">
                   {hasMore 
                     ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
                     : (isRTL 
@@ -966,7 +966,7 @@ const MediaModeration: React.FC = () => {
         >
           <div className="space-y-6">
             {/* Media Preview */}
-            <div className="bg-gray-900 rounded-lg p-4 flex items-center justify-center min-h-[300px]">
+            <div className="bg-background rounded-lg p-4 flex items-center justify-center min-h-[300px]">
               {currentMedia.mediaType === MediaType.IMAGE ? (
                 <img
                   src={currentMedia.url}
@@ -982,7 +982,7 @@ const MediaModeration: React.FC = () => {
               ) : (
                 <div className="text-center">
                   <FontAwesomeIcon icon={getMediaTypeIcon(currentMedia.mediaType)} className="h-20 w-20 text-gray-500 mb-4" />
-                  <p className="text-gray-400">{currentMedia.originalName}</p>
+                  <p className="text-muted-foreground">{currentMedia.originalName}</p>
                 </div>
               )}
             </div>
@@ -1071,7 +1071,7 @@ const MediaModeration: React.FC = () => {
                     setShowPreviewModal(false);
                     handleRejectMedia(currentMedia);
                   }}
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  className="bg-red-600 hover:bg-red-700 text-foreground"
                 >
                   <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                   {isRTL ? 'رفض' : 'Reject'}
@@ -1081,7 +1081,7 @@ const MediaModeration: React.FC = () => {
                     handleApproveMedia(currentMedia);
                     setShowPreviewModal(false);
                   }}
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-foreground"
                 >
                   <FontAwesomeIcon icon={faCheck} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                   {isRTL ? 'قبول' : 'Approve'}
@@ -1165,7 +1165,7 @@ const MediaModeration: React.FC = () => {
               <Button
                 onClick={currentMedia ? submitRejection : submitBulkRejection}
                 disabled={!rejectionReason.trim() && !selectedPreset}
-                className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
+                className="bg-red-600 hover:bg-red-700 text-foreground disabled:opacity-50"
               >
                 <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                 {currentMedia 

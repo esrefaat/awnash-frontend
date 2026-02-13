@@ -199,13 +199,13 @@ const RenterProfile: React.FC = () => {
   }, [id]);
 
   const StatCard = ({ title, value, subtitle, icon, color, bgColor }: any) => (
-    <div className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm ${isRTL ? 'text-right' : 'text-left'}`}>
+    <div className={`bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-6 shadow-sm ${isRTL ? 'text-right' : 'text-left'}`}>
       <div className="flex items-center justify-between">
         <div className={isRTL ? 'order-2' : 'order-1'}>
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{value}</p>
+          <p className="text-sm font-medium text-gray-600 dark:text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-foreground mt-1">{value}</p>
           {subtitle && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
+            <p className="text-sm text-gray-500 dark:text-muted-foreground mt-1">{subtitle}</p>
           )}
         </div>
         <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bgColor} ${isRTL ? 'order-1' : 'order-2'}`}>
@@ -230,7 +230,7 @@ const RenterProfile: React.FC = () => {
       case 'flagged':
         return `${baseClasses} bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200`;
       default:
-        return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200`;
+        return `${baseClasses} bg-gray-100 dark:bg-muted text-gray-800 dark:text-foreground`;
     }
   };
 
@@ -264,7 +264,7 @@ const RenterProfile: React.FC = () => {
           <FontAwesomeIcon
             key={star}
             icon={faStar}
-            className={`h-4 w-4 ${star <= rating ? 'text-yellow-400' : 'text-gray-300'} ${isRTL ? 'ml-1' : 'mr-1'}`}
+            className={`h-4 w-4 ${star <= rating ? 'text-yellow-400' : 'text-muted-foreground'} ${isRTL ? 'ml-1' : 'mr-1'}`}
           />
         ))}
         <span className={`${isRTL ? 'mr-2' : 'ml-2'} text-sm text-gray-600`}>{rating}/5</span>
@@ -274,55 +274,55 @@ const RenterProfile: React.FC = () => {
 
   const renderRequestsTab = () => (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Equipment Requests History</h3>
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm">
+        <div className="p-6 border-b border-gray-200 dark:border-border">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Equipment Requests History</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead className="bg-gray-50 dark:bg-muted">
               <tr>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Request ID
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Equipment Type
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Location
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Period
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Budget
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Status
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Offers
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-white dark:bg-card divide-y divide-gray-200 dark:divide-border">
               {mockRequests.map((request) => (
-                <tr key={request.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={request.id} className="hover:bg-gray-50 dark:hover:bg-muted">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 dark:text-blue-400">
                     {request.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">{request.equipmentType}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{request.category}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-foreground">{request.equipmentType}</div>
+                    <div className="text-sm text-gray-500 dark:text-muted-foreground">{request.category}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                     {request.location}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 dark:text-white">{request.startDate} - {request.endDate}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Submitted: {request.submittedDate}</div>
+                    <div className="text-sm text-gray-900 dark:text-foreground">{request.startDate} - {request.endDate}</div>
+                    <div className="text-xs text-gray-500 dark:text-muted-foreground">Submitted: {request.submittedDate}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                     {request.budget.toLocaleString()} SAR
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -330,7 +330,7 @@ const RenterProfile: React.FC = () => {
                       {request.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                     {request.offersReceived}
                   </td>
                 </tr>
@@ -344,40 +344,40 @@ const RenterProfile: React.FC = () => {
 
   const renderBookingsTab = () => (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Bookings as Renter</h3>
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm">
+        <div className="p-6 border-b border-gray-200 dark:border-border">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">Bookings as Renter</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead className="bg-gray-50 dark:bg-muted">
               <tr>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Equipment
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Owner
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Period
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Amount
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Status
                 </th>
-                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                <th className={`px-6 py-3 text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
                   Rating
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-white dark:bg-card divide-y divide-gray-200 dark:divide-border">
               {mockBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-muted">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">{booking.equipmentName}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{booking.location}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-foreground">{booking.equipmentName}</div>
+                    <div className="text-sm text-gray-500 dark:text-muted-foreground">{booking.location}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div 
@@ -388,10 +388,10 @@ const RenterProfile: React.FC = () => {
                       {booking.ownerName}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                     {booking.startDate} - {booking.endDate}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                     {booking.totalAmount.toLocaleString()} SAR
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -406,7 +406,7 @@ const RenterProfile: React.FC = () => {
                         <span className="text-sm text-gray-900">{booking.rating}/5</span>
                       </div>
                     ) : (
-                      <span className="text-sm text-gray-400">Pending</span>
+                      <span className="text-sm text-muted-foreground">Pending</span>
                     )}
                   </td>
                 </tr>
@@ -479,7 +479,7 @@ const RenterProfile: React.FC = () => {
                 {rating.comment && (
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-start">
-                      <FontAwesomeIcon icon={faComment} className={`h-4 w-4 text-gray-400 mt-1 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                      <FontAwesomeIcon icon={faComment} className={`h-4 w-4 text-muted-foreground mt-1 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                       <p className="text-sm text-gray-700">{rating.comment}</p>
                     </div>
                   </div>
@@ -532,10 +532,10 @@ const RenterProfile: React.FC = () => {
   );
 
   return (
-    <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-gray-50 dark:bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm mb-8">
           <div className="p-8">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between">
               {/* Profile Info */}
@@ -549,35 +549,35 @@ const RenterProfile: React.FC = () => {
                     />
                   ) : (
                     <div className="w-20 h-20 rounded-xl bg-blue-700 flex items-center justify-center">
-                      <FontAwesomeIcon icon={faUser} className="h-10 w-10 text-white" />
+                      <FontAwesomeIcon icon={faUser} className="h-10 w-10 text-foreground" />
                     </div>
                   )}
                   <div className={`absolute -bottom-2 ${isRTL ? 'left-1' : 'right-2'}`}> 
                     {mockRenterData.verificationLevel === 'verified' ? (
                       <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                        <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4 text-white" />
+                        <FontAwesomeIcon icon={faCheckCircle} className="h-4 w-4 text-foreground" />
                       </div>
                     ) : (
                       <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-                        <FontAwesomeIcon icon={faExclamationTriangle} className="h-4 w-4 text-white" />
+                        <FontAwesomeIcon icon={faExclamationTriangle} className="h-4 w-4 text-foreground" />
                       </div>
                     )}
                   </div>
                 </div>
                 <div className={`${isRTL ? 'mr-6' : 'ml-6'}`}>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{mockRenterData.name}</h1>
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">{mockRenterData.name}</h1>
                   <div className={cn("flex items-center mt-2 space-x-4", isRTL && "space-x-reverse")}>
-                    <div className="flex items-center text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center text-gray-600 dark:text-muted-foreground">
                       <FontAwesomeIcon icon={faPhone} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                       {mockRenterData.phone}
                     </div>
-                    <div className="flex items-center text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center text-gray-600 dark:text-muted-foreground">
                       <FontAwesomeIcon icon={faEnvelope} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                       {mockRenterData.email}
                     </div>
                   </div>
                   <div className={cn("flex items-center mt-2 space-x-4", isRTL && "space-x-reverse")}>  
-                    <div className="flex items-center text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center text-gray-600 dark:text-muted-foreground">
                       <FontAwesomeIcon icon={faMapMarkerAlt} className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                       {mockRenterData.location}
                     </div>
@@ -587,7 +587,7 @@ const RenterProfile: React.FC = () => {
                     <span className={`${getStatusBadge(mockRenterData.status)} ${isRTL ? 'ml-2' : 'mr-2'}`}>
                       {mockRenterData.status}
                     </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                    <span className="text-sm text-gray-500 dark:text-muted-foreground">
                       Member since {mockRenterData.joinDate}
                     </span>
                   </div>
@@ -623,7 +623,7 @@ const RenterProfile: React.FC = () => {
             value={mockRenterData.totalRequests}
             subtitle="Equipment requests"
             icon={faClipboardList}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-blue-700"
           />
           <StatCard
@@ -631,7 +631,7 @@ const RenterProfile: React.FC = () => {
             value={mockRenterData.totalBookings}
             subtitle="As renter"
             icon={faCalendarCheck}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-green-600"
           />
           <StatCard
@@ -639,7 +639,7 @@ const RenterProfile: React.FC = () => {
             value={`${mockRenterData.totalSpent.toLocaleString()} SAR`}
             subtitle={`Avg: ${mockRenterData.avgBookingValue.toLocaleString()} SAR`}
             icon={faDollarSign}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-yellow-500"
           />
           <StatCard
@@ -647,7 +647,7 @@ const RenterProfile: React.FC = () => {
             value={mockRenterData.renterRating}
             subtitle={`${mockRenterData.completionRate}% completion`}
             icon={faStar}
-            color="text-white"
+            color="text-foreground"
             bgColor="bg-purple-600"
           />
           {mockRenterData.isAlsoOwner && (
@@ -657,7 +657,7 @@ const RenterProfile: React.FC = () => {
                 value={mockRenterData.ownerData.totalEquipment}
                 subtitle="Listed equipment"
                 icon={faCogs}
-                color="text-white"
+                color="text-foreground"
                 bgColor="bg-indigo-600"
               />
               <StatCard
@@ -665,7 +665,7 @@ const RenterProfile: React.FC = () => {
                 value={`${mockRenterData.ownerData.revenueEarned.toLocaleString()} SAR`}
                 subtitle={`${mockRenterData.ownerData.ownerRating}/5 rating`}
                 icon={faHandshake}
-                color="text-white"
+                color="text-foreground"
                 bgColor="bg-blue-600"
               />
             </>
@@ -673,8 +673,8 @@ const RenterProfile: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div className="border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm">
+          <div className="border-b border-gray-200 dark:border-border">
             <nav className={cn("-mb-px flex space-x-8 px-6", isRTL && "space-x-reverse")}>
               {[
                 { id: 'requests', label: 'Requests', icon: faClipboardList },
@@ -688,7 +688,7 @@ const RenterProfile: React.FC = () => {
                   className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
                     activeTab === tab.id
                       ? 'border-blue-700 text-blue-700 dark:text-blue-400'
-                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                      : 'border-transparent text-gray-500 dark:text-muted-foreground hover:text-gray-700 dark:hover:text-muted-foreground hover:border-gray-300 dark:hover:border-border'
                   }`}
                 >
                   <FontAwesomeIcon icon={tab.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -709,10 +709,10 @@ const RenterProfile: React.FC = () => {
         {/* Notes Modal */}
         {showNotesModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-96 max-w-lg">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Internal Notes</h3>
+            <div className="bg-white dark:bg-card rounded-xl p-6 w-96 max-w-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-4">Internal Notes</h3>
               <textarea
-                className="w-full h-32 p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="w-full h-32 p-3 border border-gray-300 dark:border-border rounded-lg resize-none bg-white dark:bg-muted text-gray-900 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
                 placeholder="Add internal notes about this renter..."
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}

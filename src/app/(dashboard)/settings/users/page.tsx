@@ -210,15 +210,15 @@ const UserManagement: React.FC = () => {
 
   const getRoleColor = (role: string) => {
     const colors: Record<string, string> = {
-      'super_admin': 'bg-red-600 text-white',
-      'booking_admin': 'bg-blue-600 text-white',
-      'content_admin': 'bg-green-600 text-white',
+      'super_admin': 'bg-red-600 text-foreground',
+      'booking_admin': 'bg-blue-600 text-foreground',
+      'content_admin': 'bg-green-600 text-foreground',
       'support_agent': 'bg-yellow-600 text-black',
-      'owner': 'bg-purple-600 text-white',
-      'renter': 'bg-indigo-600 text-white',
-      'hybrid': 'bg-pink-600 text-white'
+      'owner': 'bg-purple-600 text-foreground',
+      'renter': 'bg-indigo-600 text-foreground',
+      'hybrid': 'bg-pink-600 text-foreground'
     };
-    return colors[role] || 'bg-gray-600 text-white';
+    return colors[role] || 'bg-gray-600 text-foreground';
   };
 
   const getRoleIcon = (role: string) => {
@@ -383,19 +383,19 @@ const UserManagement: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading users...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground text-xl">Loading users...</div>
       </div>
     );
   }
 
   return (
     <SuperAdminOnly fallback={
-      <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
-        <div className="max-w-2xl mx-auto p-8 bg-gray-800 border border-gray-700 rounded-xl text-center">
+      <div className="min-h-screen bg-background text-gray-100 p-6">
+        <div className="max-w-2xl mx-auto p-8 bg-card border border-border rounded-xl text-center">
           <h1 className="text-2xl font-bold text-red-400 mb-4">Access Denied</h1>
-          <p className="text-gray-300 mb-4">You need super admin privileges to access user management.</p>
-          <div className="text-sm text-gray-400">
+          <p className="text-muted-foreground mb-4">You need super admin privileges to access user management.</p>
+          <div className="text-sm text-muted-foreground">
             Current user: {currentUser?.email || 'Not logged in'}<br/>
             Current role: {currentUser?.role || 'No role'}<br/>
             Permissions: {currentPermissions.length} total
@@ -403,16 +403,16 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
     }>
-      <div className={`min-h-screen bg-gray-900 ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-white mb-2">
+                <h1 className="text-4xl font-bold text-foreground mb-2">
                   {isRTL ? 'إدارة المستخدمين' : 'User Management'}
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-muted-foreground">
                   {isRTL ? 'إدارة حسابات المستخدمين والأدوار والصلاحيات' : 'Manage user accounts, roles, and permissions'}
                 </p>
               </div>
@@ -433,47 +433,47 @@ const UserManagement: React.FC = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <div className="bg-card rounded-lg p-6 border border-border">
                 <div className="flex items-center">
                   <div className="p-3 bg-blue-600 rounded-lg">
-                    <FontAwesomeIcon icon={faUsers} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faUsers} className="h-6 w-6 text-foreground" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-gray-400 text-sm">Total Users</p>
-                    <p className="text-2xl font-bold text-white">{userStats.total}</p>
+                    <p className="text-muted-foreground text-sm">Total Users</p>
+                    <p className="text-2xl font-bold text-foreground">{userStats.total}</p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <div className="bg-card rounded-lg p-6 border border-border">
                 <div className="flex items-center">
                   <div className="p-3 bg-green-600 rounded-lg">
-                    <FontAwesomeIcon icon={faUserCheck} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faUserCheck} className="h-6 w-6 text-foreground" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-gray-400 text-sm">Active Users</p>
-                    <p className="text-2xl font-bold text-white">{userStats.active}</p>
+                    <p className="text-muted-foreground text-sm">Active Users</p>
+                    <p className="text-2xl font-bold text-foreground">{userStats.active}</p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <div className="bg-card rounded-lg p-6 border border-border">
                 <div className="flex items-center">
                   <div className="p-3 bg-yellow-600 rounded-lg">
-                    <FontAwesomeIcon icon={faIdCard} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faIdCard} className="h-6 w-6 text-foreground" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-gray-400 text-sm">Verified Users</p>
-                    <p className="text-2xl font-bold text-white">{userStats.verified}</p>
+                    <p className="text-muted-foreground text-sm">Verified Users</p>
+                    <p className="text-2xl font-bold text-foreground">{userStats.verified}</p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <div className="bg-card rounded-lg p-6 border border-border">
                 <div className="flex items-center">
                   <div className="p-3 bg-purple-600 rounded-lg">
-                    <FontAwesomeIcon icon={faUserShield} className="h-6 w-6 text-white" />
+                    <FontAwesomeIcon icon={faUserShield} className="h-6 w-6 text-foreground" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-gray-400 text-sm">Admin Users</p>
-                    <p className="text-2xl font-bold text-white">{userStats.admins}</p>
+                    <p className="text-muted-foreground text-sm">Admin Users</p>
+                    <p className="text-2xl font-bold text-foreground">{userStats.admins}</p>
                   </div>
                 </div>
               </div>
@@ -481,18 +481,18 @@ const UserManagement: React.FC = () => {
           </div>
 
           {/* Filters and Search */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg mb-6">
+          <div className="bg-card rounded-xl border border-border shadow-lg mb-6">
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Search */}
                 <div className="relative">
-                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder={isRTL ? 'البحث عن المستخدمين...' : 'Search users...'}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -500,7 +500,7 @@ const UserManagement: React.FC = () => {
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">{isRTL ? 'جميع الأدوار' : 'All Roles'}</option>
                   {roles.map(role => (
@@ -514,7 +514,7 @@ const UserManagement: React.FC = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                   <option value="active">{isRTL ? 'نشط' : 'Active'}</option>
@@ -526,7 +526,7 @@ const UserManagement: React.FC = () => {
                 {/* Bulk Actions */}
                 {selectedUsers.length > 0 && (
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       {selectedUsers.length} selected
                     </span>
                     <Button
@@ -550,21 +550,21 @@ const UserManagement: React.FC = () => {
           </div>
 
           {/* Users Table */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
+          <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-700">
+                <thead className="bg-muted">
                   <tr>
                     <th className="px-6 py-4 text-left">
                       <input
                         type="checkbox"
                         checked={getCurrentPageUsers().length > 0 && getCurrentPageUsers().every(user => selectedUsers.includes(user.id))}
                         onChange={handleSelectAll}
-                        className="rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-border bg-muted text-blue-600 focus:ring-blue-500"
                       />
                     </th>
                     <th 
-                      className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
+                      className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground"
                       onClick={() => handleSort('fullName')}
                     >
                       <div className="flex items-center space-x-1">
@@ -572,11 +572,11 @@ const UserManagement: React.FC = () => {
                         <FontAwesomeIcon icon={getSortIcon('fullName')} className="h-3 w-3" />
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'معلومات الاتصال' : 'Contact'}
                     </th>
                     <th 
-                      className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
+                      className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground"
                       onClick={() => handleSort('role')}
                     >
                       <div className="flex items-center space-x-1">
@@ -584,11 +584,11 @@ const UserManagement: React.FC = () => {
                         <FontAwesomeIcon icon={getSortIcon('role')} className="h-3 w-3" />
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الحالة' : 'Status'}
                     </th>
                     <th 
-                      className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:text-white"
+                      className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground"
                       onClick={() => handleSort('createdAt')}
                     >
                       <div className="flex items-center space-x-1">
@@ -596,50 +596,50 @@ const UserManagement: React.FC = () => {
                         <FontAwesomeIcon icon={getSortIcon('createdAt')} className="h-3 w-3" />
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {isRTL ? 'الإجراءات' : 'Actions'}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {getCurrentPageUsers().map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-700 transition-colors">
+                    <tr key={user.id} className="hover:bg-muted transition-colors">
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
                           checked={selectedUsers.includes(user.id)}
                           onChange={() => handleSelectUser(user.id)}
-                          className="rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
+                          className="rounded border-border bg-muted text-blue-600 focus:ring-blue-500"
                         />
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
                             <div className="h-10 w-10 rounded-full bg-gray-600 flex items-center justify-center">
-                              <FontAwesomeIcon icon={getRoleIcon(user.role)} className="h-5 w-5 text-gray-300" />
+                              <FontAwesomeIcon icon={getRoleIcon(user.role)} className="h-5 w-5 text-muted-foreground" />
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-white">{user.fullName}</div>
-                            <div className="text-sm text-gray-400">ID: {user.id.slice(0, 8)}...</div>
+                            <div className="text-sm font-medium text-foreground">{user.fullName}</div>
+                            <div className="text-sm text-muted-foreground">ID: {user.id.slice(0, 8)}...</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-white">
+                        <div className="text-sm text-foreground">
                           <div className="flex items-center mb-1">
-                            <FontAwesomeIcon icon={faPhone} className="h-3 w-3 text-gray-400 mr-2" />
+                            <FontAwesomeIcon icon={faPhone} className="h-3 w-3 text-muted-foreground mr-2" />
                             {user.mobileNumber}
                           </div>
                           {user.email && (
                             <div className="flex items-center mb-1">
-                              <FontAwesomeIcon icon={faEnvelope} className="h-3 w-3 text-gray-400 mr-2" />
+                              <FontAwesomeIcon icon={faEnvelope} className="h-3 w-3 text-muted-foreground mr-2" />
                               {user.email}
                             </div>
                           )}
                           {user.city && (
                             <div className="flex items-center">
-                              <FontAwesomeIcon icon={faMapMarkerAlt} className="h-3 w-3 text-gray-400 mr-2" />
+                              <FontAwesomeIcon icon={faMapMarkerAlt} className="h-3 w-3 text-muted-foreground mr-2" />
                               {user.city}
                             </div>
                           )}
@@ -650,25 +650,25 @@ const UserManagement: React.FC = () => {
                           <FontAwesomeIcon icon={getRoleIcon(user.role)} className="h-3 w-3 mr-1" />
                           {user.role.replace('_', ' ').toUpperCase()}
                         </span>
-                        <div className="text-xs text-gray-400 mt-1">
+                        <div className="text-xs text-muted-foreground mt-1">
                           {user.permissions.length} permissions
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col space-y-1">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            user.isActive ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                            user.isActive ? 'bg-green-600 text-foreground' : 'bg-red-600 text-foreground'
                           }`}>
                             {user.isActive ? 'Active' : 'Inactive'}
                           </span>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            user.isVerified ? 'bg-blue-600 text-white' : 'bg-yellow-600 text-black'
+                            user.isVerified ? 'bg-blue-600 text-foreground' : 'bg-yellow-600 text-black'
                           }`}>
                             {user.isVerified ? 'Verified' : 'Unverified'}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-300">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
                         <div>{formatDate(user.createdAt)}</div>
                         {user.lastLogin && (
                           <div className="text-xs text-gray-500">
@@ -682,7 +682,7 @@ const UserManagement: React.FC = () => {
                             onClick={() => handleEditUser(user)}
                             variant="ghost"
                             size="icon"
-                            className="text-gray-400 hover:text-blue-400"
+                            className="text-muted-foreground hover:text-blue-400"
                             title="Edit User"
                           >
                             <FontAwesomeIcon icon={faEdit} className="h-4 w-4" />
@@ -691,7 +691,7 @@ const UserManagement: React.FC = () => {
                             onClick={() => handleManageRoles(user)}
                             variant="ghost"
                             size="icon"
-                            className="text-gray-400 hover:text-purple-400"
+                            className="text-muted-foreground hover:text-purple-400"
                             title="Manage Roles"
                           >
                             <FontAwesomeIcon icon={faUserShield} className="h-4 w-4" />
@@ -702,8 +702,8 @@ const UserManagement: React.FC = () => {
                             size="icon"
                             className={
                               user.isActive 
-                                ? 'text-gray-400 hover:text-red-400' 
-                                : 'text-gray-400 hover:text-green-400'
+                                ? 'text-muted-foreground hover:text-red-400' 
+                                : 'text-muted-foreground hover:text-green-400'
                             }
                             title={user.isActive ? 'Deactivate User' : 'Activate User'}
                           >
@@ -713,7 +713,7 @@ const UserManagement: React.FC = () => {
                             onClick={() => handleDeleteUser(user.id)}
                             variant="ghost"
                             size="icon"
-                            className="text-gray-400 hover:text-red-400"
+                            className="text-muted-foreground hover:text-red-400"
                             title="Delete User"
                           >
                             <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
@@ -727,16 +727,16 @@ const UserManagement: React.FC = () => {
             </div>
 
             {/* Infinite Scroll Sentinel */}
-            <div ref={sentinelRef} className="bg-gray-700 px-6 py-4 border-t border-gray-600">
+            <div ref={sentinelRef} className="bg-muted px-6 py-4 border-t border-border">
               {loadingMore ? (
                 <div className="flex justify-center items-center py-2">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
-                  <span className={cn("text-gray-400 text-sm", isRTL ? "mr-2" : "ml-2")}>
+                  <span className={cn("text-muted-foreground text-sm", isRTL ? "mr-2" : "ml-2")}>
                     {isRTL ? 'جاري تحميل المزيد...' : 'Loading more...'}
                   </span>
                 </div>
               ) : (
-                <div className="text-sm text-gray-300 text-center">
+                <div className="text-sm text-muted-foreground text-center">
                   {hasMore 
                     ? (isRTL ? 'قم بالتمرير لتحميل المزيد' : 'Scroll to load more')
                     : (isRTL 
@@ -751,15 +751,15 @@ const UserManagement: React.FC = () => {
         {/* Create User Modal */}
         {showCreateModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-md">
+            <div className="bg-card rounded-xl border border-border w-full max-w-md">
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-700">
-                <h2 className="text-xl font-bold text-white">
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'إضافة مستخدم جديد' : 'Add New User'}
                 </h2>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="p-2 text-gray-400 hover:text-white transition-colors"
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <FontAwesomeIcon icon={faTimes} />
                 </button>
@@ -770,14 +770,14 @@ const UserManagement: React.FC = () => {
                 <div className="space-y-4">
                   {/* Full Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'الاسم الكامل' : 'Full Name'} *
                     </label>
                     <input
                       type="text"
                       value={createUserData.fullName}
                       onChange={(e) => handleCreateUserChange('fullName', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل الاسم الكامل' : 'Enter full name'}
                       required
                     />
@@ -785,14 +785,14 @@ const UserManagement: React.FC = () => {
 
                   {/* Mobile Number */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'رقم الجوال' : 'Mobile Number'} *
                     </label>
                     <input
                       type="tel"
                       value={createUserData.mobileNumber}
                       onChange={(e) => handleCreateUserChange('mobileNumber', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? '+966xxxxxxxxx' : '+966xxxxxxxxx'}
                       required
                     />
@@ -800,27 +800,27 @@ const UserManagement: React.FC = () => {
 
                   {/* Email */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'البريد الإلكتروني' : 'Email'} ({isRTL ? 'اختياري' : 'Optional'})
                     </label>
                     <input
                       type="email"
                       value={createUserData.email}
                       onChange={(e) => handleCreateUserChange('email', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل البريد الإلكتروني' : 'Enter email address'}
                     />
                   </div>
 
                   {/* Role */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'الدور' : 'Role'} *
                     </label>
                     <select
                       value={createUserData.role}
                       onChange={(e) => handleCreateUserChange('role', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-yellow-500"
                       required
                     >
                       <option value="super_admin">Super Admin</option>
@@ -835,7 +835,7 @@ const UserManagement: React.FC = () => {
 
                   {/* Status Toggle */}
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-gray-300">
+                    <label className="text-sm font-medium text-muted-foreground">
                       {isRTL ? 'الحالة' : 'Status'}
                     </label>
                     <div className="flex items-center">
@@ -860,14 +860,14 @@ const UserManagement: React.FC = () => {
 
                   {/* Optional Password */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'كلمة المرور المؤقتة' : 'Temporary Password'} ({isRTL ? 'اختياري' : 'Optional'})
                     </label>
                     <input
                       type="password"
                       value={createUserData.password || ''}
                       onChange={(e) => handleCreateUserChange('password', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'اتركه فارغاً لإنشاء كلمة مرور تلقائية' : 'Leave empty for auto-generated password'}
                     />
                   </div>
@@ -875,11 +875,11 @@ const UserManagement: React.FC = () => {
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-end space-x-4 p-6 border-t border-gray-700">
+              <div className="flex items-center justify-end space-x-4 p-6 border-t border-border">
                 <Button
                   onClick={() => setShowCreateModal(false)}
                   variant="ghost"
-                  className="text-gray-400 hover:text-white"
+                  className="text-muted-foreground hover:text-foreground"
                   disabled={isCreating}
                 >
                   {isRTL ? 'إلغاء' : 'Cancel'}
@@ -909,15 +909,15 @@ const UserManagement: React.FC = () => {
         {/* Edit User Modal */}
         {showEditModal && selectedUser && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-lg">
+            <div className="bg-card rounded-xl border border-border w-full max-w-lg">
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-700">
-                <h2 className="text-xl font-bold text-white">
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h2 className="text-xl font-bold text-foreground">
                   {isRTL ? 'تعديل المستخدم' : 'Edit User'}
                 </h2>
                 <button
                   onClick={() => setShowEditModal(false)}
-                  className="p-2 text-gray-400 hover:text-white transition-colors"
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <FontAwesomeIcon icon={faTimes} />
                 </button>
@@ -928,69 +928,69 @@ const UserManagement: React.FC = () => {
                 <div className="space-y-4">
                   {/* Full Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'الاسم الكامل' : 'Full Name'} *
                     </label>
                     <input
                       type="text"
                       value={selectedUser.fullName}
                       onChange={(e) => setSelectedUser(prev => prev ? {...prev, fullName: e.target.value} : null)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل الاسم الكامل' : 'Enter full name'}
                     />
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'البريد الإلكتروني' : 'Email'}
                     </label>
                     <input
                       type="email"
                       value={selectedUser.email || ''}
                       onChange={(e) => setSelectedUser(prev => prev ? {...prev, email: e.target.value} : null)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل البريد الإلكتروني' : 'Enter email address'}
                     />
                   </div>
 
                   {/* Mobile Number */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'رقم الهاتف' : 'Mobile Number'}
                     </label>
                     <input
                       type="tel"
                       value={selectedUser.mobileNumber || ''}
                       onChange={(e) => setSelectedUser(prev => prev ? {...prev, mobileNumber: e.target.value} : null)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل رقم الهاتف' : 'Enter mobile number'}
                     />
                   </div>
 
                   {/* City */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'المدينة' : 'City'}
                     </label>
                     <input
                       type="text"
                       value={selectedUser.city || ''}
                       onChange={(e) => setSelectedUser(prev => prev ? {...prev, city: e.target.value} : null)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-yellow-500"
                       placeholder={isRTL ? 'أدخل المدينة' : 'Enter city'}
                     />
                   </div>
 
                   {/* Role */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       {isRTL ? 'الدور' : 'Role'} *
                     </label>
                     <select
                       value={selectedUser.role}
                       onChange={(e) => setSelectedUser(prev => prev ? {...prev, role: e.target.value} : null)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500"
+                      className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-yellow-500"
                     >
                       <option value="super_admin">Super Admin</option>
                       <option value="booking_admin">Booking Admin</option>
@@ -1004,7 +1004,7 @@ const UserManagement: React.FC = () => {
 
                   {/* Status Toggle */}
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-gray-300">
+                    <label className="text-sm font-medium text-muted-foreground">
                       {isRTL ? 'الحالة' : 'Status'}
                     </label>
                     <div className="flex items-center">
@@ -1028,21 +1028,21 @@ const UserManagement: React.FC = () => {
                   </div>
 
                   {/* Permission Summary */}
-                  <div className="border-t border-gray-600 pt-4">
+                  <div className="border-t border-border pt-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400 text-sm">Current Permissions:</span>
-                      <span className="text-white font-medium">{selectedUser.permissions?.length || 0}</span>
+                      <span className="text-muted-foreground text-sm">Current Permissions:</span>
+                      <span className="text-foreground font-medium">{selectedUser.permissions?.length || 0}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-end space-x-4 p-6 border-t border-gray-700">
+              <div className="flex items-center justify-end space-x-4 p-6 border-t border-border">
                 <Button
                   onClick={() => setShowEditModal(false)}
                   variant="ghost"
-                  className="text-gray-400 hover:text-white"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   {isRTL ? 'إلغاء' : 'Cancel'}
                 </Button>

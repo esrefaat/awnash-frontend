@@ -128,14 +128,14 @@ export function ConfirmDialog() {
       />
       
       {/* Dialog */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6 animate-in zoom-in-95 duration-200">
+      <div className="relative bg-white dark:bg-card rounded-lg shadow-xl max-w-md w-full mx-4 p-6 animate-in zoom-in-95 duration-200">
         {/* Title */}
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
           {confirmState.title}
         </h2>
         
         {/* Message */}
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
+        <p className="text-gray-600 dark:text-muted-foreground mb-6">
           {confirmState.message}
         </p>
         
@@ -143,7 +143,7 @@ export function ConfirmDialog() {
         <div className="flex justify-end gap-3">
           <button
             onClick={() => handleConfirmResponse(false)}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-foreground bg-gray-100 dark:bg-muted hover:bg-gray-200 dark:hover:bg-muted/80 rounded-lg transition-colors"
           >
             {confirmState.cancelText}
           </button>

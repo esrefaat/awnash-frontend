@@ -240,7 +240,7 @@ const PayoutsPage: React.FC = () => {
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[200px]">
             <div className="relative">
-              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
@@ -251,7 +251,7 @@ const PayoutsPage: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <FontAwesomeIcon icon={faFilter} className="text-gray-400" />
+            <FontAwesomeIcon icon={faFilter} className="text-muted-foreground" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as PayoutStatus | '')}
@@ -280,11 +280,11 @@ const PayoutsPage: React.FC = () => {
         <div className="overflow-x-auto">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <FontAwesomeIcon icon={faSpinner} className="text-4xl animate-spin text-gray-400" />
+              <FontAwesomeIcon icon={faSpinner} className="text-4xl animate-spin text-muted-foreground" />
             </div>
           ) : payouts.length === 0 ? (
             <div className="text-center py-12">
-              <FontAwesomeIcon icon={faMoneyBillTransfer} className="text-4xl text-gray-300 mb-4" />
+              <FontAwesomeIcon icon={faMoneyBillTransfer} className="text-4xl text-muted-foreground mb-4" />
               <p className="text-gray-500">{isRTL ? 'لا توجد طلبات دفع' : 'No payout requests found'}</p>
             </div>
           ) : (
@@ -315,7 +315,7 @@ const PayoutsPage: React.FC = () => {
                     </td>
                     <td>
                       <div className="flex items-center gap-2">
-                        <FontAwesomeIcon icon={faUniversity} className="text-gray-400" />
+                        <FontAwesomeIcon icon={faUniversity} className="text-muted-foreground" />
                         <div>
                           <p className="font-medium">{payout.bankAccount?.bankName || '-'}</p>
                           <p className="text-sm text-gray-500">{payout.bankAccount?.accountNumber || payout.bankAccount?.iban || ''}</p>

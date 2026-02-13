@@ -355,15 +355,14 @@ const BookingsManagement: React.FC = () => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-gray-900 p-6", isRTL ? 'font-arabic' : 'font-montserrat')} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               {isRTL ? 'إدارة الحجوزات' : 'Bookings Management'}
             </h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               {isRTL ? 'عرض وإدارة جميع حجوزات المعدات عبر المنصة' : 'View and manage all equipment bookings across the platform'}
             </p>
           </div>
@@ -381,70 +380,70 @@ const BookingsManagement: React.FC = () => {
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
-                <p className="text-2xl font-bold text-white">{stats.total}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}</p>
+                <p className="text-2xl font-bold text-foreground">{stats.total}</p>
               </div>
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faCalendarAlt} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faCalendarAlt} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'مؤكدة' : 'Confirmed'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'مؤكدة' : 'Confirmed'}</p>
                 <p className="text-2xl font-bold text-blue-400">{stats.confirmed}</p>
               </div>
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faCheckCircle} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faCheckCircle} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'نشطة' : 'Active'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'نشطة' : 'Active'}</p>
                 <p className="text-2xl font-bold text-green-400">{stats.active}</p>
               </div>
               <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faPlay} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faPlay} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'مكتملة' : 'Completed'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'مكتملة' : 'Completed'}</p>
                 <p className="text-2xl font-bold text-purple-400">{stats.completed}</p>
               </div>
               <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faCheck} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faCheck} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'ملغية' : 'Cancelled'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'ملغية' : 'Cancelled'}</p>
                 <p className="text-2xl font-bold text-red-400">{stats.cancelled}</p>
               </div>
               <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faTimesCircle} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faTimesCircle} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'الإيرادات' : 'Revenue'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'الإيرادات' : 'Revenue'}</p>
                 <p className="text-lg font-bold text-yellow-400">{formatCurrency(stats.totalRevenue)}</p>
               </div>
               <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
@@ -453,63 +452,63 @@ const BookingsManagement: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'تبدأ اليوم' : 'Starting Today'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'تبدأ اليوم' : 'Starting Today'}</p>
                 <p className="text-2xl font-bold text-orange-400">{stats.upcomingToday}</p>
               </div>
               <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faCalendarCheck} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faCalendarCheck} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">{isRTL ? 'تنتهي اليوم' : 'Ending Today'}</p>
+                <p className="text-muted-foreground text-sm">{isRTL ? 'تنتهي اليوم' : 'Ending Today'}</p>
                 <p className="text-2xl font-bold text-red-400">{stats.endingToday}</p>
               </div>
               <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="text-white h-5 w-5" />
+                <FontAwesomeIcon icon={faExclamationTriangle} className="text-foreground h-5 w-5" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
             {/* Search */}
             <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
                 <FontAwesomeIcon 
                   icon={faSearch} 
-                  className={cn('absolute top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4', isRTL ? 'right-3' : 'left-3')} 
+                  className={cn('absolute top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4', isRTL ? 'right-3' : 'left-3')} 
                 />
                 <input
                   type="text"
                   placeholder={isRTL ? 'البحث بالمعرف، المعدة، أو الاسم...' : 'Search by ID, equipment, or name...'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn('w-full py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500', isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3')}
+                  className={cn('w-full py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500', isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3')}
                 />
               </div>
             </div>
 
             {/* Status Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'الحالة' : 'Status'}
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                 <option value="confirmed">{isRTL ? 'مؤكد' : 'Confirmed'}</option>
@@ -521,13 +520,13 @@ const BookingsManagement: React.FC = () => {
 
             {/* City Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'المدينة' : 'City'}
               </label>
               <select
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع المدن' : 'All Cities'}</option>
                 <option value="Riyadh">{isRTL ? 'الرياض' : 'Riyadh'}</option>
@@ -540,13 +539,13 @@ const BookingsManagement: React.FC = () => {
 
             {/* Equipment Type Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'نوع المعدة' : 'Equipment Type'}
               </label>
               <select
                 value={equipmentTypeFilter}
                 onChange={(e) => setEquipmentTypeFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
                 <option value="excavators">{isRTL ? 'الحفارات' : 'Excavators'}</option>
@@ -559,7 +558,7 @@ const BookingsManagement: React.FC = () => {
 
             {/* Owner/Renter Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'المالك/المستأجر' : 'Owner/Renter'}
               </label>
               <input
@@ -567,7 +566,7 @@ const BookingsManagement: React.FC = () => {
                 placeholder={isRTL ? 'اسم المالك أو المستأجر' : 'Owner or renter name'}
                 value={ownerRenterFilter}
                 onChange={(e) => setOwnerRenterFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -575,32 +574,32 @@ const BookingsManagement: React.FC = () => {
           {/* Date Range */}
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'من تاريخ' : 'Start Date'}
               </label>
               <input
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'إلى تاريخ' : 'End Date'}
               </label>
               <input
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="flex items-end">
               <button
                 onClick={() => setShowUpcomingOnly(!showUpcomingOnly)}
                 className={cn('flex items-center px-4 py-2 rounded-lg transition-colors', 
-                  showUpcomingOnly ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300')}
+                  showUpcomingOnly ? 'bg-blue-600 text-foreground' : 'bg-muted text-muted-foreground')}
               >
                 <FontAwesomeIcon icon={showUpcomingOnly ? faToggleOn : faToggleOff} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                 {isRTL ? 'القادمة فقط' : 'Upcoming Only'}
@@ -610,7 +609,7 @@ const BookingsManagement: React.FC = () => {
               <button
                 onClick={() => setShowEndingToday(!showEndingToday)}
                 className={cn('flex items-center px-4 py-2 rounded-lg transition-colors', 
-                  showEndingToday ? 'bg-red-600 text-white' : 'bg-gray-700 text-gray-300')}
+                  showEndingToday ? 'bg-red-600 text-foreground' : 'bg-muted text-muted-foreground')}
               >
                 <FontAwesomeIcon icon={showEndingToday ? faToggleOn : faToggleOff} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
                 {isRTL ? 'تنتهي اليوم' : 'Ending Today'}
@@ -620,9 +619,9 @@ const BookingsManagement: React.FC = () => {
 
           {/* Bulk Actions */}
           {selectedBookings.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="mt-4 pt-4 border-t border-border">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">
+                <span className="text-sm text-muted-foreground">
                   {selectedBookings.length} {isRTL ? 'حجز محدد' : 'bookings selected'}
                 </span>
                 <div className={cn('flex space-x-3', isRTL && 'space-x-reverse')}>
@@ -635,7 +634,7 @@ const BookingsManagement: React.FC = () => {
                   </button>
                   <button
                     onClick={handleBulkFlag}
-                    className="flex items-center px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm transition-colors"
+                    className="flex items-center px-3 py-1 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 text-sm transition-colors"
                   >
                     <FontAwesomeIcon icon={faFlag} className={cn('h-3 w-3', isRTL ? 'ml-1' : 'mr-1')} />
                     {isRTL ? 'وضع علامة' : 'Flag'}
@@ -647,13 +646,13 @@ const BookingsManagement: React.FC = () => {
         </div>
 
         {/* Bookings Table */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
-          <div className="p-6 border-b border-gray-700">
+        <div className="bg-card rounded-xl border border-border shadow-lg">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-foreground">
                 {isRTL ? 'قائمة الحجوزات' : 'Bookings List'}
               </h3>
-              <span className="text-gray-400 text-sm">
+              <span className="text-muted-foreground text-sm">
                 {filteredBookings.length} {isRTL ? 'من' : 'of'} {bookings.length} {isRTL ? 'حجز' : 'bookings'}
               </span>
             </div>
@@ -661,54 +660,54 @@ const BookingsManagement: React.FC = () => {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3">
                     <input
                       type="checkbox"
                       checked={selectedBookings.length === filteredBookings.length && filteredBookings.length > 0}
                       onChange={handleSelectAll}
-                      className="rounded border-gray-600 bg-gray-700 text-blue-600"
+                      className="rounded border-border bg-muted text-blue-600"
                     />
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'معرف الحجز' : 'Booking ID'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'المعدة' : 'Equipment'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'المالك' : 'Owner'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'المستأجر' : 'Renter'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'السائق' : 'Driver'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'تواريخ الحجز' : 'Booking Dates'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'الحالة' : 'Status'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'المبلغ الإجمالي' : 'Total Amount'}
                   </th>
-                  <th className={cn('px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
+                  <th className={cn('px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider', isRTL ? 'text-right' : 'text-left')}>
                     {isRTL ? 'الإجراءات' : 'Actions'}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-700 transition-colors">
+                  <tr key={booking.id} className="hover:bg-muted transition-colors">
                     <td className="px-6 py-4">
                       <input
                         type="checkbox"
                         checked={selectedBookings.includes(booking.id)}
                         onChange={() => handleSelectBooking(booking.id)}
-                        className="rounded border-gray-600 bg-gray-700 text-blue-600"
+                        className="rounded border-border bg-muted text-blue-600"
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -719,18 +718,18 @@ const BookingsManagement: React.FC = () => {
                         <img 
                           src={booking.equipment.thumbnail} 
                           alt={booking.equipment.name}
-                          className="h-12 w-16 object-cover rounded-lg border border-gray-600"
+                          className="h-12 w-16 object-cover rounded-lg border border-border"
                         />
                         <div className={cn('', isRTL ? 'mr-3' : 'ml-3')}>
-                          <div className="text-sm font-medium text-white">{booking.equipment.name}</div>
-                          <div className="text-xs text-gray-400">{booking.equipment.model}</div>
+                          <div className="text-sm font-medium text-foreground">{booking.equipment.name}</div>
+                          <div className="text-xs text-muted-foreground">{booking.equipment.model}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-white">{booking.ownerName}</div>
-                        <div className="text-xs text-gray-400 flex items-center">
+                        <div className="text-sm font-medium text-foreground">{booking.ownerName}</div>
+                        <div className="text-xs text-muted-foreground flex items-center">
                           <FontAwesomeIcon icon={faBuilding} className={cn('h-3 w-3', isRTL ? 'ml-1' : 'mr-1')} />
                           {booking.ownerCompany}
                         </div>
@@ -738,8 +737,8 @@ const BookingsManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-white">{booking.renterName}</div>
-                        <div className="text-xs text-gray-400 flex items-center">
+                        <div className="text-sm font-medium text-foreground">{booking.renterName}</div>
+                        <div className="text-xs text-muted-foreground flex items-center">
                           <FontAwesomeIcon icon={faBuilding} className={cn('h-3 w-3', isRTL ? 'ml-1' : 'mr-1')} />
                           {booking.renterCompany}
                         </div>
@@ -748,8 +747,8 @@ const BookingsManagement: React.FC = () => {
                     <td className="px-6 py-4">
                       {booking.driver ? (
                         <div>
-                          <div className="text-sm text-white">{booking.driver.name}</div>
-                          <div className="text-xs text-gray-400">⭐ {booking.driver.rating}</div>
+                          <div className="text-sm text-foreground">{booking.driver.name}</div>
+                          <div className="text-xs text-muted-foreground">⭐ {booking.driver.rating}</div>
                         </div>
                       ) : (
                         <span className="text-sm text-gray-500">{isRTL ? 'بدون سائق' : 'No driver'}</span>
@@ -757,8 +756,8 @@ const BookingsManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm text-white">{formatDate(booking.startDate)} - {formatDate(booking.endDate)}</div>
-                        <div className="text-xs text-gray-400 flex items-center">
+                        <div className="text-sm text-foreground">{formatDate(booking.startDate)} - {formatDate(booking.endDate)}</div>
+                        <div className="text-xs text-muted-foreground flex items-center">
                           <FontAwesomeIcon icon={faMapMarkerAlt} className={cn('h-3 w-3', isRTL ? 'ml-1' : 'mr-1')} />
                           {booking.city}
                         </div>
@@ -776,7 +775,7 @@ const BookingsManagement: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-white">{formatCurrency(booking.totalAmount)}</div>
+                      <div className="text-sm font-medium text-foreground">{formatCurrency(booking.totalAmount)}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className={cn('flex space-x-1', isRTL && 'space-x-reverse')}>
@@ -815,7 +814,7 @@ const BookingsManagement: React.FC = () => {
           {filteredBookings.length === 0 && (
             <div className="text-center py-12">
               <FontAwesomeIcon icon={faCalendarAlt} className="h-12 w-12 text-gray-500 mb-4" />
-              <h3 className="text-lg font-medium text-gray-400 mb-2">
+              <h3 className="text-lg font-medium text-muted-foreground mb-2">
                 {isRTL ? 'لا توجد حجوزات' : 'No bookings found'}
               </h3>
               <p className="text-gray-500">
@@ -824,9 +823,8 @@ const BookingsManagement: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 };
 
-export default BookingsManagement; 
+export default BookingsManagement;

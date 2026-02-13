@@ -162,7 +162,7 @@ const ModernClients: React.FC = () => {
           )}
         </div>
         <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${color}`}>
-          <FontAwesomeIcon icon={icon} className="h-6 w-6 text-white" />
+          <FontAwesomeIcon icon={icon} className="h-6 w-6 text-foreground" />
         </div>
       </div>
     </div>
@@ -302,7 +302,7 @@ const ModernClients: React.FC = () => {
           <div className="flex-1">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faSearch} className="h-4 w-4 text-gray-400" />
+                <FontAwesomeIcon icon={faSearch} className="h-4 w-4 text-muted-foreground" />
               </div>
               <input
                 type="text"
@@ -390,7 +390,7 @@ const ModernClients: React.FC = () => {
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-600 flex items-center justify-center">
-                          <span className="text-sm font-medium text-white">
+                          <span className="text-sm font-medium text-foreground">
                             {client.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                           </span>
                         </div>
@@ -408,18 +408,18 @@ const ModernClients: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       <div className="flex items-center mb-1">
-                        <FontAwesomeIcon icon={faEnvelope} className={cn("h-3 w-3 text-gray-400", isRTL ? "ml-1" : "mr-1")} />
+                        <FontAwesomeIcon icon={faEnvelope} className={cn("h-3 w-3 text-muted-foreground", isRTL ? "ml-1" : "mr-1")} />
                         {client.email}
                       </div>
                       <div className="flex items-center">
-                        <FontAwesomeIcon icon={faPhone} className={cn("h-3 w-3 text-gray-400", isRTL ? "ml-1" : "mr-1")} />
+                        <FontAwesomeIcon icon={faPhone} className={cn("h-3 w-3 text-muted-foreground", isRTL ? "ml-1" : "mr-1")} />
                         {client.phone}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center text-sm text-gray-900">
-                      <FontAwesomeIcon icon={faMapMarkerAlt} className={cn("h-3 w-3 text-gray-400", isRTL ? "ml-1" : "mr-1")} />
+                      <FontAwesomeIcon icon={faMapMarkerAlt} className={cn("h-3 w-3 text-muted-foreground", isRTL ? "ml-1" : "mr-1")} />
                       {client.location}
                     </div>
                   </td>

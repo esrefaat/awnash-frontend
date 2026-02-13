@@ -62,8 +62,8 @@ const StyledInput = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "w-full h-11 px-4 rounded-lg",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -83,8 +83,8 @@ const StyledTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       ref={ref}
       className={cn(
         "w-full px-4 py-3 rounded-lg resize-none",
-        "bg-gray-900/50 border border-gray-700",
-        "text-white placeholder:text-gray-500",
+        "bg-background/50 border border-border",
+        "text-foreground placeholder:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
         "transition-all duration-200",
         className
@@ -106,8 +106,8 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={cn(
           "w-full h-11 px-4 pe-10 rounded-lg appearance-none cursor-pointer",
-          "bg-[#1a1f2e] border border-gray-700",
-          "text-white",
+          "bg-card border border-border",
+          "text-foreground",
           "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
           "transition-all duration-200",
           className
@@ -116,7 +116,7 @@ const StyledSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       >
         {children}
       </select>
-      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
     </div>
   )
 );
@@ -168,7 +168,7 @@ interface FormFieldProps {
 function FormField({ label, required, children, className }: FormFieldProps) {
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
+      <label className="block text-sm font-medium text-muted-foreground mb-2">
         {label}
         {required && <span className="text-awnash-primary ms-1">*</span>}
       </label>
@@ -337,20 +337,20 @@ export const RequestModal: React.FC<RequestModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-gray-700"
+        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-muted border-border"
         dir={isRTL ? "rtl" : "ltr"}
       >
         {/* Header */}
-        <DialogHeader className="border-b border-gray-700 pb-4 mb-6">
+        <DialogHeader className="border-b border-border pb-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <FileText className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-semibold text-white">
+              <DialogTitle className="text-xl font-semibold text-foreground">
                 {isRTL ? "طلب استئجار جديد" : "New Rental Request"}
               </DialogTitle>
-              <p className="text-sm text-gray-400 mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {isRTL ? "أدخل تفاصيل الطلب" : "Enter request details"}
               </p>
             </div>
@@ -424,10 +424,10 @@ export const RequestModal: React.FC<RequestModalProps> = ({
             <FormField label={isRTL ? "الموقع الدقيق" : "Exact Location"}>
               <div className="space-y-2">
                 {selectedLocation ? (
-                  <div className="p-3 bg-gray-900/50 border border-gray-700 rounded-lg">
+                  <div className="p-3 bg-background/50 border border-border rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-300 truncate">{selectedLocation.address}</p>
+                        <p className="text-sm text-muted-foreground truncate">{selectedLocation.address}</p>
                         <p className="text-xs text-gray-500">
                           {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
                         </p>
@@ -442,7 +442,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 bg-gray-900/30 text-center">
+                  <div className="border-2 border-dashed border-border rounded-lg p-4 bg-background/30 text-center">
                     <p className="text-sm text-gray-500">
                       {isRTL ? "لم يتم تحديد موقع بعد" : "No location selected"}
                     </p>
@@ -452,7 +452,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                   type="button"
                   variant="outline"
                   onClick={() => setShowLocationPicker(true)}
-                  className="w-full border-gray-600 text-gray-300 hover:bg-gray-700"
+                  className="w-full border-border text-muted-foreground hover:bg-muted"
                 >
                   <MapPin className="h-4 w-4 me-2" />
                   {isRTL ? "اختر موقع من الخريطة" : "Pick Location from Map"}
@@ -478,8 +478,8 @@ export const RequestModal: React.FC<RequestModalProps> = ({
           <FormField label={isRTL ? "الصور (اختياري)" : "Images (Optional)"}>
             <div
               className={cn(
-                "border-2 border-dashed border-gray-700 rounded-xl p-6 text-center",
-                "bg-gray-900/30 hover:bg-gray-900/50 transition-colors cursor-pointer"
+                "border-2 border-dashed border-border rounded-xl p-6 text-center",
+                "bg-background/30 hover:bg-background/50 transition-colors cursor-pointer"
               )}
               onClick={() =>
                 !uploadingImages && document.getElementById("request-images")?.click()
@@ -498,11 +498,11 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                 {uploadingImages ? (
                   <Loader2 className="h-8 w-8 text-awnash-primary animate-spin" />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center">
-                    <Upload className="h-5 w-5 text-gray-400" />
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                    <Upload className="h-5 w-5 text-muted-foreground" />
                   </div>
                 )}
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   {uploadingImages
                     ? isRTL
                       ? "جاري رفع الصور..."
@@ -522,14 +522,14 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                     <img
                       src={url}
                       alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg border border-gray-700"
+                      className="w-full h-full object-cover rounded-lg border border-border"
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
                       className={cn(
-                        "absolute top-2 bg-red-500 hover:bg-red-600 text-white",
+                        "absolute top-2 bg-red-500 hover:bg-red-600 text-foreground",
                         "rounded-full w-6 h-6 flex items-center justify-center",
                         "opacity-0 group-hover:opacity-100 transition-all",
                         isRTL ? "left-2" : "right-2"
@@ -559,13 +559,13 @@ export const RequestModal: React.FC<RequestModalProps> = ({
           </FormField>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-700">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-border">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={loading}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               {isRTL ? "إلغاء" : "Cancel"}
             </Button>
