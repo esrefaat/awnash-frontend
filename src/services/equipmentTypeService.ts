@@ -58,6 +58,7 @@ export interface EquipmentType {
   categoryId: string;
   equipmentCategory?: EquipmentCategory;
   locationMode: 'single' | 'from_to' | 'none';
+  serviceMode: 'standard' | 'on_demand';
   requiresTransport?: boolean;
   requiresSupportEquipment?: boolean;
   supportRequirements?: SupportEquipmentRequirement[];
@@ -82,6 +83,7 @@ export interface CreateEquipmentTypeData {
   descriptionUr?: string;
   categoryId: string;
   locationMode: 'single' | 'from_to' | 'none';
+  serviceMode?: 'standard' | 'on_demand';
   requiresTransport?: boolean;
   requiresSupportEquipment?: boolean;
   supportRequirements?: {
@@ -106,9 +108,9 @@ export interface CreateEquipmentTypeData {
 export interface UpdateEquipmentTypeData extends Partial<CreateEquipmentTypeData> {}
 
 export interface MarketNameData {
-  nameEn?: string;
-  nameAr?: string;
-  nameUr?: string;
+  nameEn?: string | null;
+  nameAr?: string | null;
+  nameUr?: string | null;
   displayOrder?: number;
 }
 

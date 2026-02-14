@@ -118,9 +118,9 @@ export default function EquipmentNamingPage() {
     try {
       setSaving(typeId);
       const data: MarketNameData = {
-        nameEn: editingRow.marketName.nameEn || undefined,
-        nameAr: editingRow.marketName.nameAr || undefined,
-        nameUr: editingRow.marketName.nameUr || undefined,
+        nameEn: editingRow.marketName.nameEn?.trim() || null,
+        nameAr: editingRow.marketName.nameAr?.trim() || null,
+        nameUr: editingRow.marketName.nameUr?.trim() || null,
         displayOrder: editingRow.marketName.displayOrder ?? undefined,
       };
 

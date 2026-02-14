@@ -76,6 +76,7 @@ interface EquipmentTypeFormData {
   name_ur: string;
   categoryId: string;
   location_mode: 'single' | 'from_to' | 'none';
+  service_mode: 'standard' | 'on_demand';
   requires_support_equipment: boolean;
   support_requirements: SupportRequirementFormData[];
   attributes: EquipmentTypeAttribute[];
@@ -101,6 +102,11 @@ const locationModes = [
   { value: 'single', label: 'Single Location', icon: MapPin },
   { value: 'from_to', label: 'From/To (Transport)', icon: Navigation },
   { value: 'none', label: 'None', icon: X }
+];
+
+const serviceModes = [
+  { value: 'standard', label: 'Standard (4-step)' },
+  { value: 'on_demand', label: 'On-Demand (fast-track)' },
 ];
 
 type TabType = 'categories' | 'types' | 'naming';
@@ -725,6 +731,18 @@ const SortableEquipmentTypeRow: React.FC<{
         </div>
       </td>
       <td className="px-4 py-4 whitespace-nowrap">
+        <Badge 
+          variant={type.serviceMode === 'on_demand' ? 'default' : 'secondary'}
+          className={cn(
+            type.serviceMode === 'on_demand' 
+              ? 'bg-amber-600/30 text-amber-300 border-amber-500/30' 
+              : 'bg-gray-600/30 text-gray-300'
+          )}
+        >
+          {type.serviceMode === 'on_demand' ? 'On-Demand' : 'Standard'}
+        </Badge>
+      </td>
+      <td className="px-4 py-4 whitespace-nowrap">
         <span className="text-sm text-muted-foreground">{type.attributes?.length || 0}</span>
       </td>
       <td className="px-4 py-4 whitespace-nowrap text-center">
@@ -785,6 +803,7 @@ const EquipmentTypesTab: React.FC = () => {
     name_ur: '',
     categoryId: '',
     location_mode: 'single',
+    service_mode: 'standard',
     requires_support_equipment: false,
     support_requirements: [],
     attributes: [],
@@ -1041,6 +1060,7 @@ const EquipmentTypesTab: React.FC = () => {
       name_ur: '',
       categoryId: '',
       location_mode: 'single',
+      service_mode: 'standard',
       requires_support_equipment: false,
       support_requirements: [],
       attributes: [],
@@ -1070,6 +1090,7 @@ const EquipmentTypesTab: React.FC = () => {
       name_ur: type.nameUr || '',
       categoryId: type.categoryId || '',
       location_mode: type.locationMode,
+      service_mode: type.serviceMode || 'standard',
       requires_support_equipment: type.requiresSupportEquipment || false,
       support_requirements: (type.supportRequirements || []).map(req => ({
         id: req.id,
@@ -1150,6 +1171,7 @@ const EquipmentTypesTab: React.FC = () => {
         categoryId: form.categoryId,
         category: selectedCat?.slug || '', // For backward compatibility
         locationMode: form.location_mode,
+        serviceMode: form.service_mode,
         requiresSupportEquipment: form.requires_support_equipment,
         supportRequirements: form.requires_support_equipment
           ? form.support_requirements
@@ -1296,6 +1318,7 @@ const EquipmentTypesTab: React.FC = () => {
                   <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Category</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Location Mode</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Service Mode</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-20">Attrs</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase w-24">Status</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-24">Actions</th>
@@ -1437,6 +1460,23 @@ const EquipmentTypesTab: React.FC = () => {
                 </StyledSelect>
               </FormField>
             </div>
+
+            {/* Service Mode */}
+            <FormField label="Service Mode">
+              <StyledSelect
+                value={form.service_mode}
+                onChange={(e) => handleInputChange('service_mode', e.target.value)}
+              >
+                {serviceModes.map((mode) => (
+                  <option key={mode.value} value={mode.value}>
+                    {mode.label}
+                  </option>
+                ))}
+              </StyledSelect>
+              <p className="text-xs text-muted-foreground mt-1">
+                On-Demand types skip the cart/details steps and go directly to location selection and submission.
+              </p>
+            </FormField>
 
             {/* Image Upload Section */}
             <div className="space-y-4 border border-border rounded-xl p-4 bg-background/20">
@@ -1847,9 +1887,9 @@ const MarketNamingTab: React.FC = () => {
     try {
       setSaving(typeId);
       const data: MarketNameData = {
-        nameEn: editingRow.marketName.nameEn || undefined,
-        nameAr: editingRow.marketName.nameAr || undefined,
-        nameUr: editingRow.marketName.nameUr || undefined,
+        nameEn: editingRow.marketName.nameEn?.trim() || null,
+        nameAr: editingRow.marketName.nameAr?.trim() || null,
+        nameUr: editingRow.marketName.nameUr?.trim() || null,
         displayOrder: editingRow.marketName.displayOrder ?? undefined,
       };
 
