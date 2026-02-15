@@ -28,7 +28,7 @@ export interface UploadCompleteResponse {
   };
 }
 
-export type UploadContext = 'request' | 'equipment' | 'equipment-type' | 'chat' | 'profile' | 'dispute';
+export type UploadContext = 'request' | 'equipment' | 'equipment-type' | 'article' | 'chat' | 'profile' | 'dispute';
 
 class MediaService {
   private baseUrl = '/media';

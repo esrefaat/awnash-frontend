@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X, Upload, Loader2, CheckCircle2, AlertTriangle, ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getCitiesForDropdown } from "@/config/cities";
+import { getCitiesForDropdown, SAUDI_CITIES } from "@/config/cities";
 import { getEquipmentStatusesForDropdown } from "@/config/equipment";
 import {
   equipmentTypeService,
@@ -290,6 +290,220 @@ function OwnerSearch({ owners, selectedOwnerId, onSelect, isLoading, isRTL }: Ow
 }
 
 // =============================================================================
+// City Search Dropdown
+// =============================================================================
+
+interface CitySearchProps {
+  selectedCity: string;
+  onSelect: (cityValue: string) => void;
+  isRTL: boolean;
+}
+
+function CitySearch({ selectedCity, onSelect, isRTL }: CitySearchProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const selectedLabel = selectedCity
+    ? SAUDI_CITIES.find((c) => c.value === selectedCity)?.[isRTL ? "arabicLabel" : "label"] || ""
+    : "";
+
+  const filteredCities = SAUDI_CITIES.filter((city) => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    return (
+      city.label.toLowerCase().includes(term) ||
+      city.arabicLabel.toLowerCase().includes(term)
+    );
+  });
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isOpen]);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <div className="relative">
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <input
+          type="text"
+          value={isOpen ? searchTerm : selectedLabel}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setIsOpen(true);
+          }}
+          onFocus={() => {
+            setIsOpen(true);
+            setSearchTerm("");
+          }}
+          placeholder={isRTL ? "ابحث عن المدينة..." : "Search for city..."}
+          className={cn(
+            "w-full h-11 ps-10 pe-4 rounded-lg",
+            "bg-background/50 border border-border",
+            "text-foreground placeholder:text-muted-foreground",
+            "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
+            "transition-all duration-200"
+          )}
+        />
+      </div>
+
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-2 bg-muted border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto">
+          {filteredCities.length > 0 ? (
+            filteredCities.map((city) => (
+              <div
+                key={city.value}
+                className={cn(
+                  "px-4 py-3 cursor-pointer transition-colors",
+                  "hover:bg-muted/50",
+                  selectedCity === city.value && "bg-awnash-primary/10 border-s-2 border-awnash-primary"
+                )}
+                onClick={() => {
+                  onSelect(city.value);
+                  setIsOpen(false);
+                  setSearchTerm("");
+                }}
+              >
+                <div className="font-medium text-foreground">
+                  {isRTL ? city.arabicLabel : city.label}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-3 text-sm text-gray-500">
+              {isRTL ? "لا توجد نتائج" : "No results found"}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
+// Equipment Type Search Dropdown
+// =============================================================================
+
+interface EquipmentTypeSearchProps {
+  equipmentTypes: EquipmentType[];
+  selectedTypeId: string;
+  onSelect: (typeId: string) => void;
+  isLoading: boolean;
+  isRTL: boolean;
+}
+
+function EquipmentTypeSearch({ equipmentTypes, selectedTypeId, onSelect, isLoading, isRTL }: EquipmentTypeSearchProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  function getTypeLabel(type: EquipmentType) {
+    const baseName = isRTL ? type.nameAr : type.nameEn;
+    const marketName = isRTL ? type.marketName?.nameAr : type.marketName?.nameEn;
+    return marketName && marketName !== baseName
+      ? `${marketName} — ${baseName}`
+      : baseName;
+  }
+
+  const selectedType = equipmentTypes.find((t) => t.id === selectedTypeId);
+  const selectedText = selectedType ? getTypeLabel(selectedType) : "";
+
+  const filteredTypes = equipmentTypes.filter((type) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      type.nameEn?.toLowerCase().includes(term) ||
+      type.nameAr?.toLowerCase().includes(term) ||
+      type.marketName?.nameEn?.toLowerCase().includes(term) ||
+      type.marketName?.nameAr?.toLowerCase().includes(term)
+    );
+  });
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isOpen]);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <div className="relative">
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <input
+          type="text"
+          value={isOpen ? searchTerm : selectedText}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setIsOpen(true);
+          }}
+          onFocus={() => {
+            setIsOpen(true);
+            setSearchTerm("");
+          }}
+          placeholder={isRTL ? "ابحث عن نوع المعدة..." : "Search equipment type..."}
+          disabled={isLoading}
+          className={cn(
+            "w-full h-11 ps-10 pe-4 rounded-lg",
+            "bg-background/50 border border-border",
+            "text-foreground placeholder:text-muted-foreground",
+            "focus:outline-none focus:ring-2 focus:ring-awnash-primary/50 focus:border-awnash-primary",
+            "transition-all duration-200"
+          )}
+        />
+      </div>
+
+      {isOpen && !isLoading && (
+        <div className="absolute z-50 w-full mt-2 bg-muted border border-border rounded-xl shadow-2xl max-h-60 overflow-y-auto">
+          {filteredTypes.length > 0 ? (
+            filteredTypes.map((type) => (
+              <div
+                key={type.id}
+                className={cn(
+                  "px-4 py-3 cursor-pointer transition-colors",
+                  "hover:bg-muted/50",
+                  selectedTypeId === type.id && "bg-awnash-primary/10 border-s-2 border-awnash-primary"
+                )}
+                onClick={() => {
+                  onSelect(type.id);
+                  setIsOpen(false);
+                  setSearchTerm("");
+                }}
+              >
+                <div className="font-medium text-foreground">{getTypeLabel(type)}</div>
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-3 text-sm text-gray-500">
+              {isRTL ? "لا توجد نتائج" : "No results found"}
+            </div>
+          )}
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          {isRTL ? "جاري تحميل أنواع المعدات..." : "Loading equipment types..."}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
 // Image Upload Component
 // =============================================================================
 
@@ -371,7 +585,7 @@ function ImageUpload({ images, onUpload, onRemove, isUploading, isRTL }: ImageUp
           ))}
         </div>
       )}
-    </div>
+    </div>  
   );
 }
 
@@ -446,6 +660,7 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
       setAttributeValues(attrValues);
     } else {
       setForm({
+        id: crypto.randomUUID(),
         name: "",
         description: "",
         equipmentTypeId: "",
@@ -491,7 +706,7 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
       if (isOpen) {
         setLoadingEquipmentTypes(true);
         try {
-          const response = await equipmentTypeService.getAll({ limit: 100 });
+          const response = await equipmentTypeService.getAllWithMarketNames("SA", { limit: 100 });
           setEquipmentTypes(response.data || []);
         } catch (err) {
           console.error("Failed to load equipment types:", err);
@@ -539,11 +754,23 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
   async function handleImageUpload(file: File): Promise<string> {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("context", "equipment");
+    formData.append("contextId", isEditMode && equipmentToEdit ? equipmentToEdit.id : form.id!);
+    const headers: Record<string, string> = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/v1"}/media/upload`,
-      { method: "POST", credentials: "include", body: formData }
+      { method: "POST", credentials: "include", headers, body: formData }
     );
-    if (!response.ok) throw new Error("Failed to upload image");
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to upload image");
+    }
     const data = await response.json();
     if (data.data?.url) return data.data.url;
     if (data.url) return data.url;
@@ -701,6 +928,80 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
             </FormField>
           )}
 
+          {/* City & Equipment Type */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField label={isRTL ? "المدينة" : "City"} required>
+              <CitySearch
+                selectedCity={form.city}
+                onSelect={(value) => handleInputChange("city", value)}
+                isRTL={isRTL}
+              />
+            </FormField>
+
+            <FormField label={isRTL ? "نوع المعدة" : "Equipment Type"} required>
+              <EquipmentTypeSearch
+                equipmentTypes={equipmentTypes}
+                selectedTypeId={form.equipmentTypeId}
+                onSelect={(id) => handleInputChange("equipmentTypeId", id)}
+                isLoading={loadingEquipmentTypes}
+                isRTL={isRTL}
+              />
+            </FormField>
+          </div>
+
+          {/* Dynamic Attributes (based on selected equipment type) */}
+          {typeAttributes.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {typeAttributes.map((attribute) => (
+                <FormField
+                  key={attribute.id}
+                  label={`${attribute.label}${attribute.unit ? ` (${attribute.unit})` : ""}`}
+                  required={attribute.isRequired}
+                >
+                  <StyledSelect
+                    value={attributeValues[attribute.id] || ""}
+                    onChange={(e) => handleAttributeChange(attribute.id, e.target.value)}
+                  >
+                    <option value="">{isRTL ? "اختر" : "Select"} {attribute.label}</option>
+                    {attribute.options.map((option) => (
+                      <option key={option.id || option.value} value={option.value}>
+                        {option.value}
+                      </option>
+                    ))}
+                  </StyledSelect>
+                </FormField>
+              ))}
+            </div>
+          )}
+
+          {/* Daily Rate & Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              label={isRTL ? "المعدل اليومي (ريال سعودي)" : "Daily Rate (SAR)"}
+              hint={isRTL ? "بالريال السعودي (SAR)" : "In Saudi Riyals (SAR)"}
+            >
+              <StyledInput
+                type="number"
+                value={form.dailyRate}
+                onChange={(e) => handleInputChange("dailyRate", parseFloat(e.target.value) || 0)}
+                placeholder={isRTL ? "أدخل المعدل اليومي" : "Enter daily rate"}
+                min="0"
+                step="0.01"
+              />
+            </FormField>
+
+            <FormField label={isRTL ? "الحالة" : "Status"}>
+              <StyledSelect
+                value={form.status}
+                onChange={(e) => handleInputChange("status", e.target.value)}
+              >
+                {getEquipmentStatusesForDropdown(isRTL).map((status) => (
+                  <option key={status.value} value={status.value}>{status.label}</option>
+                ))}
+              </StyledSelect>
+            </FormField>
+          </div>
+
           {/* Equipment Name */}
           <FormField label={isRTL ? "اسم المعدة" : "Equipment Name"} required>
             <StyledInput
@@ -717,89 +1018,6 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
               onChange={(e) => handleInputChange("description", e.target.value)}
               placeholder={isRTL ? "أدخل وصف المعدة" : "Enter equipment description"}
               rows={3}
-            />
-          </FormField>
-
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Equipment Type */}
-            <FormField label={isRTL ? "نوع المعدة" : "Equipment Type"} required>
-              <StyledSelect
-                value={form.equipmentTypeId}
-                onChange={(e) => handleInputChange("equipmentTypeId", e.target.value)}
-              >
-                <option value="">{isRTL ? "اختر نوع المعدة" : "Select equipment type"}</option>
-                {loadingEquipmentTypes ? (
-                  <option disabled>{isRTL ? "جاري التحميل..." : "Loading..."}</option>
-                ) : (
-                  equipmentTypes.map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {isRTL ? type.nameAr : type.nameEn}
-                    </option>
-                  ))
-                )}
-              </StyledSelect>
-            </FormField>
-
-            {/* Dynamic Attributes */}
-            {typeAttributes.map((attribute) => (
-              <FormField
-                key={attribute.id}
-                label={`${attribute.label}${attribute.unit ? ` (${attribute.unit})` : ""}`}
-                required={attribute.isRequired}
-              >
-                <StyledSelect
-                  value={attributeValues[attribute.id] || ""}
-                  onChange={(e) => handleAttributeChange(attribute.id, e.target.value)}
-                >
-                  <option value="">{isRTL ? "اختر" : "Select"} {attribute.label}</option>
-                  {attribute.options.map((option) => (
-                    <option key={option.id || option.value} value={option.value}>
-                      {option.value}
-                    </option>
-                  ))}
-                </StyledSelect>
-              </FormField>
-            ))}
-
-            {/* City */}
-            <FormField label={isRTL ? "المدينة" : "City"} required className="md:col-start-1">
-              <StyledSelect
-                value={form.city}
-                onChange={(e) => handleInputChange("city", e.target.value)}
-              >
-                <option value="">{isRTL ? "اختر المدينة" : "Select city"}</option>
-                {getCitiesForDropdown(isRTL).map((city) => (
-                  <option key={city.value} value={city.value}>{city.label}</option>
-                ))}
-              </StyledSelect>
-            </FormField>
-
-            {/* Status */}
-            <FormField label={isRTL ? "الحالة" : "Status"}>
-              <StyledSelect
-                value={form.status}
-                onChange={(e) => handleInputChange("status", e.target.value)}
-              >
-                {getEquipmentStatusesForDropdown(isRTL).map((status) => (
-                  <option key={status.value} value={status.value}>{status.label}</option>
-                ))}
-              </StyledSelect>
-            </FormField>
-          </div>
-
-          {/* Daily Rate */}
-          <FormField
-            label={isRTL ? "المعدل اليومي (ريال سعودي)" : "Daily Rate (SAR)"}
-            hint={isRTL ? "بالريال السعودي (SAR)" : "In Saudi Riyals (SAR)"}
-          >
-            <StyledInput
-              type="number"
-              value={form.dailyRate}
-              onChange={(e) => handleInputChange("dailyRate", parseFloat(e.target.value) || 0)}
-              placeholder={isRTL ? "أدخل المعدل اليومي" : "Enter daily rate"}
-              min="0"
-              step="0.01"
             />
           </FormField>
 

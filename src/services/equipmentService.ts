@@ -6,6 +6,7 @@ export interface EquipmentAttributeValue {
 }
 
 export interface EquipmentFormData {
+  id?: string;
   name: string;
   description: string;
   equipmentTypeId: string;

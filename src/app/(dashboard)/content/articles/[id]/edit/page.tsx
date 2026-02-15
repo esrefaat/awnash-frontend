@@ -202,7 +202,9 @@ const EditArticlePage: React.FC = () => {
         // Upload image to media service
         const uploadFormData = new FormData();
         uploadFormData.append('file', file);
-        uploadFormData.append('alt_text', 'Article cover image');
+        uploadFormData.append('context', 'article');
+        uploadFormData.append('contextId', params.id as string);
+        uploadFormData.append('altText', 'Article cover image');
         uploadFormData.append('description', `Cover image for article: ${formData.title || 'Article'}`);
 
         const uploadResult = await authenticatedFileUpload('/media/upload', uploadFormData);

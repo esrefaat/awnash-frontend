@@ -153,7 +153,9 @@ const NewArticlePage: React.FC = () => {
         // Upload image to media service
         const uploadFormData = new FormData();
         uploadFormData.append('file', file);
-        uploadFormData.append('alt_text', 'Article cover image');
+        uploadFormData.append('context', 'article');
+        uploadFormData.append('contextId', crypto.randomUUID());
+        uploadFormData.append('altText', 'Article cover image');
         uploadFormData.append('description', `Cover image for article: ${formData.title || 'New Article'}`);
 
         const uploadResult = await authenticatedFileUpload('/media/upload', uploadFormData);

@@ -256,7 +256,8 @@ class ModerationService {
       `${this.baseUrl}/admin/${id}/approve`,
       {}
     );
-    return response.data;
+    // Handle both wrapped {data: {...}} and unwrapped API responses
+    return response.data ?? (response as unknown as ApproveMediaResponse);
   }
 
   /**

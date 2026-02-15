@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { cn } from "@/lib/utils"
@@ -11,14 +10,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog"
-import { Button } from "@/components/ui/Button"
 
 interface ModalProps {
   isOpen: boolean
   onClose: () => void
   title: string
   children: React.ReactNode
-  size?: "sm" | "md" | "lg" | "xl"
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "full"
 }
 
 const sizeClasses = {
@@ -26,6 +24,8 @@ const sizeClasses = {
   md: "max-w-lg",
   lg: "max-w-2xl",
   xl: "max-w-4xl",
+  "2xl": "max-w-6xl",
+  full: "max-w-[90vw]",
 }
 
 export function Modal({
@@ -46,22 +46,10 @@ export function Modal({
           "bg-card border-border"
         )}
       >
-        <DialogHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
+        <DialogHeader className="border-b border-border pb-4">
           <DialogTitle className="text-lg font-medium">
             {title}
           </DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className={cn(
-              "h-8 w-8 text-muted-foreground hover:text-foreground",
-              isRTL ? "mr-auto" : "ml-auto"
-            )}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
         </DialogHeader>
         <div className="pt-4">{children}</div>
       </DialogContent>

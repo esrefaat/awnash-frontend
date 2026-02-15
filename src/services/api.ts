@@ -239,9 +239,18 @@ class ApiService {
   async upload<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
 
+    const headers: Record<string, string> = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
     const config: RequestInit = {
       method: 'POST',
       credentials: 'include',
+      headers,
       body: formData,
       // Don't set Content-Type - browser will set it with boundary for FormData
     };

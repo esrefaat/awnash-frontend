@@ -47,9 +47,21 @@ import moderationService, {
   REJECTION_REASON_PRESETS,
   ModerationLabel
 } from '@/services/moderationService';
+import { requestsService, RentalRequest } from '@/services/requestsService';
+import { equipmentService, Equipment } from '@/services/equipmentService';
+import { equipmentTypeService, EquipmentType } from '@/services/equipmentTypeService';
 
 type StatusFilter = 'all' | 'pending' | 'flagged' | 'approved' | 'rejected';
 type MediaTypeFilter = 'all' | 'image' | 'video' | 'pdf' | 'document';
+
+interface ContextDetails {
+  type: 'request' | 'equipment' | 'equipment-type' | 'other';
+  request?: RentalRequest | null;
+  equipment?: Equipment | null;
+  equipmentType?: EquipmentType | null;
+  loading: boolean;
+  error?: string;
+}
 
 const MediaModeration: React.FC = () => {
   const { i18n } = useTranslation();
@@ -80,6 +92,7 @@ const MediaModeration: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [contextDetails, setContextDetails] = useState<ContextDetails | null>(null);
   const limit = 20;
 
   // Refs for infinite scrolling
@@ -172,6 +185,43 @@ const MediaModeration: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+  // Fetch context details when preview modal opens or currentMedia changes
+  useEffect(() => {
+    if (!showPreviewModal || !currentMedia?.contextId || !currentMedia?.context) {
+      setContextDetails(null);
+      return;
+    }
+
+    let cancelled = false;
+    const ctx = currentMedia.context;
+    const ctxId = currentMedia.contextId;
+
+    async function fetchContextDetails() {
+      setContextDetails({ type: ctx === 'request' ? 'request' : ctx === 'equipment' ? 'equipment' : ctx === 'equipment-type' ? 'equipment-type' : 'other', loading: true });
+
+      try {
+        if (ctx === 'request') {
+          const request = await requestsService.getRequestById(ctxId);
+          if (!cancelled) setContextDetails({ type: 'request', request, loading: false });
+        } else if (ctx === 'equipment') {
+          const equipment = await equipmentService.getEquipmentById(ctxId);
+          if (!cancelled) setContextDetails({ type: 'equipment', equipment, loading: false });
+        } else if (ctx === 'equipment-type') {
+          const eqType = await equipmentTypeService.getById(ctxId);
+          if (!cancelled) setContextDetails({ type: 'equipment-type', equipmentType: eqType, loading: false });
+        } else {
+          if (!cancelled) setContextDetails({ type: 'other', loading: false });
+        }
+      } catch (err) {
+        console.error('Failed to fetch context details:', err);
+        if (!cancelled) setContextDetails(prev => prev ? { ...prev, loading: false, error: 'Failed to load details' } : null);
+      }
+    }
+
+    fetchContextDetails();
+    return () => { cancelled = true; };
+  }, [showPreviewModal, currentMedia?.id]);
 
   // Filtered and sorted media
   const filteredMedia = useMemo(() => {
@@ -359,9 +409,9 @@ const MediaModeration: React.FC = () => {
   const handleApproveMedia = async (media: MediaFile) => {
     setProcessingIds(prev => new Set(prev).add(media.id));
     try {
-      await moderationService.approveMedia(media.id);
+      const result = await moderationService.approveMedia(media.id);
       setMediaFiles(prev => prev.map(m => 
-        m.id === media.id ? { ...m, status: MediaStatus.APPROVED } : m
+        m.id === media.id ? { ...m, status: MediaStatus.APPROVED, url: result?.media?.url || m.url } : m
       ));
       setSuccessMessage(isRTL ? 'تم قبول الوسائط بنجاح' : 'Media approved successfully');
     } catch (err) {
@@ -420,9 +470,14 @@ const MediaModeration: React.FC = () => {
 
     setProcessingIds(prev => new Set([...prev, ...idsToApprove]));
     try {
-      await moderationService.bulkApprove(idsToApprove);
+      const bulkResult = await moderationService.bulkApprove(idsToApprove);
+      // Build a map of id -> new URL from bulk approve results
+      const urlMap = new Map<string, string>();
+      bulkResult.results.forEach(r => {
+        if (r.media?.id && r.media?.url) urlMap.set(r.media.id, r.media.url);
+      });
       setMediaFiles(prev => prev.map(m =>
-        idsToApprove.includes(m.id) ? { ...m, status: MediaStatus.APPROVED } : m
+        idsToApprove.includes(m.id) ? { ...m, status: MediaStatus.APPROVED, url: urlMap.get(m.id) || m.url } : m
       ));
       setSelectedMedia([]);
       setSuccessMessage(isRTL 
@@ -478,6 +533,52 @@ const MediaModeration: React.FC = () => {
     setShowPreviewModal(true);
   };
 
+  // Find the next pending/flagged media after the current one
+  const getNextPendingMedia = (currentId: string): MediaFile | null => {
+    const pendingMedia = filteredMedia.filter(
+      m => (m.status === MediaStatus.PENDING || m.status === MediaStatus.FLAGGED) && m.id !== currentId
+    );
+    if (pendingMedia.length === 0) return null;
+    // Find the index of current media in filteredMedia, then find the next pending one after it
+    const currentIndex = filteredMedia.findIndex(m => m.id === currentId);
+    const nextAfter = filteredMedia.slice(currentIndex + 1).find(
+      m => (m.status === MediaStatus.PENDING || m.status === MediaStatus.FLAGGED)
+    );
+    // If none after current, wrap to the first pending
+    return nextAfter || pendingMedia[0];
+  };
+
+  // Approve and advance to the next pending media in the preview
+  const handleApproveAndNext = async (media: MediaFile) => {
+    setProcessingIds(prev => new Set(prev).add(media.id));
+    try {
+      const result = await moderationService.approveMedia(media.id);
+      setMediaFiles(prev => prev.map(m =>
+        m.id === media.id ? { ...m, status: MediaStatus.APPROVED, url: result?.media?.url || m.url } : m
+      ));
+      setSuccessMessage(isRTL ? 'تم قبول الوسائط بنجاح' : 'Media approved successfully');
+
+      // Advance to next pending media
+      const next = getNextPendingMedia(media.id);
+      if (next) {
+        setCurrentMedia(next);
+      } else {
+        // No more pending media, close the modal
+        setShowPreviewModal(false);
+        setCurrentMedia(null);
+      }
+    } catch (err) {
+      console.error('Failed to approve media:', err);
+      setError(isRTL ? 'فشل في قبول الوسائط' : 'Failed to approve media');
+    } finally {
+      setProcessingIds(prev => {
+        const next = new Set(prev);
+        next.delete(media.id);
+        return next;
+      });
+    }
+  };
+
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
     if (preset && REJECTION_REASON_PRESETS[preset as keyof typeof REJECTION_REASON_PRESETS]) {
@@ -495,12 +596,12 @@ const MediaModeration: React.FC = () => {
             key={idx}
             className={cn(
               'text-xs px-2 py-0.5 rounded',
-              label.confidence >= 90 ? 'bg-red-500/20 text-red-400' :
-              label.confidence >= 70 ? 'bg-orange-500/20 text-orange-400' :
+              (label.confidence ?? 0) >= 90 ? 'bg-red-500/20 text-red-400' :
+              (label.confidence ?? 0) >= 70 ? 'bg-orange-500/20 text-orange-400' :
               'bg-gray-500/20 text-muted-foreground'
             )}
           >
-            {label.name} ({label.confidence.toFixed(0)}%)
+            {label.name} ({(label.confidence ?? 0).toFixed(0)}%)
           </span>
         ))}
         {labels.length > 3 && (
@@ -956,138 +1057,322 @@ const MediaModeration: React.FC = () => {
         )}
       </div>
 
-      {/* Preview Modal */}
+      {/* Preview Modal - Two Panel Layout */}
       {showPreviewModal && currentMedia && (
         <Modal
           isOpen={showPreviewModal}
           onClose={() => setShowPreviewModal(false)}
           title={isRTL ? 'معاينة الملف' : 'File Preview'}
-          size="xl"
+          size="2xl"
         >
-          <div className="space-y-6">
-            {/* Media Preview */}
-            <div className="bg-background rounded-lg p-4 flex items-center justify-center min-h-[300px]">
-              {currentMedia.mediaType === MediaType.IMAGE ? (
-                <img
-                  src={currentMedia.url}
-                  alt={currentMedia.originalName}
-                  className="max-w-full max-h-[500px] object-contain rounded-lg"
-                />
-              ) : currentMedia.mediaType === MediaType.VIDEO ? (
-                <video
-                  src={currentMedia.url}
-                  controls
-                  className="max-w-full max-h-[500px] rounded-lg"
-                />
-              ) : (
-                <div className="text-center">
-                  <FontAwesomeIcon icon={getMediaTypeIcon(currentMedia.mediaType)} className="h-20 w-20 text-gray-500 mb-4" />
-                  <p className="text-muted-foreground">{currentMedia.originalName}</p>
-                </div>
-              )}
-            </div>
-
-            {/* File Info */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-semibold text-gray-700">{isRTL ? 'اسم الملف:' : 'Filename:'}</span>
-                  <p className="text-gray-900">{currentMedia.originalName}</p>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-700">{isRTL ? 'النوع:' : 'Type:'}</span>
-                  <p className="text-gray-900">{getMediaTypeLabel(currentMedia.mediaType)}</p>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-700">{isRTL ? 'الحجم:' : 'Size:'}</span>
-                  <p className="text-gray-900">{formatFileSize(currentMedia.size)}</p>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-700">{isRTL ? 'تاريخ الرفع:' : 'Upload Date:'}</span>
-                  <p className="text-gray-900">{formatDate(currentMedia.createdAt)}</p>
-                </div>
-                {currentMedia.user && (
-                  <div className="col-span-2">
-                    <span className="font-semibold text-gray-700">{isRTL ? 'المستخدم:' : 'User:'}</span>
-                    <p className="text-gray-900">{currentMedia.user.name} ({currentMedia.user.email})</p>
+          <div className={cn('flex gap-6', isRTL ? 'flex-row-reverse' : 'flex-row')}>
+            {/* Left Panel - Media Content */}
+            <div className="flex-1 min-w-0">
+              <div className="bg-background rounded-lg flex items-center justify-center h-[70vh] overflow-hidden">
+                {currentMedia.mediaType === MediaType.IMAGE ? (
+                  <img
+                    src={currentMedia.url}
+                    alt={currentMedia.originalName}
+                    className="w-full h-full object-contain rounded-lg"
+                  />
+                ) : currentMedia.mediaType === MediaType.VIDEO ? (
+                  <video
+                    key={currentMedia.id}
+                    src={currentMedia.url}
+                    controls
+                    className="w-full h-full object-contain rounded-lg"
+                  />
+                ) : currentMedia.mediaType === MediaType.PDF ? (
+                  <iframe
+                    key={currentMedia.id}
+                    src={currentMedia.url}
+                    title={currentMedia.originalName}
+                    className="w-full h-full rounded-lg border-0"
+                  />
+                ) : (
+                  <div className="text-center p-8">
+                    <FontAwesomeIcon icon={getMediaTypeIcon(currentMedia.mediaType)} className="h-20 w-20 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground mb-4">{currentMedia.originalName}</p>
+                    <a
+                      href={currentMedia.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"
+                    >
+                      <FontAwesomeIcon icon={faDownload} className="h-4 w-4" />
+                      {isRTL ? 'تحميل الملف' : 'Download File'}
+                    </a>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Moderation Info */}
-            {(currentMedia.moderationScore !== undefined || currentMedia.moderationLabels?.length) && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                  <FontAwesomeIcon icon={faRobot} className="h-4 w-4" />
-                  {isRTL ? 'نتائج التصنيف الآلي' : 'Auto-Moderation Results'}
+            {/* Right Panel - Details & Actions */}
+            <div className={cn('w-72 shrink-0 flex flex-col gap-4')}>
+              {/* Status Badge */}
+              <div>{getStatusBadge(currentMedia.status, currentMedia.moderationScore)}</div>
+
+              {/* File Info */}
+              <div className="bg-muted rounded-lg p-4 space-y-3">
+                <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+                  <FontAwesomeIcon icon={faInfoCircle} className="h-3.5 w-3.5 text-purple-400" />
+                  {isRTL ? 'تفاصيل الملف' : 'File Details'}
                 </h4>
-                {currentMedia.moderationScore !== undefined && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-blue-800">{isRTL ? 'درجة الثقة:' : 'Confidence Score:'}</span>
-                    <span className={cn('font-bold', getModerationScoreColor(currentMedia.moderationScore))}>
-                      {currentMedia.moderationScore.toFixed(1)}%
-                    </span>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">{isRTL ? 'الاسم' : 'Name'}</span>
+                    <p className="text-foreground truncate" title={currentMedia.originalName}>{currentMedia.originalName}</p>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">{isRTL ? 'النوع' : 'Type'}</span>
+                    <span className="text-foreground">{getMediaTypeLabel(currentMedia.mediaType)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">{isRTL ? 'الحجم' : 'Size'}</span>
+                    <span className="text-foreground">{formatFileSize(currentMedia.size)}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">{isRTL ? 'تاريخ الرفع' : 'Uploaded'}</span>
+                    <p className="text-foreground">{formatDate(currentMedia.createdAt)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Context Details */}
+              <div className="bg-muted rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-lg">{getContextLabel(currentMedia.context).icon}</span>
+                  <span className="text-foreground font-semibold">{getContextLabel(currentMedia.context).label}</span>
+                </div>
+                {currentMedia.contextId && (
+                  <p className="text-muted-foreground text-xs font-mono truncate" title={currentMedia.contextId}>
+                    ID: {currentMedia.contextId.slice(0, 12)}...
+                  </p>
+                )}
+
+                {/* Rich context details */}
+                {contextDetails?.loading && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground py-1">
+                    <FontAwesomeIcon icon={faSpinner} className="h-3 w-3 animate-spin" />
+                    {isRTL ? 'جاري تحميل التفاصيل...' : 'Loading details...'}
                   </div>
                 )}
-                {currentMedia.moderationLabels && currentMedia.moderationLabels.length > 0 && (
-                  <div>
-                    <span className="text-blue-800">{isRTL ? 'التصنيفات:' : 'Labels:'}</span>
-                    <div className="flex flex-wrap gap-2 mt-2">
+
+                {contextDetails?.error && (
+                  <p className="text-xs text-red-400">{contextDetails.error}</p>
+                )}
+
+                {/* Request Details */}
+                {contextDetails?.type === 'request' && contextDetails.request && !contextDetails.loading && (
+                  <div className="space-y-2 text-sm border-t border-border/50 pt-3">
+                    {contextDetails.request.requestNumber && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{isRTL ? 'رقم الطلب' : 'Request #'}</span>
+                        <span className="text-foreground font-mono text-xs">{contextDetails.request.requestNumber}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'نوع المعدة' : 'Equipment Type'}</span>
+                      <span className="text-foreground">{contextDetails.request.equipmentType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'الحالة' : 'Status'}</span>
+                      <span className="text-foreground capitalize">{contextDetails.request.status}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'المدينة' : 'City'}</span>
+                      <span className="text-foreground">{contextDetails.request.city}</span>
+                    </div>
+                    {contextDetails.request.startDate && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{isRTL ? 'الفترة' : 'Period'}</span>
+                        <span className="text-foreground text-xs">
+                          {new Date(contextDetails.request.startDate).toLocaleDateString(isRTL ? 'ar-AE' : 'en-US', { month: 'short', day: 'numeric' })}
+                          {' → '}
+                          {new Date(contextDetails.request.endDate).toLocaleDateString(isRTL ? 'ar-AE' : 'en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                    )}
+                    {contextDetails.request.maxBudget > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{isRTL ? 'الميزانية' : 'Budget'}</span>
+                        <span className="text-foreground">{contextDetails.request.maxBudget.toLocaleString()} SAR</span>
+                      </div>
+                    )}
+                    {contextDetails.request.requester && (
+                      <div className="border-t border-border/50 pt-2 mt-2">
+                        <span className="text-muted-foreground text-xs">{isRTL ? 'مقدم الطلب' : 'Requester'}</span>
+                        <p className="text-foreground text-xs font-medium">{contextDetails.request.requester.fullName}</p>
+                        <p className="text-muted-foreground text-xs">{contextDetails.request.requester.mobileNumber}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Equipment Details */}
+                {contextDetails?.type === 'equipment' && contextDetails.equipment && !contextDetails.loading && (
+                  <div className="space-y-2 text-sm border-t border-border/50 pt-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'اسم المعدة' : 'Name'}</span>
+                      <span className="text-foreground truncate max-w-[140px]" title={contextDetails.equipment.name}>{contextDetails.equipment.name}</span>
+                    </div>
+                    {contextDetails.equipment.equipmentType && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{isRTL ? 'النوع' : 'Type'}</span>
+                        <span className="text-foreground">{isRTL ? contextDetails.equipment.equipmentType.nameAr : contextDetails.equipment.equipmentType.nameEn}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'الحالة' : 'Status'}</span>
+                      <span className="text-foreground capitalize">{contextDetails.equipment.status}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'المدينة' : 'City'}</span>
+                      <span className="text-foreground">{contextDetails.equipment.city}</span>
+                    </div>
+                    {contextDetails.equipment.dailyRate && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{isRTL ? 'المعدل اليومي' : 'Daily Rate'}</span>
+                        <span className="text-foreground">{parseFloat(contextDetails.equipment.dailyRate).toLocaleString()} SAR</span>
+                      </div>
+                    )}
+                    {contextDetails.equipment.owner && (
+                      <div className="border-t border-border/50 pt-2 mt-2">
+                        <span className="text-muted-foreground text-xs">{isRTL ? 'المالك' : 'Owner'}</span>
+                        <p className="text-foreground text-xs font-medium">{contextDetails.equipment.owner.fullName}</p>
+                        {contextDetails.equipment.owner.email && (
+                          <p className="text-muted-foreground text-xs">{contextDetails.equipment.owner.email}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Equipment Type Details */}
+                {contextDetails?.type === 'equipment-type' && contextDetails.equipmentType && !contextDetails.loading && (
+                  <div className="space-y-2 text-sm border-t border-border/50 pt-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'الاسم' : 'Name'}</span>
+                      <span className="text-foreground">{isRTL ? contextDetails.equipmentType.nameAr : contextDetails.equipmentType.nameEn}</span>
+                    </div>
+                    {contextDetails.equipmentType.equipmentCategory && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{isRTL ? 'الفئة' : 'Category'}</span>
+                        <span className="text-foreground">{isRTL ? contextDetails.equipmentType.equipmentCategory.nameAr : contextDetails.equipmentType.equipmentCategory.nameEn}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{isRTL ? 'الحالة' : 'Active'}</span>
+                      <span className={cn('text-xs px-2 py-0.5 rounded', contextDetails.equipmentType.isActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400')}>
+                        {contextDetails.equipmentType.isActive ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'غير نشط' : 'Inactive')}
+                      </span>
+                    </div>
+                    {contextDetails.equipmentType.attributes && contextDetails.equipmentType.attributes.length > 0 && (
+                      <div className="border-t border-border/50 pt-2 mt-2">
+                        <span className="text-muted-foreground text-xs">{isRTL ? 'الخصائص' : 'Attributes'}</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {contextDetails.equipmentType.attributes.map(attr => (
+                            <span key={attr.id} className="text-xs bg-purple-500/10 text-purple-300 px-2 py-0.5 rounded">
+                              {attr.label}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* User Info */}
+              {currentMedia.user && (
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center shrink-0">
+                      <FontAwesomeIcon icon={faUser} className="h-3 w-3 text-foreground" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-foreground text-sm font-medium truncate">{currentMedia.user.name}</p>
+                      <p className="text-muted-foreground text-xs truncate">{currentMedia.user.email}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Moderation Info */}
+              {(currentMedia.moderationScore != null || (currentMedia.moderationLabels && currentMedia.moderationLabels.length > 0)) && (
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 space-y-2">
+                  <h4 className="font-semibold text-blue-400 text-sm flex items-center gap-2">
+                    <FontAwesomeIcon icon={faRobot} className="h-3.5 w-3.5" />
+                    {isRTL ? 'تصنيف آلي' : 'Auto-Moderation'}
+                  </h4>
+                  {currentMedia.moderationScore != null && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-blue-300">{isRTL ? 'الدرجة' : 'Score'}</span>
+                      <span className={cn('font-bold', getModerationScoreColor(currentMedia.moderationScore))}>
+                        {currentMedia.moderationScore.toFixed(1)}%
+                      </span>
+                    </div>
+                  )}
+                  {currentMedia.moderationLabels && currentMedia.moderationLabels.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
                       {currentMedia.moderationLabels.map((label, idx) => (
                         <span
                           key={idx}
                           className={cn(
-                            'px-3 py-1 rounded-full text-sm',
-                            label.confidence >= 90 ? 'bg-red-100 text-red-800' :
-                            label.confidence >= 70 ? 'bg-orange-100 text-orange-800' :
-                            'bg-gray-100 text-gray-800'
+                            'px-2 py-0.5 rounded text-xs',
+                            (label.confidence ?? 0) >= 90 ? 'bg-red-500/20 text-red-400' :
+                            (label.confidence ?? 0) >= 70 ? 'bg-orange-500/20 text-orange-400' :
+                            'bg-muted text-muted-foreground'
                           )}
                         >
-                          {label.name}: {label.confidence.toFixed(0)}%
+                          {label.name} {(label.confidence ?? 0).toFixed(0)}%
                         </span>
                       ))}
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              )}
 
-            {/* Rejection Reason */}
-            {currentMedia.rejectionReason && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <h4 className="font-semibold text-red-900 mb-2">
-                  {isRTL ? 'سبب الرفض:' : 'Rejection Reason:'}
-                </h4>
-                <p className="text-red-800">{currentMedia.rejectionReason}</p>
-              </div>
-            )}
+              {/* Rejection Reason */}
+              {currentMedia.rejectionReason && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                  <h4 className="font-semibold text-red-400 text-sm mb-1">
+                    {isRTL ? 'سبب الرفض' : 'Rejection Reason'}
+                  </h4>
+                  <p className="text-red-300 text-sm">{currentMedia.rejectionReason}</p>
+                </div>
+              )}
 
-            {/* Actions */}
-            {(currentMedia.status === MediaStatus.PENDING || currentMedia.status === MediaStatus.FLAGGED) && (
-              <div className={cn('flex justify-end gap-3 pt-4 border-t', isRTL && 'space-x-reverse')}>
-                <Button
-                  onClick={() => {
-                    setShowPreviewModal(false);
-                    handleRejectMedia(currentMedia);
-                  }}
-                  className="bg-red-600 hover:bg-red-700 text-foreground"
-                >
-                  <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
-                  {isRTL ? 'رفض' : 'Reject'}
-                </Button>
-                <Button
-                  onClick={() => {
-                    handleApproveMedia(currentMedia);
-                    setShowPreviewModal(false);
-                  }}
-                  className="bg-green-600 hover:bg-green-700 text-foreground"
-                >
-                  <FontAwesomeIcon icon={faCheck} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
-                  {isRTL ? 'قبول' : 'Approve'}
-                </Button>
-              </div>
-            )}
+              {/* Actions */}
+              {(currentMedia.status === MediaStatus.PENDING || currentMedia.status === MediaStatus.FLAGGED) && (
+                <div className="flex flex-col gap-2 pt-2 border-t border-border mt-auto">
+                  <Button
+                    onClick={() => handleApproveAndNext(currentMedia)}
+                    className="w-full bg-green-600 hover:bg-green-700 text-foreground"
+                    disabled={processingIds.has(currentMedia.id)}
+                  >
+                    {processingIds.has(currentMedia.id) ? (
+                      <FontAwesomeIcon icon={faSpinner} className={cn('h-4 w-4 animate-spin', isRTL ? 'ml-2' : 'mr-2')} />
+                    ) : (
+                      <FontAwesomeIcon icon={faCheck} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
+                    )}
+                    {isRTL ? 'قبول والتالي' : 'Approve & Next'}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowPreviewModal(false);
+                      handleRejectMedia(currentMedia);
+                    }}
+                    variant="outline"
+                    className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                    disabled={processingIds.has(currentMedia.id)}
+                  >
+                    <FontAwesomeIcon icon={faTimes} className={cn('h-4 w-4', isRTL ? 'ml-2' : 'mr-2')} />
+                    {isRTL ? 'رفض' : 'Reject'}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </Modal>
       )}
@@ -1102,21 +1387,21 @@ const MediaModeration: React.FC = () => {
         >
           <div className="space-y-4">
             {currentMedia ? (
-              <div className="bg-gray-50 rounded-lg p-3">
+              <div className="bg-muted rounded-lg p-3">
                 <div className="text-sm">
-                  <span className="font-semibold text-gray-700">{isRTL ? 'الملف:' : 'File:'}</span>
-                  <span className={`text-gray-900 ${isRTL ? 'ml-2' : 'mr-2'}`}>{currentMedia.originalName}</span>
+                  <span className="font-semibold text-muted-foreground">{isRTL ? 'الملف:' : 'File:'}</span>
+                  <span className={`text-foreground ${isRTL ? 'ml-2' : 'mr-2'}`}>{currentMedia.originalName}</span>
                 </div>
                 {currentMedia.user && (
                   <div className="text-sm mt-1">
-                    <span className="font-semibold text-gray-700">{isRTL ? 'المستخدم:' : 'User:'}</span>
-                    <span className={`text-gray-900 ${isRTL ? 'ml-2' : 'mr-2'}`}>{currentMedia.user.name}</span>
+                    <span className="font-semibold text-muted-foreground">{isRTL ? 'المستخدم:' : 'User:'}</span>
+                    <span className={`text-foreground ${isRTL ? 'ml-2' : 'mr-2'}`}>{currentMedia.user.name}</span>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-700">
+              <div className="bg-muted rounded-lg p-3">
+                <p className="text-muted-foreground">
                   {isRTL 
                     ? `سيتم رفض ${selectedMedia.length} ملف` 
                     : `${selectedMedia.length} files will be rejected`}
@@ -1125,13 +1410,13 @@ const MediaModeration: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'اختر سبب سريع:' : 'Quick Reason:'}
               </label>
               <select
                 value={selectedPreset}
                 onChange={(e) => handlePresetChange(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-purple-500"
               >
                 <option value="">{isRTL ? 'اختر سبب...' : 'Select a reason...'}</option>
                 {Object.entries(REJECTION_REASON_PRESETS).map(([key, value]) => (
@@ -1143,14 +1428,14 @@ const MediaModeration: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'سبب الرفض:' : 'Rejection Reason:'}
               </label>
               <textarea
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
                 rows={4}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder:text-muted-foreground"
                 placeholder={isRTL ? 'اكتب سبب رفض هذا الملف...' : 'Enter the reason for rejecting this media...'}
               />
             </div>

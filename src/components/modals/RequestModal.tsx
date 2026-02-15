@@ -253,10 +253,19 @@ export const RequestModal: React.FC<RequestModalProps> = ({
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("context", "request");
+    formData.append("contextId", crypto.randomUUID());
 
+    const headers: Record<string, string> = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3007/v1"}/media/upload`,
-      { method: "POST", credentials: "include", body: formData }
+      { method: "POST", credentials: "include", headers, body: formData }
     );
 
     if (!response.ok) throw new Error("Failed to upload image");
