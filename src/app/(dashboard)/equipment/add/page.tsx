@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,7 +15,9 @@ import {
   faTimesCircle,
   faClock,
   faAngleDown,
-  faAngleUp
+  faAngleUp,
+  faChevronDown,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 import { EquipmentFormModal } from '@/components/modals/EquipmentFormModal';
@@ -23,6 +25,163 @@ import { equipmentService, Equipment } from '@/services/equipmentService';
 import { equipmentTypeService, EquipmentType } from '@/services/equipmentTypeService';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { InlineErrorPage } from '@/components/InlineErrorPage';
+
+// Searchable Dropdown Component
+interface DropdownOption {
+  value: string;
+  label: string;
+  sublabel?: string;
+}
+
+interface SearchableDropdownProps {
+  options: DropdownOption[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  allLabel: string;
+  disabled?: boolean;
+  isRTL?: boolean;
+}
+
+const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
+  options,
+  value,
+  onChange,
+  placeholder,
+  allLabel,
+  disabled = false,
+  isRTL = false,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+        setSearch('');
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredOptions = useMemo(() => {
+    if (!search) return options;
+    const lower = search.toLowerCase();
+    return options.filter(
+      (o) =>
+        o.label.toLowerCase().includes(lower) ||
+        (o.sublabel && o.sublabel.toLowerCase().includes(lower))
+    );
+  }, [options, search]);
+
+  const selectedLabel = useMemo(() => {
+    if (value === 'all') return allLabel;
+    return options.find((o) => o.value === value)?.label || allLabel;
+  }, [value, options, allLabel]);
+
+  const handleSelect = (val: string) => {
+    onChange(val);
+    setIsOpen(false);
+    setSearch('');
+  };
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setTimeout(() => inputRef.current?.focus(), 50);
+        }}
+        className={cn(
+          'w-full flex items-center justify-between px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm',
+          disabled && 'opacity-50 cursor-not-allowed'
+        )}
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <div className={cn('flex items-center gap-1', isRTL ? 'mr-1' : 'ml-1')}>
+          {value !== 'all' && (
+            <span
+              role="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange('all');
+              }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <FontAwesomeIcon icon={faTimes} className="h-3 w-3" />
+            </span>
+          )}
+          <FontAwesomeIcon icon={faChevronDown} className={cn('h-3 w-3 text-muted-foreground transition-transform', isOpen && 'rotate-180')} />
+        </div>
+      </button>
+
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-full bg-card border border-border rounded-lg shadow-xl overflow-hidden">
+          {/* Search input */}
+          <div className="p-2 border-b border-border">
+            <div className="relative">
+              <FontAwesomeIcon icon={faSearch} className={cn('absolute top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground', isRTL ? 'right-2.5' : 'left-2.5')} />
+              <input
+                ref={inputRef}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={placeholder}
+                className={cn(
+                  'w-full py-1.5 bg-muted border border-border rounded text-foreground text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent placeholder:text-muted-foreground',
+                  isRTL ? 'pr-8 pl-2' : 'pl-8 pr-2'
+                )}
+              />
+            </div>
+          </div>
+          {/* Options list */}
+          <div className="max-h-52 overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => handleSelect('all')}
+              className={cn(
+                'w-full px-3 py-2 text-sm hover:bg-muted transition-colors',
+                isRTL ? 'text-right' : 'text-left',
+                value === 'all' ? 'bg-blue-600/20 text-blue-400 font-medium' : 'text-foreground'
+              )}
+            >
+              {allLabel}
+            </button>
+            {filteredOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleSelect(option.value)}
+                className={cn(
+                  'w-full px-3 py-2 text-sm hover:bg-muted transition-colors',
+                  isRTL ? 'text-right' : 'text-left',
+                  value === option.value ? 'bg-blue-600/20 text-blue-400 font-medium' : 'text-foreground'
+                )}
+              >
+                <div>{option.label}</div>
+                {option.sublabel && (
+                  <div className="text-xs text-muted-foreground">{option.sublabel}</div>
+                )}
+              </button>
+            ))}
+            {filteredOptions.length === 0 && (
+              <div className="px-3 py-4 text-center text-sm text-muted-foreground">
+                {isRTL ? 'لا توجد نتائج' : 'No results found'}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Component state
 const EquipmentAddPage: React.FC = () => {
@@ -54,12 +213,21 @@ const EquipmentAddPage: React.FC = () => {
     search: '',
     status: 'all',
     equipmentType: 'all',
-    isAvailable: 'all'
+    isAvailable: 'all',
+    ownerId: 'all',
+    city: 'all'
   });
   
   // Equipment types for filter dropdown
   const [equipmentTypes, setEquipmentTypes] = useState<EquipmentType[]>([]);
   const [equipmentTypesLoading, setEquipmentTypesLoading] = useState(true);
+  
+  // Owners for filter dropdown (derived from all equipment)
+  const [ownerOptions, setOwnerOptions] = useState<{ id: string; fullName: string; mobileNumber?: string }[]>([]);
+  const [ownersLoading, setOwnersLoading] = useState(true);
+  
+  // Cities for filter dropdown (derived from all equipment)
+  const [cities, setCities] = useState<string[]>([]);
   
   // Sort
   const [sortBy, setSortBy] = useState('created_at');
@@ -104,6 +272,8 @@ const EquipmentAddPage: React.FC = () => {
       if (filters.status !== 'all') params.status = filters.status;
       if (filters.equipmentType !== 'all') params.equipmentType = filters.equipmentType;
       if (filters.isAvailable !== 'all') params.isAvailable = filters.isAvailable;
+      if (filters.ownerId !== 'all') params.ownerId = filters.ownerId;
+      if (filters.city !== 'all') params.city = filters.city;
       
       // Use the equipment service to fetch data
       const result = await equipmentService.getEquipment(params);
@@ -153,6 +323,44 @@ const EquipmentAddPage: React.FC = () => {
     };
     
     fetchEquipmentTypes();
+  }, []);
+
+  // Fetch all owners and cities from the full equipment list
+  useEffect(() => {
+    const fetchOwnersAndCities = async () => {
+      try {
+        setOwnersLoading(true);
+        const result = await equipmentService.getEquipment({ limit: 100, page: 1 });
+        const allEquipment = result.data || [];
+
+        // Extract unique owners
+        const ownersMap = new Map<string, { id: string; fullName: string; mobileNumber?: string }>();
+        allEquipment.forEach((eq) => {
+          if (eq.owner?.id && !ownersMap.has(eq.owner.id)) {
+            ownersMap.set(eq.owner.id, {
+              id: eq.owner.id,
+              fullName: eq.owner.fullName,
+              mobileNumber: eq.owner.mobileNumber,
+            });
+          }
+        });
+        setOwnerOptions(Array.from(ownersMap.values()).sort((a, b) => a.fullName.localeCompare(b.fullName)));
+
+        // Extract unique cities
+        const uniqueCities = Array.from(
+          new Set(allEquipment.map((e) => e.city).filter(Boolean))
+        ).sort();
+        setCities(uniqueCities);
+      } catch (err) {
+        console.error('Failed to fetch owners/cities:', err);
+        setOwnerOptions([]);
+        setCities([]);
+      } finally {
+        setOwnersLoading(false);
+      }
+    };
+
+    fetchOwnersAndCities();
   }, []);
 
 
@@ -291,22 +499,79 @@ const EquipmentAddPage: React.FC = () => {
 
         {/* Filters */}
         <div className="bg-card rounded-xl p-6 mb-6 border border-border">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Search */}
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2">
                 {isRTL ? 'البحث' : 'Search'}
               </label>
               <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <FontAwesomeIcon icon={faSearch} className={cn("absolute top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4", isRTL ? "right-3" : "left-3")} />
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                  className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={cn("w-full py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent", isRTL ? "pr-10 pl-3" : "pl-10 pr-3")}
                 placeholder={isRTL ? 'ابحث عن المعدات...' : 'Search equipment...'}
               />
               </div>
+            </div>
+
+            {/* Owner Filter (Searchable) */}
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
+                {isRTL ? 'المالك' : 'Owner'}
+              </label>
+              <SearchableDropdown
+                value={filters.ownerId}
+                onChange={(val) => setFilters(prev => ({ ...prev, ownerId: val }))}
+                placeholder={isRTL ? 'ابحث عن مالك...' : 'Search owners...'}
+                allLabel={isRTL ? 'جميع الملاك' : 'All Owners'}
+                disabled={ownersLoading}
+                isRTL={isRTL}
+                options={ownerOptions.map((owner) => ({
+                  value: owner.id,
+                  label: owner.fullName,
+                  sublabel: owner.mobileNumber,
+                }))}
+              />
+            </div>
+
+            {/* Equipment Type Filter (Searchable) */}
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
+                {isRTL ? 'نوع المعدة' : 'Equipment Type'}
+              </label>
+              <SearchableDropdown
+                value={filters.equipmentType}
+                onChange={(val) => setFilters(prev => ({ ...prev, equipmentType: val }))}
+                placeholder={isRTL ? 'ابحث عن نوع...' : 'Search types...'}
+                allLabel={isRTL ? 'جميع الأنواع' : 'All Types'}
+                disabled={equipmentTypesLoading}
+                isRTL={isRTL}
+                options={equipmentTypes.map((type) => ({
+                  value: type.id,
+                  label: isRTL ? type.nameAr : type.nameEn,
+                }))}
+              />
+            </div>
+
+            {/* Location Filter (Searchable) */}
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
+                {isRTL ? 'الموقع' : 'Location'}
+              </label>
+              <SearchableDropdown
+                value={filters.city}
+                onChange={(val) => setFilters(prev => ({ ...prev, city: val }))}
+                placeholder={isRTL ? 'ابحث عن مدينة...' : 'Search cities...'}
+                allLabel={isRTL ? 'جميع المدن' : 'All Cities'}
+                isRTL={isRTL}
+                options={cities.map((city) => ({
+                  value: city,
+                  label: city,
+                }))}
+              />
             </div>
 
             {/* Status Filter */}
@@ -325,26 +590,6 @@ const EquipmentAddPage: React.FC = () => {
                 <option value="suspended">{isRTL ? 'معلق' : 'Suspended'}</option>
                 <option value="maintenance">{isRTL ? 'صيانة' : 'Maintenance'}</option>
                 <option value="booked">{isRTL ? 'محجوز' : 'Booked'}</option>
-              </select>
-            </div>
-
-            {/* Equipment Type Filter */}
-            <div>
-              <label className="block text-sm font-medium text-muted-foreground mb-2">
-                {isRTL ? 'نوع المعدة' : 'Equipment Type'}
-              </label>
-              <select
-                value={filters.equipmentType}
-                onChange={(e) => setFilters(prev => ({ ...prev, equipmentType: e.target.value }))}
-                className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={equipmentTypesLoading}
-              >
-                <option value="all">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
-                {equipmentTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {isRTL ? type.nameAr : type.nameEn}
-                  </option>
-                ))}
               </select>
             </div>
 
@@ -450,6 +695,9 @@ const EquipmentAddPage: React.FC = () => {
                       {isRTL ? 'المعدة' : 'Equipment'}
                     </th>
                     <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
+                      {isRTL ? 'المالك' : 'Owner'}
+                    </th>
+                    <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
                       {isRTL ? 'النوع' : 'Type'}
                     </th>
                     <th className={cn('px-4 py-4 font-medium text-muted-foreground', isRTL ? 'text-right' : 'text-left')}>
@@ -478,6 +726,12 @@ const EquipmentAddPage: React.FC = () => {
                           <div>
                             <div className="font-medium text-foreground">{item.name}</div>
                             <div className="text-sm text-muted-foreground">{item.city}</div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div>
+                            <div className="font-medium text-foreground">{item.owner?.fullName || '-'}</div>
+                            <div className="text-xs text-muted-foreground">{item.owner?.mobileNumber || ''}</div>
                           </div>
                         </td>
                         <td className="px-4 py-4 text-muted-foreground capitalize">

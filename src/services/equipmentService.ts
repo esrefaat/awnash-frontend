@@ -39,6 +39,7 @@ export interface Equipment {
     id: string;
     fullName: string;
     email: string;
+    mobileNumber?: string;
   };
   equipmentType?: {
     id: string;
@@ -108,6 +109,8 @@ export class EquipmentService {
     status?: string;
     equipmentType?: string;
     isAvailable?: string;
+    ownerId?: string;
+    city?: string;
     sortBy?: string;
     sortOrder?: string;
   }): Promise<{ data: Equipment[]; total: number; totalPages: number; page: number; limit: number }> {

@@ -40,7 +40,9 @@ import {
   faReceipt,
   faMoneyBillWave,
   faChevronLeft,
-  faShieldHalved
+  faShieldHalved,
+  faExclamationTriangle,
+  faFileContract,
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '../../lib/utils';
 
@@ -225,6 +227,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           icon: faBell,
           i18nKey: 'sidebar.notificationsCenter',
           path: '/engagement/notifications'
+        },
+        {
+          key: 'referrals',
+          icon: faUsers,
+          i18nKey: 'sidebar.referralProgram',
+          path: '/engagement/referrals'
         }
       ]
     },
@@ -293,6 +301,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           icon: faMoneyBillWave,
           i18nKey: 'sidebar.payouts',
           path: '/finance/payouts'
+        },
+        {
+          key: 'penalties',
+          icon: faExclamationTriangle,
+          i18nKey: 'sidebar.penalties',
+          path: '/finance/penalties'
         }
       ]
     },
@@ -336,6 +350,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           icon: faFileAlt,
           i18nKey: 'sidebar.auditLog',
           path: '/finance/reports'
+        },
+        {
+          key: 'referral-settings',
+          icon: faCog,
+          i18nKey: 'sidebar.referralSettings',
+          path: '/settings/referral-program'
+        },
+        {
+          key: 'legal-documents',
+          icon: faFileContract,
+          i18nKey: 'sidebar.legalDocuments',
+          path: '/settings/legal-documents'
         }
       ]
     }
