@@ -293,6 +293,7 @@ const PayoutsPage: React.FC = () => {
                 <tr>
                   <th>{isRTL ? 'المالك' : 'Owner'}</th>
                   <th>{isRTL ? 'المبلغ' : 'Amount'}</th>
+                  <th>{isRTL ? 'المرحلة' : 'Stage'}</th>
                   <th>{isRTL ? 'البنك' : 'Bank'}</th>
                   <th>{isRTL ? 'الحالة' : 'Status'}</th>
                   <th>{isRTL ? 'تاريخ الطلب' : 'Requested'}</th>
@@ -312,6 +313,21 @@ const PayoutsPage: React.FC = () => {
                       <span className="font-bold text-lg" style={{ color: 'var(--awnash-primary)' }}>
                         {payoutsService.formatCurrency(payout.amount)}
                       </span>
+                    </td>
+                    <td>
+                      <span className="text-xs text-muted-foreground">
+                        {(payout as any).escrowStage === 1 ? (isRTL ? 'تسليم (1)' : 'Delivery (1)')
+                          : (payout as any).escrowStage === 2 ? (isRTL ? 'إتمام (2)' : 'Completion (2)')
+                          : '—'}
+                      </span>
+                      {(payout as any).bookingId && (
+                        <a
+                          href={`/finance/escrow?search=${(payout as any).bookingId}`}
+                          className="block text-xs text-blue-500 hover:underline"
+                        >
+                          {isRTL ? 'الضمان' : 'Escrow'}
+                        </a>
+                      )}
                     </td>
                     <td>
                       <div className="flex items-center gap-2">

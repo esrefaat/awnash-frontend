@@ -43,6 +43,7 @@ import {
   faShieldHalved,
   faExclamationTriangle,
   faFileContract,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '../../lib/utils';
 
@@ -301,6 +302,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           icon: faMoneyBillWave,
           i18nKey: 'sidebar.payouts',
           path: '/finance/payouts'
+        },
+        {
+          key: 'escrow',
+          icon: faLock,
+          i18nKey: 'sidebar.escrow',
+          path: '/finance/escrow'
         },
         {
           key: 'penalties',

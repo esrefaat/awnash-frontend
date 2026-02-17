@@ -170,6 +170,7 @@ export const OfferModal: React.FC<OfferModalProps> = ({
     dailyRate: "",
     currency: "SAR",
     price: "",
+    deliveryFee: "",
     expiresAt: "",
     notes: "",
   });
@@ -185,6 +186,7 @@ export const OfferModal: React.FC<OfferModalProps> = ({
         dailyRate: "",
         currency: "SAR",
         price: "",
+        deliveryFee: "",
         expiresAt: "",
         notes: "",
       });
@@ -228,6 +230,8 @@ export const OfferModal: React.FC<OfferModalProps> = ({
         dailyRate: parseFloat(form.dailyRate),
         currency: form.currency,
         price: parseFloat(form.price),
+        deliveryFee: form.deliveryFee ? parseFloat(form.deliveryFee) : 0,
+        includesDelivery: form.deliveryFee ? parseFloat(form.deliveryFee) > 0 : false,
         expiresAt: form.expiresAt,
         notes: form.notes,
       };
@@ -324,6 +328,19 @@ export const OfferModal: React.FC<OfferModalProps> = ({
               name="price"
               type="number"
               value={form.price}
+              onChange={handleChange}
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+            />
+          </FormField>
+
+          {/* Delivery Fee */}
+          <FormField label="Delivery Fee (round-trip)">
+            <StyledInput
+              name="deliveryFee"
+              type="number"
+              value={form.deliveryFee}
               onChange={handleChange}
               placeholder="0.00"
               min="0"

@@ -20,8 +20,13 @@ import {
   faEye,
   faMoneyBillWave,
   faPercentage,
-  faBuilding
+  faBuilding,
+  faLock,
+  faShieldAlt,
+  faUndoAlt,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
+import { escrowService, EscrowStats } from '@/services/escrowService';
 import {
   LineChart,
   Line,
@@ -65,6 +70,25 @@ const CommissionReports: React.FC = () => {
   const [selectedOwner, setSelectedOwner] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Escrow stats (real data)
+  const [escrowStats, setEscrowStats] = useState<EscrowStats | null>(null);
+  const [escrowLoading, setEscrowLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEscrowStats = async () => {
+      setEscrowLoading(true);
+      try {
+        const stats = await escrowService.getEscrowStats();
+        setEscrowStats(stats);
+      } catch {
+        // Non-critical - escrow stats are supplementary
+      } finally {
+        setEscrowLoading(false);
+      }
+    };
+    fetchEscrowStats();
+  }, []);
 
   // Mock financial data
   const financialSummary = {
@@ -311,6 +335,63 @@ const CommissionReports: React.FC = () => {
               {isRTL ? 'تصدير PDF' : 'Export PDF'}
             </button>
           </div>
+        </div>
+
+        {/* Escrow Throughput Section (Real Data) */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <FontAwesomeIcon icon={faLock} className="text-indigo-500" />
+            <h2 className="text-lg font-semibold text-foreground">{isRTL ? 'نظرة على الضمان' : 'Escrow Overview'}</h2>
+            <span className="text-xs text-muted-foreground ml-2">{isRTL ? '(بيانات حقيقية)' : '(live data)'}</span>
+          </div>
+          {escrowLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <FontAwesomeIcon icon={faSpinner} spin className="text-muted-foreground text-xl" />
+            </div>
+          ) : escrowStats ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <FontAwesomeIcon icon={faShieldAlt} className="text-blue-500 text-sm" />
+                  <span className="text-xs text-muted-foreground">{isRTL ? 'محتجز حالياً' : 'Currently Held'}</span>
+                </div>
+                <p className="text-xl font-bold text-foreground">{escrowStats.totalHeld}</p>
+                <p className="text-sm text-muted-foreground">{escrowService.formatCurrency(escrowStats.heldAmount)}</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <FontAwesomeIcon icon={faMoneyBillWave} className="text-green-500 text-sm" />
+                  <span className="text-xs text-muted-foreground">{isRTL ? 'تم الإفراج' : 'Released'}</span>
+                </div>
+                <p className="text-xl font-bold text-foreground">{escrowStats.totalReleased}</p>
+                <p className="text-sm text-muted-foreground">{escrowService.formatCurrency(escrowStats.releasedAmount)}</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <FontAwesomeIcon icon={faUndoAlt} className="text-gray-500 text-sm" />
+                  <span className="text-xs text-muted-foreground">{isRTL ? 'مُسترد' : 'Refunded'}</span>
+                </div>
+                <p className="text-xl font-bold text-foreground">{escrowStats.totalRefunded}</p>
+                <p className="text-sm text-muted-foreground">{escrowService.formatCurrency(escrowStats.refundedAmount)}</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <FontAwesomeIcon icon={faExclamationTriangle} className="text-red-500 text-sm" />
+                  <span className="text-xs text-muted-foreground">{isRTL ? 'نزاعات' : 'Disputed'}</span>
+                </div>
+                <p className="text-xl font-bold text-foreground">{escrowStats.totalDisputed}</p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <FontAwesomeIcon icon={faExclamationTriangle} className="text-orange-500 text-sm" />
+                  <span className="text-xs text-muted-foreground">{isRTL ? 'فشل/منتهي' : 'Failed/Expired'}</span>
+                </div>
+                <p className="text-xl font-bold text-foreground">{escrowStats.totalFailed + escrowStats.totalExpired}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">{isRTL ? 'لا توجد بيانات ضمان' : 'No escrow data available'}</p>
+          )}
         </div>
 
         {/* Summary Cards */}

@@ -82,6 +82,15 @@ interface EquipmentTypeFormData {
   attributes: EquipmentTypeAttribute[];
   imageUrl: string;
   imageFile: File | null;
+  // Escrow overrides (empty string = use system default)
+  paymentWindow: string;
+  deliveryPayoutPercentage: string;
+  deliveryPayoutCap: string;
+  autoCancelNoDispatch: string;
+  deliveryConfirm: string;
+  autoConfirmRatio: string;
+  autoConfirmMin: string;
+  autoConfirmMax: string;
 }
 
 interface FormErrors {
@@ -809,6 +818,14 @@ const EquipmentTypesTab: React.FC = () => {
     attributes: [],
     imageUrl: '',
     imageFile: null,
+    paymentWindow: '',
+    deliveryPayoutPercentage: '',
+    deliveryPayoutCap: '',
+    autoCancelNoDispatch: '',
+    deliveryConfirm: '',
+    autoConfirmRatio: '',
+    autoConfirmMin: '',
+    autoConfirmMax: '',
   });
   
   const [imageInputMode, setImageInputMode] = useState<'url' | 'upload'>('upload');
@@ -1113,6 +1130,14 @@ const EquipmentTypesTab: React.FC = () => {
       }),
       imageUrl: type.imageUrl || '',
       imageFile: null,
+      paymentWindow: type.paymentWindow != null ? String(type.paymentWindow) : '',
+      deliveryPayoutPercentage: type.deliveryPayoutPercentage != null ? String(type.deliveryPayoutPercentage) : '',
+      deliveryPayoutCap: type.deliveryPayoutCap != null ? String(type.deliveryPayoutCap) : '',
+      autoCancelNoDispatch: type.autoCancelNoDispatch != null ? String(type.autoCancelNoDispatch) : '',
+      deliveryConfirm: type.deliveryConfirm != null ? String(type.deliveryConfirm) : '',
+      autoConfirmRatio: type.autoConfirmRatio != null ? String(type.autoConfirmRatio) : '',
+      autoConfirmMin: type.autoConfirmMin != null ? String(type.autoConfirmMin) : '',
+      autoConfirmMax: type.autoConfirmMax != null ? String(type.autoConfirmMax) : '',
     });
     setImageInputMode(type.imageUrl ? 'url' : 'upload');
     setErrors({});
@@ -1191,7 +1216,16 @@ const EquipmentTypesTab: React.FC = () => {
             unit: attr.unit || undefined,
             isRequired: attr.is_required,
             options: attr.options.filter(opt => opt.trim() !== '').map(opt => ({ value: opt }))
-          }))
+          })),
+        // Escrow overrides: empty string -> null (clear override), non-empty -> number
+        paymentWindow: form.paymentWindow ? parseInt(form.paymentWindow, 10) : null,
+        deliveryPayoutPercentage: form.deliveryPayoutPercentage ? parseInt(form.deliveryPayoutPercentage, 10) : null,
+        deliveryPayoutCap: form.deliveryPayoutCap ? parseFloat(form.deliveryPayoutCap) : null,
+        autoCancelNoDispatch: form.autoCancelNoDispatch ? parseInt(form.autoCancelNoDispatch, 10) : null,
+        deliveryConfirm: form.deliveryConfirm ? parseInt(form.deliveryConfirm, 10) : null,
+        autoConfirmRatio: form.autoConfirmRatio ? parseInt(form.autoConfirmRatio, 10) : null,
+        autoConfirmMin: form.autoConfirmMin ? parseInt(form.autoConfirmMin, 10) : null,
+        autoConfirmMax: form.autoConfirmMax ? parseInt(form.autoConfirmMax, 10) : null,
       };
       
       if (isEditMode && editingType) {
@@ -1768,6 +1802,110 @@ const EquipmentTypesTab: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Escrow & Payout Overrides */}
+          <div className="space-y-4 pt-4 border-t border-border">
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Escrow & Payout Settings (Optional)
+            </h4>
+            <p className="text-xs text-muted-foreground">
+              Leave empty to use system defaults. Override only where this equipment type needs different values.
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Payment Window (min)</label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="System default"
+                  value={form.paymentWindow}
+                  onChange={(e) => setForm({ ...form, paymentWindow: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Delivery Payout %</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="System default"
+                  value={form.deliveryPayoutPercentage}
+                  onChange={(e) => setForm({ ...form, deliveryPayoutPercentage: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Delivery Payout Cap (SAR)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="100"
+                  placeholder="System default"
+                  value={form.deliveryPayoutCap}
+                  onChange={(e) => setForm({ ...form, deliveryPayoutCap: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Auto-Cancel No Dispatch (min)</label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="System default"
+                  value={form.autoCancelNoDispatch}
+                  onChange={(e) => setForm({ ...form, autoCancelNoDispatch: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Delivery Confirm (min)</label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="System default"
+                  value={form.deliveryConfirm}
+                  onChange={(e) => setForm({ ...form, deliveryConfirm: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Auto-Confirm Ratio %</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="System default"
+                  value={form.autoConfirmRatio}
+                  onChange={(e) => setForm({ ...form, autoConfirmRatio: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Auto-Confirm Min (min)</label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="System default"
+                  value={form.autoConfirmMin}
+                  onChange={(e) => setForm({ ...form, autoConfirmMin: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Auto-Confirm Max (min)</label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="System default"
+                  value={form.autoConfirmMax}
+                  onChange={(e) => setForm({ ...form, autoConfirmMax: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-background text-foreground border-border placeholder:text-muted-foreground/50"
+                />
+              </div>
+            </div>
           </div>
 
             {/* Actions */}

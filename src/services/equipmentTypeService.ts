@@ -70,6 +70,16 @@ export interface EquipmentType {
   attributes: EquipmentTypeAttribute[];
   marketNames?: EquipmentTypeMarketName[];
   marketName?: EquipmentTypeMarketName; // Single market name (from query with market param)
+  // Escrow setting overrides (nullable = use system default)
+  paymentWindow?: number;
+  deliveryPayoutPercentage?: number;
+  deliveryPayoutCap?: number;
+  autoCancelNoDispatch?: number;
+  deliveryConfirm?: number;
+  autoConfirmRatio?: number;
+  autoConfirmMin?: number;
+  autoConfirmMax?: number;
+  cancellationTiers?: Array<{ hoursBeforeStart: number; feePercent: number }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -103,6 +113,16 @@ export interface CreateEquipmentTypeData {
     isRequired?: boolean;
     options?: { value: string }[];
   }[];
+  // Escrow setting overrides (null = clear override, use system default)
+  paymentWindow?: number | null;
+  deliveryPayoutPercentage?: number | null;
+  deliveryPayoutCap?: number | null;
+  autoCancelNoDispatch?: number | null;
+  deliveryConfirm?: number | null;
+  autoConfirmRatio?: number | null;
+  autoConfirmMin?: number | null;
+  autoConfirmMax?: number | null;
+  cancellationTiers?: Array<{ hoursBeforeStart: number; feePercent: number }> | null;
 }
 
 export interface UpdateEquipmentTypeData extends Partial<CreateEquipmentTypeData> {}

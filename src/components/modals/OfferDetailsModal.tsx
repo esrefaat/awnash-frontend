@@ -307,9 +307,15 @@ export const OfferDetailsModal: React.FC<OfferDetailsModalProps> = ({
                   label={isRTL ? "السعر اليومي:" : "Daily Rate:"}
                   value={`${formatSimpleCurrency(offer.dailyRate, offer.dailyRateCurrency)}/${isRTL ? "يوم" : "day"}`}
                 />
+                {(offer.deliveryFee ?? 0) > 0 && (
+                  <InfoRow
+                    label={isRTL ? "رسوم التوصيل:" : "Delivery Fee:"}
+                    value={formatSimpleCurrency(offer.deliveryFee, offer.currency)}
+                  />
+                )}
                 <InfoRow
                   label={isRTL ? "المبلغ الإجمالي:" : "Total Amount:"}
-                  value={formatSimpleCurrency(offer.price, offer.currency)}
+                  value={formatSimpleCurrency((offer.price || 0) + (offer.deliveryFee || 0), offer.currency)}
                 />
               </div>
             </div>

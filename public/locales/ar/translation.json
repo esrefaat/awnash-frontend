@@ -46,6 +46,8 @@
     "paymentManagement": "إدارة المدفوعات",
     "invoices": "الفواتير",
     "payouts": "الدفعات",
+    "escrow": "الضمان",
+    "penalties": "الغرامات",
     "settings": "الإعدادات",
     "generalSettings": "الإعدادات العامة",
     "equipmentConfig": "إعداد المعدات",

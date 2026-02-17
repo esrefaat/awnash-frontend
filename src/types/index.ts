@@ -41,6 +41,7 @@ export interface Equipment {
   size?: string;
   totalRentals?: number;
   totalRevenue?: number;
+  deliveryFee?: number;
 }
 
 export interface Booking {
@@ -60,6 +61,7 @@ export interface Booking {
   createdAt: string;
   // Additional fields for heavy equipment rental marketplace
   rentalDays?: number;
+  deliveryFee?: number;
 }
 
 export interface AuditLog {

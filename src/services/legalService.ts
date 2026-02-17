@@ -1,4 +1,4 @@
-import apiService from './api';
+import { apiService } from './api';
 
 export interface LegalDocument {
   id: string;

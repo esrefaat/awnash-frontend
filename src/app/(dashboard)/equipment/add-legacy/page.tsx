@@ -30,6 +30,7 @@ interface EquipmentFormData {
   dailyRate: number;
   weeklyRate: number;
   monthlyRate: number;
+  deliveryFee: number;
   ownerId: string;
   location: string;
   condition: string;
@@ -53,6 +54,7 @@ const AddEquipment: React.FC = () => {
     dailyRate: 0,
     weeklyRate: 0,
     monthlyRate: 0,
+    deliveryFee: 0,
     ownerId: '',
     location: '',
     condition: 'excellent',
@@ -393,6 +395,22 @@ const AddEquipment: React.FC = () => {
                   onChange={(e) => handleInputChange('monthlyRate', parseFloat(e.target.value))}
                   min="0"
                   step="0.01"
+                />
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="max-w-xs">
+                <label className="form-label">
+                  {isRTL ? 'رسوم التوصيل (ريال)' : 'Delivery Fee (SAR)'}
+                </label>
+                <input
+                  type="number"
+                  className="form-input"
+                  value={formData.deliveryFee}
+                  onChange={(e) => handleInputChange('deliveryFee', parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
                 />
               </div>
             </div>

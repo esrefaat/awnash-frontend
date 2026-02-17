@@ -358,6 +358,7 @@ const EquipmentPage: React.FC = () => {
       'Owner': item.owner?.fullName || 'N/A',
       'Status': item.status,
       'Daily Rate (SAR)': item.dailyRate,
+      'Delivery Fee (SAR)': item.deliveryFee || 0,
       'Total Rentals': item.totalRentals || 0,
       'Total Revenue (SAR)': item.totalRevenue || 0,
       'Location': item.city,

@@ -377,6 +377,9 @@ const PaymentManagement: React.FC = () => {
                         {isRTL ? 'المبلغ' : 'Amount'}
                       </th>
                       <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
+                        {isRTL ? 'التقسيم' : 'Split'}
+                      </th>
+                      <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
                         {isRTL ? 'المستخدم' : 'User'}
                       </th>
                       <th className={cn('px-6 py-4 text-foreground font-semibold', isRTL ? 'text-right' : 'text-left')}>
@@ -412,6 +415,24 @@ const PaymentManagement: React.FC = () => {
                           <span className="text-foreground font-semibold">
                             {formatCurrency(transaction.amount, transaction.currency)}
                           </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-muted-foreground">
+                            {(transaction as any).splitLeg
+                              ? (transaction as any).splitLeg === 'requester_commission' ? (isRTL ? 'عمولة الطالب' : 'Req. Fee')
+                                : (transaction as any).splitLeg === 'owner_commission' ? (isRTL ? 'عمولة المالك' : 'Owner Fee')
+                                : (transaction as any).splitLeg === 'escrow' ? (isRTL ? 'ضمان' : 'Escrow')
+                                : '—'
+                              : '—'}
+                          </span>
+                          {(transaction as any).bookingId && (
+                            <a
+                              href={`/finance/escrow?search=${(transaction as any).bookingId}`}
+                              className="block text-xs text-blue-500 hover:underline mt-0.5"
+                            >
+                              {isRTL ? 'عرض الضمان' : 'View Escrow'}
+                            </a>
+                          )}
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm">

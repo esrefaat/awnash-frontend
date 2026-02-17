@@ -1,4 +1,4 @@
-import apiService from './api';
+import { apiService } from './api';
 import type {
   Dispute,
   DisputeActivity,

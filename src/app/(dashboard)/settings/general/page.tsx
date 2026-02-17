@@ -119,7 +119,7 @@ const Settings: React.FC = () => {
           <h1 className="text-3xl font-bold" style={{ color: 'var(--awnash-secondary)' }}>
             {isRTL ? 'الإعدادات العامة' : 'System Settings'}
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-muted-foreground mt-2">
             {isRTL ? 'إدارة وتخصيص إعدادات منصة أوناش' : 'Manage and customize Awnash platform settings'}
           </p>
         </div>
@@ -142,25 +142,25 @@ const Settings: React.FC = () => {
         </div>
         <div className="card-body">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-muted">
               <FontAwesomeIcon icon={faGlobe} className="text-blue-600" />
               <div>
-                <p className="font-medium text-sm">{isRTL ? 'اللغة' : 'Language'}</p>
-                <p className="text-xs text-gray-600">{isRTL ? 'العربية' : 'English'}</p>
+                <p className="font-medium text-sm dark:text-foreground">{isRTL ? 'اللغة' : 'Language'}</p>
+                <p className="text-xs text-gray-600 dark:text-muted-foreground">{isRTL ? 'العربية' : 'English'}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-muted">
               <FontAwesomeIcon icon={faEnvelope} className="text-green-600" />
               <div>
-                <p className="font-medium text-sm">{isRTL ? 'الإشعارات' : 'Notifications'}</p>
-                <p className="text-xs text-gray-600">{isRTL ? 'مفعل' : 'Enabled'}</p>
+                <p className="font-medium text-sm dark:text-foreground">{isRTL ? 'الإشعارات' : 'Notifications'}</p>
+                <p className="text-xs text-gray-600 dark:text-muted-foreground">{isRTL ? 'مفعل' : 'Enabled'}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-muted">
               <FontAwesomeIcon icon={faLock} className="text-red-600" />
               <div>
-                <p className="font-medium text-sm">{isRTL ? 'الأمان' : 'Security'}</p>
-                <p className="text-xs text-gray-600">{isRTL ? 'عالي' : 'High'}</p>
+                <p className="font-medium text-sm dark:text-foreground">{isRTL ? 'الأمان' : 'Security'}</p>
+                <p className="text-xs text-gray-600 dark:text-muted-foreground">{isRTL ? 'عالي' : 'High'}</p>
               </div>
             </div>
           </div>
@@ -192,7 +192,7 @@ const Settings: React.FC = () => {
                     <h3 className="font-semibold text-lg mb-2" style={{ color: 'var(--awnash-secondary)' }}>
                       {section.title}
                     </h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-600 dark:text-muted-foreground leading-relaxed">
                       {section.description}
                     </p>
                   </div>
@@ -217,7 +217,7 @@ const Settings: React.FC = () => {
         <div className="card-body">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-gray-600 dark:text-muted-foreground mb-1">
                 {isRTL ? 'إصدار النظام' : 'System Version'}
               </p>
               <p className="font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
@@ -225,7 +225,7 @@ const Settings: React.FC = () => {
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-gray-600 dark:text-muted-foreground mb-1">
                 {isRTL ? 'آخر تحديث' : 'Last Updated'}
               </p>
               <p className="font-semibold" style={{ color: 'var(--awnash-secondary)' }}>
@@ -233,7 +233,7 @@ const Settings: React.FC = () => {
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-gray-600 dark:text-muted-foreground mb-1">
                 {isRTL ? 'حالة النظام' : 'System Status'}
               </p>
               <span className="badge badge-success">
@@ -241,7 +241,7 @@ const Settings: React.FC = () => {
               </span>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-sm font-medium text-gray-600 dark:text-muted-foreground mb-1">
                 {isRTL ? 'قاعدة البيانات' : 'Database Status'}
               </p>
               <span className="badge badge-success">
@@ -259,7 +259,7 @@ const Settings: React.FC = () => {
             <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--awnash-secondary)' }}>
               {isRTL ? 'هل تحتاج مساعدة؟' : 'Need Help?'}
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-muted-foreground mb-4">
               {isRTL 
                 ? 'تواصل مع فريق الدعم الفني لأي استفسارات أو مشاكل'
                 : 'Contact our support team for any questions or issues'

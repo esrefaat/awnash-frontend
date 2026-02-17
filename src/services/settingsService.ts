@@ -53,6 +53,30 @@ export interface UpdateCommissionSettingsDto {
   minimumBookingValue?: number;
 }
 
+export interface EscrowSettings {
+  paymentWindow: number;
+  deliveryPayoutPercentage: number;
+  deliveryPayoutCap: number;
+  autoCancelNoDispatch: number;
+  deliveryConfirm: number;
+  autoConfirmRatio: number;
+  autoConfirmMin: number;
+  autoConfirmMax: number;
+  cancellationTiers: Array<{ hoursBeforeStart: number; feePercent: number }>;
+}
+
+export interface UpdateEscrowSettingsDto {
+  paymentWindow?: number;
+  deliveryPayoutPercentage?: number;
+  deliveryPayoutCap?: number;
+  autoCancelNoDispatch?: number;
+  deliveryConfirm?: number;
+  autoConfirmRatio?: number;
+  autoConfirmMin?: number;
+  autoConfirmMax?: number;
+  cancellationTiers?: Array<{ hoursBeforeStart: number; feePercent: number }>;
+}
+
 // ============================================
 // SERVICE
 // ============================================
@@ -167,6 +191,30 @@ class SettingsService {
       data: SettingsHistory[];
     }>(`/settings/admin/history?${params.toString()}`);
 
+    return response.data;
+  }
+
+  // ============================================
+  // ESCROW SETTINGS (ADMIN)
+  // ============================================
+
+  async getEscrowSettings(): Promise<EscrowSettings> {
+    const response = await this.makeRequest<{
+      success: boolean;
+      data: EscrowSettings;
+    }>('/settings/admin/escrow');
+    return response.data;
+  }
+
+  async updateEscrowSettings(settings: UpdateEscrowSettingsDto): Promise<EscrowSettings> {
+    const response = await this.makeRequest<{
+      success: boolean;
+      message: string;
+      data: EscrowSettings;
+    }>('/settings/admin/escrow', {
+      method: 'PUT',
+      body: JSON.stringify(settings),
+    });
     return response.data;
   }
 

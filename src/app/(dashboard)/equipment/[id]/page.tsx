@@ -288,6 +288,13 @@ const EquipmentView: React.FC = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="text-gray-600">{isRTL ? 'رسوم التوصيل:' : 'Delivery Fee:'}</span>
+                        <span className="font-medium text-green-600">
+                          <FontAwesomeIcon icon={faDollarSign} className="w-3 h-3 mr-1" />
+                          {equipment.deliveryFee ?? 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
                         <span className="text-gray-600">{isRTL ? 'الحالة:' : 'Status:'}</span>
                         <Badge className={getStatusColor(equipment.status)}>
                           {equipment.status}

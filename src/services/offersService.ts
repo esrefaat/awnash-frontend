@@ -21,6 +21,7 @@ export interface Offer {
   images: string[];
   documents: string[];
   includesDelivery?: boolean;
+  deliveryFee?: number;
   owner: {
     id: string;
     name: string;
@@ -68,6 +69,7 @@ export interface CreateOfferData {
   expiresAt?: string;
   notes?: string;
   includesDelivery?: boolean;
+  deliveryFee?: number;
   driverId?: string;
   images?: string[];
   documents?: string[];

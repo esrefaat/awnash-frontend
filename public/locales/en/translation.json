@@ -46,6 +46,8 @@
     "paymentManagement": "Payment Management",
     "invoices": "Invoices",
     "payouts": "Payouts",
+    "escrow": "Escrow",
+    "penalties": "Penalties",
     "settings": "Settings",
     "generalSettings": "General Settings",
     "equipmentConfig": "Equipment Config",
