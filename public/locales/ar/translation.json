@@ -55,6 +55,8 @@
     "userManagement": "إدارة المستخدمين",
     "rolesPermissions": "الأدوار والصلاحيات",
     "auditLog": "سجل النشاط",
+    "notificationTemplates": "قوالب الإشعارات",
+    "notificationSettings": "إعدادات الإشعارات",
     "authentication": "المصادقة",
     "resetPassword": "إعادة تعيين كلمة المرور",
     "brandName": "أوناش"

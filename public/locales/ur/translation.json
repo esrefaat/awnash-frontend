@@ -53,6 +53,8 @@
     "userManagement": "صارف کا انتظام",
     "rolesPermissions": "کردار اور اجازتیں",
     "auditLog": "آڈٹ لاگ",
+    "notificationTemplates": "اطلاع ٹیمپلیٹس",
+    "notificationSettings": "اطلاع کی ترتیبات",
     "authentication": "تصدیق",
     "resetPassword": "پاسورڈ ری سیٹ کریں",
     "brandName": "اوناش"

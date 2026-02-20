@@ -55,6 +55,8 @@
     "userManagement": "User Management",
     "rolesPermissions": "Roles & Permissions",
     "auditLog": "Audit Log",
+    "notificationTemplates": "Notification Templates",
+    "notificationSettings": "Notification Settings",
     "authentication": "Authentication",
     "resetPassword": "Reset Password",
     "brandName": "Awnash"

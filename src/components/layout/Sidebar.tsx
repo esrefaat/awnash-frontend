@@ -369,6 +369,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           icon: faFileContract,
           i18nKey: 'sidebar.legalDocuments',
           path: '/settings/legal-documents'
+        },
+        {
+          key: 'notification-templates',
+          icon: faBell,
+          i18nKey: 'sidebar.notificationTemplates',
+          path: '/content/message-templates'
+        },
+        {
+          key: 'notification-settings',
+          icon: faBell,
+          i18nKey: 'sidebar.notificationSettings',
+          path: '/settings/notifications'
         }
       ]
     }

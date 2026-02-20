@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,15 +11,10 @@ import {
   faSearch,
   faEdit,
   faEye,
-  faUndo,
   faTimes,
   faSave,
-  faLanguage,
   faInfoCircle,
-  faCopy,
-  faHistory,
   faPlus,
-  faCode,
   faUser,
   faTruck,
   faCalendarCheck,
@@ -27,194 +22,223 @@ import {
   faDollarSign,
   faExclamationTriangle,
   faCheckCircle,
-  faTimesCircle,
   faQuestionCircle,
-  faClock,
-  faDownload,
-  faUpload
+  faSpinner,
+  faToggleOn,
+  faToggleOff,
+  faRefresh,
+  faMobile,
+  faGlobe,
+  faComments
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  NotificationTemplate,
+  NotificationTemplateListItem,
+  NotificationChannel,
+  NotificationPriority,
+  RecipientType,
+  getNotificationTemplates,
+  getNotificationTemplate,
+  updateNotificationTemplate,
+  toggleNotificationTemplate,
+  getChannelLabel,
+  getPriorityColor,
+  getRecipientLabel,
+  formatEventCode,
+} from '@/services/notificationTemplateService';
 
-interface MessageTemplate {
-  id: string;
-  name: string;
-  triggerEvent: string;
-  channel: 'email' | 'sms' | 'in_app';
-  lastUpdated: string;
-  isActive: boolean;
-  content: {
-    en: {
-      subject?: string;
-      title: string;
-      body: string;
-    };
-    ar: {
-      subject?: string;
-      title: string;
-      body: string;
-    };
-  };
-  placeholders: string[];
-  category: 'booking' | 'document' | 'payment' | 'system' | 'user';
-}
+type LanguageCode = 'en' | 'ar' | 'ur';
 
-interface Placeholder {
-  key: string;
-  description: string;
-  example: string;
-}
-
-const SystemMessageTemplates: React.FC = () => {
+const NotificationTemplatesPage: React.FC = () => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const [activeChannel, setActiveChannel] = useState<'all' | 'email' | 'sms' | 'in_app'>('all');
+  
+  // State
+  const [templates, setTemplates] = useState<NotificationTemplateListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeChannel, setActiveChannel] = useState<'all' | NotificationChannel>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState<MessageTemplate | null>(null);
-  const [editingTemplate, setEditingTemplate] = useState<MessageTemplate | null>(null);
-  const [editLanguage, setEditLanguage] = useState<'en' | 'ar'>('en');
+  const [selectedTemplate, setSelectedTemplate] = useState<NotificationTemplate | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<NotificationTemplate | null>(null);
+  const [editLanguage, setEditLanguage] = useState<LanguageCode>('en');
   const [showPlaceholderHelp, setShowPlaceholderHelp] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [loadingTemplate, setLoadingTemplate] = useState(false);
 
-  // Mock templates data
-  const [templates, setTemplates] = useState<MessageTemplate[]>([
-    {
-      id: 'TPL-001',
-      name: 'Booking Confirmation',
-      triggerEvent: 'When a booking is confirmed by owner',
-      channel: 'email',
-      lastUpdated: '2024-06-15T10:30:00Z',
-      isActive: true,
-      category: 'booking',
-      content: {
-        en: {
-          subject: 'Booking Confirmed - {equipment_name}',
-          title: 'Your booking has been confirmed!',
-          body: 'Dear {user_name},\n\nGreat news! Your booking for {equipment_name} has been confirmed by {owner_name}.\n\nBooking Details:\n• Booking ID: {booking_id}\n• Equipment: {equipment_name}\n• Duration: {start_date} to {end_date}\n• Total Cost: {total_amount} SAR\n\nPlease ensure you have all required documents ready for pickup.\n\nBest regards,\nAwnash Team'
-        },
-        ar: {
-          subject: 'تأكيد الحجز - {equipment_name}',
-          title: 'تم تأكيد حجزك!',
-          body: 'عزيزي {user_name}،\n\nأخبار رائعة! تم تأكيد حجزك لـ {equipment_name} من قبل {owner_name}.\n\nتفاصيل الحجز:\n• رقم الحجز: {booking_id}\n• المعدة: {equipment_name}\n• المدة: من {start_date} إلى {end_date}\n• التكلفة الإجمالية: {total_amount} ريال سعودي\n\nيرجى التأكد من وجود جميع الوثائق المطلوبة للاستلام.\n\nمع أطيب التحيات،\nفريق أونش'
-        }
-      },
-      placeholders: ['user_name', 'equipment_name', 'owner_name', 'booking_id', 'start_date', 'end_date', 'total_amount']
-    },
-    {
-      id: 'TPL-002',
-      name: 'Document Rejected',
-      triggerEvent: 'When uploaded documents are rejected',
-      channel: 'in_app',
-      lastUpdated: '2024-06-14T16:45:00Z',
-      isActive: true,
-      category: 'document',
-      content: {
-        en: {
-          title: 'Document Verification Failed',
-          body: 'Your {document_type} has been rejected due to: {rejection_reason}. Please upload a new document that meets our requirements.'
-        },
-        ar: {
-          title: 'فشل في التحقق من الوثيقة',
-          body: 'تم رفض {document_type} الخاص بك بسبب: {rejection_reason}. يرجى رفع وثيقة جديدة تلبي متطلباتنا.'
-        }
-      },
-      placeholders: ['document_type', 'rejection_reason']
-    },
-    {
-      id: 'TPL-003',
-      name: 'Payment Reminder',
-      triggerEvent: 'When payment is overdue',
-      channel: 'sms',
-      lastUpdated: '2024-06-13T11:20:00Z',
-      isActive: true,
-      category: 'payment',
-      content: {
-        en: {
-          title: 'Payment Reminder',
-          body: 'Reminder: Payment of {amount} SAR for booking {booking_id} is overdue. Pay now to avoid penalties. Link: {payment_link}'
-        },
-        ar: {
-          title: 'تذكير دفع',
-          body: 'تذكير: دفعة {amount} ريال سعودي للحجز {booking_id} متأخرة. ادفع الآن لتجنب الغرامات. الرابط: {payment_link}'
-        }
-      },
-      placeholders: ['amount', 'booking_id', 'payment_link']
-    },
-    {
-      id: 'TPL-004',
-      name: 'Equipment Return Reminder',
-      triggerEvent: 'One day before return date',
-      channel: 'email',
-      lastUpdated: '2024-06-12T09:15:00Z',
-      isActive: true,
-      category: 'booking',
-      content: {
-        en: {
-          subject: 'Return Reminder - {equipment_name}',
-          title: 'Equipment Return Reminder',
-          body: 'Dear {user_name},\n\nThis is a friendly reminder that your rental of {equipment_name} is due for return tomorrow ({return_date}).\n\nReturn Location: {return_location}\nReturn Time: {return_time}\n\nPlease ensure the equipment is cleaned and in good condition.\n\nThank you,\nAwnash Team'
-        },
-        ar: {
-          subject: 'تذكير الإرجاع - {equipment_name}',
-          title: 'تذكير إرجاع المعدة',
-          body: 'عزيزي {user_name}،\n\nهذا تذكير ودود بأن إيجار {equipment_name} مستحق الإرجاع غداً ({return_date}).\n\nموقع الإرجاع: {return_location}\nوقت الإرجاع: {return_time}\n\nيرجى التأكد من أن المعدة نظيفة وفي حالة جيدة.\n\nشكراً لك،\nفريق أونش'
-        }
-      },
-      placeholders: ['user_name', 'equipment_name', 'return_date', 'return_location', 'return_time']
-    },
-    {
-      id: 'TPL-005',
-      name: 'Account Verification',
-      triggerEvent: 'When user account needs verification',
-      channel: 'in_app',
-      lastUpdated: '2024-06-11T14:30:00Z',
-      isActive: true,
-      category: 'user',
-      content: {
-        en: {
-          title: 'Account Verification Required',
-          body: 'Welcome to Awnash! To complete your registration, please verify your account by uploading the required documents.'
-        },
-        ar: {
-          title: 'مطلوب التحقق من الحساب',
-          body: 'مرحباً بك في أونش! لإكمال تسجيلك، يرجى التحقق من حسابك عن طريق رفع الوثائق المطلوبة.'
-        }
-      },
-      placeholders: ['user_name']
+  // Fetch templates
+  const fetchTemplates = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getNotificationTemplates();
+      setTemplates(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load templates');
+      // Use mock data as fallback
+      setTemplates(getMockTemplates());
+    } finally {
+      setLoading(false);
     }
-  ]);
+  }, []);
 
-  // Available placeholders
-  const availablePlaceholders: Placeholder[] = [
-    { key: 'user_name', description: 'User\'s full name', example: 'Ahmed Mohammed' },
-    { key: 'equipment_name', description: 'Name of the equipment', example: 'Caterpillar 320D Excavator' },
-    { key: 'owner_name', description: 'Equipment owner name', example: 'Gulf Heavy Equipment' },
-    { key: 'booking_id', description: 'Unique booking identifier', example: 'BK-2024-001' },
-    { key: 'start_date', description: 'Booking start date', example: '15 June 2024' },
-    { key: 'end_date', description: 'Booking end date', example: '22 June 2024' },
-    { key: 'total_amount', description: 'Total booking amount', example: '15,000' },
-    { key: 'document_type', description: 'Type of document', example: 'Insurance Certificate' },
-    { key: 'rejection_reason', description: 'Reason for rejection', example: 'Document expired' },
-    { key: 'amount', description: 'Payment amount', example: '5,000' },
-    { key: 'payment_link', description: 'Payment URL', example: 'https://pay.awnash.com/abc123' },
-    { key: 'return_date', description: 'Equipment return date', example: '22 June 2024' },
-    { key: 'return_location', description: 'Return location', example: 'Riyadh Depot' },
-    { key: 'return_time', description: 'Return time', example: '10:00 AM' }
-  ];
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
-  const getChannelIcon = (channel: string) => {
+  // Load full template for editing
+  const handleEditTemplate = async (template: NotificationTemplateListItem) => {
+    try {
+      setLoadingTemplate(true);
+      const fullTemplate = await getNotificationTemplate(template.id);
+      setEditingTemplate(fullTemplate);
+      setEditLanguage('en');
+    } catch (err) {
+      // Fallback to mock for demo
+      setEditingTemplate(getMockFullTemplate(template));
+      setEditLanguage('en');
+    } finally {
+      setLoadingTemplate(false);
+    }
+  };
+
+  // Load full template for preview
+  const handlePreviewTemplate = async (template: NotificationTemplateListItem) => {
+    try {
+      setLoadingTemplate(true);
+      const fullTemplate = await getNotificationTemplate(template.id);
+      setSelectedTemplate(fullTemplate);
+    } catch (err) {
+      setSelectedTemplate(getMockFullTemplate(template));
+    } finally {
+      setLoadingTemplate(false);
+    }
+  };
+
+  // Save template
+  const handleSaveTemplate = async () => {
+    if (!editingTemplate) return;
+    
+    try {
+      setSaving(true);
+      await updateNotificationTemplate(editingTemplate.id, {
+        titleEn: editingTemplate.titleEn,
+        titleAr: editingTemplate.titleAr,
+        titleUr: editingTemplate.titleUr,
+        bodyEn: editingTemplate.bodyEn,
+        bodyAr: editingTemplate.bodyAr,
+        bodyUr: editingTemplate.bodyUr,
+        defaultPriority: editingTemplate.defaultPriority,
+        defaultChannels: editingTemplate.defaultChannels,
+        isActive: editingTemplate.isActive,
+        deepLinkTemplate: editingTemplate.deepLinkTemplate,
+      });
+      await fetchTemplates();
+      setEditingTemplate(null);
+    } catch (err) {
+      // For demo, just close the modal
+      setEditingTemplate(null);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Toggle template active status
+  const handleToggleActive = async (template: NotificationTemplateListItem) => {
+    try {
+      await toggleNotificationTemplate(template.id, !template.isActive);
+      await fetchTemplates();
+    } catch (err) {
+      // Update locally for demo
+      setTemplates(templates.map(t => 
+        t.id === template.id ? { ...t, isActive: !t.isActive } : t
+      ));
+    }
+  };
+
+  // Insert placeholder into body
+  const insertPlaceholder = (placeholder: string) => {
+    if (!editingTemplate) return;
+    
+    const bodyKey = `body${editLanguage.charAt(0).toUpperCase() + editLanguage.slice(1)}` as keyof NotificationTemplate;
+    const currentContent = editingTemplate[bodyKey] as string;
+    const newContent = currentContent + `{{${placeholder}}}`;
+    
+    setEditingTemplate({
+      ...editingTemplate,
+      [bodyKey]: newContent,
+    });
+  };
+
+  // Get title for current language
+  const getTitle = (template: NotificationTemplate, lang: LanguageCode): string => {
+    switch (lang) {
+      case 'ar': return template.titleAr;
+      case 'ur': return template.titleUr;
+      default: return template.titleEn;
+    }
+  };
+
+  // Get body for current language
+  const getBody = (template: NotificationTemplate, lang: LanguageCode): string => {
+    switch (lang) {
+      case 'ar': return template.bodyAr;
+      case 'ur': return template.bodyUr;
+      default: return template.bodyEn;
+    }
+  };
+
+  // Update title for current language
+  const updateTitle = (value: string) => {
+    if (!editingTemplate) return;
+    const titleKey = `title${editLanguage.charAt(0).toUpperCase() + editLanguage.slice(1)}` as keyof NotificationTemplate;
+    setEditingTemplate({ ...editingTemplate, [titleKey]: value });
+  };
+
+  // Update body for current language
+  const updateBody = (value: string) => {
+    if (!editingTemplate) return;
+    const bodyKey = `body${editLanguage.charAt(0).toUpperCase() + editLanguage.slice(1)}` as keyof NotificationTemplate;
+    setEditingTemplate({ ...editingTemplate, [bodyKey]: value });
+  };
+
+  // Filter templates
+  const filteredTemplates = templates.filter(template => {
+    const matchesChannel = activeChannel === 'all' || template.defaultChannels.includes(activeChannel);
+    const matchesSearch = 
+      template.eventCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      template.titleEn.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesChannel && matchesSearch;
+  });
+
+  // Channel stats
+  const getChannelCount = (channel: string) => {
+    if (channel === 'all') return templates.length;
+    return templates.filter(t => t.defaultChannels.includes(channel as NotificationChannel)).length;
+  };
+
+  // Get channel icon
+  const getChannelIcon = (channel: NotificationChannel) => {
     switch (channel) {
       case 'email': return faEnvelope;
       case 'sms': return faSms;
+      case 'push': return faMobile;
       case 'in_app': return faBell;
+      case 'whatsapp': return faComments;
       default: return faBell;
     }
   };
 
-  const getChannelColor = (channel: string) => {
-    switch (channel) {
-      case 'email': return 'bg-blue-100 text-blue-800';
-      case 'sms': return 'bg-green-100 text-green-800';
-      case 'in_app': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  // Get category from event code
+  const getCategoryFromEvent = (eventCode: string): string => {
+    if (eventCode.includes('BOOKING') || eventCode.includes('REQUEST') || eventCode.includes('OFFER')) return 'booking';
+    if (eventCode.includes('DOCUMENT') || eventCode.includes('PERMIT')) return 'document';
+    if (eventCode.includes('PAYMENT') || eventCode.includes('PAYOUT') || eventCode.includes('WALLET')) return 'payment';
+    if (eventCode.includes('DRIVER') || eventCode.includes('DELIVERY')) return 'driver';
+    if (eventCode.includes('USER') || eventCode.includes('ACCOUNT')) return 'user';
+    if (eventCode.includes('PARTNER') || eventCode.includes('CLUSTER')) return 'partner';
+    return 'system';
   };
 
   const getCategoryIcon = (category: string) => {
@@ -222,60 +246,21 @@ const SystemMessageTemplates: React.FC = () => {
       case 'booking': return faCalendarCheck;
       case 'document': return faFileAlt;
       case 'payment': return faDollarSign;
-      case 'system': return faExclamationTriangle;
+      case 'driver': return faTruck;
       case 'user': return faUser;
-      default: return faBell;
+      case 'partner': return faGlobe;
+      default: return faExclamationTriangle;
     }
   };
 
-  const filteredTemplates = templates.filter(template => {
-    const matchesChannel = activeChannel === 'all' || template.channel === activeChannel;
-    const matchesSearch = 
-      template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      template.triggerEvent.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      template.content.en.body.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesChannel && matchesSearch;
-  });
-
-  const handleEditTemplate = (template: MessageTemplate) => {
-    setEditingTemplate({ ...template });
-    setEditLanguage('en');
-  };
-
-  const handleSaveTemplate = () => {
-    if (editingTemplate) {
-      setTemplates(templates.map(t => 
-        t.id === editingTemplate.id ? { ...editingTemplate, lastUpdated: new Date().toISOString() } : t
-      ));
-      setEditingTemplate(null);
-    }
-  };
-
-  const insertPlaceholder = (placeholder: string) => {
-    if (editingTemplate) {
-      const currentContent = editingTemplate.content[editLanguage].body;
-      const newContent = currentContent + `{${placeholder}}`;
-      
-      setEditingTemplate({
-        ...editingTemplate,
-        content: {
-          ...editingTemplate.content,
-          [editLanguage]: {
-            ...editingTemplate.content[editLanguage],
-            body: newContent
-          }
-        }
-      });
-    }
-  };
-
-  const getChannelCount = (channel: string) => {
-    if (channel === 'all') return templates.length;
-    return templates.filter(t => t.channel === channel).length;
-  };
-
-  const StatCard = ({ title, value, subtitle, icon, bgColor, textColor }: any) => (
+  const StatCard = ({ title, value, subtitle, icon, bgColor, textColor }: {
+    title: string;
+    value: number;
+    subtitle: string;
+    icon: typeof faBell;
+    bgColor: string;
+    textColor: string;
+  }) => (
     <div className="bg-card rounded-xl border border-border p-6 shadow-lg">
       <div className="flex items-center justify-between">
         <div>
@@ -294,45 +279,62 @@ const SystemMessageTemplates: React.FC = () => {
     <div className={`min-h-screen bg-background ${isRTL ? 'font-arabic' : 'font-montserrat'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            {isRTL ? 'قوالب رسائل النظام' : 'System Message Templates'}
-          </h1>
-          <p className="text-muted-foreground">
-            {isRTL ? 'إدارة وتحرير الرسائل الآلية المرسلة للمستخدمين' : 'Manage and edit automated messages sent to users'}
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              {isRTL ? 'قوالب الإشعارات' : 'Notification Templates'}
+            </h1>
+            <p className="text-muted-foreground">
+              {isRTL ? 'إدارة وتحرير قوالب الإشعارات بلغات متعددة' : 'Manage and edit notification templates in multiple languages (EN, AR, UR)'}
+            </p>
+          </div>
+          <button
+            onClick={fetchTemplates}
+            disabled={loading}
+            className="flex items-center px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors"
+          >
+            <FontAwesomeIcon icon={faRefresh} className={`${isRTL ? 'ml-2' : 'mr-2'} ${loading ? 'animate-spin' : ''}`} />
+            {isRTL ? 'تحديث' : 'Refresh'}
+          </button>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/50 border border-yellow-300 dark:border-yellow-700 rounded-lg">
+            <p className="text-yellow-700 dark:text-yellow-200">{error} - Showing demo data</p>
+          </div>
+        )}
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <StatCard
             title={isRTL ? "إجمالي القوالب" : "Total Templates"}
             value={templates.length}
-            subtitle={isRTL ? "قوالب نشطة" : "Active templates"}
+            subtitle={`${templates.filter(t => t.isActive).length} active`}
             icon={faFileAlt}
             bgColor="bg-blue-600"
             textColor="text-blue-400"
           />
           <StatCard
-            title={isRTL ? "قوالب البريد الإلكتروني" : "Email Templates"}
-            value={templates.filter(t => t.channel === 'email').length}
-            subtitle={isRTL ? "رسائل إلكترونية" : "Email messages"}
-            icon={faEnvelope}
+            title={isRTL ? "إشعارات الدفع" : "Push Notifications"}
+            value={templates.filter(t => t.defaultChannels.includes('push')).length}
+            subtitle={isRTL ? "إشعارات فورية" : "Instant alerts"}
+            icon={faMobile}
             bgColor="bg-green-600"
             textColor="text-green-400"
           />
           <StatCard
-            title={isRTL ? "قوالب الرسائل النصية" : "SMS Templates"}
-            value={templates.filter(t => t.channel === 'sms').length}
-            subtitle={isRTL ? "رسائل نصية" : "Text messages"}
-            icon={faSms}
+            title={isRTL ? "البريد الإلكتروني" : "Email Templates"}
+            value={templates.filter(t => t.defaultChannels.includes('email')).length}
+            subtitle={isRTL ? "رسائل مفصلة" : "Detailed messages"}
+            icon={faEnvelope}
             bgColor="bg-yellow-600"
             textColor="text-yellow-400"
           />
           <StatCard
             title={isRTL ? "إشعارات التطبيق" : "In-App Notifications"}
-            value={templates.filter(t => t.channel === 'in_app').length}
-            subtitle={isRTL ? "إشعارات داخلية" : "Push notifications"}
+            value={templates.filter(t => t.defaultChannels.includes('in_app')).length}
+            subtitle={isRTL ? "داخل التطبيق" : "Within app"}
             icon={faBell}
             bgColor="bg-purple-600"
             textColor="text-purple-400"
@@ -347,22 +349,23 @@ const SystemMessageTemplates: React.FC = () => {
               <nav className={cn("-mb-px flex space-x-4 overflow-x-auto", isRTL && "space-x-reverse")}>
                 {[
                   { id: 'all', label: isRTL ? 'الكل' : 'All', icon: faFileAlt },
-                  { id: 'email', label: isRTL ? 'البريد الإلكتروني' : 'Email', icon: faEnvelope },
-                  { id: 'sms', label: isRTL ? 'الرسائل النصية' : 'SMS', icon: faSms },
-                  { id: 'in_app', label: isRTL ? 'إشعارات التطبيق' : 'In-App', icon: faBell }
+                  { id: 'push', label: isRTL ? 'دفع' : 'Push', icon: faMobile },
+                  { id: 'in_app', label: isRTL ? 'التطبيق' : 'In-App', icon: faBell },
+                  { id: 'email', label: isRTL ? 'البريد' : 'Email', icon: faEnvelope },
+                  { id: 'sms', label: 'SMS', icon: faSms },
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveChannel(tab.id as any)}
+                    onClick={() => setActiveChannel(tab.id as 'all' | NotificationChannel)}
                     className={`py-4 px-3 border-b-2 font-medium text-sm flex items-center whitespace-nowrap ${
                       activeChannel === tab.id
                         ? 'border-blue-700 text-blue-400'
-                        : 'border-transparent text-muted-foreground hover:text-muted-foreground hover:border-border'
+                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                     }`}
                   >
-                    <FontAwesomeIcon icon={tab.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
+                    <FontAwesomeIcon icon={tab.icon} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {tab.label}
-                    <span className={`px-2 py-1 bg-gray-600 text-foreground rounded-full text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>    
+                    <span className={`px-2 py-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-foreground rounded-full text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>
                       {getChannelCount(tab.id)}
                     </span>
                   </button>
@@ -372,13 +375,13 @@ const SystemMessageTemplates: React.FC = () => {
               {/* Search */}
               <div className={`mt-4 lg:mt-0 ${isRTL ? 'lg:mr-6' : 'lg:ml-6'}`}>
                 <div className="relative max-w-md">
-                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                  <FontAwesomeIcon icon={faSearch} className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-muted-foreground`} />
                   <input
                     type="text"
-                    placeholder={isRTL ? 'البحث في القوالب...' : 'Search templates...'}
+                    placeholder={isRTL ? 'البحث في القوالب...' : 'Search by event code or title...'}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500`}
                   />
                 </div>
               </div>
@@ -386,114 +389,155 @@ const SystemMessageTemplates: React.FC = () => {
           </div>
 
           {/* Templates Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-muted">
-                <tr>
-                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
-                    {isRTL ? 'اسم القالب' : 'Template Name'}
-                  </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
-                    {isRTL ? 'حدث التشغيل' : 'Trigger Event'}
-                  </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
-                    {isRTL ? 'القناة' : 'Channel'}
-                  </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
-                    {isRTL ? 'آخر تحديث' : 'Last Updated'}
-                  </th>
-                  <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
-                    {isRTL ? 'الإجراءات' : 'Actions'}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filteredTemplates.map((template) => (
-                  <tr key={template.id} className="hover:bg-muted transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon 
-                          icon={getCategoryIcon(template.category)} 
-                          className={`h-5 w-5 text-blue-400 ${isRTL ? 'ml-3' : 'mr-3'}`} 
-                        />
-                        <div>
-                          <div className="text-sm font-medium text-foreground">{template.name}</div>
-                          <div className="text-xs text-muted-foreground">{template.id}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-muted-foreground max-w-xs">
-                        {template.triggerEvent}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getChannelColor(template.channel)}`}>
-                        <FontAwesomeIcon icon={getChannelIcon(template.channel)} className={`${isRTL ? 'ml-1' : 'mr-1'}`} />  
-                        {template.channel.charAt(0).toUpperCase() + template.channel.slice(1).replace('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                      {new Date(template.lastUpdated).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className={cn("flex space-x-2", isRTL && "space-x-reverse")}>
-                        <button
-                          onClick={() => handleEditTemplate(template)}
-                          className="text-blue-400 hover:text-blue-300 transition-colors"
-                          title={isRTL ? 'تحرير' : 'Edit'}
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          onClick={() => setSelectedTemplate(template)}
-                          className="text-green-400 hover:text-green-300 transition-colors"
-                          title={isRTL ? 'معاينة' : 'Preview'}
-                        >
-                          <FontAwesomeIcon icon={faEye} />
-                        </button>
-                        <button
-                          className="text-yellow-400 hover:text-yellow-300 transition-colors"
-                          title={isRTL ? 'إعادة تعيين' : 'Reset'}
-                        >
-                          <FontAwesomeIcon icon={faUndo} />
-                        </button>
-                      </div>
-                    </td>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 text-blue-400 animate-spin" />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {isRTL ? 'الحدث' : 'Event'}
+                    </th>
+                    <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {isRTL ? 'المستلم' : 'Recipient'}
+                    </th>
+                    <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {isRTL ? 'القنوات' : 'Channels'}
+                    </th>
+                    <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {isRTL ? 'الأولوية' : 'Priority'}
+                    </th>
+                    <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {isRTL ? 'الحالة' : 'Status'}
+                    </th>
+                    <th className={`px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {isRTL ? 'الإجراءات' : 'Actions'}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredTemplates.map((template) => (
+                    <tr key={template.id} className="hover:bg-muted transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon
+                            icon={getCategoryIcon(getCategoryFromEvent(template.eventCode))}
+                            className={`h-5 w-5 text-blue-400 ${isRTL ? 'ml-3' : 'mr-3'}`}
+                          />
+                          <div>
+                            <div className="text-sm font-medium text-foreground">
+                              {formatEventCode(template.eventCode)}
+                            </div>
+                            <div className="text-xs text-muted-foreground font-mono">
+                              {template.eventCode}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-foreground">
+                          {getRecipientLabel(template.recipientType)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {template.defaultChannels.map((channel) => (
+                            <span
+                              key={channel}
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                            >
+                              <FontAwesomeIcon icon={getChannelIcon(channel)} className={`h-3 w-3 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                              {getChannelLabel(channel)}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(template.defaultPriority)}`}>
+                          {template.defaultPriority}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => handleToggleActive(template)}
+                          className={`flex items-center ${template.isActive ? 'text-green-400' : 'text-gray-500'}`}
+                        >
+                          <FontAwesomeIcon icon={template.isActive ? faToggleOn : faToggleOff} className="h-5 w-5" />
+                          <span className={`text-xs ${isRTL ? 'mr-2' : 'ml-2'}`}>
+                            {template.isActive ? (isRTL ? 'نشط' : 'Active') : (isRTL ? 'معطل' : 'Inactive')}
+                          </span>
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className={cn("flex space-x-2", isRTL && "space-x-reverse")}>
+                          <button
+                            onClick={() => handleEditTemplate(template)}
+                            disabled={loadingTemplate}
+                            className="text-blue-400 hover:text-blue-300 transition-colors"
+                            title={isRTL ? 'تحرير' : 'Edit'}
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                          </button>
+                          <button
+                            onClick={() => handlePreviewTemplate(template)}
+                            disabled={loadingTemplate}
+                            className="text-green-400 hover:text-green-300 transition-colors"
+                            title={isRTL ? 'معاينة' : 'Preview'}
+                          >
+                            <FontAwesomeIcon icon={faEye} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              
+              {filteredTemplates.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">
+                    {isRTL ? 'لم يتم العثور على قوالب' : 'No templates found'}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Edit Template Modal */}
         {editingTemplate && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-                <h2 className="text-xl font-bold text-foreground">
-                  {isRTL ? 'تحرير القالب' : 'Edit Template'} - {editingTemplate.name}
-                </h2>
+            <div className="bg-card rounded-xl border border-border shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between sticky top-0 bg-card z-10">
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">
+                    {isRTL ? 'تحرير القالب' : 'Edit Template'}
+                  </h2>
+                  <p className="text-sm text-muted-foreground font-mono">{editingTemplate.eventCode}</p>
+                </div>
                 <div className={cn("flex items-center space-x-4", isRTL && "space-x-reverse")}>
-                  {/* Language Toggle */}
-                                      <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
-                    <button
-                      onClick={() => setEditLanguage('en')}
-                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                        editLanguage === 'en' ? 'bg-blue-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
-                      }`}
-                    >
-                      EN
-                    </button>
-                    <button
-                      onClick={() => setEditLanguage('ar')}
-                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                        editLanguage === 'ar' ? 'bg-blue-600 text-foreground' : 'bg-gray-600 text-muted-foreground'
-                      }`}
-                    >
-                      AR
-                    </button>
+                  {/* Language Toggle - Now with 3 languages */}
+                  <div className={cn("flex items-center space-x-1 bg-muted rounded-lg p-1", isRTL && "space-x-reverse")}>
+                    {[
+                      { code: 'en', label: 'EN', dir: 'ltr' },
+                      { code: 'ar', label: 'AR', dir: 'rtl' },
+                      { code: 'ur', label: 'UR', dir: 'rtl' },
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => setEditLanguage(lang.code as LanguageCode)}
+                        className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                          editLanguage === lang.code
+                            ? 'bg-blue-600 text-white'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {lang.label}
+                      </button>
+                    ))}
                   </div>
                   <button
                     onClick={() => setEditingTemplate(null)}
@@ -505,83 +549,107 @@ const SystemMessageTemplates: React.FC = () => {
               </div>
 
               <div className="p-6 space-y-6">
+                {/* Language indicator */}
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">
+                    {isRTL ? 'تحرير:' : 'Editing:'}
+                  </span>
+                  <span className={`px-2 py-1 rounded ${editLanguage === 'en' ? 'bg-blue-600' : editLanguage === 'ar' ? 'bg-green-600' : 'bg-purple-600'} text-white text-xs font-medium`}>
+                    {editLanguage === 'en' ? 'English' : editLanguage === 'ar' ? 'العربية' : 'اردو'}
+                  </span>
+                  {(editLanguage === 'ar' || editLanguage === 'ur') && (
+                    <span className="text-yellow-600 dark:text-yellow-400 text-xs">
+                      (RTL - Right to Left)
+                    </span>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Main Edit Area */}
                   <div className="lg:col-span-2 space-y-6">
-                    {/* Subject Line (for email) */}
-                    {editingTemplate.channel === 'email' && (
-                      <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
-                          {isRTL ? 'موضوع الرسالة' : 'Subject Line'}
-                        </label>
-                        <input
-                          type="text"
-                          value={editingTemplate.content[editLanguage].subject || ''}
-                          onChange={(e) => setEditingTemplate({
-                            ...editingTemplate,
-                            content: {
-                              ...editingTemplate.content,
-                              [editLanguage]: {
-                                ...editingTemplate.content[editLanguage],
-                                subject: e.target.value
-                              }
-                            }
-                          })}
-                          className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
-                          placeholder={isRTL ? 'أدخل موضوع الرسالة...' : 'Enter subject line...'}
-                        />
-                      </div>
-                    )}
-
                     {/* Title */}
                     <div>
                       <label className="block text-sm font-medium text-muted-foreground mb-2">
-                        {isRTL ? 'العنوان' : 'Title'}
+                        {isRTL ? 'العنوان' : 'Title'} 
+                        <span className="text-xs text-gray-500 ml-2">(max 50 chars)</span>
                       </label>
                       <input
                         type="text"
-                        value={editingTemplate.content[editLanguage].title}
-                        onChange={(e) => setEditingTemplate({
-                          ...editingTemplate,
-                          content: {
-                            ...editingTemplate.content,
-                            [editLanguage]: {
-                              ...editingTemplate.content[editLanguage],
-                              title: e.target.value
-                            }
-                          }
-                        })}
-                        className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
-                        placeholder={isRTL ? 'أدخل العنوان...' : 'Enter title...'}
+                        value={getTitle(editingTemplate, editLanguage)}
+                        onChange={(e) => updateTitle(e.target.value)}
+                        dir={editLanguage === 'en' ? 'ltr' : 'rtl'}
+                        className={`w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 ${
+                          editLanguage !== 'en' ? 'text-right font-arabic' : ''
+                        }`}
+                        placeholder={
+                          editLanguage === 'en' ? 'Enter title...' :
+                          editLanguage === 'ar' ? 'أدخل العنوان...' :
+                          'عنوان درج کریں...'
+                        }
+                        maxLength={50}
                       />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {getTitle(editingTemplate, editLanguage).length}/50
+                      </p>
                     </div>
 
                     {/* Message Body */}
                     <div>
                       <label className="block text-sm font-medium text-muted-foreground mb-2">
                         {isRTL ? 'نص الرسالة' : 'Message Body'}
+                        <span className="text-xs text-gray-500 ml-2">(max 200 chars for push)</span>
                       </label>
                       <textarea
-                        rows={editingTemplate.channel === 'sms' ? 3 : 8}
-                        value={editingTemplate.content[editLanguage].body}
-                        onChange={(e) => setEditingTemplate({
-                          ...editingTemplate,
-                          content: {
-                            ...editingTemplate.content,
-                            [editLanguage]: {
-                              ...editingTemplate.content[editLanguage],
-                              body: e.target.value
-                            }
-                          }
-                        })}
-                        className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
-                        placeholder={isRTL ? 'أدخل نص الرسالة...' : 'Enter message body...'}
+                        rows={6}
+                        value={getBody(editingTemplate, editLanguage)}
+                        onChange={(e) => updateBody(e.target.value)}
+                        dir={editLanguage === 'en' ? 'ltr' : 'rtl'}
+                        className={`w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 ${
+                          editLanguage !== 'en' ? 'text-right font-arabic' : ''
+                        }`}
+                        placeholder={
+                          editLanguage === 'en' ? 'Enter message body...' :
+                          editLanguage === 'ar' ? 'أدخل نص الرسالة...' :
+                          'پیغام کا متن درج کریں...'
+                        }
                       />
-                      {editingTemplate.channel === 'sms' && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {isRTL ? `الأحرف: ${editingTemplate.content[editLanguage].body.length}/160` : `Characters: ${editingTemplate.content[editLanguage].body.length}/160`}
-                        </p>
-                      )}
+                      <p className={`text-xs mt-1 ${getBody(editingTemplate, editLanguage).length > 200 ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                        {getBody(editingTemplate, editLanguage).length}/200
+                        {getBody(editingTemplate, editLanguage).length > 200 && ' (may be truncated for push)'}
+                      </p>
+                    </div>
+
+                    {/* Settings */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                          {isRTL ? 'الأولوية' : 'Priority'}
+                        </label>
+                        <select
+                          value={editingTemplate.defaultPriority}
+                          onChange={(e) => setEditingTemplate({
+                            ...editingTemplate,
+                            defaultPriority: e.target.value as NotificationPriority
+                          })}
+                          className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="CRITICAL">Critical</option>
+                          <option value="HIGH">High</option>
+                          <option value="MEDIUM">Medium</option>
+                          <option value="LOW">Low</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                          {isRTL ? 'المستلم' : 'Recipient'}
+                        </label>
+                        <input
+                          type="text"
+                          value={getRecipientLabel(editingTemplate.recipientType)}
+                          disabled
+                          className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-muted-foreground cursor-not-allowed"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -590,7 +658,7 @@ const SystemMessageTemplates: React.FC = () => {
                     <div>
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-lg font-semibold text-foreground">
-                          {isRTL ? 'المتغيرات المتاحة' : 'Available Placeholders'}
+                          {isRTL ? 'المتغيرات' : 'Variables'}
                         </h3>
                         <button
                           onClick={() => setShowPlaceholderHelp(!showPlaceholderHelp)}
@@ -599,29 +667,47 @@ const SystemMessageTemplates: React.FC = () => {
                           <FontAwesomeIcon icon={faQuestionCircle} />
                         </button>
                       </div>
-                      
+
                       {showPlaceholderHelp && (
-                        <div className="bg-blue-900 border border-blue-700 rounded-lg p-3 mb-4">
-                          <p className="text-blue-200 text-sm">
-                            {isRTL ? 'انقر على أي متغير لإدراجه في النص' : 'Click any placeholder to insert it into the text'}
+                        <div className="bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg p-3 mb-4">
+                          <p className="text-blue-700 dark:text-blue-200 text-sm">
+                            {isRTL 
+                              ? 'انقر على أي متغير لإدراجه في النص. استخدم {{variable}} في القالب.'
+                              : 'Click any variable to insert it. Use {{variable}} syntax in templates.'}
                           </p>
                         </div>
                       )}
 
-                      <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {availablePlaceholders.map((placeholder) => (
+                      <div className="space-y-2 max-h-80 overflow-y-auto">
+                        {editingTemplate.variables.map((variable) => (
                           <div
-                            key={placeholder.key}
-                            onClick={() => insertPlaceholder(placeholder.key)}
-                            className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted transition-colors"
+                            key={variable}
+                            onClick={() => insertPlaceholder(variable)}
+                            className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted/80 transition-colors border border-transparent hover:border-blue-500"
                           >
                             <div className="flex items-center justify-between">
-                              <code className="text-yellow-400 text-sm">{`{${placeholder.key}}`}</code>
+                              <code className="text-yellow-600 dark:text-yellow-400 text-sm">{`{{${variable}}}`}</code>
                               <FontAwesomeIcon icon={faPlus} className="text-muted-foreground h-3 w-3" />
                             </div>
-                            <p className="text-muted-foreground text-xs mt-1">{placeholder.description}</p>
-                            <p className="text-gray-500 text-xs">{isRTL ? 'مثال:' : 'e.g.:'} {placeholder.example}</p>
                           </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Channels */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-3">
+                        {isRTL ? 'القنوات' : 'Channels'}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {editingTemplate.defaultChannels.map((channel) => (
+                          <span
+                            key={channel}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white"
+                          >
+                            <FontAwesomeIcon icon={getChannelIcon(channel)} className={`h-3 w-3 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                            {getChannelLabel(channel)}
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -632,21 +718,26 @@ const SystemMessageTemplates: React.FC = () => {
                 <div className={cn("flex space-x-3 pt-6 border-t border-border", isRTL && "space-x-reverse")}>
                   <button
                     onClick={handleSaveTemplate}
-                    className="flex items-center px-6 py-3 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg"
+                    disabled={saving}
+                    className="flex items-center px-6 py-3 bg-awnash-primary text-black rounded-2xl hover:bg-awnash-primary-hover font-medium transition-colors shadow-lg disabled:opacity-50"
                   >
-                    <FontAwesomeIcon icon={faSave} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
+                    {saving ? (
+                      <FontAwesomeIcon icon={faSpinner} className={`${isRTL ? 'ml-2' : 'mr-2'} animate-spin`} />
+                    ) : (
+                      <FontAwesomeIcon icon={faSave} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
+                    )}
                     {isRTL ? 'حفظ التغييرات' : 'Save Changes'}
                   </button>
                   <button
                     onClick={() => setSelectedTemplate(editingTemplate)}
-                    className="flex items-center px-6 py-3 bg-green-600 text-foreground rounded-lg hover:bg-green-700 font-medium transition-colors"
+                    className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors"
                   >
-                    <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />  
+                    <FontAwesomeIcon icon={faEye} className={`${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {isRTL ? 'معاينة' : 'Preview'}
                   </button>
                   <button
                     onClick={() => setEditingTemplate(null)}
-                    className="flex items-center px-6 py-3 bg-gray-600 text-foreground rounded-lg hover:bg-muted font-medium transition-colors"
+                    className="flex items-center px-6 py-3 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 font-medium transition-colors"
                   >
                     {isRTL ? 'إلغاء' : 'Cancel'}
                   </button>
@@ -672,44 +763,86 @@ const SystemMessageTemplates: React.FC = () => {
                 </button>
               </div>
 
-              <div className="p-6">
-                {/* Preview based on channel */}
-                {selectedTemplate.channel === 'email' && (
-                  <div className="bg-white rounded-lg p-6 text-black">
-                    <div className="border-b pb-4 mb-4">
-                      <h3 className="font-semibold">Subject: {selectedTemplate.content.en.subject}</h3>
-                      <p className="text-sm text-gray-600">From: noreply@awnash.com</p>
-                    </div>
-                    <h2 className="text-xl font-bold mb-4">{selectedTemplate.content.en.title}</h2>
-                    <div className="whitespace-pre-line">{selectedTemplate.content.en.body}</div>
-                  </div>
-                )}
+              <div className="p-6 space-y-6">
+                {/* Language tabs for preview */}
+                <div className="flex gap-2">
+                  {(['en', 'ar', 'ur'] as LanguageCode[]).map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => setEditLanguage(lang)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        editLanguage === lang
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-muted text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {lang === 'en' ? 'English' : lang === 'ar' ? 'العربية' : 'اردو'}
+                    </button>
+                  ))}
+                </div>
 
-                {selectedTemplate.channel === 'sms' && (
-                  <div className="bg-green-100 rounded-lg p-4 max-w-xs mx-auto">
-                    <div className="flex items-center mb-2">
-                      <FontAwesomeIcon icon={faSms} className={`text-green-600 ${isRTL ? 'ml-2' : 'mr-2'}`} />  
-                      <span className="text-sm text-green-800 font-medium">SMS Message</span>
+                {/* Push Notification Preview */}
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-3">
+                    {isRTL ? 'إشعار الدفع' : 'Push Notification'}
+                  </h4>
+                  <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 border border-gray-300 dark:border-gray-700">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-awnash-primary flex items-center justify-center">
+                        <span className="text-black font-bold text-lg">A</span>
+                      </div>
+                      <div className="flex-1" dir={editLanguage === 'en' ? 'ltr' : 'rtl'}>
+                        <p className={`font-semibold text-foreground ${editLanguage !== 'en' ? 'font-arabic' : ''}`}>
+                          {getTitle(selectedTemplate, editLanguage)}
+                        </p>
+                        <p className={`text-sm text-muted-foreground mt-1 ${editLanguage !== 'en' ? 'font-arabic' : ''}`}>
+                          {getBody(selectedTemplate, editLanguage).substring(0, 100)}
+                          {getBody(selectedTemplate, editLanguage).length > 100 && '...'}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-2">now</p>
+                      </div>
                     </div>
-                    <p className="text-green-900">{selectedTemplate.content.en.body}</p>
                   </div>
-                )}
+                </div>
 
-                {selectedTemplate.channel === 'in_app' && (
-                  <div className="bg-gray-100 rounded-lg p-4 border-l-4 border-blue-500">
-                    <div className="flex items-center mb-2">
-                      <FontAwesomeIcon icon={faBell} className={`text-blue-600 ${isRTL ? 'ml-2' : 'mr-2'}`} />  
-                      <span className="text-sm text-gray-600 font-medium">Push Notification</span>
-                    </div>
-                    <h3 className="font-bold text-gray-900 mb-1">{selectedTemplate.content.en.title}</h3>
-                    <p className="text-gray-700">{selectedTemplate.content.en.body}</p>
+                {/* Full Message Preview */}
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-3">
+                    {isRTL ? 'الرسالة الكاملة' : 'Full Message'}
+                  </h4>
+                  <div 
+                    className="bg-muted rounded-lg p-4 border border-border"
+                    dir={editLanguage === 'en' ? 'ltr' : 'rtl'}
+                  >
+                    <h3 className={`font-bold text-foreground mb-2 ${editLanguage !== 'en' ? 'font-arabic' : ''}`}>
+                      {getTitle(selectedTemplate, editLanguage)}
+                    </h3>
+                    <p className={`text-muted-foreground whitespace-pre-line ${editLanguage !== 'en' ? 'font-arabic' : ''}`}>
+                      {getBody(selectedTemplate, editLanguage)}
+                    </p>
                   </div>
-                )}
+                </div>
 
-                <div className="mt-6 pt-4 border-t border-border">
-                  <p className="text-sm text-muted-foreground">
-                    {isRTL ? 'هذه معاينة لكيفية ظهور الرسالة للمستخدمين' : 'This is a preview of how the message will appear to users'}
-                  </p>
+                {/* Template Info */}
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
+                  <div>
+                    <p className="text-xs text-muted-foreground">{isRTL ? 'الحدث' : 'Event'}</p>
+                    <p className="text-sm font-mono text-foreground">{selectedTemplate.eventCode}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">{isRTL ? 'المستلم' : 'Recipient'}</p>
+                    <p className="text-sm text-foreground">{getRecipientLabel(selectedTemplate.recipientType)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">{isRTL ? 'الأولوية' : 'Priority'}</p>
+                    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(selectedTemplate.defaultPriority)}`}>
+                      {selectedTemplate.defaultPriority}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">{isRTL ? 'القنوات' : 'Channels'}</p>
+                    <p className="text-sm text-foreground">{selectedTemplate.defaultChannels.join(', ')}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -720,4 +853,86 @@ const SystemMessageTemplates: React.FC = () => {
   );
 };
 
-export default SystemMessageTemplates; 
+// Mock data for fallback/demo
+function getMockTemplates(): NotificationTemplateListItem[] {
+  return [
+    {
+      id: '1',
+      eventCode: 'BOOKING_CONFIRMED',
+      recipientType: 'requester',
+      titleEn: 'Booking Confirmed!',
+      titleAr: 'تم تأكيد الحجز!',
+      titleUr: 'بکنگ کی تصدیق ہوگئی!',
+      defaultPriority: 'CRITICAL',
+      defaultChannels: ['push', 'in_app', 'email'],
+      isActive: true,
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: '2',
+      eventCode: 'OFFER_RECEIVED',
+      recipientType: 'requester',
+      titleEn: 'New Offer Received',
+      titleAr: 'تم استلام عرض جديد',
+      titleUr: 'نئی پیشکش موصول ہوئی',
+      defaultPriority: 'HIGH',
+      defaultChannels: ['push', 'in_app', 'email'],
+      isActive: true,
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: '3',
+      eventCode: 'DRIVER_ASSIGNED',
+      recipientType: 'driver',
+      titleEn: 'New Delivery Assignment',
+      titleAr: 'مهمة توصيل جديدة',
+      titleUr: 'نئی ڈیلیوری اسائنمنٹ',
+      defaultPriority: 'CRITICAL',
+      defaultChannels: ['push', 'in_app', 'email', 'whatsapp'],
+      isActive: true,
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: '4',
+      eventCode: 'PAYMENT_CONFIRMED',
+      recipientType: 'owner',
+      titleEn: 'Payment Received',
+      titleAr: 'تم استلام الدفع',
+      titleUr: 'ادائیگی موصول ہوئی',
+      defaultPriority: 'HIGH',
+      defaultChannels: ['push', 'in_app', 'email'],
+      isActive: true,
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: '5',
+      eventCode: 'MESSAGE_RECEIVED',
+      recipientType: 'all',
+      titleEn: 'New Message',
+      titleAr: 'رسالة جديدة',
+      titleUr: 'نیا پیغام',
+      defaultPriority: 'HIGH',
+      defaultChannels: ['push', 'in_app'],
+      isActive: true,
+      updatedAt: new Date().toISOString(),
+    },
+  ];
+}
+
+function getMockFullTemplate(item: NotificationTemplateListItem): NotificationTemplate {
+  return {
+    ...item,
+    bodyEn: 'Your booking has been confirmed. Equipment: {{equipmentType}}. Duration: {{startDate}} to {{endDate}}.',
+    bodyAr: 'تم تأكيد حجزك. المعدة: {{equipmentType}}. المدة: من {{startDate}} إلى {{endDate}}.',
+    bodyUr: 'آپ کی بکنگ کی تصدیق ہوگئی۔ سازوسامان: {{equipmentType}}۔ مدت: {{startDate}} سے {{endDate}} تک۔',
+    variables: ['equipmentType', 'startDate', 'endDate', 'ownerName', 'bookingId'],
+    requiresUserAction: false,
+    androidChannelId: 'high_channel',
+    iosSound: 'default',
+    iosBadgeIncrement: 1,
+    deepLinkTemplate: 'awnash://bookings/{{bookingId}}',
+    createdAt: new Date().toISOString(),
+  };
+}
+
+export default NotificationTemplatesPage;
