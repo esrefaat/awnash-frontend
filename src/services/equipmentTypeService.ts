@@ -3,12 +3,21 @@ import { apiService } from './api';
 export interface EquipmentTypeAttributeOption {
   id?: string;
   value: string;
+  valueEn?: string;
+  valueAr?: string;
+  valueUr?: string;
 }
 
 export interface EquipmentTypeAttribute {
   id: string;
   label: string;
+  labelEn?: string;
+  labelAr?: string;
+  labelUr?: string;
   unit?: string;
+  unitEn?: string;
+  unitAr?: string;
+  unitUr?: string;
   isRequired: boolean;
   options: EquipmentTypeAttributeOption[];
 }

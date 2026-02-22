@@ -57,10 +57,14 @@ import { CSS } from '@dnd-kit/utilities';
 interface EquipmentTypeAttribute {
   id: string;
   label: string;
+  label_ar: string;
   unit?: string;
+  unit_ar?: string;
   is_required: boolean;
   options: string[];
   optionsInput: string;
+  options_ar: string[];
+  optionsInputAr: string;
 }
 
 interface SupportRequirementFormData {
@@ -990,10 +994,14 @@ const EquipmentTypesTab: React.FC = () => {
     const newAttribute: EquipmentTypeAttribute = {
       id: Date.now().toString(),
       label: '',
+      label_ar: '',
       unit: '',
+      unit_ar: '',
       is_required: false,
       options: [],
-      optionsInput: ''
+      optionsInput: '',
+      options_ar: [],
+      optionsInputAr: '',
     };
     setForm(prev => ({
       ...prev,
@@ -1062,6 +1070,21 @@ const EquipmentTypesTab: React.FC = () => {
     }));
   };
 
+  const handleOptionsArInputChange = (attributeIndex: number, value: string) => {
+    setForm(prev => ({
+      ...prev,
+      attributes: prev.attributes.map((attr, i) => 
+        i === attributeIndex 
+          ? { 
+              ...attr, 
+              optionsInputAr: value,
+              options_ar: value.split(',').map(opt => opt.trim()).filter(opt => opt.length > 0)
+            }
+          : attr
+      )
+    }));
+  };
+
   const openAddModal = async () => {
     // Load available support equipment types
     try {
@@ -1119,13 +1142,20 @@ const EquipmentTypesTab: React.FC = () => {
         const optionsArray = attr.options?.map(opt => 
           typeof opt === 'string' ? opt : opt.value
         ) || [];
+        const optionsArArray = attr.options?.map(opt =>
+          typeof opt === 'string' ? '' : (opt.valueAr || '')
+        ) || [];
         return {
           id: attr.id,
-          label: attr.label,
-          unit: attr.unit || '',
+          label: attr.labelEn || attr.label,
+          label_ar: attr.labelAr || '',
+          unit: attr.unitEn || attr.unit || '',
+          unit_ar: attr.unitAr || '',
           is_required: attr.isRequired,
           options: optionsArray,
-          optionsInput: optionsArray.join(', ')
+          optionsInput: optionsArray.join(', '),
+          options_ar: optionsArArray,
+          optionsInputAr: optionsArArray.join(', '),
         };
       }),
       imageUrl: type.imageUrl || '',
@@ -1213,9 +1243,19 @@ const EquipmentTypesTab: React.FC = () => {
           .filter(attr => attr.label.trim())
           .map(attr => ({
             label: attr.label,
+            labelEn: attr.label,
+            labelAr: attr.label_ar || undefined,
             unit: attr.unit || undefined,
+            unitEn: attr.unit || undefined,
+            unitAr: attr.unit_ar || undefined,
             isRequired: attr.is_required,
-            options: attr.options.filter(opt => opt.trim() !== '').map(opt => ({ value: opt }))
+            options: attr.options
+              .filter(opt => opt.trim() !== '')
+              .map((opt, i) => ({
+                value: opt,
+                valueEn: opt,
+                valueAr: attr.options_ar?.[i] || undefined,
+              })),
           })),
         // Escrow overrides: empty string -> null (clear override), non-empty -> number
         paymentWindow: form.paymentWindow ? parseInt(form.paymentWindow, 10) : null,
@@ -1746,11 +1786,12 @@ const EquipmentTypesTab: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Label (English) *</label>
                     <Input
                       type="text"
                       value={attribute.label}
                       onChange={(e) => updateAttribute(index, 'label', e.target.value)}
-                      placeholder="Attribute label *"
+                      placeholder="e.g., Height"
                       className={cn(
                         "dark:bg-card dark:border-border dark:text-foreground",
                         errors.attributes?.[index]?.label && "border-red-500"
@@ -1761,11 +1802,36 @@ const EquipmentTypesTab: React.FC = () => {
                     )}
                   </div>
                   <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Label (Arabic)</label>
+                    <Input
+                      type="text"
+                      value={attribute.label_ar || ''}
+                      onChange={(e) => updateAttribute(index, 'label_ar', e.target.value)}
+                      placeholder="مثال: الارتفاع"
+                      dir="rtl"
+                      className="dark:bg-card dark:border-border dark:text-foreground"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Unit (English)</label>
                     <Input
                       type="text"
                       value={attribute.unit || ''}
                       onChange={(e) => updateAttribute(index, 'unit', e.target.value)}
-                      placeholder="Unit (optional)"
+                      placeholder="e.g., Meter"
+                      className="dark:bg-card dark:border-border dark:text-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Unit (Arabic)</label>
+                    <Input
+                      type="text"
+                      value={attribute.unit_ar || ''}
+                      onChange={(e) => updateAttribute(index, 'unit_ar', e.target.value)}
+                      placeholder="مثال: متر"
+                      dir="rtl"
                       className="dark:bg-card dark:border-border dark:text-foreground"
                     />
                   </div>
@@ -1779,22 +1845,37 @@ const EquipmentTypesTab: React.FC = () => {
                   <label className="text-sm text-muted-foreground">Required</label>
                 </div>
 
-                <div>
-                  <label className="text-xs text-muted-foreground mb-2 block">
-                    Predefined Options (comma-separated)
-                  </label>
-                  <Input
-                    type="text"
-                    value={attribute.optionsInput}
-                    onChange={(e) => handleOptionsInputChange(index, e.target.value)}
-                    placeholder="e.g., Option 1, Option 2, Option 3"
-                    className="dark:bg-card dark:border-border dark:text-foreground"
-                  />
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">
+                      Options - English (comma-separated)
+                    </label>
+                    <Input
+                      type="text"
+                      value={attribute.optionsInput}
+                      onChange={(e) => handleOptionsInputChange(index, e.target.value)}
+                      placeholder="e.g., 8, 12, 16, 20"
+                      className="dark:bg-card dark:border-border dark:text-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">
+                      Options - Arabic (comma-separated, same order)
+                    </label>
+                    <Input
+                      type="text"
+                      value={attribute.optionsInputAr}
+                      onChange={(e) => handleOptionsArInputChange(index, e.target.value)}
+                      placeholder="مثال: ٨، ١٢، ١٦، ٢٠"
+                      dir="rtl"
+                      className="dark:bg-card dark:border-border dark:text-foreground"
+                    />
+                  </div>
                   {attribute.options.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1">
+                    <div className="mt-1 flex flex-wrap gap-1">
                       {attribute.options.map((opt, optIdx) => (
                         <Badge key={optIdx} variant="secondary" className="bg-muted text-muted-foreground text-xs">
-                          {opt}
+                          {opt}{attribute.options_ar?.[optIdx] ? ` / ${attribute.options_ar[optIdx]}` : ''}
                         </Badge>
                       ))}
                     </div>
