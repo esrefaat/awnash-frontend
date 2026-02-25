@@ -65,6 +65,7 @@ const NotificationTemplatesPage: React.FC = () => {
   const [showPlaceholderHelp, setShowPlaceholderHelp] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingTemplate, setLoadingTemplate] = useState(false);
+  const [activeField, setActiveField] = useState<'title' | 'body'>('body');
 
   // Fetch templates
   const fetchTemplates = useCallback(async () => {
@@ -136,8 +137,7 @@ const NotificationTemplatesPage: React.FC = () => {
       await fetchTemplates();
       setEditingTemplate(null);
     } catch (err) {
-      // For demo, just close the modal
-      setEditingTemplate(null);
+      setError(err instanceof Error ? err.message : 'Failed to save template');
     } finally {
       setSaving(false);
     }
@@ -156,17 +156,18 @@ const NotificationTemplatesPage: React.FC = () => {
     }
   };
 
-  // Insert placeholder into body
+  // Insert placeholder into the active field (title or body)
   const insertPlaceholder = (placeholder: string) => {
     if (!editingTemplate) return;
     
-    const bodyKey = `body${editLanguage.charAt(0).toUpperCase() + editLanguage.slice(1)}` as keyof NotificationTemplate;
-    const currentContent = editingTemplate[bodyKey] as string;
+    const langSuffix = editLanguage.charAt(0).toUpperCase() + editLanguage.slice(1);
+    const fieldKey = `${activeField}${langSuffix}` as keyof NotificationTemplate;
+    const currentContent = editingTemplate[fieldKey] as string;
     const newContent = currentContent + `{{${placeholder}}}`;
     
     setEditingTemplate({
       ...editingTemplate,
-      [bodyKey]: newContent,
+      [fieldKey]: newContent,
     });
   };
 
@@ -577,6 +578,7 @@ const NotificationTemplatesPage: React.FC = () => {
                         type="text"
                         value={getTitle(editingTemplate, editLanguage)}
                         onChange={(e) => updateTitle(e.target.value)}
+                        onFocus={() => setActiveField('title')}
                         dir={editLanguage === 'en' ? 'ltr' : 'rtl'}
                         className={`w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 ${
                           editLanguage !== 'en' ? 'text-right font-arabic' : ''
@@ -603,6 +605,7 @@ const NotificationTemplatesPage: React.FC = () => {
                         rows={6}
                         value={getBody(editingTemplate, editLanguage)}
                         onChange={(e) => updateBody(e.target.value)}
+                        onFocus={() => setActiveField('body')}
                         dir={editLanguage === 'en' ? 'ltr' : 'rtl'}
                         className={`w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:ring-2 focus:ring-blue-500 ${
                           editLanguage !== 'en' ? 'text-right font-arabic' : ''
@@ -668,12 +671,18 @@ const NotificationTemplatesPage: React.FC = () => {
                         </button>
                       </div>
 
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {isRTL
+                          ? `الإدراج في: ${activeField === 'title' ? 'العنوان' : 'نص الرسالة'}`
+                          : `Inserting into: ${activeField === 'title' ? 'Title' : 'Message Body'}`}
+                      </p>
+
                       {showPlaceholderHelp && (
                         <div className="bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg p-3 mb-4">
                           <p className="text-blue-700 dark:text-blue-200 text-sm">
                             {isRTL 
-                              ? 'انقر على أي متغير لإدراجه في النص. استخدم {{variable}} في القالب.'
-                              : 'Click any variable to insert it. Use {{variable}} syntax in templates.'}
+                              ? 'انقر على الحقل (العنوان أو النص) ثم انقر على المتغير لإدراجه.'
+                              : 'Click a field (Title or Body) then click a variable to insert it.'}
                           </p>
                         </div>
                       )}

@@ -146,7 +146,7 @@ export async function updateNotificationTemplate(
     method: 'PUT',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(transformKeysToSnakeCase(data)),
+    body: JSON.stringify(data),
   });
   
   return handleResponse<NotificationTemplate>(response);
@@ -157,7 +157,7 @@ export async function toggleNotificationTemplate(id: string, isActive: boolean):
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ is_active: isActive }),
+    body: JSON.stringify({ isActive }),
   });
   
   return handleResponse<NotificationTemplate>(response);
