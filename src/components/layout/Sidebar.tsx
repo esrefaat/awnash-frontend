@@ -381,6 +381,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           icon: faBell,
           i18nKey: 'sidebar.notificationSettings',
           path: '/settings/notifications'
+        },
+        {
+          key: 'payment-methods',
+          icon: faCreditCard,
+          i18nKey: 'sidebar.paymentMethods',
+          path: '/settings/payment-methods'
         }
       ]
     }

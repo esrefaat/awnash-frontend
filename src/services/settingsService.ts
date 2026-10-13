@@ -272,6 +272,30 @@ class SettingsService {
     };
     return isRTL ? labels[key]?.ar || key : labels[key]?.en || key;
   }
+  // ============================================
+  // PAYMENT METHODS
+  // ============================================
+
+  async getPaymentMethods(): Promise<PaymentMethod[]> {
+    const response = await this.makeRequest<{
+      success: boolean;
+      data: { methods: PaymentMethod[] };
+    }>('/settings/payment-methods');
+    return response.data?.methods || [];
+  }
+
+  async updatePaymentMethods(methods: Record<string, boolean>): Promise<void> {
+    await this.makeRequest<{ success: boolean }>('/settings/admin/payment-methods', {
+      method: 'PUT',
+      body: JSON.stringify(methods),
+    });
+  }
+}
+
+export interface PaymentMethod {
+  key: string;
+  enabled: boolean;
+  label: string;
 }
 
 export const settingsService = new SettingsService();

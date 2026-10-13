@@ -57,6 +57,7 @@
     "auditLog": "Audit Log",
     "notificationTemplates": "Notification Templates",
     "notificationSettings": "Notification Settings",
+    "paymentMethods": "Payment Methods",
     "authentication": "Authentication",
     "resetPassword": "Reset Password",
     "brandName": "Awnash"
