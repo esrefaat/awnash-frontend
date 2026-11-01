@@ -9,8 +9,6 @@ import {
   faEye,
   faEdit,
   faFlag,
-  faChevronLeft,
-  faChevronRight,
   faTruck,
   faUser,
   faCheckCircle,
@@ -38,6 +36,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { Pagination } from '@/components/ui/Pagination';
 import { Badge } from '@/components/ui/Badge';
 import { useChartTooltipStyle } from '@/hooks/useChartTooltipStyle';
 
@@ -1081,64 +1080,15 @@ const AllEquipmentListing: React.FC = () => {
       {/* Equipment Display */}
       {viewMode === 'grid' ? <GridView /> : <TableView />}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between bg-card rounded-xl border border-border p-4">
-          <div className="text-sm text-muted-foreground">
-                         {isRTL 
-               ? `عرض ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredAndSortedEquipment.length)} من ${filteredAndSortedEquipment.length}`
-               : `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredAndSortedEquipment.length)} of ${filteredAndSortedEquipment.length}`
-             }
-          </div>
-          
-          <div className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
-            >
-              <FontAwesomeIcon 
-                icon={isRTL ? faChevronRight : faChevronLeft} 
-                className="h-4 w-4" 
-              />
-            </Button>
-            
-            <div className={cn("flex items-center space-x-1", isRTL && "space-x-reverse")}>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setCurrentPage(page)}
-                  className={cn(
-                    "w-10 h-10",
-                    currentPage === page 
-                      ? "bg-awnash-primary text-black hover:bg-awnash-primary/90" 
-                      : "bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                >
-                  {page.toLocaleString(isRTL ? 'ar-SA' : 'en-US')}
-                </Button>
-              ))}
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="bg-muted border-border text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
-            >
-              <FontAwesomeIcon 
-                icon={isRTL ? faChevronLeft : faChevronRight} 
-                className="h-4 w-4" 
-              />
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredAndSortedEquipment.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        isRTL={isRTL}
+        className="bg-card rounded-xl border border-border p-4"
+      />
     </div>
   );
 };

@@ -48,14 +48,13 @@ export interface EscrowRecord {
   // State
   status: EscrowStatus;
   currency: string;
-  // Stage flags
-  stage1PaidOut: boolean;
-  stage2PaidOut: boolean;
+  // As-charged amount (what the gateway actually captured — point 15 cross-check)
+  asChargedAmount?: number;
+  // Payout ledger (hp-40: one row per money movement)
+  payouts?: EscrowPayoutRecord[];
   // Timestamps
   paymentWindowExpiresAt?: string;
   heldAt?: string;
-  stage1PaidAt?: string;
-  stage2PaidAt?: string;
   releasedAt?: string;
   refundedAt?: string;
   expiredAt?: string;
@@ -72,8 +71,6 @@ export interface EscrowRecord {
   // Gateway references
   gatewayCheckoutId?: string;
   gatewayPaymentId?: string;
-  gatewayStage1PayoutId?: string;
-  gatewayStage2PayoutId?: string;
   // Audit
   statusHistory: Array<{
     status: EscrowStatus;
@@ -88,6 +85,50 @@ export interface EscrowRecord {
     bankName: string;
     beneficiaryName: string;
   };
+}
+
+export interface EscrowPayoutRecord {
+  id: string;
+  escrowId: string;
+  movementType: 'STAGE1' | 'STAGE2' | 'REFUND' | 'CANCELLATION';
+  lifecycle: 'INITIATED' | 'CONFIRMED' | 'FAILED';
+  amountHalalas: number;
+  amountSar?: number;
+  reference?: string;
+  currency: string;
+  gatewayPayoutId?: string;
+  gatewayRefundId?: string;
+  initiatedBy?: string;
+  confirmedAt?: string;
+  failedAt?: string;
+  failureReason?: string;
+  retryCount: number;
+  lastRetryAt?: string;
+  nextRetryAt?: string;
+  escalated: boolean;
+  escalatedAt?: string;
+  createdAt: string;
+}
+
+export interface EscrowTimelineEntry {
+  at: string;
+  source: 'status' | 'gateway' | 'webhook' | 'payout' | 'transaction';
+  type: string;
+  detail: string;
+  data?: Record<string, unknown>;
+}
+
+export interface GatewaySyncResult {
+  escrowStatus: EscrowStatus;
+  action: 'none' | 'confirmed_payment';
+  gateway: {
+    checkoutId: string;
+    attempt: number;
+    status: string;
+    rawResultCode?: string;
+    rawResultDescription?: string;
+    amountSar?: number | null;
+  } | null;
 }
 
 export interface EscrowStats {
@@ -271,8 +312,57 @@ class EscrowService {
   }
 
   // ============================================
+  // ADMIN: OPS CONSOLE (hp-37)
+  // ============================================
+
+  /** Unified timeline: status history + gateway requests + webhooks + payouts + transactions. */
+  async getTimeline(escrowId: string): Promise<{ escrow: EscrowRecord; timeline: EscrowTimelineEntry[] }> {
+    const response = await this.makeRequest<{
+      success: boolean;
+      data: { escrow: EscrowRecord; timeline: EscrowTimelineEntry[] };
+    }>(`/escrow/${escrowId}/admin/timeline`);
+    return response.data;
+  }
+
+  /** Force re-poll across all checkout attempts; auto-confirms if money is held. */
+  async syncFromGateway(escrowId: string): Promise<GatewaySyncResult> {
+    const response = await this.makeRequest<{
+      success: boolean;
+      data: GatewaySyncResult;
+    }>(`/escrow/${escrowId}/admin/sync`, { method: 'POST' });
+    return response.data;
+  }
+
+  /** Audited note marking a reconciliation mismatch as resolved. */
+  async resolveMismatch(escrowId: string, resolution: string): Promise<EscrowRecord> {
+    const response = await this.makeRequest<{
+      success: boolean;
+      escrow: EscrowRecord;
+    }>(`/escrow/${escrowId}/admin/resolve-mismatch`, {
+      method: 'POST',
+      body: JSON.stringify({ resolution }),
+    });
+    return response.escrow;
+  }
+
+  // ============================================
   // UTILITY FUNCTIONS
   // ============================================
+
+  /** Stage payout state is derived from escrow status (payout ledger model, hp-40). */
+  isStage1Paid(escrow: EscrowRecord): boolean {
+    return (
+      ['partially_released', 'release_pending', 'released'].includes(escrow.status) ||
+      (escrow.payouts ?? []).some((p) => p.movementType === 'STAGE1' && p.lifecycle === 'CONFIRMED')
+    );
+  }
+
+  isStage2Paid(escrow: EscrowRecord): boolean {
+    return (
+      escrow.status === 'released' ||
+      (escrow.payouts ?? []).some((p) => p.movementType === 'STAGE2' && p.lifecycle === 'CONFIRMED')
+    );
+  }
 
   formatCurrency(amount: number, currency: string = 'SAR', locale: string = 'en-US'): string {
     return new Intl.NumberFormat(locale, {

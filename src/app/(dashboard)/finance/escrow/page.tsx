@@ -30,6 +30,8 @@ import {
   EscrowStats,
   EscrowStatus,
   EscrowFilters,
+  EscrowTimelineEntry,
+  GatewaySyncResult,
 } from '@/services/escrowService';
 
 const STATUS_OPTIONS: EscrowStatus[] = [
@@ -322,15 +324,15 @@ const EscrowManagementPage: React.FC = () => {
                     <td className="px-4 py-3 font-medium">{fmt(escrow.totalChargedAmount)}</td>
                     <td className="px-4 py-3">{fmt(escrow.escrowAmount)}</td>
                     <td className="px-4 py-3">
-                      <span className={escrow.stage1PaidOut ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                      <span className={escrowService.isStage1Paid(escrow) ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
                         {fmt(escrow.stage1Amount)}
-                        {escrow.stage1PaidOut && <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'mr-1' : 'ml-1'} text-xs`} />}
+                        {escrowService.isStage1Paid(escrow) && <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'mr-1' : 'ml-1'} text-xs`} />}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={escrow.stage2PaidOut ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                      <span className={escrowService.isStage2Paid(escrow) ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
                         {fmt(escrow.stage2Amount)}
-                        {escrow.stage2PaidOut && <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'mr-1' : 'ml-1'} text-xs`} />}
+                        {escrowService.isStage2Paid(escrow) && <FontAwesomeIcon icon={faCheck} className={`${isRTL ? 'mr-1' : 'ml-1'} text-xs`} />}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground text-xs">
@@ -425,11 +427,11 @@ const EscrowManagementPage: React.FC = () => {
                     <td className="px-4 py-3 font-medium">{fmt(ep.escrowAmount)}</td>
                     <td className="px-4 py-3">
                       <span className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs px-2 py-0.5 rounded-full font-medium">
-                        {(ep as any).payoutRetryCount || 0}
+                        {ep.payouts?.[0]?.retryCount ?? 0}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">
-                      {(ep as any).payoutEscalatedAt ? new Date((ep as any).payoutEscalatedAt).toLocaleString(isRTL ? 'ar-SA' : 'en-US') : '—'}
+                      {ep.payouts?.[0]?.escalatedAt ? new Date(ep.payouts[0].escalatedAt!).toLocaleString(isRTL ? 'ar-SA' : 'en-US') : '—'}
                     </td>
                     <td className="px-4 py-3 text-center space-x-2">
                       <button onClick={() => viewDetail(ep)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground" title="View">
@@ -608,6 +610,65 @@ const EscrowDetailModal: React.FC<EscrowDetailModalProps> = ({
   const statusLabel = (s: EscrowStatus) => escrowService.getStatusLabel(s, isRTL);
   const fmtDate = (d?: string) => d ? new Date(d).toLocaleString(isRTL ? 'ar-SA' : 'en-US') : '—';
 
+  // hp-37: ops console state
+  const [timeline, setTimeline] = useState<EscrowTimelineEntry[] | null>(null);
+  const [timelineLoading, setTimelineLoading] = useState(false);
+  const [syncResult, setSyncResult] = useState<GatewaySyncResult | null>(null);
+  const [opsLoading, setOpsLoading] = useState(false);
+
+  const loadTimeline = async () => {
+    if (timeline) { setTimeline(null); return; } // toggle off
+    setTimelineLoading(true);
+    try {
+      const result = await escrowService.getTimeline(escrow.id);
+      setTimeline(result.timeline);
+    } catch (err: any) {
+      alert(err.message || 'Failed to load timeline');
+    } finally {
+      setTimelineLoading(false);
+    }
+  };
+
+  const handleSync = async () => {
+    setOpsLoading(true);
+    try {
+      const result = await escrowService.syncFromGateway(escrow.id);
+      setSyncResult(result);
+      if (result.action === 'confirmed_payment') {
+        alert(isRTL ? 'تم تأكيد الدفع من البوابة' : 'Payment confirmed from gateway');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Sync failed');
+    } finally {
+      setOpsLoading(false);
+    }
+  };
+
+  const handleResolveMismatch = async () => {
+    const resolution = prompt(isRTL ? 'ملاحظة الحل (إلزامية):' : 'Resolution note (required):');
+    if (!resolution?.trim()) return;
+    setOpsLoading(true);
+    try {
+      await escrowService.resolveMismatch(escrow.id, resolution.trim());
+      alert(isRTL ? 'تم تسجيل الحل' : 'Resolution recorded');
+    } catch (err: any) {
+      alert(err.message || 'Failed to record resolution');
+    } finally {
+      setOpsLoading(false);
+    }
+  };
+
+  const sourceBadge = (source: string) => {
+    switch (source) {
+      case 'status': return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400';
+      case 'gateway': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+      case 'webhook': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
+      case 'payout': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+      case 'transaction': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
+      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
       <div className="bg-card border border-border rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
@@ -642,13 +703,11 @@ const EscrowDetailModal: React.FC<EscrowDetailModalProps> = ({
               <Row label={isRTL ? 'مبلغ الضمان' : 'Escrow Amount'} value={fmt(escrow.escrowAmount)} bold />
               <Row
                 label={isRTL ? 'المرحلة 1 (تسليم)' : 'Stage 1 (Delivery)'}
-                value={`${fmt(escrow.stage1Amount)} ${escrow.stage1PaidOut ? '✓' : ''}`}
-                sub={escrow.stage1PaidAt ? fmtDate(escrow.stage1PaidAt) : undefined}
+                value={`${fmt(escrow.stage1Amount)} ${escrowService.isStage1Paid(escrow) ? '✓' : ''}`}
               />
               <Row
                 label={isRTL ? 'المرحلة 2 (إتمام)' : 'Stage 2 (Completion)'}
-                value={`${fmt(escrow.stage2Amount)} ${escrow.stage2PaidOut ? '✓' : ''}`}
-                sub={escrow.stage2PaidAt ? fmtDate(escrow.stage2PaidAt) : undefined}
+                value={`${fmt(escrow.stage2Amount)} ${escrowService.isStage2Paid(escrow) ? '✓' : ''}`}
               />
               <div className="border-t border-border my-2" />
               <Row label={isRTL ? 'إجمالي المدفوع' : 'Total Paid Out'} value={fmt(escrow.totalPaidOut)} />
@@ -690,29 +749,44 @@ const EscrowDetailModal: React.FC<EscrowDetailModalProps> = ({
             <div className="bg-muted/30 rounded-xl p-4 text-sm space-y-1">
               <Row label="Checkout ID" value={escrow.gatewayCheckoutId || '—'} />
               <Row label="Payment ID" value={escrow.gatewayPaymentId || '—'} />
-              <Row label="Stage 1 Payout ID" value={escrow.gatewayStage1PayoutId || '—'} />
-              <Row label="Stage 2 Payout ID" value={escrow.gatewayStage2PayoutId || '—'} />
+              <Row label={isRTL ? 'المبلغ المحصل فعلياً' : 'As-Charged Amount'} value={escrow.asChargedAmount != null ? fmt(escrow.asChargedAmount) : '—'} />
             </div>
           </div>
 
-          {/* Payout Retry Info (shown for failed/escalated) */}
-          {((escrow as any).payoutRetryCount > 0 || (escrow as any).payoutEscalated) && (
+          {/* Payout Ledger (hp-40: one row per money movement) */}
+          {escrow.payouts && escrow.payouts.length > 0 && (
             <div>
-              <h3 className="font-semibold text-foreground mb-3">{isRTL ? 'معلومات إعادة المحاولة' : 'Payout Retry Info'}</h3>
-              <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-sm space-y-1">
-                <Row label={isRTL ? 'عدد المحاولات' : 'Retry Count'} value={String((escrow as any).payoutRetryCount || 0)} />
-                <Row label={isRTL ? 'آخر محاولة' : 'Last Retry'} value={fmtDate((escrow as any).lastPayoutRetryAt)} />
-                <Row label={isRTL ? 'المحاولة التالية' : 'Next Retry'} value={fmtDate((escrow as any).nextPayoutRetryAt)} />
-                {(escrow as any).payoutEscalated && (
-                  <>
-                    <div className="border-t border-amber-300 dark:border-amber-700 my-2" />
-                    <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-medium">
-                      <FontAwesomeIcon icon={faExclamationTriangle} />
-                      {isRTL ? 'تم التصعيد للمشرف' : 'Escalated to Admin'}
+              <h3 className="font-semibold text-foreground mb-3">{isRTL ? 'سجل المدفوعات' : 'Payout Ledger'}</h3>
+              <div className="bg-muted/30 rounded-xl p-4 space-y-3 text-sm">
+                {escrow.payouts.map((payout) => (
+                  <div key={payout.id} className="flex items-start justify-between gap-3">
+                    <div>
+                      <span className="font-medium text-foreground">{payout.movementType}</span>
+                      <span className={`mx-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                        payout.lifecycle === 'CONFIRMED'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          : payout.lifecycle === 'FAILED'
+                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      }`}>
+                        {payout.lifecycle}
+                      </span>
+                      {payout.failureReason && (
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">{payout.failureReason}</p>
+                      )}
+                      {payout.retryCount > 0 && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {isRTL ? `محاولات: ${payout.retryCount}` : `Retries: ${payout.retryCount}`}
+                          {payout.escalated && (isRTL ? ' — مُصعَّد' : ' — escalated')}
+                        </p>
+                      )}
                     </div>
-                    <Row label={isRTL ? 'تاريخ التصعيد' : 'Escalated At'} value={fmtDate((escrow as any).payoutEscalatedAt)} />
-                  </>
-                )}
+                    <div className="text-right">
+                      <div className="font-medium">{fmt(payout.amountSar ?? payout.amountHalalas / 100)}</div>
+                      <div className="text-xs text-muted-foreground">{fmtDate(payout.confirmedAt || payout.createdAt)}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -737,9 +811,73 @@ const EscrowDetailModal: React.FC<EscrowDetailModalProps> = ({
             </div>
           )}
 
+          {/* hp-37: Sync result — the REAL gateway response */}
+          {syncResult && (
+            <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm space-y-1">
+              <h3 className="font-semibold text-foreground mb-2">{isRTL ? 'نتيجة المزامنة من البوابة' : 'Gateway Sync Result'}</h3>
+              <Row label={isRTL ? 'حالة الضمان' : 'Escrow Status'} value={syncResult.escrowStatus} />
+              <Row label={isRTL ? 'الإجراء' : 'Action Taken'} value={syncResult.action === 'confirmed_payment' ? (isRTL ? 'تم تأكيد الدفع' : 'Payment confirmed') : (isRTL ? 'لا شيء' : 'None')} />
+              {syncResult.gateway ? (
+                <>
+                  <Row label={isRTL ? 'حالة البوابة' : 'Gateway Status'} value={syncResult.gateway.status} />
+                  <Row label={isRTL ? 'رمز النتيجة' : 'Result Code'} value={`${syncResult.gateway.rawResultCode || '—'} — ${syncResult.gateway.rawResultDescription || ''}`} />
+                  <Row label={isRTL ? 'المحاولة' : 'Attempt'} value={`#${syncResult.gateway.attempt} (${syncResult.gateway.checkoutId})`} />
+                  {syncResult.gateway.amountSar != null && (
+                    <Row label={isRTL ? 'المبلغ' : 'Amount'} value={fmt(syncResult.gateway.amountSar)} />
+                  )}
+                </>
+              ) : (
+                <p className="text-muted-foreground">{isRTL ? 'لا يوجد دفع في البوابة' : 'No payment found at the gateway'}</p>
+              )}
+            </div>
+          )}
+
+          {/* hp-37: Unified Timeline */}
+          {timeline && (
+            <div>
+              <h3 className="font-semibold text-foreground mb-3">{isRTL ? 'الخط الزمني الموحد' : 'Unified Timeline'}</h3>
+              <div className="bg-muted/30 rounded-xl p-4 space-y-2 max-h-80 overflow-y-auto">
+                {timeline.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{isRTL ? 'لا توجد أحداث' : 'No events'}</p>
+                ) : timeline.map((entry, i) => (
+                  <div key={i} className="flex items-start gap-3 text-sm">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium shrink-0 ${sourceBadge(entry.source)}`}>
+                      {entry.source}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-foreground break-words">{entry.detail}</p>
+                      <p className="text-xs text-muted-foreground">{fmtDate(entry.at)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Admin Actions */}
           <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
-            {(escrow.status === 'held' && !escrow.stage1PaidOut) && (
+            <ActionButton
+              icon={faRedo}
+              label={isRTL ? 'مزامنة من البوابة' : 'Sync from Gateway'}
+              onClick={handleSync}
+              loading={opsLoading}
+              variant="blue"
+            />
+            <ActionButton
+              icon={faClock}
+              label={timeline ? (isRTL ? 'إخفاء الخط الزمني' : 'Hide Timeline') : (isRTL ? 'عرض الخط الزمني' : 'View Timeline')}
+              onClick={loadTimeline}
+              loading={timelineLoading}
+              variant="blue"
+            />
+            <ActionButton
+              icon={faCheck}
+              label={isRTL ? 'تسجيل حل عدم التطابق' : 'Mark Mismatch Resolved'}
+              onClick={handleResolveMismatch}
+              loading={opsLoading}
+              variant="yellow"
+            />
+            {(escrow.status === 'held' && !escrowService.isStage1Paid(escrow)) && (
               <ActionButton
                 icon={faHandHoldingUsd}
                 label={isRTL ? 'إفراج المرحلة 1' : 'Force Stage 1'}
@@ -748,7 +886,7 @@ const EscrowDetailModal: React.FC<EscrowDetailModalProps> = ({
                 variant="blue"
               />
             )}
-            {(escrow.status === 'partially_released' && !escrow.stage2PaidOut) && (
+            {(escrow.status === 'partially_released' && !escrowService.isStage2Paid(escrow)) && (
               <ActionButton
                 icon={faHandHoldingUsd}
                 label={isRTL ? 'إفراج المرحلة 2' : 'Force Stage 2'}

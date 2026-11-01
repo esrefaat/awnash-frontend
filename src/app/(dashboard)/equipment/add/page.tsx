@@ -20,6 +20,7 @@ import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
+import { Pagination } from '@/components/ui/Pagination';
 import { EquipmentFormModal } from '@/components/modals/EquipmentFormModal';
 import { equipmentService, Equipment } from '@/services/equipmentService';
 import { equipmentTypeService, EquipmentType } from '@/services/equipmentTypeService';
@@ -789,47 +790,14 @@ const EquipmentAddPage: React.FC = () => {
           </div>
         )}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-6">
-            <div className="text-sm text-muted-foreground">
-              {isRTL 
-                ? `عرض ${(currentPage - 1) * itemsPerPage + 1} إلى ${Math.min(currentPage * itemsPerPage, totalItems)} من أصل ${totalItems}`
-                : `Showing ${(currentPage - 1) * itemsPerPage + 1} to ${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems}`
-              }
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-2 bg-muted text-muted-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
-              >
-                {isRTL ? 'السابق' : 'Previous'}
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={cn(
-                    'px-3 py-2 rounded-lg transition-colors',
-                    page === currentPage
-                      ? 'bg-blue-600 text-foreground'
-                      : 'bg-muted text-muted-foreground hover:bg-muted'
-                  )}
-                >
-                  {page}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-2 bg-muted text-muted-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
-              >
-                {isRTL ? 'التالي' : 'Next'}
-              </button>
-            </div>
-          </div>
-        )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          isRTL={isRTL}
+        />
 
       </div>
         </>
